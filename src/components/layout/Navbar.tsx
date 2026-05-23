@@ -37,6 +37,7 @@ export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
   const isAdminPage = pathname.startsWith("/admin");
+  const isHome = pathname === "/";
 
   const db = useFirestore();
   const settingsRef = useMemo(() => db ? doc(db, "settings", "general") : null, [db]);
@@ -56,11 +57,14 @@ export function Navbar() {
 
   if (isAdminPage) return null;
 
+  // Force scrolled state (solid bg, dark text) if not on home page
+  const isSolid = scrolled || !isHome;
+
   return (
     <header
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-300 px-6 py-4",
-        scrolled 
+        isSolid 
           ? "bg-white/95 backdrop-blur-md shadow-lg border-b border-slate-200 py-3" 
           : "bg-transparent border-transparent"
       )}
@@ -69,19 +73,19 @@ export function Navbar() {
         <Link href="/" className="flex items-center gap-3">
           <div className={cn(
             "p-2 rounded-2xl transition-all duration-300 shadow-md",
-            scrolled ? "bg-primary scale-90" : "bg-white/20 backdrop-blur-md"
+            isSolid ? "bg-primary scale-90" : "bg-white/20 backdrop-blur-md"
           )}>
             {schoolLogo ? (
               <div className="relative h-7 w-7">
                 <Image src={schoolLogo} alt="Logo" fill className="object-contain" />
               </div>
             ) : (
-              <GraduationCap className={cn("h-7 w-7", scrolled ? "text-white" : "text-white")} />
+              <GraduationCap className={cn("h-7 w-7", isSolid ? "text-white" : "text-white")} />
             )}
           </div>
           <span className={cn(
             "font-headline font-bold text-lg md:text-xl tracking-tighter uppercase transition-colors duration-300",
-            scrolled ? "text-slate-900" : "text-white drop-shadow-md"
+            isSolid ? "text-slate-900" : "text-white drop-shadow-md"
           )}>
             {schoolName.split(" ").map((word, i) => (
               <span key={i} className={cn(
@@ -101,7 +105,7 @@ export function Navbar() {
                 <DropdownMenu>
                   <DropdownMenuTrigger className={cn(
                     "flex items-center gap-1 text-sm font-bold transition-all outline-none",
-                    scrolled 
+                    isSolid 
                       ? (pathname.startsWith(item.href) && item.href !== "/" ? "text-secondary" : "text-slate-700 hover:text-secondary")
                       : "text-white hover:text-secondary drop-shadow-sm"
                   )}>
@@ -122,7 +126,7 @@ export function Navbar() {
                   href={item.href}
                   className={cn(
                     "text-sm font-bold transition-all",
-                    scrolled 
+                    isSolid 
                       ? (pathname === item.href ? "text-secondary" : "text-slate-700 hover:text-secondary")
                       : "text-white hover:text-secondary drop-shadow-sm"
                   )}
@@ -139,7 +143,7 @@ export function Navbar() {
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="sm" className={cn(
                 "font-bold transition-colors",
-                scrolled ? "text-slate-600 hover:text-primary" : "text-white hover:bg-white/10"
+                isSolid ? "text-slate-600 hover:text-primary" : "text-white hover:bg-white/10"
               )}>
                 <LogIn className="h-4 w-4 mr-2" /> Admin
               </Button>
@@ -159,7 +163,7 @@ export function Navbar() {
           </DropdownMenu>
           <Button size="sm" className={cn(
             "rounded-full px-8 font-bold shadow-xl transition-all hover:scale-105 active:scale-95",
-            scrolled ? "bg-primary text-white" : "bg-secondary text-primary hover:bg-secondary/90"
+            isSolid ? "bg-primary text-white" : "bg-secondary text-primary hover:bg-secondary/90"
           )} asChild>
             <Link href="/ppdb">Daftar Sekarang</Link>
           </Button>
@@ -167,7 +171,7 @@ export function Navbar() {
 
         {/* Mobile Toggle */}
         <button
-          className={cn("md:hidden p-2 transition-colors", scrolled ? "text-primary" : "text-white")}
+          className={cn("md:hidden p-2 transition-colors", isSolid ? "text-primary" : "text-white")}
           onClick={() => setIsOpen(!isOpen)}
         >
           {isOpen ? <X /> : <Menu />}
