@@ -1,8 +1,9 @@
+
 import type {Metadata} from 'next';
 import './globals.css';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
-import { ChatAssistant } from '@/components/chat/ChatAssistant';
+import { WhatsAppButton } from '@/components/contact/WhatsAppButton';
 import { Toaster } from '@/components/ui/toaster';
 import { FirebaseClientProvider } from '@/firebase';
 
@@ -30,7 +31,7 @@ export default function RootLayout({
             <main className="flex-1">{children}</main>
             <Footer />
           </div>
-          <ChatAssistant />
+          <WhatsAppButton />
           <Toaster />
         </FirebaseClientProvider>
       </body>

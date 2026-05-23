@@ -12,6 +12,7 @@
         "welcomeMessage": { "type": "string" },
         "headmasterName": { "type": "string" },
         "headmasterTitle": { "type": "string" },
+        "whatsappNumber": { "type": "string", "description": "Nomor WhatsApp admin (format: 62812...)" },
         "history": { "type": "string" },
         "vision": { "type": "string" },
         "mission": { "type": "array", "items": { "type": "string" } },

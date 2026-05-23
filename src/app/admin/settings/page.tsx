@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
-import { Settings, Save, Sparkles, Wand2, Info } from "lucide-react";
+import { Settings, Save, Phone } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -24,6 +24,7 @@ export default function AdminSettings() {
     welcomeMessage: "",
     headmasterName: "",
     headmasterTitle: "",
+    whatsappNumber: "",
   });
 
   useEffect(() => {
@@ -59,6 +60,28 @@ export default function AdminSettings() {
       </div>
 
       <div className="space-y-8">
+        <Card className="border-none shadow-xl">
+          <CardHeader>
+            <CardTitle>Kontak & Integrasi</CardTitle>
+            <CardDescription>Atur nomor kontak yang muncul di website.</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <Label>Nomor WhatsApp Admin</Label>
+              <div className="relative">
+                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input 
+                  className="pl-9"
+                  value={formData.whatsappNumber} 
+                  onChange={(e) => setFormData({...formData, whatsappNumber: e.target.value})}
+                  placeholder="Contoh: 628123456789 (Tanpa +, spasi, atau strip)"
+                />
+              </div>
+              <p className="text-xs text-muted-foreground">Gunakan kode negara (62 untuk Indonesia). Nomor ini akan digunakan untuk tombol melayang di pojok kanan bawah.</p>
+            </div>
+          </CardContent>
+        </Card>
+
         <Card className="border-none shadow-xl">
           <CardHeader>
             <CardTitle>Hero Section</CardTitle>
