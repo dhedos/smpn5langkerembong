@@ -5,7 +5,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Menu, X, GraduationCap, ChevronDown, LogIn, Settings, LayoutDashboard, Globe } from "lucide-react";
+import { Menu, X, GraduationCap, ChevronDown, LogIn, Settings, LayoutDashboard } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -50,22 +50,22 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const schoolName = settings?.schoolName || "EduVista SMP";
+  const schoolName = settings?.schoolName || "SMP NEGERI 5 LANGKE REMBONG";
   const schoolLogo = settings?.schoolLogoUrl;
 
-  // If on admin page, we show a simplified navbar or a distinctive one
+  // Jika di halaman admin, navbar publik tidak ditampilkan
   if (isAdminPage) return null;
 
   return (
     <header
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300 px-4 py-3",
-        scrolled ? "glass shadow-md py-2" : "bg-transparent"
+        "fixed top-0 left-0 right-0 z-50 transition-all duration-300 px-4 py-2",
+        "bg-white/95 backdrop-blur-md shadow-sm border-b border-slate-100"
       )}
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2">
-          <div className="bg-primary p-2 rounded-lg">
+          <div className="bg-primary p-2 rounded-xl">
             {schoolLogo ? (
               <div className="relative h-6 w-6">
                 <Image src={schoolLogo} alt="Logo" fill className="object-contain invert" />
@@ -74,9 +74,9 @@ export function Navbar() {
               <GraduationCap className="h-6 w-6 text-white" />
             )}
           </div>
-          <span className="font-headline font-bold text-xl tracking-tighter text-primary">
+          <span className="font-headline font-bold text-lg md:text-xl tracking-tighter text-primary uppercase">
             {schoolName.split(" ").map((word, i) => (
-              <span key={i} className={i === 1 ? "text-secondary" : ""}>
+              <span key={i} className={word.toUpperCase() === "NEGERI" || i === 1 ? "text-secondary" : ""}>
                 {word}{" "}
               </span>
             ))}
@@ -84,18 +84,21 @@ export function Navbar() {
         </Link>
 
         {/* Desktop Nav */}
-        <nav className="hidden md:flex items-center gap-6">
+        <nav className="hidden md:flex items-center gap-8">
           {navItems.map((item) => (
             <div key={item.name} className="relative group">
               {item.submenu ? (
                 <DropdownMenu>
-                  <DropdownMenuTrigger className="flex items-center gap-1 text-sm font-medium hover:text-secondary transition-colors outline-none">
+                  <DropdownMenuTrigger className={cn(
+                    "flex items-center gap-1 text-sm font-semibold transition-colors outline-none",
+                    pathname.startsWith(item.href) && item.href !== "/" ? "text-secondary" : "text-slate-600 hover:text-secondary"
+                  )}>
                     {item.name} <ChevronDown className="h-4 w-4" />
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="start" className="glass border-none shadow-xl">
+                  <DropdownMenuContent align="start" className="bg-white border-none shadow-xl rounded-xl">
                     {item.submenu.map((sub) => (
                       <DropdownMenuItem key={sub.name} asChild>
-                        <Link href={sub.href} className="w-full cursor-pointer hover:bg-primary/10">
+                        <Link href={sub.href} className="w-full cursor-pointer hover:bg-slate-50 font-medium">
                           {sub.name}
                         </Link>
                       </DropdownMenuItem>
@@ -106,8 +109,8 @@ export function Navbar() {
                 <Link
                   href={item.href}
                   className={cn(
-                    "text-sm font-medium transition-colors hover:text-secondary",
-                    pathname === item.href ? "text-secondary font-bold" : "text-foreground"
+                    "text-sm font-semibold transition-colors",
+                    pathname === item.href ? "text-secondary" : "text-slate-600 hover:text-secondary"
                   )}
                 >
                   {item.name}
@@ -117,23 +120,27 @@ export function Navbar() {
           ))}
         </nav>
 
-        <div className="hidden md:flex items-center gap-3">
+        <div className="hidden md:flex items-center gap-4">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="sm">
+              <Button variant="ghost" size="sm" className="text-slate-600 font-semibold hover:text-primary">
                 <LogIn className="h-4 w-4 mr-2" /> Admin
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+            <DropdownMenuContent align="end" className="rounded-xl shadow-xl border-none">
               <DropdownMenuItem asChild>
-                <Link href="/admin"><LayoutDashboard className="h-4 w-4 mr-2" /> Dashboard</Link>
+                <Link href="/admin" className="cursor-pointer">
+                  <LayoutDashboard className="h-4 w-4 mr-2" /> Dashboard
+                </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <Link href="/admin/settings"><Settings className="h-4 w-4 mr-2" /> Pengaturan</Link>
+                <Link href="/admin/settings" className="cursor-pointer">
+                  <Settings className="h-4 w-4 mr-2" /> Pengaturan
+                </Link>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-          <Button size="sm" className="bg-primary text-white hover:bg-primary/90 rounded-full px-6" asChild>
+          <Button size="sm" className="bg-primary text-white hover:bg-primary/90 rounded-full px-6 font-bold shadow-lg shadow-primary/20" asChild>
             <Link href="/ppdb">Daftar Sekarang</Link>
           </Button>
         </div>
@@ -149,26 +156,26 @@ export function Navbar() {
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div className="md:hidden absolute top-full left-0 right-0 glass animate-in slide-in-from-top duration-300 border-t border-border shadow-2xl">
-          <nav className="flex flex-col p-4 gap-4">
+        <div className="md:hidden absolute top-full left-0 right-0 bg-white animate-in slide-in-from-top duration-300 border-t border-slate-100 shadow-2xl">
+          <nav className="flex flex-col p-6 gap-4">
             {navItems.map((item) => (
               <Link
                 key={item.name}
                 href={item.href}
                 onClick={() => setIsOpen(false)}
                 className={cn(
-                  "text-lg font-medium p-2 rounded-md",
-                  pathname === item.href ? "bg-primary/10 text-secondary" : ""
+                  "text-lg font-bold p-2 rounded-xl",
+                  pathname === item.href ? "bg-primary/5 text-secondary" : "text-slate-600"
                 )}
               >
                 {item.name}
               </Link>
             ))}
-            <div className="grid grid-cols-2 gap-2 pt-4 border-t border-border">
-              <Button variant="outline" asChild onClick={() => setIsOpen(false)}>
-                <Link href="/admin">Admin</Link>
+            <div className="grid grid-cols-2 gap-3 pt-6 border-t border-slate-100">
+              <Button variant="outline" asChild onClick={() => setIsOpen(false)} className="rounded-xl">
+                <Link href="/admin">Admin Login</Link>
               </Button>
-              <Button className="bg-primary text-white" asChild onClick={() => setIsOpen(false)}>
+              <Button className="bg-primary text-white rounded-xl" asChild onClick={() => setIsOpen(false)}>
                 <Link href="/ppdb">PPDB Online</Link>
               </Button>
             </div>
