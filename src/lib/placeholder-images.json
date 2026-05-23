@@ -1,3 +1,40 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "hero-school",
+      "description": "Modern school building",
+      "imageUrl": "https://picsum.photos/seed/school1/1920/1080",
+      "imageHint": "modern school"
+    },
+    {
+      "id": "headmaster",
+      "description": "School headmaster portrait",
+      "imageUrl": "https://picsum.photos/seed/headmaster/400/500",
+      "imageHint": "professional man"
+    },
+    {
+      "id": "student-activity-1",
+      "description": "Students in classroom",
+      "imageUrl": "https://picsum.photos/seed/students1/800/600",
+      "imageHint": "students learning"
+    },
+    {
+      "id": "student-activity-2",
+      "description": "Sports extracurricular",
+      "imageUrl": "https://picsum.photos/seed/sports/800/600",
+      "imageHint": "school sports"
+    },
+    {
+      "id": "facility-lab",
+      "description": "Science laboratory",
+      "imageUrl": "https://picsum.photos/seed/lab/800/600",
+      "imageHint": "science lab"
+    },
+    {
+      "id": "facility-library",
+      "description": "Modern library",
+      "imageUrl": "https://picsum.photos/seed/library/800/600",
+      "imageHint": "school library"
+    }
+  ]
 }
