@@ -44,39 +44,49 @@ export function Navbar() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
+      setScrolled(window.scrollY > 50);
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const schoolName = settings?.schoolName || "SMP NEGERI 5 LANGKE REMBONG";
+  const schoolName = settings?.schoolName || "EduVista SMP";
   const schoolLogo = settings?.schoolLogoUrl;
 
-  // Jika di halaman admin, navbar publik tidak ditampilkan
   if (isAdminPage) return null;
 
   return (
     <header
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300 px-4 py-2",
-        "bg-white/95 backdrop-blur-md shadow-sm border-b border-slate-100"
+        "fixed top-0 left-0 right-0 z-50 transition-all duration-500 px-6 py-4",
+        scrolled 
+          ? "bg-white/40 backdrop-blur-xl shadow-lg border-b border-white/20 py-3" 
+          : "bg-transparent border-transparent"
       )}
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2">
-          <div className="bg-primary p-2 rounded-xl">
+        <Link href="/" className="flex items-center gap-3">
+          <div className={cn(
+            "p-2 rounded-2xl transition-all duration-300 shadow-md",
+            scrolled ? "bg-primary scale-90" : "bg-white/20 backdrop-blur-md"
+          )}>
             {schoolLogo ? (
-              <div className="relative h-6 w-6">
-                <Image src={schoolLogo} alt="Logo" fill className="object-contain invert" />
+              <div className="relative h-7 w-7">
+                <Image src={schoolLogo} alt="Logo" fill className="object-contain" />
               </div>
             ) : (
-              <GraduationCap className="h-6 w-6 text-white" />
+              <GraduationCap className={cn("h-7 w-7", scrolled ? "text-white" : "text-white")} />
             )}
           </div>
-          <span className="font-headline font-bold text-lg md:text-xl tracking-tighter text-primary uppercase">
+          <span className={cn(
+            "font-headline font-bold text-lg md:text-xl tracking-tighter uppercase transition-colors duration-300",
+            scrolled ? "text-primary" : "text-white drop-shadow-md"
+          )}>
             {schoolName.split(" ").map((word, i) => (
-              <span key={i} className={word.toUpperCase() === "NEGERI" || i === 1 ? "text-secondary" : ""}>
+              <span key={i} className={cn(
+                (word.toUpperCase() === "NEGERI" || i === 1) && !scrolled ? "text-secondary" : 
+                (word.toUpperCase() === "NEGERI" || i === 1) && scrolled ? "text-secondary" : ""
+              )}>
                 {word}{" "}
               </span>
             ))}
@@ -90,15 +100,17 @@ export function Navbar() {
               {item.submenu ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger className={cn(
-                    "flex items-center gap-1 text-sm font-semibold transition-colors outline-none",
-                    pathname.startsWith(item.href) && item.href !== "/" ? "text-secondary" : "text-slate-600 hover:text-secondary"
+                    "flex items-center gap-1 text-sm font-bold transition-all outline-none",
+                    scrolled 
+                      ? (pathname.startsWith(item.href) && item.href !== "/" ? "text-secondary" : "text-slate-700 hover:text-secondary")
+                      : "text-white hover:text-secondary drop-shadow-sm"
                   )}>
                     {item.name} <ChevronDown className="h-4 w-4" />
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="start" className="bg-white border-none shadow-xl rounded-xl">
+                  <DropdownMenuContent align="start" className="bg-white/80 backdrop-blur-xl border-white/20 shadow-2xl rounded-2xl p-2">
                     {item.submenu.map((sub) => (
                       <DropdownMenuItem key={sub.name} asChild>
-                        <Link href={sub.href} className="w-full cursor-pointer hover:bg-slate-50 font-medium">
+                        <Link href={sub.href} className="w-full cursor-pointer hover:bg-primary/10 rounded-xl px-4 py-2 font-semibold text-slate-700">
                           {sub.name}
                         </Link>
                       </DropdownMenuItem>
@@ -109,8 +121,10 @@ export function Navbar() {
                 <Link
                   href={item.href}
                   className={cn(
-                    "text-sm font-semibold transition-colors",
-                    pathname === item.href ? "text-secondary" : "text-slate-600 hover:text-secondary"
+                    "text-sm font-bold transition-all",
+                    scrolled 
+                      ? (pathname === item.href ? "text-secondary" : "text-slate-700 hover:text-secondary")
+                      : "text-white hover:text-secondary drop-shadow-sm"
                   )}
                 >
                   {item.name}
@@ -123,31 +137,37 @@ export function Navbar() {
         <div className="hidden md:flex items-center gap-4">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="sm" className="text-slate-600 font-semibold hover:text-primary">
+              <Button variant="ghost" size="sm" className={cn(
+                "font-bold transition-colors",
+                scrolled ? "text-slate-600 hover:text-primary" : "text-white hover:bg-white/10"
+              )}>
                 <LogIn className="h-4 w-4 mr-2" /> Admin
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="rounded-xl shadow-xl border-none">
+            <DropdownMenuContent align="end" className="rounded-2xl shadow-2xl border-white/20 bg-white/80 backdrop-blur-xl">
               <DropdownMenuItem asChild>
-                <Link href="/admin" className="cursor-pointer">
+                <Link href="/admin" className="cursor-pointer font-semibold">
                   <LayoutDashboard className="h-4 w-4 mr-2" /> Dashboard
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <Link href="/admin/settings" className="cursor-pointer">
+                <Link href="/admin/settings" className="cursor-pointer font-semibold">
                   <Settings className="h-4 w-4 mr-2" /> Pengaturan
                 </Link>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-          <Button size="sm" className="bg-primary text-white hover:bg-primary/90 rounded-full px-6 font-bold shadow-lg shadow-primary/20" asChild>
+          <Button size="sm" className={cn(
+            "rounded-full px-8 font-bold shadow-xl transition-all hover:scale-105 active:scale-95",
+            scrolled ? "bg-primary text-white" : "bg-secondary text-primary hover:bg-secondary/90"
+          )} asChild>
             <Link href="/ppdb">Daftar Sekarang</Link>
           </Button>
         </div>
 
         {/* Mobile Toggle */}
         <button
-          className="md:hidden p-2 text-primary"
+          className={cn("md:hidden p-2 transition-colors", scrolled ? "text-primary" : "text-white")}
           onClick={() => setIsOpen(!isOpen)}
         >
           {isOpen ? <X /> : <Menu />}
@@ -156,7 +176,7 @@ export function Navbar() {
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div className="md:hidden absolute top-full left-0 right-0 bg-white animate-in slide-in-from-top duration-300 border-t border-slate-100 shadow-2xl">
+        <div className="md:hidden absolute top-full left-4 right-4 bg-white/90 backdrop-blur-2xl animate-in slide-in-from-top duration-300 border border-white/20 shadow-2xl rounded-3xl mt-2">
           <nav className="flex flex-col p-6 gap-4">
             {navItems.map((item) => (
               <Link
@@ -164,18 +184,18 @@ export function Navbar() {
                 href={item.href}
                 onClick={() => setIsOpen(false)}
                 className={cn(
-                  "text-lg font-bold p-2 rounded-xl",
-                  pathname === item.href ? "bg-primary/5 text-secondary" : "text-slate-600"
+                  "text-lg font-bold p-3 rounded-2xl transition-colors",
+                  pathname === item.href ? "bg-primary text-white" : "text-slate-700 hover:bg-slate-100"
                 )}
               >
                 {item.name}
               </Link>
             ))}
             <div className="grid grid-cols-2 gap-3 pt-6 border-t border-slate-100">
-              <Button variant="outline" asChild onClick={() => setIsOpen(false)} className="rounded-xl">
+              <Button variant="outline" asChild onClick={() => setIsOpen(false)} className="rounded-2xl font-bold">
                 <Link href="/admin">Admin Login</Link>
               </Button>
-              <Button className="bg-primary text-white rounded-xl" asChild onClick={() => setIsOpen(false)}>
+              <Button className="bg-primary text-white rounded-2xl font-bold" asChild onClick={() => setIsOpen(false)}>
                 <Link href="/ppdb">PPDB Online</Link>
               </Button>
             </div>
