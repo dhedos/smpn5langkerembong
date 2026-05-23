@@ -4,14 +4,20 @@
 import React, { useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { GraduationCap, Facebook, Instagram, Twitter, Youtube, MapPin, Phone, Mail } from "lucide-react";
 import { useFirestore, useDoc } from "@/firebase";
 import { doc } from "firebase/firestore";
 
 export function Footer() {
+  const pathname = usePathname();
+  const isAdminPage = pathname.startsWith("/admin");
+
   const db = useFirestore();
   const settingsRef = useMemo(() => db ? doc(db, "settings", "general") : null, [db]);
   const { data: settings } = useDoc(settingsRef);
+
+  if (isAdminPage) return null;
 
   const schoolName = settings?.schoolName || "EduVista SMP";
   const schoolLogo = settings?.schoolLogoUrl;

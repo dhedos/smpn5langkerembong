@@ -14,6 +14,7 @@ import {
   Bell
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import {
   ChartContainer,
   ChartTooltip,
@@ -48,51 +49,46 @@ const chartConfig = {
 
 export default function AdminDashboard() {
   return (
-    <div className="pt-24 pb-24 container mx-auto px-4">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+    <div className="p-8 space-y-8">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-3xl font-bold font-headline text-primary flex items-center gap-2">
-            <LayoutDashboard className="h-8 w-8 text-secondary" /> Dashboard Admin
+            <LayoutDashboard className="h-8 w-8 text-secondary" /> Dashboard Ringkasan
           </h1>
-          <p className="text-muted-foreground">Selamat datang kembali, Administrator.</p>
+          <p className="text-muted-foreground text-sm">Statistik performa website dan aktivitas sekolah hari ini.</p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" size="icon" className="rounded-full">
             <Bell className="h-5 w-5" />
           </Button>
-          <Button variant="outline" size="icon" className="rounded-full">
-            <Settings className="h-5 w-5" />
-          </Button>
-          <Button className="bg-primary">Laporan Utama</Button>
+          <Button className="bg-primary shadow-lg shadow-primary/20">Unduh Laporan</Button>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {stats.map((stat) => (
-          <Card key={stat.title} className="border-none shadow-lg overflow-hidden relative">
-            <div className={`absolute top-0 right-0 w-24 h-24 ${stat.color} opacity-5 rounded-full -translate-y-12 translate-x-12`} />
+          <Card key={stat.title} className="border-none shadow-sm hover:shadow-md transition-shadow">
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-4">
                 <div className={`p-3 rounded-xl ${stat.color} bg-opacity-10`}>
                   <stat.icon className={`h-6 w-6 text-${stat.color.split('-')[1]}-600`} />
                 </div>
-                <div className="flex items-center text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded-full">
+                <div className="flex items-center text-[10px] font-bold text-green-600 bg-green-50 px-2 py-0.5 rounded-full border border-green-100">
                   {stat.change} <ArrowUpRight className="h-3 w-3 ml-1" />
                 </div>
               </div>
-              <div className="text-sm text-muted-foreground font-medium">{stat.title}</div>
-              <div className="text-2xl font-bold text-primary">{stat.value}</div>
+              <div className="text-xs text-muted-foreground font-semibold uppercase tracking-wider">{stat.title}</div>
+              <div className="text-2xl font-bold text-slate-800">{stat.value}</div>
             </CardContent>
           </Card>
         ))}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Visitor Chart */}
-        <Card className="lg:col-span-2 border-none shadow-lg">
+        <Card className="lg:col-span-2 border-none shadow-sm">
           <CardHeader>
-            <CardTitle className="text-lg">Statistik Pengunjung Mingguan</CardTitle>
-            <CardDescription>Visualisasi trafik website 7 hari terakhir.</CardDescription>
+            <CardTitle className="text-lg">Trafik Pengunjung</CardTitle>
+            <CardDescription>Visualisasi kunjungan dalam 7 hari terakhir.</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="h-[300px] w-full">
@@ -101,12 +97,12 @@ export default function AdminDashboard() {
                   <AreaChart data={visitorData}>
                     <defs>
                       <linearGradient id="colorVis" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3}/>
+                        <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.2}/>
                         <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0}/>
                       </linearGradient>
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f1f1" />
-                    <XAxis dataKey="day" axisLine={false} tickLine={false} />
+                    <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{fontSize: 12}} />
                     <YAxis hide />
                     <ChartTooltip content={<ChartTooltipContent />} />
                     <Area 
@@ -124,26 +120,25 @@ export default function AdminDashboard() {
           </CardContent>
         </Card>
 
-        {/* Recent Activity */}
-        <Card className="border-none shadow-lg">
+        <Card className="border-none shadow-sm bg-white">
           <CardHeader>
-            <CardTitle className="text-lg">Aktivitas Terakhir</CardTitle>
+            <CardTitle className="text-lg">Log Aktivitas</CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
             {[
-              { time: "2 menit lalu", event: "Pendaftaran PPDB Baru", user: "Rian Kurniawan" },
-              { time: "15 menit lalu", event: "Update Berita Sekolah", user: "Admin Sari" },
-              { time: "1 jam lalu", event: "Upload File Modul", user: "Admin Budi" },
-              { time: "3 jam lalu", event: "Pendaftaran PPDB Baru", user: "Anisa Putri" },
-              { time: "5 jam lalu", event: "Login Sukses", user: "Admin Utama" },
+              { time: "2m lalu", event: "Pendaftaran PPDB Baru", user: "Rian K." },
+              { time: "15m lalu", event: "Update Berita", user: "Admin S." },
+              { time: "1j lalu", event: "Upload File Modul", user: "Admin B." },
+              { time: "3j lalu", event: "Pendaftaran PPDB Baru", user: "Anisa P." },
+              { time: "5j lalu", event: "Login Sukses", user: "Admin Utama" },
             ].map((act, i) => (
               <div key={i} className="flex gap-4 items-start">
-                <div className="h-10 w-10 rounded-full bg-primary/5 flex items-center justify-center shrink-0">
-                  <div className="h-2 w-2 rounded-full bg-primary" />
+                <div className="h-8 w-8 rounded-lg bg-slate-50 border border-slate-100 flex items-center justify-center shrink-0">
+                  <div className="h-1.5 w-1.5 rounded-full bg-primary" />
                 </div>
                 <div>
-                  <div className="text-sm font-bold text-primary">{act.event}</div>
-                  <div className="text-xs text-muted-foreground">{act.user} • {act.time}</div>
+                  <div className="text-xs font-bold text-slate-800">{act.event}</div>
+                  <div className="text-[10px] text-muted-foreground uppercase">{act.user} • {act.time}</div>
                 </div>
               </div>
             ))}
@@ -153,5 +148,3 @@ export default function AdminDashboard() {
     </div>
   );
 }
-
-import { Button } from "@/components/ui/button";

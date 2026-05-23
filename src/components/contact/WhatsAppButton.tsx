@@ -3,14 +3,21 @@
 
 import React, { useMemo } from "react";
 import { MessageCircle } from "lucide-react";
+import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { useFirestore, useDoc } from "@/firebase";
 import { doc } from "firebase/firestore";
 
 export function WhatsAppButton() {
+  const pathname = usePathname();
+  const isAdminPage = pathname.startsWith("/admin");
+
   const db = useFirestore();
   const settingsRef = useMemo(() => db ? doc(db, "settings", "general") : null, [db]);
   const { data: settings } = useDoc(settingsRef);
+
+  // Hide on admin pages
+  if (isAdminPage) return null;
 
   const whatsappNumber = settings?.whatsappNumber || "628123456789"; // Default fallback
   const message = "Halo EduVista SMP, saya ingin bertanya mengenai...";

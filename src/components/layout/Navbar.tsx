@@ -5,7 +5,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Menu, X, GraduationCap, ChevronDown, LogIn, Settings } from "lucide-react";
+import { Menu, X, GraduationCap, ChevronDown, LogIn, Settings, LayoutDashboard, Globe } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -36,6 +36,7 @@ export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
+  const isAdminPage = pathname.startsWith("/admin");
 
   const db = useFirestore();
   const settingsRef = useMemo(() => db ? doc(db, "settings", "general") : null, [db]);
@@ -51,6 +52,9 @@ export function Navbar() {
 
   const schoolName = settings?.schoolName || "EduVista SMP";
   const schoolLogo = settings?.schoolLogoUrl;
+
+  // If on admin page, we show a simplified navbar or a distinctive one
+  if (isAdminPage) return null;
 
   return (
     <header
@@ -122,13 +126,10 @@ export function Navbar() {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem asChild>
-                <Link href="/admin"><Settings className="h-4 w-4 mr-2" /> Dashboard</Link>
+                <Link href="/admin"><LayoutDashboard className="h-4 w-4 mr-2" /> Dashboard</Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <Link href="/admin/settings"><Settings className="h-4 w-4 mr-2" /> Pengaturan Situs</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/admin/berita"><Menu className="h-4 w-4 mr-2" /> Manajemen Berita</Link>
+                <Link href="/admin/settings"><Settings className="h-4 w-4 mr-2" /> Pengaturan</Link>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
