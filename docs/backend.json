@@ -15,9 +15,9 @@
         "headmasterName": { "type": "string" },
         "headmasterTitle": { "type": "string" },
         "whatsappNumber": { "type": "string", "description": "Nomor WhatsApp admin (format: 62812...)" },
-        "history": { "type": "string" },
-        "vision": { "type": "string" },
-        "mission": { "type": "array", "items": { "type": "string" } },
+        "history": { "type": "string", "description": "Teks sejarah sekolah" },
+        "vision": { "type": "string", "description": "Teks visi sekolah" },
+        "mission": { "type": "array", "items": { "type": "string" }, "description": "Daftar poin-poin misi" },
         "stats": {
           "type": "array",
           "items": {

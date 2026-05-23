@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
-import { Settings, Save, Phone, School, Image as ImageIcon, Sparkles } from "lucide-react";
+import { Settings, Save, Phone, School, Image as ImageIcon, Sparkles, BookOpen, Target, History as HistoryIcon, Plus, Trash2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { useFirestore, useDoc } from "@/firebase";
 import { doc, setDoc } from "firebase/firestore";
 import { toast } from "@/hooks/use-toast";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function AdminSettings() {
   const db = useFirestore();
@@ -27,11 +28,17 @@ export default function AdminSettings() {
     headmasterName: "",
     headmasterTitle: "",
     whatsappNumber: "",
+    history: "",
+    vision: "",
+    mission: [],
   });
 
   useEffect(() => {
     if (currentSettings) {
-      setFormData(currentSettings);
+      setFormData({
+        ...currentSettings,
+        mission: currentSettings.mission || [],
+      });
     }
   }, [currentSettings]);
 
@@ -39,127 +46,181 @@ export default function AdminSettings() {
     if (!db) return;
     try {
       await setDoc(doc(db, "settings", "general"), formData, { merge: true });
-      toast({ title: "Berhasil", description: "Pengaturan telah disimpan." });
+      toast({ title: "Berhasil", description: "Pengaturan telah disimpan secara permanen." });
     } catch (error) {
       toast({ title: "Gagal", description: "Terjadi kesalahan saat menyimpan.", variant: "destructive" });
     }
   };
 
+  const addMission = () => {
+    setFormData({ ...formData, mission: [...formData.mission, ""] });
+  };
+
+  const updateMission = (index: number, value: string) => {
+    const newMission = [...formData.mission];
+    newMission[index] = value;
+    setFormData({ ...formData, mission: newMission });
+  };
+
+  const removeMission = (index: number) => {
+    const newMission = formData.mission.filter((_: any, i: number) => i !== index);
+    setFormData({ ...formData, mission: newMission });
+  };
+
   if (loading) return <div className="p-12 text-center text-muted-foreground animate-pulse">Memuat pengaturan...</div>;
 
   return (
-    <div className="p-8 max-w-5xl mx-auto space-y-8">
+    <div className="p-8 max-w-6xl mx-auto space-y-8">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-3xl font-bold font-headline text-primary flex items-center gap-2">
             <Settings className="h-8 w-8 text-secondary" /> Konfigurasi Website
           </h1>
-          <p className="text-muted-foreground text-sm">Kelola identitas, teks utama, dan integrasi WhatsApp sekolah.</p>
+          <p className="text-muted-foreground text-sm">Kelola seluruh konten tekstual dan identitas sekolah Anda.</p>
         </div>
         <Button className="bg-primary shadow-lg shadow-primary/20 flex gap-2" onClick={handleSave}>
-          <Save className="h-4 w-4" /> Simpan Perubahan
+          <Save className="h-4 w-4" /> Simpan Semua Perubahan
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div className="space-y-8">
-          <Card className="border-none shadow-sm">
-            <CardHeader className="bg-slate-50/50">
-              <CardTitle className="text-lg">Identitas Sekolah</CardTitle>
-              <CardDescription>Nama dan logo yang muncul di seluruh website.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4 pt-6">
-              <div className="space-y-2">
-                <Label className="text-xs font-bold uppercase text-slate-500">Nama Sekolah</Label>
-                <div className="relative">
-                  <School className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+      <Tabs defaultValue="general" className="space-y-6">
+        <TabsList className="bg-slate-100 p-1 rounded-xl">
+          <TabsTrigger value="general" className="rounded-lg px-6">Umum & Hero</TabsTrigger>
+          <TabsTrigger value="welcome" className="rounded-lg px-6">Sambutan</TabsTrigger>
+          <TabsTrigger value="profile" className="rounded-lg px-6">Profil & Visi Misi</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="general" className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Card className="border-none shadow-sm">
+              <CardHeader className="bg-slate-50/50">
+                <CardTitle className="text-lg flex items-center gap-2"><School className="h-5 w-5" /> Identitas</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4 pt-6">
+                <div className="space-y-2">
+                  <Label className="text-xs font-bold uppercase text-slate-500">Nama Sekolah</Label>
                   <Input 
-                    className="pl-9 bg-slate-50 border-slate-100"
+                    className="bg-slate-50 border-slate-100"
                     value={formData.schoolName} 
                     onChange={(e) => setFormData({...formData, schoolName: e.target.value})}
-                    placeholder="Contoh: EduVista SMP"
                   />
                 </div>
-              </div>
-              <div className="space-y-2">
-                <Label className="text-xs font-bold uppercase text-slate-500">URL Logo Sekolah</Label>
-                <div className="relative">
-                  <ImageIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                <div className="space-y-2">
+                  <Label className="text-xs font-bold uppercase text-slate-500">Nomor WhatsApp</Label>
                   <Input 
-                    className="pl-9 bg-slate-50 border-slate-100"
-                    value={formData.schoolLogoUrl} 
-                    onChange={(e) => setFormData({...formData, schoolLogoUrl: e.target.value})}
-                    placeholder="https://link-ke-gambar-logo.png"
-                  />
-                </div>
-                <p className="text-[10px] text-muted-foreground italic">Gunakan format PNG/SVG transparan untuk hasil terbaik.</p>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-none shadow-sm">
-            <CardHeader className="bg-slate-50/50">
-              <CardTitle className="text-lg">Integrasi Kontak</CardTitle>
-              <CardDescription>Atur nomor WhatsApp admin sekolah.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4 pt-6">
-              <div className="space-y-2">
-                <Label className="text-xs font-bold uppercase text-slate-500">Nomor WhatsApp</Label>
-                <div className="relative">
-                  <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-                  <Input 
-                    className="pl-9 bg-slate-50 border-slate-100"
+                    className="bg-slate-50 border-slate-100"
                     value={formData.whatsappNumber} 
                     onChange={(e) => setFormData({...formData, whatsappNumber: e.target.value})}
-                    placeholder="628123456789"
                   />
                 </div>
-                <p className="text-[10px] text-muted-foreground">Format: Kode negara + nomor (Contoh: 62812...).</p>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+              </CardContent>
+            </Card>
 
-        <div className="space-y-8">
+            <Card className="border-none shadow-sm">
+              <CardHeader className="bg-slate-50/50">
+                <CardTitle className="text-lg flex items-center gap-2"><ImageIcon className="h-5 w-5" /> Hero Utama</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4 pt-6">
+                <div className="space-y-2">
+                  <Label className="text-xs font-bold uppercase text-slate-500">Judul Hero</Label>
+                  <Input 
+                    className="bg-slate-50 border-slate-100"
+                    value={formData.heroTitle} 
+                    onChange={(e) => setFormData({...formData, heroTitle: e.target.value})}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-xs font-bold uppercase text-slate-500">Sub-judul Hero</Label>
+                  <Textarea 
+                    className="bg-slate-50 border-slate-100"
+                    value={formData.heroSubtitle} 
+                    onChange={(e) => setFormData({...formData, heroSubtitle: e.target.value})}
+                  />
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="welcome" className="space-y-6">
           <Card className="border-none shadow-sm">
             <CardHeader className="bg-slate-50/50">
-              <CardTitle className="text-lg">Tampilan Beranda (Hero)</CardTitle>
-              <CardDescription>Ubah teks promosi di halaman depan.</CardDescription>
+              <CardTitle className="text-lg">Editor Sambutan Kepala Sekolah</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4 pt-6">
-              <div className="space-y-2">
-                <Label className="text-xs font-bold uppercase text-slate-500">Judul Utama</Label>
-                <Input 
-                  className="bg-slate-50 border-slate-100"
-                  value={formData.heroTitle} 
-                  onChange={(e) => setFormData({...formData, heroTitle: e.target.value})}
-                  placeholder="Membangun Masa Depan"
-                />
+            <CardContent className="space-y-6 pt-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label className="text-xs font-bold uppercase text-slate-500">Nama Kepala Sekolah</Label>
+                  <Input value={formData.headmasterName} onChange={(e) => setFormData({...formData, headmasterName: e.target.value})} />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-xs font-bold uppercase text-slate-500">Jabatan/Gelar</Label>
+                  <Input value={formData.headmasterTitle} onChange={(e) => setFormData({...formData, headmasterTitle: e.target.value})} />
+                </div>
               </div>
               <div className="space-y-2">
-                <Label className="text-xs font-bold uppercase text-slate-500">Sub-judul</Label>
+                <Label className="text-xs font-bold uppercase text-slate-500">Pesan Sambutan</Label>
                 <Textarea 
-                  className="bg-slate-50 border-slate-100 min-h-[100px]"
-                  value={formData.heroSubtitle} 
-                  onChange={(e) => setFormData({...formData, heroSubtitle: e.target.value})}
-                  placeholder="Deskripsi singkat mengenai sekolah."
+                  className="min-h-[200px]"
+                  value={formData.welcomeMessage} 
+                  onChange={(e) => setFormData({...formData, welcomeMessage: e.target.value})}
                 />
               </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="profile" className="space-y-6">
+          <Card className="border-none shadow-sm">
+            <CardHeader className="bg-slate-50/50">
+              <CardTitle className="text-lg flex items-center gap-2"><HistoryIcon className="h-5 w-5" /> Sejarah Sekolah</CardTitle>
+            </CardHeader>
+            <CardContent className="pt-6">
+              <Textarea 
+                className="min-h-[250px]"
+                placeholder="Tuliskan sejarah berdirinya sekolah..."
+                value={formData.history}
+                onChange={(e) => setFormData({...formData, history: e.target.value})}
+              />
             </CardContent>
           </Card>
 
-          <Card className="border-none shadow-sm bg-primary/5 border-primary/10">
-            <CardHeader>
-              <CardTitle className="text-lg flex items-center gap-2">
-                <Sparkles className="h-4 w-4 text-secondary" /> Info Tambahan
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="text-xs text-slate-600 leading-relaxed">
-              Perubahan yang Anda simpan di sini akan berdampak langsung pada seluruh halaman publik website. Pastikan informasi yang dimasukkan sudah benar dan profesional.
-            </CardContent>
-          </Card>
-        </div>
-      </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Card className="border-none shadow-sm">
+              <CardHeader className="bg-slate-50/50">
+                <CardTitle className="text-lg flex items-center gap-2"><Target className="h-5 w-5" /> Visi</CardTitle>
+              </CardHeader>
+              <CardContent className="pt-6">
+                <Textarea 
+                  placeholder="Tuliskan visi sekolah..."
+                  value={formData.vision}
+                  onChange={(e) => setFormData({...formData, vision: e.target.value})}
+                />
+              </CardContent>
+            </Card>
+
+            <Card className="border-none shadow-sm">
+              <CardHeader className="bg-slate-50/50 flex flex-row items-center justify-between">
+                <CardTitle className="text-lg flex items-center gap-2"><BookOpen className="h-5 w-5" /> Misi</CardTitle>
+                <Button variant="outline" size="sm" onClick={addMission} className="h-8 gap-1">
+                  <Plus className="h-3 w-3" /> Tambah Misi
+                </Button>
+              </CardHeader>
+              <CardContent className="pt-6 space-y-3">
+                {formData.mission.map((m: string, i: number) => (
+                  <div key={i} className="flex gap-2">
+                    <Input value={m} onChange={(e) => updateMission(i, e.target.value)} placeholder={`Misi ke-${i+1}`} />
+                    <Button variant="ghost" size="icon" className="text-destructive" onClick={() => removeMission(i)}>
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ))}
+                {formData.mission.length === 0 && <p className="text-xs text-muted-foreground italic">Belum ada misi yang ditambahkan.</p>}
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

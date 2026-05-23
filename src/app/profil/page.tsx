@@ -1,119 +1,121 @@
 
+"use client";
+
+import React, { useMemo } from "react";
 import Image from "next/image";
 import { CheckCircle2, Target, History, Users2, Building2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import { PlaceHolderImages } from "@/lib/placeholder-images";
-
-const visionItems = [
-  "Mewujudkan lulusan yang bertaqwa kepada Tuhan Yang Maha Esa.",
-  "Membentuk karakter siswa yang mandiri, kreatif, dan inovatif.",
-  "Meningkatkan kualitas pembelajaran berbasis teknologi digital.",
-  "Membangun kerjasama internasional dengan institusi pendidikan global."
-];
+import { useFirestore, useDoc, useCollection } from "@/firebase";
+import { doc, collection } from "firebase/firestore";
 
 export default function ProfilPage() {
+  const db = useFirestore();
+  const settingsRef = useMemo(() => db ? doc(db, "settings", "general") : null, [db]);
+  const { data: settings, loading } = useDoc(settingsRef);
+
+  const facilitiesRef = useMemo(() => db ? collection(db, "facilities") : null, [db]);
+  const { data: facilities } = useCollection(facilitiesRef);
+
+  if (loading) return <div className="min-h-screen flex items-center justify-center text-slate-400">Memuat profil sekolah...</div>;
+
+  const schoolName = settings?.schoolName || "EduVista SMP";
+  
   return (
-    <div className="pt-24">
+    <div className="pt-24 bg-white">
       {/* Page Header */}
-      <section className="bg-primary py-20 text-white relative overflow-hidden">
-        <div className="absolute inset-0 bg-secondary/10 skew-y-3 translate-y-20" />
+      <section className="bg-primary py-24 text-white relative overflow-hidden">
+        <div className="absolute inset-0 bg-secondary/5 skew-y-3 translate-y-20" />
         <div className="container mx-auto px-4 relative z-10 text-center">
-          <h1 className="text-4xl md:text-6xl font-bold font-headline mb-4">Profil Sekolah</h1>
-          <p className="text-lg text-white/70 max-w-2xl mx-auto">Mengenal lebih dekat perjalanan, nilai, dan infrastruktur EduVista SMP.</p>
+          <h1 className="text-5xl md:text-7xl font-bold font-headline mb-6 tracking-tighter">Profil Sekolah</h1>
+          <p className="text-xl text-white/70 max-w-2xl mx-auto font-medium">Mengenal lebih dekat perjalanan, nilai, dan infrastruktur unggulan {schoolName}.</p>
         </div>
       </section>
 
       {/* Sejarah Section */}
-      <section id="sejarah" className="py-24">
+      <section id="sejarah" className="py-32">
         <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row gap-16 items-center">
-            <div className="w-full md:w-1/2">
-              <div className="text-secondary font-bold tracking-widest uppercase text-sm mb-2 flex items-center gap-2">
+          <div className="flex flex-col md:flex-row gap-20 items-center">
+            <div className="w-full md:w-1/2 space-y-8">
+              <div className="text-secondary font-bold tracking-widest uppercase text-xs px-4 py-2 bg-secondary/10 rounded-full inline-flex items-center gap-2">
                 <History className="h-4 w-4" /> Sejarah Kami
               </div>
-              <h2 className="text-4xl font-bold text-primary font-headline mb-6">Dedikasi Terhadap Pendidikan Sejak 1998</h2>
-              <div className="space-y-4 text-muted-foreground leading-relaxed text-lg">
-                <p>
-                  Berawal dari sebuah komitmen kecil untuk memberikan akses pendidikan berkualitas bagi masyarakat sekitar, EduVista SMP didirikan pada tahun 1998 di bawah naungan Yayasan EduVista Nusantara.
-                </p>
-                <p>
-                  Selama lebih dari dua dekade, kami telah bertransformasi dari sekolah menengah konvensional menjadi institusi pendidikan modern yang mengadopsi teknologi terbaru namun tetap menjunjung tinggi nilai-nilai karakter luhur.
-                </p>
-                <p>
-                  Hari ini, EduVista SMP dikenal sebagai salah satu sekolah unggulan yang telah meluluskan ribuan alumni sukses yang tersebar di berbagai sektor profesional.
-                </p>
+              <h2 className="text-5xl font-bold text-primary font-headline tracking-tighter leading-tight">Membangun Fondasi Pendidikan yang Kokoh</h2>
+              <div className="space-y-6 text-slate-600 leading-relaxed text-lg font-medium whitespace-pre-line">
+                {settings?.history || "Sejarah sekolah belum diatur oleh admin."}
               </div>
             </div>
-            <div className="w-full md:w-1/2">
-               <Image 
-                src="https://picsum.photos/seed/school-old/800/600" 
-                alt="Old School Building" 
-                width={800} 
-                height={600} 
-                className="rounded-3xl shadow-2xl"
-              />
+            <div className="w-full md:w-1/2 relative">
+              <div className="rounded-[3rem] overflow-hidden shadow-2xl border-[12px] border-slate-50">
+                 <Image 
+                  src="https://picsum.photos/seed/school-history/800/800" 
+                  alt="Sejarah Sekolah" 
+                  width={800} 
+                  height={800} 
+                  className="w-full h-auto"
+                  data-ai-hint="old school"
+                />
+              </div>
+              <div className="absolute -bottom-10 -left-10 bg-secondary w-32 h-32 rounded-full opacity-20 blur-2xl" />
             </div>
           </div>
         </div>
       </section>
 
       {/* Visi Misi Section */}
-      <section id="visi-misi" className="py-24 bg-primary/5">
+      <section id="visi-misi" className="py-32 bg-slate-50">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-            <div className="bg-white p-12 rounded-3xl shadow-xl space-y-6">
-              <div className="bg-primary/10 w-16 h-16 rounded-2xl flex items-center justify-center mb-4">
-                <Target className="h-8 w-8 text-primary" />
+            <div className="bg-white p-16 rounded-[3.5rem] shadow-xl border border-slate-100 space-y-8">
+              <div className="bg-primary/10 w-20 h-20 rounded-3xl flex items-center justify-center">
+                <Target className="h-10 w-10 text-primary" />
               </div>
-              <h3 className="text-3xl font-bold text-primary font-headline">Visi Kami</h3>
-              <p className="text-xl text-muted-foreground italic leading-relaxed">
-                "Menjadi pusat pendidikan menengah terbaik yang melahirkan generasi cerdas, berkarakter, dan kompetitif secara global pada tahun 2030."
+              <h3 className="text-4xl font-bold text-primary font-headline tracking-tighter">Visi Sekolah</h3>
+              <p className="text-2xl text-slate-600 italic leading-relaxed font-medium">
+                "{settings?.vision || "Visi belum diatur oleh admin."}"
               </p>
             </div>
-            <div className="bg-primary p-12 rounded-3xl shadow-xl text-white space-y-6">
-              <div className="bg-white/10 w-16 h-16 rounded-2xl flex items-center justify-center mb-4">
-                <Users2 className="h-8 w-8 text-secondary" />
+            <div className="bg-primary p-16 rounded-[3.5rem] shadow-2xl text-white space-y-8 relative overflow-hidden">
+              <div className="bg-white/10 w-20 h-20 rounded-3xl flex items-center justify-center">
+                <Users2 className="h-10 w-10 text-secondary" />
               </div>
-              <h3 className="text-3xl font-bold font-headline">Misi Kami</h3>
-              <ul className="space-y-4">
-                {visionItems.map((item, idx) => (
-                  <li key={idx} className="flex gap-3 items-start">
-                    <CheckCircle2 className="h-6 w-6 text-secondary shrink-0" />
-                    <span className="text-white/80">{item}</span>
+              <h3 className="text-4xl font-bold font-headline tracking-tighter">Misi Sekolah</h3>
+              <ul className="space-y-5">
+                {settings?.mission?.length > 0 ? settings.mission.map((item: string, idx: number) => (
+                  <li key={idx} className="flex gap-4 items-start group">
+                    <CheckCircle2 className="h-7 w-7 text-secondary shrink-0 mt-1" />
+                    <span className="text-white/90 text-lg font-medium leading-snug">{item}</span>
                   </li>
-                ))}
+                )) : <li className="italic text-white/50">Misi belum diatur oleh admin.</li>}
               </ul>
+              <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-16 translate-x-16" />
             </div>
           </div>
         </div>
       </section>
 
       {/* Fasilitas Section */}
-      <section id="fasilitas" className="py-24">
+      <section id="fasilitas" className="py-32">
         <div className="container mx-auto px-4">
-           <div className="text-center mb-16">
-            <div className="text-secondary font-bold tracking-widest uppercase text-sm mb-2 flex items-center justify-center gap-2">
-              <Building2 className="h-4 w-4" /> Fasilitas Sekolah
+           <div className="text-center mb-20 space-y-6">
+            <div className="text-secondary font-bold tracking-widest uppercase text-xs px-4 py-2 bg-secondary/10 rounded-full inline-flex items-center gap-2">
+              <Building2 className="h-4 w-4" /> Sarana Prasarana
             </div>
-            <h2 className="text-4xl font-bold text-primary font-headline">Lingkungan Belajar yang Mendukung</h2>
+            <h2 className="text-5xl font-bold text-primary font-headline tracking-tighter">Fasilitas Unggulan Kami</h2>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              { title: "Lab Komputer", img: "https://picsum.photos/seed/pc-lab/600/400", desc: "Dilengkapi dengan unit PC terbaru dan koneksi internet high-speed." },
-              { title: "Perpustakaan Digital", img: "https://picsum.photos/seed/digital-lib/600/400", desc: "Akses ke ribuan e-book dan jurnal internasional melalui tablet." },
-              { title: "Studio Seni & Musik", img: "https://picsum.photos/seed/art-studio/600/400", desc: "Ruang kedap suara dengan instrumen lengkap untuk mengasah kreativitas." },
-              { title: "Gedung Olahraga", img: "https://picsum.photos/seed/gym/600/400", desc: "Lapangan indoor multifungsi untuk basket, futsal, dan badminton." },
-              { title: "Kantin Sehat", img: "https://picsum.photos/seed/canteen/600/400", desc: "Menyediakan makanan bergizi dengan standar kebersihan tinggi." },
-              { title: "Masjid Sekolah", img: "https://picsum.photos/seed/mosque/600/400", desc: "Sarana ibadah yang nyaman untuk kegiatan religius siswa." },
-            ].map((f, i) => (
-              <Card key={i} className="overflow-hidden border-none shadow-lg hover:shadow-xl transition-all">
-                <Image src={f.img} alt={f.title} width={600} height={400} className="w-full h-48 object-cover" />
-                <CardContent className="p-6">
-                  <h4 className="text-xl font-bold text-primary font-headline mb-2">{f.title}</h4>
-                  <p className="text-muted-foreground text-sm">{f.desc}</p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+            {facilities && facilities.length > 0 ? facilities.map((f: any, i: number) => (
+              <Card key={i} className="overflow-hidden border-none shadow-xl hover:shadow-2xl transition-all duration-500 rounded-[2.5rem] group">
+                <div className="relative h-64 overflow-hidden">
+                   <Image src={f.imageUrl || `https://picsum.photos/seed/${f.id}/600/400`} alt={f.name} fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
+                </div>
+                <CardContent className="p-8">
+                  <h4 className="text-2xl font-bold text-primary font-headline mb-3">{f.name}</h4>
+                  <p className="text-slate-500 font-medium text-sm leading-relaxed">{f.description}</p>
                 </CardContent>
               </Card>
-            ))}
+            )) : (
+              <p className="col-span-3 text-center text-slate-400 italic py-10">Admin belum menambahkan daftar fasilitas.</p>
+            )}
           </div>
         </div>
       </section>
