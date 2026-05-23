@@ -2,6 +2,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Link from "next/link";
 import { Upload, CheckCircle2, Info, FileText, UserPlus, HelpCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -39,7 +40,7 @@ export default function PPDBPage() {
             <div className="text-4xl font-bold text-primary tracking-tighter">PPDB-2024-0891</div>
           </div>
           <div className="flex flex-col gap-4">
-            <Button size="lg" className="w-full bg-primary" onClick={() => window.print()}>Cetak Bukti Pendaftaran</Button>
+            <Button size="lg" className="w-full bg-primary" onClick={() => typeof window !== 'undefined' && window.print()}>Cetak Bukti Pendaftaran</Button>
             <Button variant="outline" className="w-full" onClick={() => setSubmitted(false)}>Daftar Lagi</Button>
           </div>
         </div>
@@ -128,10 +129,10 @@ export default function PPDBPage() {
                   <div className="border-t pt-8">
                     <h3 className="text-xl font-bold text-primary font-headline mb-6">Upload Dokumen (Format PDF/JPG)</h3>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      {["Kartu Keluarga", "Akte Kelahiran", "Ijazah/SKL"].map((doc) => (
-                        <div key={doc} className="border-2 border-dashed border-muted rounded-2xl p-4 text-center hover:bg-muted/50 transition-colors cursor-pointer group">
+                      {["Kartu Keluarga", "Akte Kelahiran", "Ijazah/SKL"].map((docName) => (
+                        <div key={docName} className="border-2 border-dashed border-muted rounded-2xl p-4 text-center hover:bg-muted/50 transition-colors cursor-pointer group">
                           <Upload className="h-6 w-6 text-muted-foreground mx-auto mb-2 group-hover:text-primary" />
-                          <div className="text-xs font-bold text-primary uppercase">{doc}</div>
+                          <div className="text-xs font-bold text-primary uppercase">{docName}</div>
                           <div className="text-[10px] text-muted-foreground mt-1">Klik untuk upload</div>
                         </div>
                       ))}

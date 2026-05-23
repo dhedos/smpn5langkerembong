@@ -1,0 +1,74 @@
+
+{
+  "entities": {
+    "SiteSettings": {
+      "title": "Site Settings",
+      "description": "Informasi umum sekolah dan pengaturan tampilan utama.",
+      "type": "object",
+      "properties": {
+        "heroTitle": { "type": "string" },
+        "heroSubtitle": { "type": "string" },
+        "welcomeTitle": { "type": "string" },
+        "welcomeMessage": { "type": "string" },
+        "headmasterName": { "type": "string" },
+        "headmasterTitle": { "type": "string" },
+        "history": { "type": "string" },
+        "vision": { "type": "string" },
+        "mission": { "type": "array", "items": { "type": "string" } },
+        "stats": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "label": { "type": "string" },
+              "value": { "type": "string" },
+              "icon": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "News": {
+      "title": "News",
+      "description": "Berita dan pengumuman sekolah.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "content": { "type": "string" },
+        "summary": { "type": "string" },
+        "category": { "type": "string" },
+        "tags": { "type": "array", "items": { "type": "string" } },
+        "status": { "type": "string", "enum": ["Draft", "Published"] },
+        "date": { "type": "string" },
+        "imageUrl": { "type": "string" }
+      }
+    },
+    "Facility": {
+      "title": "Facility",
+      "description": "Fasilitas sekolah.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "imageUrl": { "type": "string" }
+      }
+    }
+  },
+  "auth": {
+    "providers": ["google.com"]
+  },
+  "firestore": {
+    "/settings/general": {
+      "schema": "SiteSettings",
+      "description": "Singleton untuk pengaturan umum situs"
+    },
+    "/news/{newsId}": {
+      "schema": "News",
+      "description": "Koleksi berita sekolah"
+    },
+    "/facilities/{facilityId}": {
+      "schema": "Facility",
+      "description": "Koleksi fasilitas sekolah"
+    }
+  }
+}

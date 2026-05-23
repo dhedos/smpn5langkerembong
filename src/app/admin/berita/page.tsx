@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { Newspaper, Plus, Search, Sparkles, Wand2, Trash2, Edit, Save } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -12,13 +12,20 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { adminContentOptimizer } from "@/ai/flows/admin-content-optimizer-flow";
 import { toast } from "@/hooks/use-toast";
+import { useFirestore, useCollection } from "@/firebase";
+import { collection, addDoc, deleteDoc, doc, serverTimestamp } from "firebase/firestore";
 
 export default function AdminBerita() {
+  const db = useFirestore();
+  const newsRef = useMemo(() => db ? collection(db, "news") : null, [db]);
+  const { data: newsItems, loading } = useCollection(newsRef);
+
   const [content, setContent] = useState("");
   const [summary, setSummary] = useState("");
   const [tags, setTags] = useState<string[]>([]);
   const [optimizing, setOptimizing] = useState(false);
   const [title, setTitle] = useState("");
+  const [category, setCategory] = useState("Kegiatan");
 
   const handleOptimize = async () => {
     if (!content.trim()) {
@@ -39,6 +46,44 @@ export default function AdminBerita() {
     }
   };
 
+  const handleSave = async () => {
+    if (!db || !title || !content) {
+      toast({ title: "Data Belum Lengkap", description: "Judul dan konten wajib diisi.", variant: "destructive" });
+      return;
+    }
+
+    try {
+      await addDoc(collection(db, "news"), {
+        title,
+        content,
+        summary: summary || content.substring(0, 150),
+        category,
+        tags,
+        status: "Published",
+        date: new Date().toLocaleDateString('id-ID'),
+        createdAt: serverTimestamp()
+      });
+      
+      setTitle("");
+      setContent("");
+      setSummary("");
+      setTags([]);
+      toast({ title: "Berhasil", description: "Berita telah dipublikasikan." });
+    } catch (error) {
+      toast({ title: "Gagal Menyimpan", description: "Terjadi kesalahan saat menyimpan ke database.", variant: "destructive" });
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!db) return;
+    try {
+      await deleteDoc(doc(db, "news", id));
+      toast({ title: "Dihapus", description: "Berita telah dihapus." });
+    } catch (error) {
+      toast({ title: "Gagal", description: "Gagal menghapus berita.", variant: "destructive" });
+    }
+  };
+
   return (
     <div className="pt-24 pb-24 container mx-auto px-4">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
@@ -48,9 +93,6 @@ export default function AdminBerita() {
           </h1>
           <p className="text-muted-foreground">Tulis, edit, dan publikasikan berita sekolah.</p>
         </div>
-        <Button className="bg-primary flex gap-2">
-          <Plus className="h-4 w-4" /> Tulis Berita Baru
-        </Button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
@@ -63,19 +105,29 @@ export default function AdminBerita() {
             <CardDescription>Gunakan editor untuk menyusun konten berita.</CardDescription>
           </CardHeader>
           <CardContent className="p-8 space-y-6">
-            <div className="space-y-2">
-              <Label>Judul Berita</Label>
-              <Input 
-                placeholder="Contoh: Juara 1 Olimpiade Sains Nasional" 
-                value={title} 
-                onChange={(e) => setTitle(e.target.value)} 
-              />
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Judul Berita</Label>
+                <Input 
+                  placeholder="Contoh: Juara 1 OSN" 
+                  value={title} 
+                  onChange={(e) => setTitle(e.target.value)} 
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Kategori</Label>
+                <Input 
+                  placeholder="Prestasi / Kegiatan" 
+                  value={category} 
+                  onChange={(e) => setCategory(e.target.value)} 
+                />
+              </div>
             </div>
             <div className="space-y-2">
               <Label>Isi Berita Lengkap</Label>
               <Textarea 
                 placeholder="Tuliskan detail berita di sini..." 
-                className="min-h-[300px]"
+                className="min-h-[250px]"
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
               />
@@ -94,7 +146,7 @@ export default function AdminBerita() {
                 )}
                 Optimasi Konten (AI)
               </Button>
-              <Button className="bg-primary flex gap-2">
+              <Button className="bg-primary flex gap-2" onClick={handleSave}>
                 <Save className="h-4 w-4" /> Simpan Berita
               </Button>
             </div>
@@ -136,7 +188,7 @@ export default function AdminBerita() {
 
       {/* List Table */}
       <Card className="border-none shadow-xl">
-        <CardHeader className="p-8 flex flex-col md:row justify-between items-center gap-4">
+        <CardHeader className="p-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <div>
             <CardTitle>Daftar Berita Terbaru</CardTitle>
             <CardDescription>Manajemen artikel yang sudah dipublikasikan.</CardDescription>
@@ -158,16 +210,13 @@ export default function AdminBerita() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {[
-                { title: "Siswa EduVista Raih Medali Emas OSN", cat: "Prestasi", status: "Published", date: "12 Mei 2024" },
-                { title: "Pelatihan Literasi Digital Guru SMP", cat: "Akademik", status: "Draft", date: "10 Mei 2024" },
-                { title: "Kunjungan Studi Ke Museum Nasional", cat: "Kegiatan", status: "Published", date: "08 Mei 2024" },
-                { title: "Rapat Persiapan Kelulusan Kelas IX", cat: "Pengumuman", status: "Published", date: "05 Mei 2024" },
-              ].map((item, i) => (
-                <TableRow key={i}>
+              {loading ? (
+                <TableRow><TableCell colSpan={5} className="text-center">Loading...</TableCell></TableRow>
+              ) : newsItems && newsItems.map((item: any) => (
+                <TableRow key={item.id}>
                   <TableCell className="font-medium text-primary">{item.title}</TableCell>
                   <TableCell>
-                    <Badge variant="outline" className="text-xs">{item.cat}</Badge>
+                    <Badge variant="outline" className="text-xs">{item.category}</Badge>
                   </TableCell>
                   <TableCell>
                     <Badge className={item.status === 'Published' ? 'bg-green-100 text-green-700 hover:bg-green-100' : 'bg-orange-100 text-orange-700 hover:bg-orange-100'}>
@@ -177,8 +226,7 @@ export default function AdminBerita() {
                   <TableCell className="text-sm text-muted-foreground">{item.date}</TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-2">
-                      <Button variant="ghost" size="icon" className="h-8 w-8 text-blue-600"><Edit className="h-4 w-4" /></Button>
-                      <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive"><Trash2 className="h-4 w-4" /></Button>
+                      <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={() => handleDelete(item.id)}><Trash2 className="h-4 w-4" /></Button>
                     </div>
                   </TableCell>
                 </TableRow>

@@ -4,7 +4,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, GraduationCap, ChevronDown, User, LogIn } from "lucide-react";
+import { Menu, X, GraduationCap, ChevronDown, LogIn, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -25,9 +25,7 @@ const navItems = [
       { name: "Fasilitas", href: "/profil#fasilitas" },
     ]
   },
-  { name: "Akademik", href: "/akademik" },
   { name: "Berita", href: "/berita" },
-  { name: "Galeri", href: "/galeri" },
   { name: "PPDB", href: "/ppdb" },
 ];
 
@@ -56,10 +54,7 @@ export function Navbar() {
           <div className="bg-primary p-2 rounded-lg">
             <GraduationCap className="h-6 w-6 text-white" />
           </div>
-          <span className={cn(
-            "font-headline font-bold text-xl tracking-tighter",
-            scrolled ? "text-primary" : "text-primary"
-          )}>
+          <span className="font-headline font-bold text-xl tracking-tighter text-primary">
             EduVista <span className="text-secondary">SMP</span>
           </span>
         </Link>
@@ -88,7 +83,7 @@ export function Navbar() {
                   href={item.href}
                   className={cn(
                     "text-sm font-medium transition-colors hover:text-secondary",
-                    pathname === item.href ? "text-secondary" : "text-foreground"
+                    pathname === item.href ? "text-secondary font-bold" : "text-foreground"
                   )}
                 >
                   {item.name}
@@ -99,9 +94,24 @@ export function Navbar() {
         </nav>
 
         <div className="hidden md:flex items-center gap-3">
-          <Button variant="ghost" size="sm" asChild>
-            <Link href="/admin"><LogIn className="h-4 w-4 mr-2" /> Admin</Link>
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="sm">
+                <LogIn className="h-4 w-4 mr-2" /> Admin
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem asChild>
+                <Link href="/admin"><Settings className="h-4 w-4 mr-2" /> Dashboard</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/admin/settings"><Settings className="h-4 w-4 mr-2" /> Pengaturan Situs</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/admin/berita"><Menu className="h-4 w-4 mr-2" /> Manajemen Berita</Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
           <Button size="sm" className="bg-primary text-white hover:bg-primary/90 rounded-full px-6" asChild>
             <Link href="/ppdb">Daftar Sekarang</Link>
           </Button>
@@ -135,7 +145,7 @@ export function Navbar() {
             ))}
             <div className="grid grid-cols-2 gap-2 pt-4 border-t border-border">
               <Button variant="outline" asChild onClick={() => setIsOpen(false)}>
-                <Link href="/admin">Admin Login</Link>
+                <Link href="/admin">Admin</Link>
               </Button>
               <Button className="bg-primary text-white" asChild onClick={() => setIsOpen(false)}>
                 <Link href="/ppdb">PPDB Online</Link>
