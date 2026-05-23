@@ -44,9 +44,10 @@ export function Navbar() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
+      setScrolled(window.scrollY > 20);
     };
     window.addEventListener("scroll", handleScroll);
+    handleScroll(); // Initial check
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -58,9 +59,9 @@ export function Navbar() {
   return (
     <header
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-500 px-6 py-4",
+        "fixed top-0 left-0 right-0 z-50 transition-all duration-300 px-6 py-4",
         scrolled 
-          ? "bg-white/40 backdrop-blur-xl shadow-lg border-b border-white/20 py-3" 
+          ? "bg-white/95 backdrop-blur-md shadow-lg border-b border-slate-200 py-3" 
           : "bg-transparent border-transparent"
       )}
     >
@@ -80,12 +81,11 @@ export function Navbar() {
           </div>
           <span className={cn(
             "font-headline font-bold text-lg md:text-xl tracking-tighter uppercase transition-colors duration-300",
-            scrolled ? "text-primary" : "text-white drop-shadow-md"
+            scrolled ? "text-slate-900" : "text-white drop-shadow-md"
           )}>
             {schoolName.split(" ").map((word, i) => (
               <span key={i} className={cn(
-                (word.toUpperCase() === "NEGERI" || i === 1) && !scrolled ? "text-secondary" : 
-                (word.toUpperCase() === "NEGERI" || i === 1) && scrolled ? "text-secondary" : ""
+                (word.toUpperCase() === "NEGERI" || i === 1) ? "text-secondary" : ""
               )}>
                 {word}{" "}
               </span>
@@ -107,10 +107,10 @@ export function Navbar() {
                   )}>
                     {item.name} <ChevronDown className="h-4 w-4" />
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="start" className="bg-white/80 backdrop-blur-xl border-white/20 shadow-2xl rounded-2xl p-2">
+                  <DropdownMenuContent align="start" className="bg-white border-slate-200 shadow-2xl rounded-2xl p-2">
                     {item.submenu.map((sub) => (
                       <DropdownMenuItem key={sub.name} asChild>
-                        <Link href={sub.href} className="w-full cursor-pointer hover:bg-primary/10 rounded-xl px-4 py-2 font-semibold text-slate-700">
+                        <Link href={sub.href} className="w-full cursor-pointer hover:bg-slate-100 rounded-xl px-4 py-2 font-semibold text-slate-700">
                           {sub.name}
                         </Link>
                       </DropdownMenuItem>
@@ -144,7 +144,7 @@ export function Navbar() {
                 <LogIn className="h-4 w-4 mr-2" /> Admin
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="rounded-2xl shadow-2xl border-white/20 bg-white/80 backdrop-blur-xl">
+            <DropdownMenuContent align="end" className="rounded-2xl shadow-2xl border-slate-200 bg-white">
               <DropdownMenuItem asChild>
                 <Link href="/admin" className="cursor-pointer font-semibold">
                   <LayoutDashboard className="h-4 w-4 mr-2" /> Dashboard
@@ -176,7 +176,7 @@ export function Navbar() {
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div className="md:hidden absolute top-full left-4 right-4 bg-white/90 backdrop-blur-2xl animate-in slide-in-from-top duration-300 border border-white/20 shadow-2xl rounded-3xl mt-2">
+        <div className="md:hidden absolute top-full left-4 right-4 bg-white animate-in slide-in-from-top duration-300 border border-slate-200 shadow-2xl rounded-3xl mt-2">
           <nav className="flex flex-col p-6 gap-4">
             {navItems.map((item) => (
               <Link
