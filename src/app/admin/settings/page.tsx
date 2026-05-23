@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
-import { Settings, Save, Phone } from "lucide-react";
+import { Settings, Save, Phone, School, Image as ImageIcon } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,6 +18,8 @@ export default function AdminSettings() {
   const { data: currentSettings, loading } = useDoc(settingsRef);
 
   const [formData, setFormData] = useState<any>({
+    schoolName: "",
+    schoolLogoUrl: "",
     heroTitle: "",
     heroSubtitle: "",
     welcomeTitle: "",
@@ -52,7 +54,7 @@ export default function AdminSettings() {
           <h1 className="text-3xl font-bold font-headline text-primary flex items-center gap-2">
             <Settings className="h-8 w-8 text-secondary" /> Pengaturan Website
           </h1>
-          <p className="text-muted-foreground">Kelola teks dan konten utama halaman depan.</p>
+          <p className="text-muted-foreground">Kelola identitas sekolah dan konten utama.</p>
         </div>
         <Button className="bg-primary flex gap-2" onClick={handleSave}>
           <Save className="h-4 w-4" /> Simpan Perubahan
@@ -60,6 +62,40 @@ export default function AdminSettings() {
       </div>
 
       <div className="space-y-8">
+        <Card className="border-none shadow-xl">
+          <CardHeader>
+            <CardTitle>Identitas Sekolah</CardTitle>
+            <CardDescription>Nama dan logo yang muncul di seluruh website.</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <Label>Nama Sekolah</Label>
+              <div className="relative">
+                <School className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input 
+                  className="pl-9"
+                  value={formData.schoolName} 
+                  onChange={(e) => setFormData({...formData, schoolName: e.target.value})}
+                  placeholder="Contoh: EduVista SMP"
+                />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label>URL Logo Sekolah</Label>
+              <div className="relative">
+                <ImageIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input 
+                  className="pl-9"
+                  value={formData.schoolLogoUrl} 
+                  onChange={(e) => setFormData({...formData, schoolLogoUrl: e.target.value})}
+                  placeholder="https://link-ke-gambar-logo.png"
+                />
+              </div>
+              <p className="text-xs text-muted-foreground italic">Masukkan URL gambar logo (PNG/SVG). Kosongkan untuk menggunakan ikon default.</p>
+            </div>
+          </CardContent>
+        </Card>
+
         <Card className="border-none shadow-xl">
           <CardHeader>
             <CardTitle>Kontak & Integrasi</CardTitle>

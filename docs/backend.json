@@ -6,6 +6,8 @@
       "description": "Informasi umum sekolah dan pengaturan tampilan utama.",
       "type": "object",
       "properties": {
+        "schoolName": { "type": "string", "description": "Nama lengkap sekolah" },
+        "schoolLogoUrl": { "type": "string", "description": "URL logo sekolah (PNG/SVG)" },
         "heroTitle": { "type": "string" },
         "heroSubtitle": { "type": "string" },
         "welcomeTitle": { "type": "string" },

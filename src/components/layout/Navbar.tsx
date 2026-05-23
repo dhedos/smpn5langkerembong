@@ -1,8 +1,9 @@
 
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Menu, X, GraduationCap, ChevronDown, LogIn, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -13,6 +14,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useFirestore, useDoc } from "@/firebase";
+import { doc } from "firebase/firestore";
 
 const navItems = [
   { name: "Home", href: "/" },
@@ -34,6 +37,10 @@ export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
 
+  const db = useFirestore();
+  const settingsRef = useMemo(() => db ? doc(db, "settings", "general") : null, [db]);
+  const { data: settings } = useDoc(settingsRef);
+
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
@@ -41,6 +48,9 @@ export function Navbar() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const schoolName = settings?.schoolName || "EduVista SMP";
+  const schoolLogo = settings?.schoolLogoUrl;
 
   return (
     <header
@@ -52,10 +62,20 @@ export function Navbar() {
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2">
           <div className="bg-primary p-2 rounded-lg">
-            <GraduationCap className="h-6 w-6 text-white" />
+            {schoolLogo ? (
+              <div className="relative h-6 w-6">
+                <Image src={schoolLogo} alt="Logo" fill className="object-contain invert" />
+              </div>
+            ) : (
+              <GraduationCap className="h-6 w-6 text-white" />
+            )}
           </div>
           <span className="font-headline font-bold text-xl tracking-tighter text-primary">
-            EduVista <span className="text-secondary">SMP</span>
+            {schoolName.split(" ").map((word, i) => (
+              <span key={i} className={i === 1 ? "text-secondary" : ""}>
+                {word}{" "}
+              </span>
+            ))}
           </span>
         </Link>
 
