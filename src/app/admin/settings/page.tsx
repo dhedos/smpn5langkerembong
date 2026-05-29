@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
-import { Settings, Save, Phone, School, Image as ImageIcon, Sparkles, BookOpen, Target, History as HistoryIcon, Plus, Trash2, BarChart3, Upload } from "lucide-react";
+import { Settings, Save, Phone, School, Image as ImageIcon, Sparkles, BookOpen, Target, History as HistoryIcon, Plus, Trash2, BarChart3, Upload, Mail, MapPin } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -30,6 +30,9 @@ export default function AdminSettings() {
     headmasterTitle: "",
     headmasterPhotoUrl: "",
     whatsappNumber: "",
+    address: "",
+    phone: "",
+    email: "",
     history: "",
     vision: "",
     mission: [],
@@ -140,15 +143,7 @@ export default function AdminSettings() {
                     onChange={(e) => setFormData({...formData, schoolName: e.target.value})}
                   />
                 </div>
-                <div className="space-y-2">
-                  <Label className="text-xs font-bold uppercase text-slate-500">Nomor WhatsApp Admin</Label>
-                  <Input 
-                    className="bg-slate-50 border-slate-100"
-                    placeholder="E.g. 62812345678"
-                    value={formData.whatsappNumber} 
-                    onChange={(e) => setFormData({...formData, whatsappNumber: e.target.value})}
-                  />
-                </div>
+                
                 <div className="space-y-2">
                   <Label className="text-xs font-bold uppercase text-slate-500">Logo Sekolah</Label>
                   <div className="flex gap-4 items-center">
@@ -181,28 +176,72 @@ export default function AdminSettings() {
 
             <Card className="border-none shadow-sm">
               <CardHeader className="bg-slate-50/50">
-                <CardTitle className="text-lg flex items-center gap-2"><ImageIcon className="h-5 w-5" /> Hero Utama</CardTitle>
+                <CardTitle className="text-lg flex items-center gap-2"><Phone className="h-5 w-5" /> Kontak & Alamat</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4 pt-6">
                 <div className="space-y-2">
-                  <Label className="text-xs font-bold uppercase text-slate-500">Judul Hero</Label>
+                  <Label className="text-xs font-bold uppercase text-slate-500">Nomor WhatsApp Admin</Label>
                   <Input 
                     className="bg-slate-50 border-slate-100"
-                    value={formData.heroTitle} 
-                    onChange={(e) => setFormData({...formData, heroTitle: e.target.value})}
+                    placeholder="E.g. 62812345678"
+                    value={formData.whatsappNumber} 
+                    onChange={(e) => setFormData({...formData, whatsappNumber: e.target.value})}
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-xs font-bold uppercase text-slate-500">Sub-judul Hero</Label>
+                  <Label className="text-xs font-bold uppercase text-slate-500">Nomor Telepon Kantor</Label>
+                  <Input 
+                    className="bg-slate-50 border-slate-100"
+                    placeholder="(021) 1234-5678"
+                    value={formData.phone} 
+                    onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-xs font-bold uppercase text-slate-500">Email Sekolah</Label>
+                  <Input 
+                    className="bg-slate-50 border-slate-100"
+                    placeholder="info@sekolah.sch.id"
+                    value={formData.email} 
+                    onChange={(e) => setFormData({...formData, email: e.target.value})}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-xs font-bold uppercase text-slate-500">Alamat Lengkap</Label>
                   <Textarea 
                     className="bg-slate-50 border-slate-100"
-                    value={formData.heroSubtitle} 
-                    onChange={(e) => setFormData({...formData, heroSubtitle: e.target.value})}
+                    placeholder="Jl. Pendidikan No. 123..."
+                    value={formData.address} 
+                    onChange={(e) => setFormData({...formData, address: e.target.value})}
                   />
                 </div>
               </CardContent>
             </Card>
           </div>
+
+          <Card className="border-none shadow-sm mt-6">
+            <CardHeader className="bg-slate-50/50">
+              <CardTitle className="text-lg flex items-center gap-2"><ImageIcon className="h-5 w-5" /> Hero Utama</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4 pt-6">
+              <div className="space-y-2">
+                <Label className="text-xs font-bold uppercase text-slate-500">Judul Hero</Label>
+                <Input 
+                  className="bg-slate-50 border-slate-100"
+                  value={formData.heroTitle} 
+                  onChange={(e) => setFormData({...formData, heroTitle: e.target.value})}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-xs font-bold uppercase text-slate-500">Sub-judul Hero</Label>
+                <Textarea 
+                  className="bg-slate-50 border-slate-100"
+                  value={formData.heroSubtitle} 
+                  onChange={(e) => setFormData({...formData, heroSubtitle: e.target.value})}
+                />
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
 
         <TabsContent value="welcome" className="space-y-6">

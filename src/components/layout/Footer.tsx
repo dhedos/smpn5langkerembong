@@ -21,6 +21,9 @@ export function Footer() {
 
   const schoolName = settings?.schoolName || "EduVista SMP";
   const schoolLogo = settings?.schoolLogoUrl;
+  const address = settings?.address || "Jl. Pendidikan No. 45, Jakarta Selatan, DKI Jakarta";
+  const phone = settings?.phone || "(021) 1234-5678";
+  const email = settings?.email || "info@eduvista-smp.sch.id";
 
   return (
     <footer className="bg-primary text-white pt-16 pb-8">
@@ -83,15 +86,15 @@ export function Footer() {
             <ul className="space-y-4 text-sm text-primary-foreground/70">
               <li className="flex gap-3">
                 <MapPin className="h-5 w-5 text-secondary shrink-0" />
-                <span>Jl. Pendidikan No. 45, Jakarta Selatan, DKI Jakarta</span>
+                <span className="whitespace-pre-line">{address}</span>
               </li>
               <li className="flex gap-3">
                 <Phone className="h-5 w-5 text-secondary shrink-0" />
-                <span>(021) 1234-5678</span>
+                <span>{phone}</span>
               </li>
               <li className="flex gap-3">
                 <Mail className="h-5 w-5 text-secondary shrink-0" />
-                <span>info@eduvista-smp.sch.id</span>
+                <span>{email}</span>
               </li>
             </ul>
           </div>
