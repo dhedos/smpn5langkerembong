@@ -8,38 +8,28 @@ Website modern untuk SMPN 5 Langke Rembong yang dilengkapi dengan CMS Admin dina
 - **WhatsApp Integration**: Tombol chat langsung ke admin sekolah.
 - **AI Content Optimizer**: Membantu admin membuat ringkasan berita secara otomatis menggunakan Genkit AI.
 
-## Cara Mengakses Admin
-1. Buka browser dan arahkan ke `domain-anda.com/admin`.
-2. Login menggunakan akun Google yang terdaftar.
-3. Kelola seluruh konten melalui dashboard yang tersedia.
+## Panduan Akses Admin
+Dashboard Admin digunakan untuk mengelola seluruh konten website.
+1. **URL Akses**: Tambahkan `/admin` pada alamat website Anda (misal: `domainanda.com/admin`).
+2. **Metode Login**: Gunakan akun Google yang valid melalui tombol login yang tersedia.
+3. **Keamanan**: Hanya pengguna yang berhasil login melalui Google yang dapat mengakses fitur manajemen.
 
 ## Panduan Deployment ke Vercel
 
-Untuk membuat website ini online, ikuti langkah-langkah berikut:
-
 ### 1. Push Kode ke GitHub
-Pastikan kode Anda sudah berada di repositori GitHub:
+Jika Anda telah melakukan perubahan, jalankan perintah ini di terminal:
 ```bash
 git add .
-git commit -m "Siap untuk deployment"
+git commit -m "Update konfigurasi admin"
 git push -u origin main --force
 ```
 
-### 2. Hubungkan ke Vercel
-1. Buka [Vercel Dashboard](https://vercel.com/dashboard).
-2. Klik **"Add New"** lalu pilih **"Project"**.
-3. Cari repositori `smpn5langkerembong` dan klik **"Import"**.
-
-### 3. Konfigurasi Environment Variables (PENTING)
-Agar fitur AI (ringkasan berita) berfungsi di Vercel, Anda harus menambahkan kunci API Google:
-1. Di halaman konfigurasi Vercel (sebelum klik Deploy), cari bagian **Environment Variables**.
-2. Tambahkan variabel berikut:
+### 2. Konfigurasi di Vercel
+1. Hubungkan repositori GitHub Anda ke proyek Vercel baru.
+2. **PENTING**: Tambahkan Environment Variable berikut di Dashboard Vercel:
    - **Key**: `GOOGLE_GENAI_API_KEY`
-   - **Value**: [Masukkan Kunci API Gemini Anda] (Bisa didapatkan di [Google AI Studio](https://aistudio.google.com/app/apikey))
-3. Klik **"Add"**.
-
-### 4. Klik Deploy
-Vercel akan secara otomatis membangun aplikasi Anda. Setelah selesai, Anda akan mendapatkan URL publik (misal: `smpn5langkerembong.vercel.app`).
+   - **Value**: [Masukkan Kunci API Gemini Anda] (Dapatkan di [Google AI Studio](https://aistudio.google.com/app/apikey))
+3. Klik **Deploy**.
 
 ## Teknologi
 - **Frontend**: Next.js 15 (App Router)
