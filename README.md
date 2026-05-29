@@ -20,13 +20,13 @@ Dashboard Admin digunakan untuk mengelola seluruh konten website.
 Jika Anda melihat error ini saat mencoba login:
 1. Buka [Firebase Console](https://console.firebase.google.com/).
 2. Masuk ke menu **Authentication** > **Sign-in method**.
-3. Pastikan **Email/Password** berstatus **Enabled**.
-4. Masuk ke tab **Users**, pastikan email `smpn5lr@gmail.com` sudah terdaftar. Jika belum, klik **Add user**.
+3. Klik **Add new provider** > pilih **Email/Password** > centang **Enable** > klik **Save**.
+4. Masuk ke tab **Users**, pastikan email `smpn5lr@gmail.com` sudah terdaftar. Jika belum, klik **Add user** dan buat password yang diinginkan.
 
 ### Error: `auth/unauthorized-domain`
-Jika login gagal saat menggunakan domain baru:
+Jika login gagal saat menggunakan domain baru atau preview:
 1. Buka **Authentication** > Tab **Settings** > **Authorized domains**.
-2. Klik **Add domain** dan masukkan domain website Anda (misal: `smpn5langkerembong.vercel.app`).
+2. Klik **Add domain** dan masukkan domain website Anda (misal: `smpn5langkerembong.vercel.app` atau domain preview studio).
 
 ### Error: "Akses Ditolak" (Izin Diperlukan)
 Jika login berhasil tapi akses diblokir:
