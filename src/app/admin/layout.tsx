@@ -85,11 +85,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       let message = "Terjadi kesalahan saat mencoba login.";
       
       if (error.code === 'auth/invalid-credential') {
-        message = "Email atau Password salah. Pastikan akun sudah dibuat di Firebase Console.";
-      } else if (error.code === 'auth/user-not-found') {
-        message = "Pengguna tidak ditemukan.";
-      } else if (error.code === 'auth/wrong-password') {
-        message = "Kata sandi salah.";
+        message = "Email atau Password salah. Pastikan akun sudah dibuat di Firebase Console (Authentication).";
+      } else if (error.code === 'auth/configuration-not-found') {
+        message = "Metode Email/Password belum diaktifkan di Firebase Console.";
       } else if (error.code === 'auth/too-many-requests') {
         message = "Terlalu banyak percobaan. Coba lagi nanti.";
       }
@@ -114,7 +112,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <div className="h-16 w-16 border-4 border-secondary border-t-transparent rounded-full animate-spin" />
             <Database className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-6 w-6 text-white" />
           </div>
-          <p className="text-sm font-bold text-white/50 animate-pulse uppercase tracking-widest">Memeriksa Sesi...</p>
+          <p className="text-sm font-bold text-white/50 animate-pulse uppercase tracking-widest">Verifikasi Sistem...</p>
         </div>
       </div>
     );
@@ -123,29 +121,29 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   if (!user) {
     return (
       <div className="h-screen w-full flex items-center justify-center bg-[#1a1a1a] px-4">
-        <div className="max-w-4xl w-full grid grid-cols-1 md:grid-cols-2 bg-[#252525] rounded-[2rem] overflow-hidden shadow-2xl border border-white/5">
-          <div className="p-8 md:p-12 flex flex-col justify-center space-y-8">
+        <div className="max-w-4xl w-full grid grid-cols-1 md:grid-cols-2 bg-[#252525] rounded-[2.5rem] overflow-hidden shadow-2xl border border-white/5">
+          <div className="p-10 md:p-14 flex flex-col justify-center space-y-8">
             <div className="bg-primary w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg shadow-primary/20">
               <Lock className="h-7 w-7 text-white" />
             </div>
             <div className="space-y-2">
               <h1 className="text-3xl md:text-4xl font-bold font-headline text-white tracking-tight">Cloud Console</h1>
               <p className="text-white/60 text-sm leading-relaxed">
-                Gunakan akun admin yang telah didaftarkan untuk mengelola website sekolah.
+                Login menggunakan akun admin sekolah yang telah didaftarkan melalui Firebase Console.
               </p>
             </div>
             
-            <form onSubmit={handleLogin} className="space-y-4">
+            <form onSubmit={handleLogin} className="space-y-5">
               <div className="space-y-2">
                 <Label className="text-white/70 text-xs font-bold uppercase tracking-wider">Email Address</Label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/30" />
+                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-white/30" />
                   <Input 
                     type="email"
                     placeholder="admin@sekolah.sch.id"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="bg-white/5 border-white/10 text-white pl-10 h-12 rounded-xl focus:ring-primary focus:border-primary"
+                    className="bg-white/5 border-white/10 text-white pl-11 h-12 rounded-xl focus:ring-primary focus:border-primary"
                     required
                   />
                 </div>
@@ -153,19 +151,19 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <div className="space-y-2">
                 <Label className="text-white/70 text-xs font-bold uppercase tracking-wider">Password</Label>
                 <div className="relative">
-                  <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/30" />
+                  <KeyRound className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-white/30" />
                   <Input 
                     type={showPassword ? "text" : "password"}
                     placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="bg-white/5 border-white/10 text-white pl-10 pr-10 h-12 rounded-xl focus:ring-primary focus:border-primary"
+                    className="bg-white/5 border-white/10 text-white pl-11 pr-11 h-12 rounded-xl focus:ring-primary focus:border-primary"
                     required
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 focus:outline-none"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 focus:outline-none"
                   >
                     {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>
@@ -180,7 +178,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 {isLoggingIn ? (
                   <div className="h-5 w-5 border-2 border-black border-t-transparent rounded-full animate-spin" />
                 ) : (
-                  <>Sign In <ArrowRight className="h-4 w-4" /></>
+                  <>Masuk Sekarang <ArrowRight className="h-4 w-4" /></>
                 )}
               </Button>
             </form>
@@ -197,8 +195,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     <div className="h-2 w-12 bg-secondary rounded-full" />
                     <div className="h-2 w-4 bg-white/20 rounded-full" />
                   </div>
-                  <h2 className="text-3xl font-bold text-white">Manajemen Database Sekolah</h2>
-                  <p className="text-white/70 text-sm">Kelola seluruh konten website Anda melalui lingkungan cloud yang aman dan modern.</p>
+                  <h2 className="text-3xl font-bold text-white">Kelola Database SMP Modern</h2>
+                  <p className="text-white/70 text-sm leading-relaxed">Akses dashboard terpusat untuk mengelola Berita, Galeri, Fasilitas, dan Pengaturan PPDB Online secara real-time.</p>
                </div>
             </div>
           </div>
@@ -218,7 +216,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               </div>
               <div className="flex flex-col text-left">
                 <span className="font-bold text-sm tracking-tight text-slate-900 uppercase">Cloud Console</span>
-                <span className="text-[10px] text-blue-500 font-extrabold uppercase tracking-tighter">SMPN 5 L.R.</span>
+                <span className="text-[10px] text-blue-500 font-extrabold uppercase tracking-tighter">Admin Portal</span>
               </div>
             </div>
           </SidebarHeader>
@@ -252,7 +250,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               onClick={handleLogout}
             >
               <LogOut className="h-4 w-4" />
-              Sign Out
+              Keluar Sesi
             </Button>
           </SidebarFooter>
         </Sidebar>
@@ -263,7 +261,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <SidebarTrigger />
               <div className="h-4 w-px bg-slate-200" />
               <div className="text-xs font-bold text-slate-400 flex items-center gap-2 uppercase tracking-tighter">
-                Project <ChevronRight className="h-3 w-3" /> {pathname === '/admin' ? 'Dashboard' : pathname.split('/').pop()?.replace('-', ' ')}
+                Sistem <ChevronRight className="h-3 w-3" /> {pathname === '/admin' ? 'Dashboard' : pathname.split('/').pop()?.replace('-', ' ')}
               </div>
             </div>
             <div className="flex items-center gap-4">
@@ -272,8 +270,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-400"><Terminal className="h-4 w-4" /></Button>
                   <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-400"><HelpCircle className="h-4 w-4" /></Button>
                </div>
-               <div className="h-10 w-10 rounded-full bg-primary flex items-center justify-center text-white font-bold text-xs">
-                 {user.email?.substring(0, 2).toUpperCase()}
+               <div className="flex items-center gap-3">
+                 <div className="flex flex-col items-end text-right">
+                   <span className="text-xs font-bold text-slate-700">{user.email?.split('@')[0]}</span>
+                   <span className="text-[10px] text-green-500 font-bold uppercase">Online</span>
+                 </div>
+                 <div className="h-10 w-10 rounded-full bg-primary flex items-center justify-center text-white font-bold text-xs shadow-md">
+                   {user.email?.substring(0, 2).toUpperCase()}
+                 </div>
                </div>
             </div>
           </header>
