@@ -32,6 +32,20 @@
               "icon": { "type": "string" }
             }
           }
+        },
+        "ppdbYear": { "type": "string" },
+        "ppdbIsActive": { "type": "boolean" },
+        "ppdbRequirements": { "type": "array", "items": { "type": "string" } },
+        "ppdbQuotas": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "label": { "type": "string" },
+              "value": { "type": "string" },
+              "description": { "type": "string" }
+            }
+          }
         }
       }
     },
