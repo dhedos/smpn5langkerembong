@@ -1,6 +1,7 @@
+
 "use client";
 
-import React from "react";
+import React, { useMemo } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { 
@@ -13,7 +14,8 @@ import {
   Camera,
   LogOut,
   ShieldCheck,
-  Lock
+  Lock,
+  AlertTriangle
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -29,8 +31,9 @@ import {
   SidebarTrigger,
   SidebarInset
 } from "@/components/ui/sidebar";
-import { useUser, useAuth } from "@/firebase";
+import { useUser, useAuth, useFirestore, useDoc } from "@/firebase";
 import { signInWithPopup, GoogleAuthProvider, signOut } from "firebase/auth";
+import { doc } from "firebase/firestore";
 
 const adminMenuItems = [
   { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
@@ -42,8 +45,16 @@ const adminMenuItems = [
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const { user, loading } = useUser();
+  const { user, loading: authLoading } = useUser();
   const auth = useAuth();
+  const db = useFirestore();
+
+  // Check whitelist in Firestore
+  const adminRef = useMemo(() => {
+    return (db && user?.email) ? doc(db, "admins", user.email) : null;
+  }, [db, user?.email]);
+
+  const { data: adminData, loading: dbLoading } = useDoc(adminRef);
 
   const handleLogin = async () => {
     const provider = new GoogleAuthProvider();
@@ -56,7 +67,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   const handleLogout = () => signOut(auth);
 
-  if (loading) {
+  if (authLoading || (user && dbLoading)) {
     return (
       <div className="h-screen w-full flex items-center justify-center bg-slate-50">
         <div className="flex flex-col items-center gap-4">
@@ -67,7 +78,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     );
   }
 
-  // Auth Guard: If not logged in, show Professional Login UI
+  // State 1: Not Authenticated - Show Login Screen
   if (!user) {
     return (
       <div className="h-screen w-full flex items-center justify-center bg-slate-50 px-4">
@@ -78,7 +89,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </div>
             <h1 className="text-3xl font-bold font-headline text-slate-900 mb-2 tracking-tight">Panel Admin</h1>
             <p className="text-slate-500 text-sm mb-8 leading-relaxed">
-              Selamat datang kembali. Silakan masuk dengan akun Google Anda untuk mulai mengelola konten website sekolah.
+              Selamat datang. Silakan masuk dengan akun Google Anda yang terdaftar sebagai administrator.
             </p>
             <Button 
               size="lg" 
@@ -100,6 +111,37 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     );
   }
 
+  // State 2: Authenticated but NOT an Admin in Firestore
+  if (user && !adminData) {
+    return (
+      <div className="h-screen w-full flex items-center justify-center bg-slate-50 px-4">
+        <div className="max-w-md w-full space-y-8 text-center animate-in fade-in zoom-in duration-500">
+          <div className="bg-white p-10 rounded-[2.5rem] shadow-2xl border border-red-100">
+            <div className="bg-destructive w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-destructive/20">
+              <AlertTriangle className="h-8 w-8 text-white" />
+            </div>
+            <h1 className="text-2xl font-bold font-headline text-slate-900 mb-2">Akses Ditolak</h1>
+            <p className="text-slate-500 text-sm mb-4 leading-relaxed">
+              Email <strong>{user.email}</strong> berhasil masuk, namun belum terdaftar sebagai administrator di sistem kami.
+            </p>
+            <div className="bg-slate-50 p-4 rounded-xl text-xs text-slate-400 mb-8 italic">
+              Hubungi pengembang untuk mendaftarkan email Anda ke koleksi "admins" di Firestore.
+            </div>
+            <div className="space-y-3">
+              <Button variant="outline" className="w-full rounded-2xl" onClick={handleLogout}>
+                <LogOut className="h-4 w-4 mr-2" /> Keluar Akun
+              </Button>
+              <Button variant="link" className="text-slate-400 text-xs" asChild>
+                <Link href="/">Kembali ke Beranda</Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // State 3: Authenticated and Authorized Admin
   return (
     <SidebarProvider>
       <div className="flex min-h-screen w-full bg-slate-50/50">

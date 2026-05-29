@@ -84,6 +84,15 @@
         "description": { "type": "string" },
         "date": { "type": "string" }
       }
+    },
+    "AdminWhitelist": {
+      "title": "Admin Whitelist",
+      "description": "Daftar email yang diizinkan mengakses panel admin.",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string" },
+        "role": { "type": "string", "enum": ["admin", "superadmin"] }
+      }
     }
   },
   "auth": {
@@ -105,6 +114,10 @@
     "/gallery/{photoId}": {
       "schema": "Gallery",
       "description": "Koleksi foto galeri sekolah"
+    },
+    "/admins/{email}": {
+      "schema": "AdminWhitelist",
+      "description": "Koleksi email admin yang terdaftar"
     }
   }
 }
