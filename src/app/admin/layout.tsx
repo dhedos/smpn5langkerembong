@@ -20,7 +20,8 @@ import {
   Database,
   Terminal,
   HelpCircle,
-  Bell
+  Bell,
+  AlertCircle
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -39,6 +40,7 @@ import {
 import { useUser, useAuth, useFirestore, useDoc } from "@/firebase";
 import { signInWithPopup, GoogleAuthProvider, signOut } from "firebase/auth";
 import { doc } from "firebase/firestore";
+import { toast } from "@/hooks/use-toast";
 
 const adminMenuItems = [
   { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
@@ -53,6 +55,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const { user, loading: authLoading } = useUser();
   const auth = useAuth();
   const db = useFirestore();
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   const adminRef = useMemo(() => {
     return (db && user?.email) ? doc(db, "admins", user.email) : null;
@@ -61,11 +64,27 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const { data: adminData, loading: dbLoading } = useDoc(adminRef);
 
   const handleLogin = async () => {
+    setIsLoggingIn(true);
     const provider = new GoogleAuthProvider();
     try {
       await signInWithPopup(auth, provider);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Login failed", error);
+      if (error.code === 'auth/configuration-not-found') {
+        toast({
+          title: "Konfigurasi Belum Siap",
+          description: "Google Auth belum diaktifkan di Firebase Console. Silakan aktifkan di menu Authentication > Sign-in method.",
+          variant: "destructive"
+        });
+      } else {
+        toast({
+          title: "Login Gagal",
+          description: error.message || "Terjadi kesalahan saat mencoba login.",
+          variant: "destructive"
+        });
+      }
+    } finally {
+      setIsLoggingIn(false);
     }
   };
 
@@ -79,13 +98,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <div className="h-16 w-16 border-4 border-secondary border-t-transparent rounded-full animate-spin" />
             <Database className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-6 w-6 text-white" />
           </div>
-          <p className="text-sm font-bold text-white/50 animate-pulse uppercase tracking-widest">Inisialisasi Firestore...</p>
+          <p className="text-sm font-bold text-white/50 animate-pulse uppercase tracking-widest">Memeriksa Autentikasi...</p>
         </div>
       </div>
     );
   }
 
-  // Login Screen (Firebase Style)
+  // Login Screen
   if (!user) {
     return (
       <div className="h-screen w-full flex items-center justify-center bg-[#1a1a1a] px-4">
@@ -97,19 +116,24 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <div className="space-y-2">
               <h1 className="text-4xl font-bold font-headline text-white tracking-tight">Cloud Console</h1>
               <p className="text-white/60 text-sm leading-relaxed">
-                Akses panel manajemen EduVista SMP. Autentikasi diperlukan untuk melanjutkan ke database Firestore.
+                Akses panel manajemen SMPN 5 Langke Rembong. Gunakan akun Google Admin Anda.
               </p>
             </div>
             <Button 
               size="lg" 
               className="w-full bg-white text-black hover:bg-slate-200 py-8 rounded-2xl gap-3 text-lg font-bold transition-transform hover:scale-[1.02]"
               onClick={handleLogin}
+              disabled={isLoggingIn}
             >
-              <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" className="h-6 w-6" alt="Google" />
+              {isLoggingIn ? (
+                <div className="h-5 w-5 border-2 border-black border-t-transparent rounded-full animate-spin" />
+              ) : (
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" className="h-6 w-6" alt="Google" />
+              )}
               Sign in with Google
             </Button>
             <Link href="/" className="text-white/40 text-xs hover:text-white text-center flex items-center justify-center gap-2">
-              <Globe className="h-3 w-3" /> Back to public website
+              <Globe className="h-3 w-3" /> Kembali ke Website Publik
             </Link>
           </div>
           <div className="hidden md:block bg-gradient-to-br from-primary to-[#0d1117] relative p-12 overflow-hidden">
@@ -120,8 +144,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     <div className="h-2 w-12 bg-secondary rounded-full" />
                     <div className="h-2 w-4 bg-white/20 rounded-full" />
                   </div>
-                  <h2 className="text-3xl font-bold text-white">Sistem Manajemen Berbasis Cloud</h2>
-                  <p className="text-white/70 text-sm">Kelola seluruh aspek sekolah dalam satu dashboard yang aman dan terintegrasi dengan Firebase.</p>
+                  <h2 className="text-3xl font-bold text-white">Manajemen Database Sekolah</h2>
+                  <p className="text-white/70 text-sm">Kelola berita, fasilitas, dan pendaftaran siswa baru secara real-time dengan integrasi Firebase Cloud.</p>
                </div>
             </div>
           </div>
@@ -130,7 +154,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     );
   }
 
-  // Not Authorized Screen (Mirrors the provided Firestore Banner image)
+  // Not Authorized Screen
   if (user && !adminData) {
     return (
       <div className="h-screen w-full flex items-center justify-center bg-[#121212] px-4">
@@ -140,56 +164,50 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center relative z-10">
             <div className="space-y-10">
               <div className="space-y-4">
-                <h1 className="text-5xl md:text-6xl font-bold text-white font-headline tracking-tighter">Cloud Firestore</h1>
+                <div className="inline-flex items-center gap-2 bg-red-500/10 text-red-500 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest border border-red-500/20">
+                  <AlertCircle className="h-4 w-4" /> Akses Ditolak
+                </div>
+                <h1 className="text-5xl md:text-6xl font-bold text-white font-headline tracking-tighter">Izin Diperlukan</h1>
                 <p className="text-xl text-white/60 leading-relaxed max-w-md">
-                  Realtime updates, powerful queries, automatic scaling, and EduVista compatibility.
+                  Email <span className="text-white font-bold">{user.email}</span> tidak terdaftar dalam whitelist admin kami.
                 </p>
               </div>
               
+              <div className="space-y-4 bg-white/5 p-6 rounded-2xl border border-white/10">
+                <p className="text-sm text-white/80 font-bold mb-2">Langkah Aktivasi Manual:</p>
+                <ol className="text-xs text-white/50 space-y-2 list-decimal list-inside">
+                  <li>Buka Firebase Console Proyek Anda.</li>
+                  <li>Masuk ke menu <span className="text-secondary">Firestore Database</span>.</li>
+                  <li>Buat koleksi bernama <code className="bg-white/10 px-1 rounded text-white">admins</code>.</li>
+                  <li>Tambah dokumen dengan ID: <code className="bg-white/10 px-1 rounded text-white">{user.email}</code>.</li>
+                  <li>Tambahkan field <code className="text-white">role</code>: <code className="text-secondary">superadmin</code>.</li>
+                </ol>
+              </div>
+
               <div className="flex flex-wrap gap-4">
                 <Button 
                   size="lg" 
                   className="bg-white text-black hover:bg-slate-200 px-8 py-7 rounded-full font-bold text-lg"
-                  asChild
+                  onClick={() => window.location.reload()}
                 >
-                   <a href="https://console.firebase.google.com" target="_blank">Create database</a>
+                   Refresh Halaman
                 </Button>
                 <Button 
                   variant="outline" 
                   size="lg" 
                   className="border-white/20 text-white hover:bg-white/10 px-8 py-7 rounded-full font-bold text-lg gap-2"
+                  onClick={handleLogout}
                 >
-                  <Sparkles className="h-5 w-5 text-secondary" /> Ask Gemini
-                </Button>
-              </div>
-
-              <div className="pt-8 space-y-4">
-                <div className="flex items-center gap-3 text-white/40 text-sm font-medium">
-                  <div className="h-1.5 w-1.5 rounded-full bg-red-500 animate-pulse" />
-                  Email <strong>{user.email}</strong> belum terdaftar di whitelist.
-                </div>
-                <Button variant="link" className="text-secondary p-0 h-auto font-bold" onClick={handleLogout}>
-                   Sign out to try another account
+                  Keluar / Ganti Akun
                 </Button>
               </div>
             </div>
 
             <div className="flex justify-center md:justify-end">
               <div className="relative w-64 h-64 md:w-80 md:h-80">
-                {/* Visual representation of the Firestore logo from the image */}
-                <div className="absolute inset-0 bg-gradient-to-tr from-orange-600 to-yellow-400 rounded-full shadow-[0_0_100px_rgba(245,158,11,0.3)] animate-pulse" />
+                <div className="absolute inset-0 bg-gradient-to-tr from-red-600 to-orange-400 rounded-full shadow-[0_0_100px_rgba(239,68,68,0.3)] animate-pulse" />
                 <div className="absolute inset-0 flex items-center justify-center">
-                   <div className="w-3/5 h-3/5 border-[12px] border-white/20 rounded-xl rotate-45 flex flex-col gap-2 p-4">
-                      <div className="h-4 w-full bg-white/40 rounded-full" />
-                      <div className="h-4 w-full bg-white/40 rounded-full" />
-                      <div className="h-4 w-full bg-white/40 rounded-full" />
-                   </div>
-                </div>
-                {/* Stack icons from the image */}
-                <div className="absolute -bottom-4 -right-4 bg-[#2a2a2a] p-4 rounded-2xl border border-white/10 shadow-2xl flex flex-col gap-1 rotate-12">
-                   <div className="h-3 w-12 bg-orange-500/50 rounded-full" />
-                   <div className="h-3 w-12 bg-orange-500 rounded-full" />
-                   <div className="h-3 w-12 bg-orange-500/50 rounded-full" />
+                   <ShieldCheck className="h-32 w-32 text-white/20" />
                 </div>
               </div>
             </div>
