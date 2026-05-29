@@ -3,7 +3,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, GraduationCap, Users, Award, BookOpen, Calendar, ChevronRight } from "lucide-react";
+import { ArrowRight, GraduationCap, Users, Award, BookOpen, Calendar, ChevronRight, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
@@ -31,10 +31,6 @@ export default function Home() {
   const facilitiesQuery = useMemo(() => db ? query(collection(db, "facilities"), limit(4)) : null, [db]);
   const { data: facilities } = useCollection(facilitiesQuery);
 
-  if (settingsLoading) {
-    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
-  }
-
   const defaultStats = [
     { label: "Siswa Aktif", value: "850+", icon: "Users" },
     { label: "Guru Profesional", value: "65+", icon: "GraduationCap" },
@@ -43,11 +39,19 @@ export default function Home() {
   ];
 
   const displayStats = settings?.stats || defaultStats;
+  const heroImageUrl = PlaceHolderImages.find(img => img.id === 'hero-school')?.imageUrl || "https://picsum.photos/seed/school1/1920/1080";
 
-  const heroImageUrl = PlaceHolderImages.find(img => img.id === 'hero-school')?.imageUrl || "";
+  if (settingsLoading && !settings) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-white">
+        <Loader2 className="h-12 w-12 text-primary animate-spin mb-4" />
+        <p className="text-sm font-bold text-slate-400 uppercase tracking-widest animate-pulse">Menyiapkan Pengalaman EduVista...</p>
+      </div>
+    );
+  }
 
   return (
-    <div className="flex flex-col gap-0">
+    <div className="flex flex-col gap-0 animate-in fade-in duration-700">
       {/* Hero Section with Fixed Background */}
       <section className="relative h-screen min-h-[700px] flex items-center overflow-hidden">
         {/* Background Layer */}
@@ -67,11 +71,11 @@ export default function Home() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-3 w-3 bg-secondary"></span>
               </span>
-              PPDB Tahun Pelajaran 2024/2025 Telah Dibuka
+              {settings?.ppdbIsActive ? `PPDB Tahun Pelajaran ${settings.ppdbYear} Telah Dibuka` : "Selamat Datang di Portal Resmi Sekolah"}
             </div>
             <h1 className="text-6xl md:text-8xl font-bold text-white font-headline leading-[1.1] tracking-tighter drop-shadow-2xl">
               {settings?.heroTitle || "Membangun Masa Depan"} <br/>
-              <span className="text-secondary italic">EduVista SMP</span>
+              <span className="text-secondary italic">{settings?.schoolName || "EduVista SMP"}</span>
             </h1>
             <p className="text-xl md:text-2xl text-white/90 max-w-2xl leading-relaxed font-medium drop-shadow-lg">
               {settings?.heroSubtitle || "Sekolah menengah pertama modern yang berfokus pada pengembangan holistik siswa melalui kurikulum inovatif."}
@@ -91,10 +95,10 @@ export default function Home() {
       {/* Stats Section */}
       <section className="relative -mt-24 z-20 px-4">
         <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6">
-          {displayStats.map((stat: any) => {
+          {displayStats.map((stat: any, i: number) => {
             const Icon = iconMap[stat.icon] || Users;
             return (
-              <Card key={stat.label} className="bg-white/80 backdrop-blur-2xl border-white/50 shadow-2xl hover:translate-y-[-8px] transition-all duration-300 rounded-[2rem] overflow-hidden">
+              <Card key={i} className="bg-white/80 backdrop-blur-2xl border-white/50 shadow-2xl hover:translate-y-[-8px] transition-all duration-300 rounded-[2rem] overflow-hidden">
                 <CardContent className="p-8 flex flex-col items-center text-center gap-4">
                   <div className="p-4 bg-primary/10 rounded-2xl">
                     <Icon className="h-10 w-10 text-primary" />
@@ -113,16 +117,15 @@ export default function Home() {
       {/* Sambutan Kepala Sekolah */}
       <section className="py-32 bg-background">
         <div className="container mx-auto px-4">
-          <div className="flex flex-col md:row items-center gap-20">
+          <div className="flex flex-col md:flex-row items-center gap-20">
             <div className="w-full md:w-1/2 relative">
               <div className="relative z-10 rounded-[3rem] overflow-hidden shadow-2xl border-[12px] border-white group">
                 <Image
-                  src={PlaceHolderImages.find(img => img.id === 'headmaster')?.imageUrl || ""}
+                  src={settings?.headmasterPhotoUrl || PlaceHolderImages.find(img => img.id === 'headmaster')?.imageUrl || "https://picsum.photos/seed/headmaster/600/750"}
                   alt="Kepala Sekolah"
                   width={600}
                   height={750}
                   className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105"
-                  data-ai-hint="professional man"
                 />
               </div>
               <div className="absolute -bottom-10 -right-10 -z-10 bg-secondary w-full h-full rounded-[3rem] opacity-20 blur-2xl" />
@@ -135,12 +138,12 @@ export default function Home() {
               </h2>
               <div className="space-y-6 text-slate-600 text-lg leading-relaxed font-medium">
                 <p className="whitespace-pre-line italic border-l-4 border-secondary pl-6">
-                  "{settings?.welcomeMessage || "Selamat datang di EduVista SMP. Kami berkomitmen untuk menciptakan lingkungan belajar yang aman, suportif, dan merangsang intelektual bagi setiap siswa."}"
+                  "{settings?.welcomeMessage || "Selamat datang di sekolah kami. Kami berkomitmen untuk menciptakan lingkungan belajar yang aman, suportif, dan merangsang intelektual bagi setiap siswa agar mereka siap menghadapi tantangan masa depan."}"
                 </p>
               </div>
               <div className="pt-6">
                 <div className="font-bold text-2xl text-primary font-headline tracking-tight">{settings?.headmasterName || "Dr. Ahmad Hidayat, M.Pd."}</div>
-                <div className="text-secondary font-bold uppercase text-xs tracking-widest mt-1">{settings?.headmasterTitle || "Kepala Sekolah SMP EduVista"}</div>
+                <div className="text-secondary font-bold uppercase text-xs tracking-widest mt-1">{settings?.headmasterTitle || "Kepala Sekolah"}</div>
               </div>
             </div>
           </div>
@@ -193,7 +196,9 @@ export default function Home() {
                 </Card>
               ))
             ) : (
-              <p className="col-span-3 text-center text-slate-400 italic py-20">Belum ada berita terbaru yang diterbitkan.</p>
+              <div className="col-span-3 text-center py-20 bg-white rounded-[2.5rem] border-2 border-dashed border-slate-200">
+                <p className="text-slate-400 italic">Belum ada berita terbaru yang diterbitkan.</p>
+              </div>
             )}
           </div>
         </div>
@@ -209,7 +214,7 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8">
-            {facilities && facilities.map((f: any, idx: number) => (
+            {facilities && facilities.length > 0 ? facilities.map((f: any, idx: number) => (
               <div key={f.id} className={cn("h-[450px] relative rounded-[3rem] overflow-hidden group shadow-2xl", idx === 0 && "md:col-span-2 lg:col-span-2")}>
                 <Image src={f.imageUrl || `https://picsum.photos/seed/${f.id}/800/600`} alt={f.name} fill className="object-cover group-hover:scale-110 transition-transform duration-1000" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent p-10 flex flex-col justify-end">
@@ -219,7 +224,11 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-            ))}
+            )) : (
+              <div className="col-span-full text-center py-20 bg-slate-50 rounded-[3rem] border-2 border-dashed border-slate-200">
+                <p className="text-slate-400 italic">Informasi fasilitas sedang disiapkan.</p>
+              </div>
+            )}
           </div>
         </div>
       </section>
