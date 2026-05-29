@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
-import { Settings, Save, Phone, School, Image as ImageIcon, Sparkles, BookOpen, Target, History as HistoryIcon, Plus, Trash2 } from "lucide-react";
+import { Settings, Save, Phone, School, Image as ImageIcon, Sparkles, BookOpen, Target, History as HistoryIcon, Plus, Trash2, BarChart3 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,6 +31,7 @@ export default function AdminSettings() {
     history: "",
     vision: "",
     mission: [],
+    stats: []
   });
 
   useEffect(() => {
@@ -38,6 +39,7 @@ export default function AdminSettings() {
       setFormData({
         ...currentSettings,
         mission: currentSettings.mission || [],
+        stats: currentSettings.stats || []
       });
     }
   }, [currentSettings]);
@@ -67,6 +69,21 @@ export default function AdminSettings() {
     setFormData({ ...formData, mission: newMission });
   };
 
+  const addStat = () => {
+    setFormData({ ...formData, stats: [...formData.stats, { label: "", value: "", icon: "Users" }] });
+  };
+
+  const updateStat = (index: number, field: string, value: string) => {
+    const newStats = [...formData.stats];
+    newStats[index] = { ...newStats[index], [field]: value };
+    setFormData({ ...formData, stats: newStats });
+  };
+
+  const removeStat = (index: number) => {
+    const newStats = formData.stats.filter((_: any, i: number) => i !== index);
+    setFormData({ ...formData, stats: newStats });
+  };
+
   if (loading) return <div className="p-12 text-center text-muted-foreground animate-pulse">Memuat pengaturan...</div>;
 
   return (
@@ -85,9 +102,10 @@ export default function AdminSettings() {
 
       <Tabs defaultValue="general" className="space-y-6">
         <TabsList className="bg-slate-100 p-1 rounded-xl">
-          <TabsTrigger value="general" className="rounded-lg px-6">Umum & Hero</TabsTrigger>
+          <TabsTrigger value="general" className="rounded-lg px-6">Umum & Identitas</TabsTrigger>
           <TabsTrigger value="welcome" className="rounded-lg px-6">Sambutan</TabsTrigger>
           <TabsTrigger value="profile" className="rounded-lg px-6">Profil & Visi Misi</TabsTrigger>
+          <TabsTrigger value="stats" className="rounded-lg px-6">Statistik</TabsTrigger>
         </TabsList>
 
         <TabsContent value="general" className="space-y-6">
@@ -106,11 +124,20 @@ export default function AdminSettings() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-xs font-bold uppercase text-slate-500">Nomor WhatsApp</Label>
+                  <Label className="text-xs font-bold uppercase text-slate-500">Nomor WhatsApp Admin</Label>
                   <Input 
                     className="bg-slate-50 border-slate-100"
+                    placeholder="E.g. 62812345678"
                     value={formData.whatsappNumber} 
                     onChange={(e) => setFormData({...formData, whatsappNumber: e.target.value})}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-xs font-bold uppercase text-slate-500">URL Logo Sekolah</Label>
+                  <Input 
+                    className="bg-slate-50 border-slate-100"
+                    value={formData.schoolLogoUrl} 
+                    onChange={(e) => setFormData({...formData, schoolLogoUrl: e.target.value})}
                   />
                 </div>
               </CardContent>
@@ -215,10 +242,42 @@ export default function AdminSettings() {
                     </Button>
                   </div>
                 ))}
-                {formData.mission.length === 0 && <p className="text-xs text-muted-foreground italic">Belum ada misi yang ditambahkan.</p>}
               </CardContent>
             </Card>
           </div>
+        </TabsContent>
+
+        <TabsContent value="stats" className="space-y-6">
+          <Card className="border-none shadow-sm">
+            <CardHeader className="bg-slate-50/50 flex flex-row items-center justify-between">
+              <div>
+                <CardTitle className="text-lg flex items-center gap-2"><BarChart3 className="h-5 w-5" /> Statistik Sekolah</CardTitle>
+                <CardDescription>Angka yang ditampilkan di bagian atas beranda.</CardDescription>
+              </div>
+              <Button variant="outline" size="sm" onClick={addStat} className="h-8 gap-1">
+                <Plus className="h-3 w-3" /> Tambah Stat
+              </Button>
+            </CardHeader>
+            <CardContent className="pt-6 space-y-4">
+              {formData.stats.map((s: any, i: number) => (
+                <div key={i} className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end bg-slate-50 p-4 rounded-xl relative border border-slate-100">
+                  <div className="space-y-2">
+                    <Label className="text-[10px] uppercase font-bold">Label</Label>
+                    <Input value={s.label} onChange={(e) => updateStat(i, "label", e.target.value)} placeholder="Siswa Aktif" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-[10px] uppercase font-bold">Value</Heading>
+                    <Input value={s.value} onChange={(e) => updateStat(i, "value", e.target.value)} placeholder="850+" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-[10px] uppercase font-bold">Icon (Lucide)</Label>
+                    <Input value={s.icon} onChange={(e) => updateStat(i, "icon", e.target.value)} placeholder="Users / Award" />
+                  </div>
+                  <Button variant="destructive" size="sm" onClick={() => removeStat(i)} className="md:w-fit">Hapus</Button>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
         </TabsContent>
       </Tabs>
     </div>

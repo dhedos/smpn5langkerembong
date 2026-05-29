@@ -9,9 +9,8 @@ import {
   Newspaper, 
   Settings, 
   ChevronRight, 
-  LogOut,
-  Globe,
-  Menu
+  Building2,
+  Globe
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -31,6 +30,7 @@ import {
 const adminMenuItems = [
   { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
   { name: "Manajemen Berita", href: "/admin/berita", icon: Newspaper },
+  { name: "Manajemen Fasilitas", href: "/admin/fasilitas", icon: Building2 },
   { name: "Pengaturan Situs", href: "/admin/settings", icon: Settings },
 ];
 
