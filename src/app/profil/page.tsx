@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useMemo } from "react";
@@ -11,17 +10,15 @@ import { doc, collection } from "firebase/firestore";
 export default function ProfilPage() {
   const db = useFirestore();
   const settingsRef = useMemo(() => db ? doc(db, "settings", "general") : null, [db]);
-  const { data: settings, loading } = useDoc(settingsRef);
+  const { data: settings } = useDoc(settingsRef);
 
   const facilitiesRef = useMemo(() => db ? collection(db, "facilities") : null, [db]);
   const { data: facilities } = useCollection(facilitiesRef);
 
-  if (loading) return <div className="min-h-screen flex items-center justify-center text-slate-400">Memuat profil sekolah...</div>;
-
   const schoolName = settings?.schoolName || "EduVista SMP";
   
   return (
-    <div className="pt-24 bg-white">
+    <div className="pt-24 bg-white animate-in fade-in duration-500">
       {/* Page Header */}
       <section className="bg-primary py-24 text-white relative overflow-hidden">
         <div className="absolute inset-0 bg-secondary/5 skew-y-3 translate-y-20" />
@@ -41,18 +38,18 @@ export default function ProfilPage() {
               </div>
               <h2 className="text-5xl font-bold text-primary font-headline tracking-tighter leading-tight">Membangun Fondasi Pendidikan yang Kokoh</h2>
               <div className="space-y-6 text-slate-600 leading-relaxed text-lg font-medium whitespace-pre-line">
-                {settings?.history || "Sejarah sekolah belum diatur oleh admin."}
+                {settings?.history || "EduVista SMP didirikan dengan cita-cita mulia untuk menghadirkan standar pendidikan berkualitas tinggi yang mudah diakses. Berawal dari sebuah gedung sederhana, kini kami telah berkembang menjadi lembaga pendidikan pilihan yang dipercaya oleh ribuan orang tua untuk mendidik putra-putri mereka menjadi pemimpin masa depan."}
               </div>
             </div>
             <div className="w-full md:w-1/2 relative">
               <div className="rounded-[3rem] overflow-hidden shadow-2xl border-[12px] border-slate-50">
                  <Image 
-                  src="https://picsum.photos/seed/school-history/800/800" 
+                  src="https://picsum.photos/seed/history/800/800" 
                   alt="Sejarah Sekolah" 
                   width={800} 
                   height={800} 
-                  className="w-full h-auto"
-                  data-ai-hint="old school"
+                  className="w-full h-auto object-cover"
+                  data-ai-hint="old building"
                 />
               </div>
               <div className="absolute -bottom-10 -left-10 bg-secondary w-32 h-32 rounded-full opacity-20 blur-2xl" />
@@ -71,7 +68,7 @@ export default function ProfilPage() {
               </div>
               <h3 className="text-4xl font-bold text-primary font-headline tracking-tighter">Visi Sekolah</h3>
               <p className="text-2xl text-slate-600 italic leading-relaxed font-medium">
-                "{settings?.vision || "Visi belum diatur oleh admin."}"
+                "{settings?.vision || "Menjadi lembaga pendidikan unggulan yang mencetak generasi bertakwa, berkarakter, dan berdaya saing global di era teknologi digital."}"
               </p>
             </div>
             <div className="bg-primary p-16 rounded-[3.5rem] shadow-2xl text-white space-y-8 relative overflow-hidden">
@@ -85,7 +82,17 @@ export default function ProfilPage() {
                     <CheckCircle2 className="h-7 w-7 text-secondary shrink-0 mt-1" />
                     <span className="text-white/90 text-lg font-medium leading-snug">{item}</span>
                   </li>
-                )) : <li className="italic text-white/50">Misi belum diatur oleh admin.</li>}
+                )) : [
+                  "Menyelenggarakan pendidikan holistik berbasis teknologi modern.",
+                  "Mengembangkan potensi minat dan bakat siswa secara maksimal.",
+                  "Menanamkan nilai-nilai religius dan etika dalam setiap aktivitas.",
+                  "Membangun kemitraan strategis dengan institusi global."
+                ].map((m, i) => (
+                  <li key={i} className="flex gap-4 items-start group">
+                    <CheckCircle2 className="h-7 w-7 text-secondary shrink-0 mt-1" />
+                    <span className="text-white/90 text-lg font-medium leading-snug">{m}</span>
+                  </li>
+                ))}
               </ul>
               <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-16 translate-x-16" />
             </div>
@@ -114,7 +121,9 @@ export default function ProfilPage() {
                 </CardContent>
               </Card>
             )) : (
-              <p className="col-span-3 text-center text-slate-400 italic py-10">Admin belum menambahkan daftar fasilitas.</p>
+              <div className="col-span-3 text-center py-20 bg-slate-50 rounded-[3rem] border-2 border-dashed border-slate-200">
+                <p className="text-slate-400 italic">Daftar fasilitas akan segera diperbarui oleh admin.</p>
+              </div>
             )}
           </div>
         </div>
