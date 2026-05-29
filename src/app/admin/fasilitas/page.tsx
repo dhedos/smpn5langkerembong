@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { Building2, Plus, Trash2, Save, Image as ImageIcon } from "lucide-react";
+import { Building2, Plus, Trash2, Save, Image as ImageIcon, Upload } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,6 +22,21 @@ export default function AdminFasilitas() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [imageUrl, setImageUrl] = useState("");
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 1024 * 1024) {
+        toast({ title: "Gagal", description: "Ukuran file maksimal 1MB.", variant: "destructive" });
+        return;
+      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImageUrl(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleSave = async () => {
     if (!db || !name || !description) {
@@ -74,8 +89,21 @@ export default function AdminFasilitas() {
               <Input placeholder="E.g. Laboratorium Komputer" value={name} onChange={(e) => setName(e.target.value)} />
             </div>
             <div className="space-y-2">
-              <Label>URL Gambar</Label>
-              <Input placeholder="https://..." value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} />
+              <Label>Foto Fasilitas</Label>
+              <div className="space-y-3">
+                <div className="relative h-32 w-full border-2 border-dashed rounded-xl overflow-hidden bg-slate-50 flex items-center justify-center">
+                  {imageUrl ? (
+                    <Image src={imageUrl} alt="Preview" fill className="object-cover" />
+                  ) : (
+                    <div className="text-center p-4">
+                      <Upload className="mx-auto h-8 w-8 text-slate-300 mb-2" />
+                      <span className="text-[10px] text-slate-400">Pilih foto dari komputer</span>
+                    </div>
+                  )}
+                </div>
+                <Input type="file" accept="image/*" onChange={handleFileChange} className="text-xs" />
+                <Input placeholder="Atau URL: https://..." value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} className="text-xs" />
+              </div>
             </div>
             <div className="space-y-2">
               <Label>Deskripsi</Label>

@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
-import { Settings, Save, Phone, School, Image as ImageIcon, Sparkles, BookOpen, Target, History as HistoryIcon, Plus, Trash2, BarChart3 } from "lucide-react";
+import { Settings, Save, Phone, School, Image as ImageIcon, Sparkles, BookOpen, Target, History as HistoryIcon, Plus, Trash2, BarChart3, Upload } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,6 +12,7 @@ import { useFirestore, useDoc } from "@/firebase";
 import { doc, setDoc } from "firebase/firestore";
 import { toast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import Image from "next/image";
 
 export default function AdminSettings() {
   const db = useFirestore();
@@ -27,6 +28,7 @@ export default function AdminSettings() {
     welcomeMessage: "",
     headmasterName: "",
     headmasterTitle: "",
+    headmasterPhotoUrl: "",
     whatsappNumber: "",
     history: "",
     vision: "",
@@ -43,6 +45,21 @@ export default function AdminSettings() {
       });
     }
   }, [currentSettings]);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, field: string) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 1024 * 1024) { // Limit 1MB for Base64 efficiency
+        toast({ title: "File terlalu besar", description: "Maksimal ukuran file adalah 1MB untuk performa terbaik.", variant: "destructive" });
+        return;
+      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData({ ...formData, [field]: reader.result as string });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleSave = async () => {
     if (!db) return;
@@ -101,7 +118,7 @@ export default function AdminSettings() {
       </div>
 
       <Tabs defaultValue="general" className="space-y-6">
-        <TabsList className="bg-slate-100 p-1 rounded-xl">
+        <TabsList className="bg-slate-100 p-1 rounded-xl w-full md:w-auto overflow-x-auto">
           <TabsTrigger value="general" className="rounded-lg px-6">Umum & Identitas</TabsTrigger>
           <TabsTrigger value="welcome" className="rounded-lg px-6">Sambutan</TabsTrigger>
           <TabsTrigger value="profile" className="rounded-lg px-6">Profil & Visi Misi</TabsTrigger>
@@ -133,9 +150,28 @@ export default function AdminSettings() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-xs font-bold uppercase text-slate-500">URL Logo Sekolah</Label>
+                  <Label className="text-xs font-bold uppercase text-slate-500">Logo Sekolah</Label>
+                  <div className="flex gap-4 items-center">
+                    <div className="relative h-16 w-16 border rounded-xl overflow-hidden bg-white shrink-0">
+                      {formData.schoolLogoUrl ? (
+                        <Image src={formData.schoolLogoUrl} alt="Logo" fill className="object-contain" />
+                      ) : (
+                        <div className="h-full w-full flex items-center justify-center text-slate-300"><ImageIcon /></div>
+                      )}
+                    </div>
+                    <div className="flex-1 space-y-1">
+                      <Input 
+                        type="file" 
+                        accept="image/*"
+                        className="text-xs cursor-pointer"
+                        onChange={(e) => handleFileChange(e, "schoolLogoUrl")}
+                      />
+                      <p className="text-[10px] text-muted-foreground">Unggah file lokal atau masukkan URL di bawah.</p>
+                    </div>
+                  </div>
                   <Input 
-                    className="bg-slate-50 border-slate-100"
+                    className="bg-slate-50 border-slate-100 text-xs"
+                    placeholder="Atau URL logo: https://..."
                     value={formData.schoolLogoUrl} 
                     onChange={(e) => setFormData({...formData, schoolLogoUrl: e.target.value})}
                   />
@@ -175,14 +211,42 @@ export default function AdminSettings() {
               <CardTitle className="text-lg">Editor Sambutan Kepala Sekolah</CardTitle>
             </CardHeader>
             <CardContent className="space-y-6 pt-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label className="text-xs font-bold uppercase text-slate-500">Nama Kepala Sekolah</Label>
-                  <Input value={formData.headmasterName} onChange={(e) => setFormData({...formData, headmasterName: e.target.value})} />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label className="text-xs font-bold uppercase text-slate-500">Nama Kepala Sekolah</Label>
+                    <Input value={formData.headmasterName} onChange={(e) => setFormData({...formData, headmasterName: e.target.value})} />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-xs font-bold uppercase text-slate-500">Jabatan/Gelar</Label>
+                    <Input value={formData.headmasterTitle} onChange={(e) => setFormData({...formData, headmasterTitle: e.target.value})} />
+                  </div>
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-xs font-bold uppercase text-slate-500">Jabatan/Gelar</Label>
-                  <Input value={formData.headmasterTitle} onChange={(e) => setFormData({...formData, headmasterTitle: e.target.value})} />
+                  <Label className="text-xs font-bold uppercase text-slate-500">Foto Kepala Sekolah</Label>
+                  <div className="flex gap-4 items-center">
+                    <div className="relative h-24 w-20 border rounded-xl overflow-hidden bg-slate-100 shrink-0">
+                      {formData.headmasterPhotoUrl ? (
+                        <Image src={formData.headmasterPhotoUrl} alt="Kepsek" fill className="object-cover" />
+                      ) : (
+                        <div className="h-full w-full flex items-center justify-center text-slate-300"><Upload /></div>
+                      )}
+                    </div>
+                    <div className="flex-1 space-y-2">
+                      <Input 
+                        type="file" 
+                        accept="image/*"
+                        className="text-xs"
+                        onChange={(e) => handleFileChange(e, "headmasterPhotoUrl")}
+                      />
+                      <Input 
+                        className="text-xs"
+                        placeholder="Atau URL Foto: https://..."
+                        value={formData.headmasterPhotoUrl}
+                        onChange={(e) => setFormData({...formData, headmasterPhotoUrl: e.target.value})}
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
               <div className="space-y-2">
