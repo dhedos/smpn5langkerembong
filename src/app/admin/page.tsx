@@ -26,6 +26,7 @@ import {
   ChartConfig,
 } from "@/components/ui/chart";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from "recharts";
+import { cn } from "@/lib/utils";
 
 const stats = [
   { title: "Kunjungan Situs", value: "12,450", change: "+12.5%", icon: Eye, color: "bg-blue-500" },
