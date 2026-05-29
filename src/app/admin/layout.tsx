@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState } from "react";
@@ -82,14 +81,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       });
     } catch (error: any) {
       console.error("Login failed", error);
-      let message = "Terjadi kesalahan saat mencoba login.";
+      let message = "Email atau password salah.";
       
-      if (error.code === 'auth/invalid-credential') {
-        message = "Email atau Password salah. Pastikan akun sudah dibuat di Firebase Console (Authentication).";
-      } else if (error.code === 'auth/configuration-not-found') {
+      if (error.code === 'auth/configuration-not-found') {
         message = "Metode Email/Password belum diaktifkan di Firebase Console.";
-      } else if (error.code === 'auth/too-many-requests') {
-        message = "Terlalu banyak percobaan. Coba lagi nanti.";
+      } else if (error.code === 'auth/unauthorized-domain') {
+        message = "Domain ini belum diizinkan di Firebase Console.";
       }
       
       toast({
@@ -107,13 +104,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   if (authLoading) {
     return (
       <div className="h-screen w-full flex items-center justify-center bg-[#1a1a1a]">
-        <div className="flex flex-col items-center gap-6">
-          <div className="relative">
-            <div className="h-16 w-16 border-4 border-secondary border-t-transparent rounded-full animate-spin" />
-            <Database className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-6 w-6 text-white" />
-          </div>
-          <p className="text-sm font-bold text-white/50 animate-pulse uppercase tracking-widest">Verifikasi Sistem...</p>
-        </div>
+        <div className="h-8 w-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -121,85 +112,57 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   if (!user) {
     return (
       <div className="h-screen w-full flex items-center justify-center bg-[#1a1a1a] px-4">
-        <div className="max-w-4xl w-full grid grid-cols-1 md:grid-cols-2 bg-[#252525] rounded-[2.5rem] overflow-hidden shadow-2xl border border-white/5">
-          <div className="p-10 md:p-14 flex flex-col justify-center space-y-8">
-            <div className="bg-primary w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg shadow-primary/20">
-              <Lock className="h-7 w-7 text-white" />
+        <div className="max-w-md w-full bg-[#252525] p-10 rounded-[2.5rem] border border-white/5 space-y-8">
+          <div className="flex flex-col items-center text-center space-y-4">
+            <div className="bg-primary p-4 rounded-2xl shadow-lg">
+              <Lock className="h-8 w-8 text-white" />
             </div>
+            <h1 className="text-3xl font-bold font-headline text-white">Cloud Console</h1>
+            <p className="text-white/50 text-sm">Masuk untuk mengelola website sekolah.</p>
+          </div>
+          
+          <form onSubmit={handleLogin} className="space-y-6">
             <div className="space-y-2">
-              <h1 className="text-3xl md:text-4xl font-bold font-headline text-white tracking-tight">Cloud Console</h1>
-              <p className="text-white/60 text-sm leading-relaxed">
-                Login menggunakan akun admin sekolah yang telah didaftarkan melalui Firebase Console.
-              </p>
+              <Label className="text-white/70 text-xs font-bold uppercase">Email</Label>
+              <Input 
+                type="email"
+                placeholder="admin@email.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="bg-white/5 border-white/10 text-white h-12 rounded-xl"
+                required
+              />
             </div>
-            
-            <form onSubmit={handleLogin} className="space-y-5">
-              <div className="space-y-2">
-                <Label className="text-white/70 text-xs font-bold uppercase tracking-wider">Email Address</Label>
-                <div className="relative">
-                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-white/30" />
-                  <Input 
-                    type="email"
-                    placeholder="admin@sekolah.sch.id"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="bg-white/5 border-white/10 text-white pl-11 h-12 rounded-xl focus:ring-primary focus:border-primary"
-                    required
-                  />
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label className="text-white/70 text-xs font-bold uppercase tracking-wider">Password</Label>
-                <div className="relative">
-                  <KeyRound className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-white/30" />
-                  <Input 
-                    type={showPassword ? "text" : "password"}
-                    placeholder="••••••••"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="bg-white/5 border-white/10 text-white pl-11 pr-11 h-12 rounded-xl focus:ring-primary focus:border-primary"
-                    required
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 focus:outline-none"
-                  >
-                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                  </button>
-                </div>
-              </div>
-              <Button 
-                type="submit"
-                size="lg" 
-                className="w-full bg-white text-black hover:bg-slate-200 py-6 rounded-xl gap-3 text-base font-bold transition-all hover:scale-[1.02]"
-                disabled={isLoggingIn}
+            <div className="space-y-2 relative">
+              <Label className="text-white/70 text-xs font-bold uppercase">Password</Label>
+              <Input 
+                type={showPassword ? "text" : "password"}
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="bg-white/5 border-white/10 text-white h-12 rounded-xl pr-12"
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-4 top-9 text-white/30 hover:text-white"
               >
-                {isLoggingIn ? (
-                  <div className="h-5 w-5 border-2 border-black border-t-transparent rounded-full animate-spin" />
-                ) : (
-                  <>Masuk Sekarang <ArrowRight className="h-4 w-4" /></>
-                )}
-              </Button>
-            </form>
-
-            <Link href="/" className="text-white/40 text-xs hover:text-white text-center flex items-center justify-center gap-2 pt-4">
-              <Globe className="h-3 w-3" /> Kembali ke Website Publik
-            </Link>
-          </div>
-          <div className="hidden md:block bg-gradient-to-br from-primary to-[#0d1117] relative p-12 overflow-hidden">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-secondary/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl" />
-            <div className="relative z-10 h-full flex flex-col justify-end">
-               <div className="space-y-4">
-                  <div className="flex gap-2">
-                    <div className="h-2 w-12 bg-secondary rounded-full" />
-                    <div className="h-2 w-4 bg-white/20 rounded-full" />
-                  </div>
-                  <h2 className="text-3xl font-bold text-white">Kelola Database SMP Modern</h2>
-                  <p className="text-white/70 text-sm leading-relaxed">Akses dashboard terpusat untuk mengelola Berita, Galeri, Fasilitas, dan Pengaturan PPDB Online secara real-time.</p>
-               </div>
+                {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+              </button>
             </div>
-          </div>
+            <Button 
+              type="submit" 
+              className="w-full bg-white text-black hover:bg-slate-200 h-14 rounded-2xl font-bold gap-2"
+              disabled={isLoggingIn}
+            >
+              {isLoggingIn ? "Memproses..." : "Masuk Sekarang"} <ArrowRight className="h-4 w-4" />
+            </Button>
+          </form>
+          
+          <Link href="/" className="block text-center text-white/30 text-xs hover:text-white">
+            Kembali ke Website
+          </Link>
         </div>
       </div>
     );
@@ -265,11 +228,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               </div>
             </div>
             <div className="flex items-center gap-4">
-               <div className="flex gap-1 mr-4">
-                  <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-400"><Bell className="h-4 w-4" /></Button>
-                  <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-400"><Terminal className="h-4 w-4" /></Button>
-                  <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-400"><HelpCircle className="h-4 w-4" /></Button>
-               </div>
                <div className="flex items-center gap-3">
                  <div className="flex flex-col items-end text-right">
                    <span className="text-xs font-bold text-slate-700">{user.email?.split('@')[0]}</span>

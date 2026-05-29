@@ -1,21 +1,16 @@
-
 "use client";
 
 import React from "react";
 import { 
   Users, 
   Newspaper, 
-  FileText, 
   TrendingUp, 
   Eye, 
   ArrowUpRight, 
-  LayoutDashboard,
-  Settings,
-  Bell,
-  Sparkles,
   Database,
   ChevronRight,
-  ExternalLink
+  ExternalLink,
+  Sparkles
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -75,26 +70,12 @@ export default function AdminDashboard() {
               >
                 <a href="/admin/berita">Kelola Berita</a>
               </Button>
-              <Button 
-                variant="outline" 
-                size="lg" 
-                className="border-white/20 text-white hover:bg-white/10 px-8 py-6 rounded-full font-bold gap-2"
-              >
-                <Sparkles className="h-5 w-5 text-secondary" /> Ask Gemini
-              </Button>
             </div>
           </div>
           
           <div className="hidden lg:flex relative">
              <div className="w-64 h-64 bg-gradient-to-tr from-orange-500/20 to-yellow-400/20 rounded-full border border-white/10 flex items-center justify-center animate-pulse">
                 <Database className="h-32 w-32 text-secondary/40" />
-             </div>
-             <div className="absolute -bottom-6 -right-6 bg-white/5 backdrop-blur-xl border border-white/10 p-6 rounded-[2rem] shadow-3xl rotate-6">
-                <div className="flex flex-col gap-2">
-                   <div className="h-2 w-16 bg-secondary/50 rounded-full" />
-                   <div className="h-2 w-24 bg-secondary rounded-full" />
-                   <div className="h-2 w-20 bg-secondary/30 rounded-full" />
-                </div>
              </div>
           </div>
         </div>
@@ -186,9 +167,6 @@ export default function AdminDashboard() {
                 <ChevronRight className="h-4 w-4 text-slate-300 group-hover:translate-x-1 transition-transform" />
               </div>
             ))}
-            <Button variant="outline" className="w-full rounded-xl border-slate-100 text-slate-500 font-bold text-xs uppercase tracking-widest py-6">
-               See full logs
-            </Button>
           </CardContent>
         </Card>
       </div>

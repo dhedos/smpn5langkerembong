@@ -11,22 +11,26 @@ Website modern untuk SMPN 5 Langke Rembong yang dilengkapi dengan CMS Admin dina
 
 ## Panduan Akses Admin
 Dashboard Admin digunakan untuk mengelola seluruh konten website.
-1. **URL Akses**: Tambahkan `/admin` pada alamat website Anda (misal: `domainanda.com/admin`).
+1. **URL Akses**: Tambahkan `/admin` pada alamat website Anda.
 2. **Metode Login**: Masukkan Email dan Password yang telah didaftarkan di Firebase Console.
 
 ## Pemecahan Masalah (Troubleshooting)
 
-### Error: `auth/invalid-credential`
-Jika Anda melihat error ini saat mencoba login:
+### Error: `auth/configuration-not-found`
+Jika Anda melihat error ini:
 1. Buka [Firebase Console](https://console.firebase.google.com/).
-2. Masuk ke menu **Authentication** > **Sign-in method**.
-3. Klik **Add new provider** > pilih **Email/Password** > centang **Enable** > klik **Save**.
-4. Masuk ke tab **Users**, klik **Add user** dan daftarkan email (bebas email apa saja) serta password.
+2. Masuk ke **Authentication** > **Sign-in method**.
+3. Klik **Add new provider** > pilih **Email/Password** > klik **Enable** > **Save**.
+
+### Error: `auth/invalid-credential`
+Pastikan Anda sudah mendaftarkan user secara manual:
+1. Buka **Authentication** > Tab **Users**.
+2. Klik **Add user** dan daftarkan email serta password yang ingin digunakan.
 
 ### Error: `auth/unauthorized-domain`
-Jika login gagal saat menggunakan domain baru atau preview (terutama di lingkungan Cloud Workstations):
+Jika login gagal di lingkungan preview:
 1. Buka **Authentication** > Tab **Settings** > **Authorized domains**.
-2. Klik **Add domain** dan masukkan domain website Anda (misal: `9000-firebase-studio-1779520840203.cluster-edb2jv34dnhjisxuq5m7l37ccy.cloudworkstations.dev`).
+2. Klik **Add domain** dan masukkan domain preview Anda (tanpa https://).
 
 ---
 © 2024 SMPN 5 Langke Rembong. Dikembangkan dengan EduVista Framework.

@@ -38,7 +38,7 @@ export default function Home() {
   ];
 
   const displayStats = settings?.stats || defaultStats;
-  const heroImageUrl = settings?.heroImageUrl || PlaceHolderImages.find(img => img.id === 'hero-school')?.imageUrl || "https://picsum.photos/seed/school1/1920/1080";
+  const heroImageUrl = settings?.heroImageUrl || "https://picsum.photos/seed/school1/1920/1080";
 
   return (
     <div className="flex flex-col gap-0">
@@ -46,16 +46,13 @@ export default function Home() {
       <section className="relative min-h-[95vh] flex items-center overflow-hidden bg-slate-950">
         <div 
           className="absolute inset-0 z-0 bg-cover bg-center transition-transform duration-[4000ms] hover:scale-105 opacity-60"
-          style={{ 
-            backgroundImage: `url('${heroImageUrl}')`,
-            backgroundAttachment: 'fixed'
-          }}
+          style={{ backgroundImage: `url('${heroImageUrl}')`, backgroundAttachment: 'fixed' }}
         />
         <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/70 to-transparent z-[1]" />
         
         <div className="container relative z-10 px-6 md:px-12 mx-auto">
           <div className="max-w-4xl space-y-12 animate-in fade-in slide-in-from-left duration-1000">
-            <div className="inline-flex items-center gap-3 bg-white/10 backdrop-blur-2xl border border-white/20 text-white px-8 py-3 rounded-full text-[10px] font-bold tracking-[0.3em] uppercase shadow-2xl">
+            <div className="inline-flex items-center gap-3 bg-white/10 backdrop-blur-2xl border border-white/20 text-white px-8 py-3 rounded-full text-[10px] font-bold tracking-widest uppercase shadow-2xl">
               <span className="relative flex h-2.5 w-2.5">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-secondary"></span>
@@ -63,17 +60,17 @@ export default function Home() {
               {settings?.ppdbIsActive ? `Pendaftaran Online ${settings.ppdbYear} Dibuka` : "Ekselensi Pendidikan Modern"}
             </div>
             
-            <h1 className="text-6xl md:text-[8rem] font-bold text-white font-headline leading-[0.9] tracking-tighter drop-shadow-2xl">
+            <h1 className="text-6xl md:text-[8rem] font-bold text-white font-headline leading-[0.9] tracking-tighter">
               {settings?.heroTitle || "Wujudkan Masa Depan"} <br/>
               <span className="text-secondary italic font-light">{settings?.schoolName || "SMPN 5 LR"}</span>
             </h1>
             
-            <p className="text-xl md:text-2xl text-white/70 max-w-2xl leading-relaxed font-medium drop-shadow-lg">
-              {settings?.heroSubtitle || "Sekolah dengan komitmen tinggi dalam mencetak generasi cerdas, berintegritas, dan kompetitif di era global."}
+            <p className="text-xl md:text-2xl text-white/70 max-w-2xl leading-relaxed font-medium">
+              {settings?.heroSubtitle || "Sekolah dengan komitmen tinggi dalam mencetak generasi cerdas, berintegritas, dan kompetitif."}
             </p>
             
             <div className="flex flex-wrap gap-6 pt-10">
-              <Button size="lg" className="bg-secondary text-primary font-bold hover:bg-secondary/90 px-14 py-10 text-xl rounded-full shadow-2xl shadow-secondary/20 hover:scale-105 transition-all group" asChild>
+              <Button size="lg" className="bg-secondary text-primary font-bold hover:bg-secondary/90 px-14 py-10 text-xl rounded-full shadow-2xl group" asChild>
                 <Link href="/ppdb" className="flex items-center gap-3">
                   Daftar Sekarang <ArrowRight className="h-6 w-6 group-hover:translate-x-3 transition-transform" />
                 </Link>
@@ -101,7 +98,7 @@ export default function Home() {
                   </div>
                   <div>
                     <div className="text-6xl font-bold text-slate-900 font-headline tracking-tighter mb-2">{stat.value}</div>
-                    <div className="text-xs text-slate-400 font-bold uppercase tracking-[0.3em]">{stat.label}</div>
+                    <div className="text-xs text-slate-400 font-bold uppercase tracking-widest">{stat.label}</div>
                   </div>
                 </CardContent>
               </Card>
@@ -110,39 +107,33 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Sambutan Kepala Sekolah */}
+      {/* Sambutan Section */}
       <section className="py-56 bg-white overflow-hidden">
         <div className="container mx-auto px-6 md:px-12">
           <div className="flex flex-col lg:flex-row items-center gap-40">
             <div className="w-full lg:w-1/2 relative">
-              <div className="relative z-10 rounded-[5rem] overflow-hidden shadow-[0_50px_100px_rgba(0,0,0,0.1)] border-[20px] border-slate-50 group">
+              <div className="relative z-10 rounded-[5rem] overflow-hidden shadow-2xl border-[20px] border-slate-50 group">
                 <Image
-                  src={settings?.headmasterPhotoUrl || PlaceHolderImages.find(img => img.id === 'headmaster')?.imageUrl || "https://picsum.photos/seed/headmaster/600/750"}
+                  src={settings?.headmasterPhotoUrl || "https://picsum.photos/seed/headmaster/600/750"}
                   alt="Kepala Sekolah"
                   width={600}
                   height={750}
                   className="w-full h-auto object-cover grayscale hover:grayscale-0 transition-all duration-1000 scale-105 group-hover:scale-100"
                 />
               </div>
-              <div className="absolute -bottom-24 -right-24 -z-10 bg-secondary/10 w-full h-full rounded-[5rem] blur-[100px]" />
             </div>
             <div className="w-full lg:w-1/2 space-y-12">
-              <div className="inline-block bg-slate-100 text-slate-500 font-bold tracking-[0.4em] uppercase text-[10px] px-8 py-4 rounded-full">{settings?.welcomeTitle || "Sambutan Kepala Sekolah"}</div>
+              <div className="inline-block bg-slate-100 text-slate-500 font-bold tracking-widest uppercase text-[10px] px-8 py-4 rounded-full">{settings?.welcomeTitle || "Sambutan Kepala Sekolah"}</div>
               <h2 className="text-6xl md:text-[5.5rem] font-bold text-primary leading-[1] font-headline tracking-tighter">
                 Mendidik dengan <br/> <span className="text-secondary italic">Hati & Inovasi</span>
               </h2>
-              <div className="space-y-10 text-slate-600 text-2xl leading-relaxed font-medium">
-                <p className="whitespace-pre-line italic relative pl-16">
-                  <span className="absolute left-0 top-0 text-[10rem] text-secondary/20 font-serif leading-none -translate-y-12">“</span>
-                  {settings?.welcomeMessage || "Visi kami adalah menciptakan ekosistem pendidikan yang tidak hanya unggul secara akademis, tetapi juga membentuk karakter siswa yang tangguh dan berintegritas tinggi."}
-                </p>
-              </div>
-              <div className="pt-16 flex items-center gap-10">
-                 <div className="w-24 h-px bg-slate-200" />
-                 <div>
-                    <div className="font-bold text-4xl text-primary font-headline tracking-tight">{settings?.headmasterName || "Dr. Ahmad Hidayat, M.Pd."}</div>
-                    <div className="text-secondary font-bold uppercase text-xs tracking-[0.4em] mt-3">{settings?.headmasterTitle || "Kepala Sekolah"}</div>
-                 </div>
+              <p className="text-slate-600 text-2xl leading-relaxed font-medium italic pl-16 relative">
+                <span className="absolute left-0 top-0 text-[10rem] text-secondary/20 font-serif leading-none -translate-y-12">“</span>
+                {settings?.welcomeMessage || "Visi kami adalah menciptakan ekosistem pendidikan yang unggul dan berkarakter."}
+              </p>
+              <div className="pt-16">
+                 <div className="font-bold text-4xl text-primary font-headline tracking-tight">{settings?.headmasterName || "Dr. Ahmad Hidayat, M.Pd."}</div>
+                 <div className="text-secondary font-bold uppercase text-xs tracking-widest mt-3">{settings?.headmasterTitle || "Kepala Sekolah"}</div>
               </div>
             </div>
           </div>
@@ -154,80 +145,52 @@ export default function Home() {
         <div className="container mx-auto px-6 md:px-12">
           <div className="flex flex-col md:flex-row justify-between items-end mb-32 gap-12">
             <div className="space-y-8">
-              <div className="text-secondary font-bold tracking-[0.4em] uppercase text-[10px]">Update Informasi</div>
+              <div className="text-secondary font-bold tracking-widest uppercase text-[10px]">Update Informasi</div>
               <h2 className="text-6xl md:text-[6rem] font-bold text-primary font-headline tracking-tighter leading-none">Kabar Terbaru</h2>
             </div>
-            <Button variant="outline" className="rounded-full px-12 py-10 text-lg font-bold border-slate-200 text-slate-600 hover:bg-primary hover:text-white hover:border-primary transition-all shadow-2xl bg-white" asChild>
+            <Button variant="outline" className="rounded-full px-12 py-10 text-lg font-bold border-slate-200 text-slate-600 hover:bg-primary hover:text-white transition-all shadow-2xl bg-white" asChild>
               <Link href="/berita" className="flex items-center gap-4">Lihat Semua Berita <ChevronRight className="h-5 w-5" /></Link>
             </Button>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-16">
-            {newsItems && newsItems.length > 0 ? (
-              newsItems.map((item: any) => (
-                <Card key={item.id} className="group overflow-hidden border-none shadow-[0_40px_80px_rgba(0,0,0,0.05)] hover:shadow-[0_50px_100px_rgba(0,0,0,0.1)] transition-all duration-700 rounded-[4rem] bg-white flex flex-col h-full">
-                  <div className="relative h-80 overflow-hidden shrink-0">
-                    <Image
-                      src={item.imageUrl || `https://picsum.photos/seed/${item.id}/600/400`}
-                      alt={item.title}
-                      fill
-                      className="object-cover group-hover:scale-110 transition-transform duration-1000"
-                    />
-                    <div className="absolute top-10 left-10 bg-white/95 backdrop-blur-md text-primary text-[10px] font-bold px-8 py-2.5 rounded-full uppercase tracking-[0.3em]">
-                      {item.category}
-                    </div>
-                  </div>
-                  <CardContent className="p-12 space-y-8 flex flex-col flex-1">
-                    <div className="flex items-center gap-4 text-slate-400 text-xs font-bold uppercase tracking-widest">
-                      <Calendar className="h-5 w-5 text-secondary" />
-                      <span>{item.date}</span>
-                    </div>
-                    <h3 className="text-3xl md:text-4xl font-bold text-primary font-headline group-hover:text-secondary transition-colors line-clamp-2 leading-tight">
-                      {item.title}
-                    </h3>
-                    <p className="text-slate-500 text-lg line-clamp-3 font-medium leading-relaxed flex-1">
-                      {item.summary}
-                    </p>
-                    <Link href={`/berita/${item.id}`} className="inline-flex items-center gap-4 text-primary font-bold text-base group/link pt-10 border-t border-slate-50">
-                      Baca Artikel <ArrowRight className="h-5 w-5 text-secondary group-hover/link:translate-x-4 transition-transform" />
-                    </Link>
-                  </CardContent>
-                </Card>
-              ))
-            ) : (
-              <div className="col-span-full text-center py-40 bg-white rounded-[4rem] border-2 border-dashed border-slate-200">
-                <p className="text-slate-400 italic text-xl font-medium">Belum ada berita yang dipublikasikan.</p>
-              </div>
-            )}
+            {newsItems?.map((item: any) => (
+              <Card key={item.id} className="group overflow-hidden border-none shadow-xl hover:shadow-2xl transition-all duration-700 rounded-[4rem] bg-white flex flex-col h-full">
+                <div className="relative h-80 overflow-hidden shrink-0">
+                  <Image src={item.imageUrl || `https://picsum.photos/seed/${item.id}/600/400`} alt={item.title} fill className="object-cover group-hover:scale-110 transition-transform duration-1000" />
+                  <div className="absolute top-10 left-10 bg-white/95 backdrop-blur-md text-primary text-[10px] font-bold px-8 py-2.5 rounded-full uppercase tracking-widest">{item.category}</div>
+                </div>
+                <CardContent className="p-12 space-y-8 flex flex-col flex-1">
+                  <div className="flex items-center gap-4 text-slate-400 text-xs font-bold uppercase tracking-widest"><Calendar className="h-5 w-5 text-secondary" /> {item.date}</div>
+                  <h3 className="text-3xl font-bold text-primary font-headline group-hover:text-secondary transition-colors line-clamp-2 leading-tight">{item.title}</h3>
+                  <p className="text-slate-500 text-lg line-clamp-3 font-medium flex-1">{item.summary}</p>
+                  <Link href={`/berita/${item.id}`} className="inline-flex items-center gap-4 text-primary font-bold text-base group/link pt-10 border-t border-slate-50">
+                    Baca Artikel <ArrowRight className="h-5 w-5 text-secondary group-hover/link:translate-x-4 transition-transform" />
+                  </Link>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Facilities Grid */}
+      {/* Facilities Bento Grid */}
       <section className="py-56 bg-white">
         <div className="container mx-auto px-6 md:px-12">
           <div className="text-center max-w-5xl mx-auto mb-40 space-y-10">
-            <div className="bg-secondary/10 text-secondary font-bold tracking-[0.4em] uppercase text-[10px] px-8 py-4 rounded-full inline-block">Fasilitas Kampus</div>
+            <div className="bg-secondary/10 text-secondary font-bold tracking-widest uppercase text-[10px] px-8 py-4 rounded-full inline-block">Fasilitas Kampus</div>
             <h2 className="text-6xl md:text-[7rem] font-bold text-primary font-headline tracking-tighter leading-none">Sarana Unggulan</h2>
-            <p className="text-slate-500 text-2xl font-medium leading-relaxed">Menyediakan sarana belajar yang nyaman, modern, dan lengkap untuk menunjang pencapaian prestasi siswa.</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
-            {facilities && facilities.length > 0 ? facilities.map((f: any, idx: number) => (
-              <div key={f.id} className={cn("h-[600px] relative rounded-[4rem] overflow-hidden group shadow-[0_40px_80px_rgba(0,0,0,0.1)]", (idx === 0 || idx === 3) && "md:col-span-2")}>
+            {facilities?.map((f: any, idx: number) => (
+              <div key={f.id} className={cn("h-[600px] relative rounded-[4rem] overflow-hidden group shadow-xl", (idx === 0 || idx === 3) && "md:col-span-2")}>
                 <Image src={f.imageUrl || `https://picsum.photos/seed/${f.id}/800/600`} alt={f.name} fill className="object-cover group-hover:scale-110 transition-transform duration-[2000ms]" />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900/95 via-slate-900/30 to-transparent p-16 flex flex-col justify-end">
-                  <div className="space-y-6 transform translate-y-8 group-hover:translate-y-0 transition-transform duration-1000">
-                    <h3 className="text-white text-4xl md:text-5xl font-bold font-headline tracking-tight leading-none">{f.name}</h3>
-                    <div className="h-2 w-20 bg-secondary rounded-full transform scale-x-0 group-hover:scale-x-100 transition-transform duration-1000 origin-left" />
-                  </div>
+                  <h3 className="text-white text-4xl md:text-5xl font-bold font-headline tracking-tight leading-none">{f.name}</h3>
                 </div>
               </div>
-            )) : (
-              <div className="col-span-full text-center py-40 bg-slate-50 rounded-[4rem] border-2 border-dashed border-slate-200">
-                <p className="text-slate-400 italic text-xl font-medium">Data fasilitas belum diperbarui.</p>
-              </div>
-            )}
+            ))}
           </div>
         </div>
       </section>

@@ -17,7 +17,7 @@ import {
   Users,
   GraduationCap,
   Award,
-  Image as ImageIcon,
+  ImageIcon,
   Layout
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -56,10 +56,10 @@ export default function AdminSettings() {
     vision: "",
     mission: [],
     stats: [
-      { label: "Siswa Aktif", value: "0", icon: "Users" },
-      { label: "Guru & Staff", value: "0", icon: "GraduationCap" },
-      { label: "Prestasi Siswa", value: "0", icon: "Award" },
-      { label: "Ekstrakurikuler", value: "0", icon: "BookOpen" },
+      { label: "Siswa Aktif", value: "850+", icon: "Users" },
+      { label: "Guru & Staff", value: "65+", icon: "GraduationCap" },
+      { label: "Prestasi Siswa", value: "120+", icon: "Award" },
+      { label: "Ekstrakurikuler", value: "24", icon: "BookOpen" },
     ],
     ppdbYear: "2024/2025",
     ppdbIsActive: true,
@@ -86,7 +86,7 @@ export default function AdminSettings() {
     const file = e.target.files?.[0];
     if (file) {
       if (file.size > 800 * 1024) {
-        toast({ title: "File terlalu besar", description: "Maksimal ukuran file gambar adalah 800KB agar bisa disimpan di database.", variant: "destructive" });
+        toast({ title: "File terlalu besar", description: "Maksimal ukuran file gambar adalah 800KB.", variant: "destructive" });
         return;
       }
       const reader = new FileReader();
@@ -107,7 +107,7 @@ export default function AdminSettings() {
       console.error("Save error:", error);
       toast({ 
         title: "Gagal Menyimpan", 
-        description: error.message || "Terjadi kesalahan saat menyimpan.", 
+        description: "Terjadi kesalahan saat menyimpan.", 
         variant: "destructive" 
       });
     } finally {
@@ -150,26 +150,21 @@ export default function AdminSettings() {
           onClick={handleSave}
           disabled={isSaving}
         >
-          {isSaving ? (
-            <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-          ) : (
-            <Save className="h-4 w-4" />
-          )}
           {isSaving ? "Menyimpan..." : "Simpan Perubahan"}
         </Button>
       </div>
 
       <Tabs defaultValue="general" className="space-y-6">
-        <TabsList className="bg-slate-100 p-1 rounded-xl w-full md:w-auto overflow-x-auto flex flex-nowrap h-auto">
-          <TabsTrigger value="general" className="rounded-lg px-6 py-2 shrink-0">Identitas</TabsTrigger>
-          <TabsTrigger value="hero" className="rounded-lg px-6 py-2 shrink-0">Hero Section</TabsTrigger>
-          <TabsTrigger value="welcome" className="rounded-lg px-6 py-2 shrink-0">Sambutan</TabsTrigger>
-          <TabsTrigger value="profile" className="rounded-lg px-6 py-2 shrink-0">Visi Misi</TabsTrigger>
-          <TabsTrigger value="stats" className="rounded-lg px-6 py-2 shrink-0">Statistik</TabsTrigger>
-          <TabsTrigger value="ppdb" className="rounded-lg px-6 py-2 shrink-0 text-secondary font-bold">PPDB Online</TabsTrigger>
+        <TabsList className="bg-slate-100 p-1 rounded-xl w-full md:w-auto flex overflow-x-auto h-auto">
+          <TabsTrigger value="general" className="rounded-lg px-6 py-2">Identitas</TabsTrigger>
+          <TabsTrigger value="hero" className="rounded-lg px-6 py-2">Hero Section</TabsTrigger>
+          <TabsTrigger value="welcome" className="rounded-lg px-6 py-2">Sambutan</TabsTrigger>
+          <TabsTrigger value="profile" className="rounded-lg px-6 py-2">Visi Misi</TabsTrigger>
+          <TabsTrigger value="stats" className="rounded-lg px-6 py-2">Statistik</TabsTrigger>
+          <TabsTrigger value="ppdb" className="rounded-lg px-6 py-2 text-secondary font-bold">PPDB Online</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="general" className="space-y-6 animate-in fade-in duration-500">
+        <TabsContent value="general" className="space-y-6">
            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Card className="border-none shadow-sm">
               <CardHeader className="bg-slate-50/50">
@@ -177,18 +172,18 @@ export default function AdminSettings() {
               </CardHeader>
               <CardContent className="space-y-4 pt-6">
                 <div className="space-y-2">
-                  <Label className="text-xs font-bold uppercase text-slate-500">Nama Sekolah</Label>
+                  <Label>Nama Sekolah</Label>
                   <Input value={formData.schoolName} onChange={(e) => setFormData({...formData, schoolName: e.target.value})} placeholder="E.g. SMP Negeri 5 Langke Rembong" />
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-xs font-bold uppercase text-slate-500">Logo Sekolah (Maks 800KB)</Label>
+                  <Label>Logo Sekolah (Maks 800KB)</Label>
                   <div className="flex items-center gap-4">
                     {formData.schoolLogoUrl && <div className="h-16 w-16 relative border rounded-lg bg-white p-1"><Image src={formData.schoolLogoUrl} alt="Logo" fill className="object-contain" /></div>}
-                    <Input type="file" accept="image/*" onChange={(e) => handleFileChange(e, "schoolLogoUrl")} className="flex-1" />
+                    <Input type="file" accept="image/*" onChange={(e) => handleFileChange(e, "schoolLogoUrl")} />
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-xs font-bold uppercase text-slate-500">Alamat Lengkap</Label>
+                  <Label>Alamat Lengkap</Label>
                   <Textarea value={formData.address} onChange={(e) => setFormData({...formData, address: e.target.value})} />
                 </div>
               </CardContent>
@@ -199,15 +194,15 @@ export default function AdminSettings() {
               </CardHeader>
               <CardContent className="space-y-4 pt-6">
                 <div className="space-y-2">
-                  <Label className="text-xs font-bold uppercase text-slate-500">WhatsApp Admin (Format: 62812...)</Label>
+                  <Label>WhatsApp Admin (62812...)</Label>
                   <Input value={formData.whatsappNumber} onChange={(e) => setFormData({...formData, whatsappNumber: e.target.value})} />
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-xs font-bold uppercase text-slate-500">Nomor Telepon Kantor</Label>
+                  <Label>Nomor Telepon Kantor</Label>
                   <Input value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} />
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-xs font-bold uppercase text-slate-500">Email Resmi</Label>
+                  <Label>Email Resmi</Label>
                   <Input value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} />
                 </div>
               </CardContent>
@@ -215,7 +210,7 @@ export default function AdminSettings() {
           </div>
         </TabsContent>
 
-        <TabsContent value="hero" className="space-y-6 animate-in fade-in duration-500">
+        <TabsContent value="hero" className="space-y-6">
           <Card className="border-none shadow-sm">
             <CardHeader className="bg-slate-50/50">
               <CardTitle className="text-lg flex items-center gap-2"><ImageIcon className="h-5 w-5" /> Tampilan Beranda (Hero)</CardTitle>
@@ -333,61 +328,20 @@ export default function AdminSettings() {
           </Card>
         </TabsContent>
 
-        <TabsContent value="ppdb" className="space-y-6 animate-in fade-in duration-500">
+        <TabsContent value="ppdb" className="space-y-6">
           <Card className="border-none shadow-sm border-l-4 border-l-secondary">
             <CardHeader className="bg-slate-50/50 flex flex-row items-center justify-between">
-              <div>
-                <CardTitle className="text-lg flex items-center gap-2 text-primary"><FileText className="h-5 w-5" /> Status PPDB</CardTitle>
-              </div>
+              <CardTitle className="text-lg flex items-center gap-2 text-primary"><FileText className="h-5 w-5" /> Status PPDB</CardTitle>
               <div className="flex items-center gap-3">
-                <Label className="text-xs font-bold">{formData.ppdbIsActive ? "AKTIF" : "NONAKTIF"}</Label>
-                <Switch 
-                  checked={formData.ppdbIsActive} 
-                  onCheckedChange={(val) => setFormData({...formData, ppdbIsActive: val})} 
-                />
+                <Label>{formData.ppdbIsActive ? "AKTIF" : "NONAKTIF"}</Label>
+                <Switch checked={formData.ppdbIsActive} onCheckedChange={(val) => setFormData({...formData, ppdbIsActive: val})} />
               </div>
             </CardHeader>
             <CardContent className="pt-6">
               <Label>Tahun Pelajaran</Label>
-              <Input className="mt-2" placeholder="E.g. 2024/2025" value={formData.ppdbYear} onChange={(e) => setFormData({...formData, ppdbYear: e.target.value})} />
+              <Input className="mt-2" value={formData.ppdbYear} onChange={(e) => setFormData({...formData, ppdbYear: e.target.value})} />
             </CardContent>
           </Card>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card className="border-none shadow-sm">
-              <CardHeader className="bg-slate-50/50 flex flex-row items-center justify-between">
-                <CardTitle className="text-lg flex items-center gap-2"><CheckCircle2 className="h-5 w-5" /> Persyaratan</CardTitle>
-                <Button variant="outline" size="sm" onClick={() => addItem("ppdbRequirements", "")}><Plus className="h-3 w-3" /></Button>
-              </CardHeader>
-              <CardContent className="pt-6 space-y-3">
-                {formData.ppdbRequirements?.map((req: string, i: number) => (
-                  <div key={i} className="flex gap-2">
-                    <Input value={req} onChange={(e) => updateItem("ppdbRequirements", i, e.target.value)} />
-                    <Button variant="ghost" size="icon" className="text-destructive" onClick={() => removeItem("ppdbRequirements", i)}><Trash2 className="h-4 w-4" /></Button>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-
-            <Card className="border-none shadow-sm">
-              <CardHeader className="bg-slate-50/50 flex flex-row items-center justify-between">
-                <CardTitle className="text-lg flex items-center gap-2"><Layout className="h-5 w-5" /> Jalur & Kuota</CardTitle>
-                <Button variant="outline" size="sm" onClick={() => addItem("ppdbQuotas", {label: "", value: "", description: ""})}><Plus className="h-3 w-3" /></Button>
-              </CardHeader>
-              <CardContent className="pt-6 space-y-4">
-                {formData.ppdbQuotas?.map((q: any, i: number) => (
-                  <div key={i} className="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-3">
-                    <div className="grid grid-cols-2 gap-2">
-                      <Input placeholder="Nama Jalur" value={q.label} onChange={(e) => updateItem("ppdbQuotas", i, {...q, label: e.target.value})} />
-                      <Input placeholder="Kuota (%)" value={q.value} onChange={(e) => updateItem("ppdbQuotas", i, {...q, value: e.target.value})} />
-                    </div>
-                    <Input placeholder="Keterangan" value={q.description} onChange={(e) => updateItem("ppdbQuotas", i, {...q, description: e.target.value})} />
-                    <Button variant="ghost" size="sm" className="w-full text-destructive" onClick={() => removeItem("ppdbQuotas", i)}>Hapus</Button>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-          </div>
         </TabsContent>
       </Tabs>
     </div>
