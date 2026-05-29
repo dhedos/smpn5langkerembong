@@ -23,7 +23,7 @@ export default function Home() {
   const db = useFirestore();
   
   const settingsRef = useMemo(() => db ? doc(db, "settings", "general") : null, [db]);
-  const { data: settings, loading: settingsLoading } = useDoc(settingsRef);
+  const { data: settings } = useDoc(settingsRef);
 
   const newsQuery = useMemo(() => db ? query(collection(db, "news"), orderBy("date", "desc"), limit(3)) : null, [db]);
   const { data: newsItems } = useCollection(newsQuery);
@@ -39,30 +39,21 @@ export default function Home() {
   ];
 
   const displayStats = settings?.stats || defaultStats;
-  const heroImageUrl = PlaceHolderImages.find(img => img.id === 'hero-school')?.imageUrl || "https://picsum.photos/seed/school1/1920/1080";
-
-  if (settingsLoading && !settings) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-white">
-        <Loader2 className="h-12 w-12 text-primary animate-spin mb-4" />
-        <p className="text-sm font-bold text-slate-400 uppercase tracking-widest animate-pulse">Menyiapkan Pengalaman EduVista...</p>
-      </div>
-    );
-  }
+  const heroImageUrl = settings?.heroImageUrl || PlaceHolderImages.find(img => img.id === 'hero-school')?.imageUrl || "https://picsum.photos/seed/school1/1920/1080";
 
   return (
     <div className="flex flex-col gap-0 animate-in fade-in duration-700">
       {/* Hero Section with Fixed Background */}
-      <section className="relative h-screen min-h-[700px] flex items-center overflow-hidden">
+      <section className="relative h-screen min-h-[700px] flex items-center overflow-hidden bg-slate-900">
         {/* Background Layer */}
         <div 
-          className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat transition-transform duration-700"
+          className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat transition-transform duration-700 opacity-60"
           style={{ 
             backgroundImage: `url('${heroImageUrl}')`,
             backgroundAttachment: 'fixed'
           }}
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-primary/40 to-background z-[1]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-primary/40 to-background z-[1]" />
         
         <div className="container relative z-10 px-4 md:px-8 mx-auto">
           <div className="max-w-3xl space-y-8 animate-in fade-in slide-in-from-left duration-1000">
@@ -98,7 +89,7 @@ export default function Home() {
           {displayStats.map((stat: any, i: number) => {
             const Icon = iconMap[stat.icon] || Users;
             return (
-              <Card key={i} className="bg-white/80 backdrop-blur-2xl border-white/50 shadow-2xl hover:translate-y-[-8px] transition-all duration-300 rounded-[2rem] overflow-hidden">
+              <Card key={i} className="bg-white/90 backdrop-blur-2xl border-white/50 shadow-2xl hover:translate-y-[-8px] transition-all duration-300 rounded-[2rem] overflow-hidden">
                 <CardContent className="p-8 flex flex-col items-center text-center gap-4">
                   <div className="p-4 bg-primary/10 rounded-2xl">
                     <Icon className="h-10 w-10 text-primary" />
@@ -166,8 +157,8 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
             {newsItems && newsItems.length > 0 ? (
               newsItems.map((item: any) => (
-                <Card key={item.id} className="group overflow-hidden border-none shadow-xl hover:shadow-2xl transition-all duration-500 rounded-[2.5rem] bg-white">
-                  <div className="relative h-64 overflow-hidden">
+                <Card key={item.id} className="group overflow-hidden border-none shadow-xl hover:shadow-2xl transition-all duration-500 rounded-[2.5rem] bg-white flex flex-col h-full">
+                  <div className="relative h-64 overflow-hidden shrink-0">
                     <Image
                       src={item.imageUrl || `https://picsum.photos/seed/${item.id}/600/400`}
                       alt={item.title}
@@ -178,7 +169,7 @@ export default function Home() {
                       {item.category}
                     </div>
                   </div>
-                  <CardContent className="p-8 space-y-4">
+                  <CardContent className="p-8 space-y-4 flex flex-col flex-1">
                     <div className="flex items-center gap-2 text-slate-400 text-xs font-bold uppercase tracking-widest">
                       <Calendar className="h-3 w-3" />
                       <span>{item.date}</span>
@@ -186,7 +177,7 @@ export default function Home() {
                     <h3 className="text-2xl font-bold text-primary font-headline group-hover:text-secondary transition-colors line-clamp-2 leading-snug">
                       {item.title}
                     </h3>
-                    <p className="text-slate-500 text-sm line-clamp-2 font-medium">
+                    <p className="text-slate-500 text-sm line-clamp-2 font-medium flex-1">
                       {item.summary}
                     </p>
                     <Link href={`/berita/${item.id}`} className="inline-flex items-center gap-2 text-primary font-bold text-sm hover:gap-4 transition-all pt-4 group/link">
