@@ -6,7 +6,6 @@ import { Footer } from '@/components/layout/Footer';
 import { WhatsAppButton } from '@/components/contact/WhatsAppButton';
 import { Toaster } from '@/components/ui/toaster';
 import { FirebaseClientProvider } from '@/firebase';
-import { ChatAssistant } from '@/components/chat/ChatAssistant';
 
 export const metadata: Metadata = {
   title: 'EduVista SMP - Modern Excellence in Education',
@@ -32,7 +31,6 @@ export default function RootLayout({
             <main className="flex-1">{children}</main>
             <Footer />
           </div>
-          <ChatAssistant />
           <WhatsAppButton />
           <Toaster />
         </FirebaseClientProvider>
