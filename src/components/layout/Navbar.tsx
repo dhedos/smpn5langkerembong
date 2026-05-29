@@ -29,6 +29,7 @@ const navItems = [
     ]
   },
   { name: "Berita", href: "/berita" },
+  { name: "Galeri", href: "/galeri" },
   { name: "PPDB", href: "/ppdb" },
 ];
 
