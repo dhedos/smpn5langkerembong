@@ -21,10 +21,15 @@ import {
   Terminal,
   HelpCircle,
   Bell,
-  AlertCircle
+  AlertCircle,
+  Mail,
+  KeyRound,
+  ArrowRight
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { 
   Sidebar, 
   SidebarContent, 
@@ -38,7 +43,7 @@ import {
   SidebarInset
 } from "@/components/ui/sidebar";
 import { useUser, useAuth, useFirestore, useDoc } from "@/firebase";
-import { signInWithPopup, GoogleAuthProvider, signOut } from "firebase/auth";
+import { signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { doc } from "firebase/firestore";
 import { toast } from "@/hooks/use-toast";
 
@@ -55,6 +60,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const { user, loading: authLoading } = useUser();
   const auth = useAuth();
   const db = useFirestore();
+  
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   const adminRef = useMemo(() => {
@@ -63,26 +71,40 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   const { data: adminData, loading: dbLoading } = useDoc(adminRef);
 
-  const handleLogin = async () => {
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email || !password) {
+      toast({
+        title: "Data Tidak Lengkap",
+        description: "Silakan masukkan email dan kata sandi.",
+        variant: "destructive"
+      });
+      return;
+    }
+
     setIsLoggingIn(true);
-    const provider = new GoogleAuthProvider();
     try {
-      await signInWithPopup(auth, provider);
+      await signInWithEmailAndPassword(auth, email, password);
+      toast({
+        title: "Login Berhasil",
+        description: "Selamat datang di Cloud Console.",
+      });
     } catch (error: any) {
       console.error("Login failed", error);
-      if (error.code === 'auth/configuration-not-found') {
-        toast({
-          title: "Konfigurasi Belum Siap",
-          description: "Google Auth belum diaktifkan di Firebase Console. Silakan aktifkan di menu Authentication > Sign-in method.",
-          variant: "destructive"
-        });
-      } else {
-        toast({
-          title: "Login Gagal",
-          description: error.message || "Terjadi kesalahan saat mencoba login.",
-          variant: "destructive"
-        });
+      let message = "Terjadi kesalahan saat mencoba login.";
+      if (error.code === 'auth/invalid-credential') {
+        message = "Email atau kata sandi salah.";
+      } else if (error.code === 'auth/user-not-found') {
+        message = "Pengguna tidak ditemukan.";
+      } else if (error.code === 'auth/wrong-password') {
+        message = "Kata sandi yang Anda masukkan salah.";
       }
+      
+      toast({
+        title: "Login Gagal",
+        description: message,
+        variant: "destructive"
+      });
     } finally {
       setIsLoggingIn(false);
     }
@@ -109,30 +131,61 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     return (
       <div className="h-screen w-full flex items-center justify-center bg-[#1a1a1a] px-4">
         <div className="max-w-4xl w-full grid grid-cols-1 md:grid-cols-2 bg-[#252525] rounded-[2rem] overflow-hidden shadow-2xl border border-white/5">
-          <div className="p-12 flex flex-col justify-center space-y-8">
+          <div className="p-8 md:p-12 flex flex-col justify-center space-y-8">
             <div className="bg-primary w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg shadow-primary/20">
               <Lock className="h-7 w-7 text-white" />
             </div>
             <div className="space-y-2">
-              <h1 className="text-4xl font-bold font-headline text-white tracking-tight">Cloud Console</h1>
+              <h1 className="text-3xl md:text-4xl font-bold font-headline text-white tracking-tight">Cloud Console</h1>
               <p className="text-white/60 text-sm leading-relaxed">
-                Akses panel manajemen SMPN 5 Langke Rembong. Gunakan akun Google Admin Anda.
+                Masuk ke panel manajemen SMPN 5 Langke Rembong dengan akun resmi Anda.
               </p>
             </div>
-            <Button 
-              size="lg" 
-              className="w-full bg-white text-black hover:bg-slate-200 py-8 rounded-2xl gap-3 text-lg font-bold transition-transform hover:scale-[1.02]"
-              onClick={handleLogin}
-              disabled={isLoggingIn}
-            >
-              {isLoggingIn ? (
-                <div className="h-5 w-5 border-2 border-black border-t-transparent rounded-full animate-spin" />
-              ) : (
-                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" className="h-6 w-6" alt="Google" />
-              )}
-              Sign in with Google
-            </Button>
-            <Link href="/" className="text-white/40 text-xs hover:text-white text-center flex items-center justify-center gap-2">
+            
+            <form onSubmit={handleLogin} className="space-y-4">
+              <div className="space-y-2">
+                <Label className="text-white/70 text-xs font-bold uppercase tracking-wider">Email Address</Label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/30" />
+                  <Input 
+                    type="email"
+                    placeholder="admin@sekolah.sch.id"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="bg-white/5 border-white/10 text-white pl-10 h-12 rounded-xl focus:ring-primary focus:border-primary"
+                    required
+                  />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label className="text-white/70 text-xs font-bold uppercase tracking-wider">Password</Label>
+                <div className="relative">
+                  <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/30" />
+                  <Input 
+                    type="password"
+                    placeholder="••••••••"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="bg-white/5 border-white/10 text-white pl-10 h-12 rounded-xl focus:ring-primary focus:border-primary"
+                    required
+                  />
+                </div>
+              </div>
+              <Button 
+                type="submit"
+                size="lg" 
+                className="w-full bg-white text-black hover:bg-slate-200 py-6 rounded-xl gap-3 text-base font-bold transition-all hover:scale-[1.02]"
+                disabled={isLoggingIn}
+              >
+                {isLoggingIn ? (
+                  <div className="h-5 w-5 border-2 border-black border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <>Sign In <ArrowRight className="h-4 w-4" /></>
+                )}
+              </Button>
+            </form>
+
+            <Link href="/" className="text-white/40 text-xs hover:text-white text-center flex items-center justify-center gap-2 pt-4">
               <Globe className="h-3 w-3" /> Kembali ke Website Publik
             </Link>
           </div>
@@ -169,7 +222,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 </div>
                 <h1 className="text-5xl md:text-6xl font-bold text-white font-headline tracking-tighter">Izin Diperlukan</h1>
                 <p className="text-xl text-white/60 leading-relaxed max-w-md">
-                  Email <span className="text-white font-bold">{user.email}</span> tidak terdaftar dalam whitelist admin kami.
+                  Akun <span className="text-white font-bold">{user.email}</span> tidak terdaftar dalam whitelist admin kami.
                 </p>
               </div>
               
@@ -293,7 +346,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                  {user.photoURL ? (
                    <img src={user.photoURL} alt="Avatar" className="h-full w-full object-cover" />
                  ) : (
-                   <span className="font-bold text-primary">AD</span>
+                   <div className="h-full w-full flex items-center justify-center bg-primary text-white font-bold text-xs">
+                     {user.email?.substring(0, 2).toUpperCase()}
+                   </div>
                  )}
                </div>
             </div>
