@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
@@ -86,7 +85,6 @@ export default function AdminSettings() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, field: string) => {
     const file = e.target.files?.[0];
     if (file) {
-      // Limit to 800KB to account for base64 expansion within Firestore 1MB limit
       if (file.size > 800 * 1024) {
         toast({ title: "File terlalu besar", description: "Maksimal ukuran file gambar adalah 800KB agar bisa disimpan di database.", variant: "destructive" });
         return;
@@ -109,7 +107,7 @@ export default function AdminSettings() {
       console.error("Save error:", error);
       toast({ 
         title: "Gagal Menyimpan", 
-        description: error.message || "Terjadi kesalahan saat menyimpan. Periksa koneksi internet Anda.", 
+        description: error.message || "Terjadi kesalahan saat menyimpan.", 
         variant: "destructive" 
       });
     } finally {
@@ -287,13 +285,13 @@ export default function AdminSettings() {
                 <Label>Sejarah Singkat</Label>
                 <Textarea className="min-h-[200px]" value={formData.history} onChange={(e) => setFormData({...formData, history: e.target.value})} />
               </div>
-              <div className="space-y-3">
-                <div className="flex justify-between items-center">
+              <div className="space-3">
+                <div className="flex justify-between items-center mb-3">
                   <Label className="font-bold">Misi Sekolah (Poin-poin)</Label>
                   <Button variant="outline" size="sm" onClick={() => addItem("mission", "")}><Plus className="h-3 w-3" /> Tambah Misi</Button>
                 </div>
                 {formData.mission?.map((m: string, i: number) => (
-                  <div key={i} className="flex gap-2">
+                  <div key={i} className="flex gap-2 mb-2">
                     <Input value={m} onChange={(e) => updateItem("mission", i, e.target.value)} />
                     <Button variant="ghost" size="icon" className="text-destructive" onClick={() => removeItem("mission", i)}><Trash2 className="h-4 w-4" /></Button>
                   </div>
