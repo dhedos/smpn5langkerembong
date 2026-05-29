@@ -5,7 +5,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Menu, X, GraduationCap, ChevronDown, LogIn, Settings, LayoutDashboard } from "lucide-react";
+import { Menu, X, GraduationCap, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -58,7 +58,6 @@ export function Navbar() {
 
   if (isAdminPage) return null;
 
-  // Force scrolled state (solid bg, dark text) if not on home page
   const isSolid = scrolled || !isHome;
 
   return (
@@ -140,28 +139,6 @@ export function Navbar() {
         </nav>
 
         <div className="hidden md:flex items-center gap-4">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="sm" className={cn(
-                "font-bold transition-colors",
-                isSolid ? "text-slate-600 hover:text-primary" : "text-white hover:bg-white/10"
-              )}>
-                <LogIn className="h-4 w-4 mr-2" /> Admin
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="rounded-2xl shadow-2xl border-slate-200 bg-white">
-              <DropdownMenuItem asChild>
-                <Link href="/admin" className="cursor-pointer font-semibold">
-                  <LayoutDashboard className="h-4 w-4 mr-2" /> Dashboard
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/admin/settings" className="cursor-pointer font-semibold">
-                  <Settings className="h-4 w-4 mr-2" /> Pengaturan
-                </Link>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
           <Button size="sm" className={cn(
             "rounded-full px-8 font-bold shadow-xl transition-all hover:scale-105 active:scale-95",
             isSolid ? "bg-primary text-white" : "bg-secondary text-primary hover:bg-secondary/90"
@@ -196,11 +173,8 @@ export function Navbar() {
                 {item.name}
               </Link>
             ))}
-            <div className="grid grid-cols-2 gap-3 pt-6 border-t border-slate-100">
-              <Button variant="outline" asChild onClick={() => setIsOpen(false)} className="rounded-2xl font-bold">
-                <Link href="/admin">Admin Login</Link>
-              </Button>
-              <Button className="bg-primary text-white rounded-2xl font-bold" asChild onClick={() => setIsOpen(false)}>
+            <div className="pt-6 border-t border-slate-100">
+              <Button className="w-full bg-primary text-white rounded-2xl font-bold" asChild onClick={() => setIsOpen(false)}>
                 <Link href="/ppdb">PPDB Online</Link>
               </Button>
             </div>

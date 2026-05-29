@@ -5,7 +5,7 @@ import React, { useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { GraduationCap, Facebook, Instagram, Twitter, Youtube, MapPin, Phone, Mail } from "lucide-react";
+import { GraduationCap, Facebook, Instagram, Twitter, Youtube, MapPin, Phone, Mail, LogIn } from "lucide-react";
 import { useFirestore, useDoc } from "@/firebase";
 import { doc } from "firebase/firestore";
 
@@ -100,11 +100,14 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-white/10 pt-8 flex flex-col md:row justify-between items-center gap-4 text-xs text-primary-foreground/50">
+        <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-primary-foreground/50">
           <p>© 2024 {schoolName}. Seluruh hak cipta dilindungi.</p>
-          <div className="flex gap-6">
+          <div className="flex gap-6 items-center">
             <Link href="#" className="hover:text-white">Kebijakan Privasi</Link>
             <Link href="#" className="hover:text-white">Syarat & Ketentuan</Link>
+            <Link href="/admin" className="opacity-10 hover:opacity-100 transition-opacity flex items-center gap-1">
+              <LogIn className="h-3 w-3" /> Login
+            </Link>
           </div>
         </div>
       </div>

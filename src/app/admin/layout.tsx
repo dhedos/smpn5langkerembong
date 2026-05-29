@@ -11,7 +11,10 @@ import {
   ChevronRight, 
   Building2,
   Globe,
-  Camera
+  Camera,
+  LogIn,
+  ShieldCheck,
+  LogOut
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -27,6 +30,8 @@ import {
   SidebarTrigger,
   SidebarInset
 } from "@/components/ui/sidebar";
+import { useUser, useAuth } from "@/firebase";
+import { signInWithPopup, GoogleAuthProvider, signOut } from "firebase/auth";
 
 const adminMenuItems = [
   { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
@@ -38,7 +43,64 @@ const adminMenuItems = [
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const { user, loading } = useUser();
+  const auth = useAuth();
 
+  const handleLogin = async () => {
+    const provider = new GoogleAuthProvider();
+    try {
+      await signInWithPopup(auth, provider);
+    } catch (error) {
+      console.error("Login failed", error);
+    }
+  };
+
+  const handleLogout = () => signOut(auth);
+
+  if (loading) {
+    return (
+      <div className="h-screen w-full flex items-center justify-center bg-slate-50">
+        <div className="flex flex-col items-center gap-4">
+          <div className="h-12 w-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+          <p className="text-sm font-bold text-slate-500 animate-pulse uppercase tracking-widest">Memuat Sesi Admin...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Auth Guard: If not logged in, show Login UI
+  if (!user) {
+    return (
+      <div className="h-screen w-full flex items-center justify-center bg-slate-50 px-4">
+        <div className="max-w-md w-full space-y-8 text-center animate-in fade-in zoom-in duration-500">
+          <div className="bg-white p-10 rounded-[2.5rem] shadow-2xl border border-slate-100">
+            <div className="bg-primary w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-primary/20">
+              <ShieldCheck className="h-8 w-8 text-white" />
+            </div>
+            <h1 className="text-3xl font-bold font-headline text-slate-900 mb-2 tracking-tight">Admin Area</h1>
+            <p className="text-slate-500 text-sm mb-8 leading-relaxed">
+              Selamat datang di panel kontrol sekolah. Silakan masuk menggunakan akun Google terdaftar untuk mengelola konten website.
+            </p>
+            <Button 
+              size="lg" 
+              className="w-full bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 shadow-sm py-8 rounded-2xl gap-3 text-lg font-bold"
+              onClick={handleLogin}
+            >
+              <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" className="h-6 w-6" alt="Google" />
+              Masuk dengan Google
+            </Button>
+            <div className="mt-8 pt-6 border-t border-slate-50">
+              <Button variant="link" className="text-slate-400 text-xs" asChild>
+                <Link href="/">Kembali ke Website Utama</Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Authenticated Admin UI
   return (
     <SidebarProvider>
       <div className="flex min-h-screen w-full bg-slate-50/50">
@@ -77,8 +139,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               ))}
             </SidebarMenu>
           </SidebarContent>
-          <SidebarFooter className="p-4 border-t border-slate-100">
-            <Button variant="ghost" className="w-full justify-start gap-3 text-slate-500 hover:text-destructive hover:bg-destructive/5" asChild>
+          <SidebarFooter className="p-4 border-t border-slate-100 space-y-2">
+            <Button 
+              variant="ghost" 
+              className="w-full justify-start gap-3 text-slate-500 hover:text-destructive hover:bg-destructive/5" 
+              onClick={handleLogout}
+            >
+              <LogOut className="h-4 w-4" />
+              Keluar Sesi
+            </Button>
+            <Button variant="ghost" className="w-full justify-start gap-3 text-slate-500 hover:text-primary hover:bg-primary/5" asChild>
               <Link href="/">
                 <Globe className="h-4 w-4" />
                 Kembali ke Website
@@ -98,13 +168,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </div>
             <div className="flex items-center gap-4">
                <div className="hidden md:flex flex-col items-end">
-                  <span className="text-xs font-bold text-slate-700">Administrator</span>
+                  <span className="text-xs font-bold text-slate-700">{user.displayName || "Administrator"}</span>
                   <span className="text-[10px] text-green-500 font-bold flex items-center gap-1">
-                    <div className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse" /> Online
+                    <div className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse" /> Akun Terverifikasi
                   </span>
                </div>
-               <div className="h-10 w-10 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center font-bold text-primary">
-                 AD
+               <div className="h-10 w-10 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center overflow-hidden">
+                 {user.photoURL ? (
+                   <img src={user.photoURL} alt="Avatar" className="h-full w-full object-cover" />
+                 ) : (
+                   <span className="font-bold text-primary">AD</span>
+                 )}
                </div>
             </div>
           </header>
