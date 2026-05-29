@@ -95,12 +95,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     } catch (error: any) {
       console.error("Login failed", error);
       let message = "Terjadi kesalahan saat mencoba login.";
+      
+      // Handle Firebase specific errors
       if (error.code === 'auth/invalid-credential') {
-        message = "Email atau kata sandi salah.";
+        message = "Email/Password salah atau metode login belum diaktifkan di Firebase.";
       } else if (error.code === 'auth/user-not-found') {
-        message = "Pengguna tidak ditemukan.";
+        message = "Pengguna tidak ditemukan. Silakan buat akun di Firebase Console.";
       } else if (error.code === 'auth/wrong-password') {
         message = "Kata sandi yang Anda masukkan salah.";
+      } else if (error.code === 'auth/too-many-requests') {
+        message = "Terlalu banyak percobaan login. Silakan coba lagi nanti.";
       }
       
       toast({
@@ -161,7 +165,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 </div>
               </div>
               <div className="space-y-2">
-                <Label className="text-white/70 text-xs font-bold uppercase tracking-wider">Password</Label>
+                <div className="flex justify-between items-center">
+                  <Label className="text-white/70 text-xs font-bold uppercase tracking-wider">Password</Label>
+                </div>
                 <div className="relative">
                   <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/30" />
                   <Input 

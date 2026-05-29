@@ -12,34 +12,29 @@ Website modern untuk SMPN 5 Langke Rembong yang dilengkapi dengan CMS Admin dina
 ## Panduan Akses Admin
 Dashboard Admin digunakan untuk mengelola seluruh konten website.
 1. **URL Akses**: Tambahkan `/admin` pada alamat website Anda (misal: `domainanda.com/admin`).
-2. **Metode Login**: Gunakan akun Google yang valid melalui tombol login yang tersedia.
-3. **Keamanan**: Hanya pengguna yang emailnya terdaftar di koleksi Firestore `admins` yang dapat mengakses fitur manajemen.
+2. **Metode Login**: Masukkan Email dan Password akun admin.
 
 ## Pemecahan Masalah (Troubleshooting)
 
-### Error: `auth/configuration-not-found`
+### Error: `auth/invalid-credential` (PENTING)
 Jika Anda melihat error ini saat mencoba login:
 1. Buka [Firebase Console](https://console.firebase.google.com/).
-2. Pergi ke **Authentication** > **Sign-in method**.
-3. Klik **Add new provider** dan pilih **Google**.
-4. Pastikan statusnya **Enabled**.
+2. Masuk ke menu **Authentication** > **Sign-in method**.
+3. Pastikan **Email/Password** berstatus **Enabled**.
+4. Masuk ke tab **Users**, pastikan email `smpn5lr@gmail.com` sudah terdaftar. Jika belum, klik **Add user**.
 
-### Error: `auth/unauthorized-domain` (PENTING)
-Jika Anda melihat error ini saat menggunakan **Web Preview** atau setelah **Deployment**:
-1. Buka [Firebase Console](https://console.firebase.google.com/).
-2. Masuk ke menu **Authentication** > Tab **Settings** > **Authorized domains**.
-3. Klik **Add domain**.
-4. Masukkan domain yang muncul di browser Anda (tanpa `https://` atau path belakang). 
-   - Untuk pratinjau saat ini: `9000-firebase-studio-1779520840203.cluster-edb2jv34dnhjisxuq5m7l37ccy.cloudworkstations.dev`
-   - Untuk Vercel: `smpn5langkerembong.vercel.app`
+### Error: `auth/unauthorized-domain`
+Jika login gagal saat menggunakan domain baru:
+1. Buka **Authentication** > Tab **Settings** > **Authorized domains**.
+2. Klik **Add domain** dan masukkan domain website Anda (misal: `smpn5langkerembong.vercel.app`).
 
 ### Error: "Akses Ditolak" (Izin Diperlukan)
-Jika Anda berhasil login tetapi melihat layar akses ditolak:
-1. Buka **Firestore Database** di Firebase Console.
+Jika login berhasil tapi akses diblokir:
+1. Buka **Firestore Database**.
 2. Buat koleksi baru bernama `admins`.
-3. Buat dokumen baru dengan **ID Dokumen** = Alamat Email Google Anda (misal: `admin@gmail.com`).
-4. Tambahkan field berikut ke dokumen tersebut:
-   - `email` (string): email Anda
+3. Tambah dokumen dengan **ID Dokumen** = `smpn5lr@gmail.com`.
+4. Tambahkan field:
+   - `email` (string): `smpn5lr@gmail.com`
    - `role` (string): `superadmin`
 
 ## Panduan Deployment ke Vercel
@@ -48,7 +43,7 @@ Jika Anda berhasil login tetapi melihat layar akses ditolak:
 Jalankan perintah ini di terminal:
 ```bash
 git add .
-git commit -m "Update konfigurasi admin"
+git commit -m "Update konfigurasi admin login"
 git push -u origin main --force
 ```
 
