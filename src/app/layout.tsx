@@ -6,6 +6,7 @@ import { Footer } from '@/components/layout/Footer';
 import { WhatsAppButton } from '@/components/contact/WhatsAppButton';
 import { Toaster } from '@/components/ui/toaster';
 import { FirebaseClientProvider } from '@/firebase';
+import { ChatAssistant } from '@/components/chat/ChatAssistant';
 
 export const metadata: Metadata = {
   title: 'EduVista SMP - Modern Excellence in Education',
@@ -24,13 +25,14 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
       </head>
-      <body className="font-body antialiased selection:bg-secondary selection:text-white">
+      <body className="font-body antialiased selection:bg-secondary selection:text-white" suppressHydrationWarning>
         <FirebaseClientProvider>
           <div className="flex min-h-screen flex-col">
             <Navbar />
             <main className="flex-1">{children}</main>
             <Footer />
           </div>
+          <ChatAssistant />
           <WhatsAppButton />
           <Toaster />
         </FirebaseClientProvider>
