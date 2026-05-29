@@ -22,9 +22,16 @@ Jika Anda melihat error ini saat mencoba login:
 1. Buka [Firebase Console](https://console.firebase.google.com/).
 2. Pergi ke **Authentication** > **Sign-in method**.
 3. Klik **Add new provider** dan pilih **Google**.
-4. Pastikan statusnya **Enabled**. Masukkan email dukungan (support email) proyek jika diminta.
-5. Pergi ke tab **Settings** > **Authorized domains**.
-6. Pastikan domain Vercel Anda (misal: `smpn5langkerembong.vercel.app`) sudah ada di daftar. Tambahkan jika belum ada.
+4. Pastikan statusnya **Enabled**.
+
+### Error: `auth/unauthorized-domain` (PENTING)
+Jika Anda melihat error ini saat menggunakan **Web Preview** atau setelah **Deployment**:
+1. Buka [Firebase Console](https://console.firebase.google.com/).
+2. Masuk ke menu **Authentication** > Tab **Settings** > **Authorized domains**.
+3. Klik **Add domain**.
+4. Masukkan domain yang muncul di browser Anda (tanpa `https://` atau path belakang). 
+   - Untuk pratinjau saat ini: `9000-firebase-studio-1779520840203.cluster-edb2jv34dnhjisxuq5m7l37ccy.cloudworkstations.dev`
+   - Untuk Vercel: `smpn5langkerembong.vercel.app`
 
 ### Error: "Akses Ditolak" (Izin Diperlukan)
 Jika Anda berhasil login tetapi melihat layar akses ditolak:
@@ -44,13 +51,6 @@ git add .
 git commit -m "Update konfigurasi admin"
 git push -u origin main --force
 ```
-
-### 2. Konfigurasi di Vercel
-1. Hubungkan repositori GitHub Anda ke proyek Vercel baru.
-2. **PENTING**: Tambahkan Environment Variable berikut di Dashboard Vercel:
-   - **Key**: `GOOGLE_GENAI_API_KEY`
-   - **Value**: [Masukkan Kunci API Gemini Anda] (Dapatkan di [Google AI Studio](https://aistudio.google.com/app/apikey))
-3. Klik **Deploy**.
 
 ---
 © 2024 SMPN 5 Langke Rembong. Dikembangkan dengan EduVista Framework.
