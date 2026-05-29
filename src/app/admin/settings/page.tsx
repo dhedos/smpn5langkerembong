@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
@@ -7,16 +6,17 @@ import {
   Save, 
   Phone, 
   School, 
-  Image as ImageIcon, 
   BookOpen, 
   Target, 
   History as HistoryIcon, 
   Plus, 
   Trash2, 
   BarChart3, 
-  Upload, 
   FileText, 
-  CheckCircle2 
+  CheckCircle2,
+  Users,
+  GraduationCap,
+  Award
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -61,14 +61,14 @@ export default function AdminSettings() {
 
   useEffect(() => {
     if (currentSettings) {
-      setFormData({
-        ...formData,
+      setFormData((prev: any) => ({
+        ...prev,
         ...currentSettings,
         mission: currentSettings.mission || [],
         stats: currentSettings.stats || [],
         ppdbRequirements: currentSettings.ppdbRequirements || [],
         ppdbQuotas: currentSettings.ppdbQuotas || []
-      });
+      }));
     }
   }, [currentSettings]);
 
@@ -81,7 +81,7 @@ export default function AdminSettings() {
       }
       const reader = new FileReader();
       reader.onloadend = () => {
-        setFormData({ ...formData, [field]: reader.result as string });
+        setFormData((prev: any) => ({ ...prev, [field]: reader.result as string }));
       };
       reader.readAsDataURL(file);
     }
@@ -97,20 +97,23 @@ export default function AdminSettings() {
     }
   };
 
-  // Helper functions for arrays
   const addItem = (field: string, defaultValue: any) => {
-    setFormData({ ...formData, [field]: [...formData[field], defaultValue] });
+    setFormData((prev: any) => ({ ...prev, [field]: [...prev[field], defaultValue] }));
   };
 
   const updateItem = (field: string, index: number, value: any) => {
-    const newArray = [...formData[field]];
-    newArray[index] = value;
-    setFormData({ ...formData, [field]: newArray });
+    setFormData((prev: any) => {
+      const newArray = [...prev[field]];
+      newArray[index] = value;
+      return { ...prev, [field]: newArray };
+    });
   };
 
   const removeItem = (field: string, index: number) => {
-    const newArray = formData[field].filter((_: any, i: number) => i !== index);
-    setFormData({ ...formData, [field]: newArray });
+    setFormData((prev: any) => ({
+      ...prev,
+      [field]: prev[field].filter((_: any, i: number) => i !== index)
+    }));
   };
 
   if (loading) return <div className="p-12 text-center text-muted-foreground animate-pulse">Memuat pengaturan...</div>;
@@ -122,7 +125,7 @@ export default function AdminSettings() {
           <h1 className="text-3xl font-bold font-headline text-primary flex items-center gap-2">
             <Settings className="h-8 w-8 text-secondary" /> Konfigurasi Website
           </h1>
-          <p className="text-muted-foreground text-sm">Kelola seluruh konten tekstual dan identitas sekolah Anda.</p>
+          <p className="text-muted-foreground text-sm">Kelola seluruh konten website sekolah Anda.</p>
         </div>
         <Button className="bg-primary shadow-lg shadow-primary/20 flex gap-2" onClick={handleSave}>
           <Save className="h-4 w-4" /> Simpan Perubahan
@@ -132,13 +135,12 @@ export default function AdminSettings() {
       <Tabs defaultValue="general" className="space-y-6">
         <TabsList className="bg-slate-100 p-1 rounded-xl w-full md:w-auto overflow-x-auto flex flex-nowrap">
           <TabsTrigger value="general" className="rounded-lg px-6 shrink-0">Identitas</TabsTrigger>
+          <TabsTrigger value="hero" className="rounded-lg px-6 shrink-0">Hero Section</TabsTrigger>
           <TabsTrigger value="welcome" className="rounded-lg px-6 shrink-0">Sambutan</TabsTrigger>
-          <TabsTrigger value="profile" className="rounded-lg px-6 shrink-0">Visi Misi</TabsTrigger>
-          <TabsTrigger value="stats" className="rounded-lg px-6 shrink-0">Statistik</TabsTrigger>
+          <TabsTrigger value="profile" className="rounded-lg px-6 shrink-0">Visi Misi & Sejarah</TabsTrigger>
           <TabsTrigger value="ppdb" className="rounded-lg px-6 shrink-0 text-secondary font-bold">PPDB Online</TabsTrigger>
         </TabsList>
 
-        {/* Tab Umum */}
         <TabsContent value="general" className="space-y-6 animate-in fade-in duration-500">
            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Card className="border-none shadow-sm">
@@ -151,8 +153,13 @@ export default function AdminSettings() {
                   <Input value={formData.schoolName} onChange={(e) => setFormData({...formData, schoolName: e.target.value})} />
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-xs font-bold uppercase text-slate-500">Logo Sekolah</Label>
+                  <Label className="text-xs font-bold uppercase text-slate-500">Logo Sekolah (Lokal)</Label>
                   <Input type="file" accept="image/*" onChange={(e) => handleFileChange(e, "schoolLogoUrl")} />
+                  {formData.schoolLogoUrl && <div className="mt-2 h-16 w-16 relative"><Image src={formData.schoolLogoUrl} alt="Logo" fill className="object-contain" /></div>}
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-xs font-bold uppercase text-slate-500">Alamat Lengkap</Label>
+                  <Textarea value={formData.address} onChange={(e) => setFormData({...formData, address: e.target.value})} />
                 </div>
               </CardContent>
             </Card>
@@ -162,11 +169,15 @@ export default function AdminSettings() {
               </CardHeader>
               <CardContent className="space-y-4 pt-6">
                 <div className="space-y-2">
-                  <Label className="text-xs font-bold uppercase text-slate-500">WhatsApp Admin</Label>
+                  <Label className="text-xs font-bold uppercase text-slate-500">WhatsApp Admin (628...)</Label>
                   <Input value={formData.whatsappNumber} onChange={(e) => setFormData({...formData, whatsappNumber: e.target.value})} />
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-xs font-bold uppercase text-slate-500">Email Sekolah</Label>
+                  <Label className="text-xs font-bold uppercase text-slate-500">Nomor Telepon Kantor</Label>
+                  <Input value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-xs font-bold uppercase text-slate-500">Email Resmi</Label>
                   <Input value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} />
                 </div>
               </CardContent>
@@ -174,7 +185,24 @@ export default function AdminSettings() {
           </div>
         </TabsContent>
 
-        {/* Tab Sambutan */}
+        <TabsContent value="hero" className="space-y-6 animate-in fade-in duration-500">
+          <Card className="border-none shadow-sm">
+            <CardHeader className="bg-slate-50/50">
+              <CardTitle className="text-lg">Tampilan Beranda (Hero)</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4 pt-6">
+              <div className="space-y-2">
+                <Label>Judul Utama (Headline)</Label>
+                <Input value={formData.heroTitle} onChange={(e) => setFormData({...formData, heroTitle: e.target.value})} />
+              </div>
+              <div className="space-y-2">
+                <Label>Sub-judul (Keterangan)</Label>
+                <Textarea value={formData.heroSubtitle} onChange={(e) => setFormData({...formData, heroSubtitle: e.target.value})} />
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
         <TabsContent value="welcome" className="animate-in fade-in duration-500">
           <Card className="border-none shadow-sm">
             <CardHeader className="bg-slate-50/50">
@@ -187,7 +215,7 @@ export default function AdminSettings() {
                   <Input value={formData.headmasterName} onChange={(e) => setFormData({...formData, headmasterName: e.target.value})} />
                 </div>
                 <div className="space-y-2">
-                  <Label>Foto (Unggah)</Label>
+                  <Label>Foto (Unggah Lokal)</Label>
                   <Input type="file" onChange={(e) => handleFileChange(e, "headmasterPhotoUrl")} />
                 </div>
               </div>
@@ -199,13 +227,45 @@ export default function AdminSettings() {
           </Card>
         </TabsContent>
 
-        {/* Tab PPDB */}
+        <TabsContent value="profile" className="space-y-6 animate-in fade-in duration-500">
+          <Card className="border-none shadow-sm">
+            <CardHeader className="bg-slate-50/50">
+              <CardTitle className="text-lg flex items-center gap-2"><HistoryIcon className="h-5 w-5" /> Sejarah Sekolah</CardTitle>
+            </CardHeader>
+            <CardContent className="pt-6">
+              <Textarea className="min-h-[300px]" value={formData.history} onChange={(e) => setFormData({...formData, history: e.target.value})} />
+            </CardContent>
+          </Card>
+          <Card className="border-none shadow-sm">
+            <CardHeader className="bg-slate-50/50">
+              <CardTitle className="text-lg flex items-center gap-2"><Target className="h-5 w-5" /> Visi & Misi</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6 pt-6">
+              <div className="space-y-2">
+                <Label>Visi Sekolah</Label>
+                <Input value={formData.vision} onChange={(e) => setFormData({...formData, vision: e.target.value})} />
+              </div>
+              <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <Label>Misi Sekolah (Poin-poin)</Label>
+                  <Button variant="outline" size="sm" onClick={() => addItem("mission", "")}><Plus className="h-3 w-3" /> Tambah Misi</Button>
+                </div>
+                {formData.mission.map((m: string, i: number) => (
+                  <div key={i} className="flex gap-2">
+                    <Input value={m} onChange={(e) => updateItem("mission", i, e.target.value)} />
+                    <Button variant="ghost" size="icon" className="text-destructive" onClick={() => removeItem("mission", i)}><Trash2 className="h-4 w-4" /></Button>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
         <TabsContent value="ppdb" className="space-y-6 animate-in fade-in duration-500">
           <Card className="border-none shadow-sm border-l-4 border-l-secondary">
             <CardHeader className="bg-slate-50/50 flex flex-row items-center justify-between">
               <div>
-                <CardTitle className="text-lg flex items-center gap-2 text-primary"><FileText className="h-5 w-5" /> Status & Tahun PPDB</CardTitle>
-                <CardDescription>Atur periode aktif pendaftaran siswa baru.</CardDescription>
+                <CardTitle className="text-lg flex items-center gap-2 text-primary"><FileText className="h-5 w-5" /> Status PPDB</CardTitle>
               </div>
               <div className="flex items-center gap-3">
                 <Label className="text-xs font-bold">{formData.ppdbIsActive ? "AKTIF" : "NONAKTIF"}</Label>
@@ -216,12 +276,8 @@ export default function AdminSettings() {
               </div>
             </CardHeader>
             <CardContent className="pt-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label>Tahun Pelajaran</Label>
-                  <Input placeholder="E.g. 2024/2025" value={formData.ppdbYear} onChange={(e) => setFormData({...formData, ppdbYear: e.target.value})} />
-                </div>
-              </div>
+              <Label>Tahun Pelajaran</Label>
+              <Input className="mt-2" placeholder="E.g. 2024/2025" value={formData.ppdbYear} onChange={(e) => setFormData({...formData, ppdbYear: e.target.value})} />
             </CardContent>
           </Card>
 
@@ -229,14 +285,12 @@ export default function AdminSettings() {
             <Card className="border-none shadow-sm">
               <CardHeader className="bg-slate-50/50 flex flex-row items-center justify-between">
                 <CardTitle className="text-lg flex items-center gap-2"><CheckCircle2 className="h-5 w-5" /> Persyaratan</CardTitle>
-                <Button variant="outline" size="sm" onClick={() => addItem("ppdbRequirements", "")} className="h-8 gap-1">
-                  <Plus className="h-3 w-3" /> Tambah
-                </Button>
+                <Button variant="outline" size="sm" onClick={() => addItem("ppdbRequirements", "")}><Plus className="h-3 w-3" /></Button>
               </CardHeader>
               <CardContent className="pt-6 space-y-3">
                 {formData.ppdbRequirements.map((req: string, i: number) => (
                   <div key={i} className="flex gap-2">
-                    <Input value={req} onChange={(e) => updateItem("ppdbRequirements", i, e.target.value)} placeholder="E.g. Fotokopi Akte Kelahiran" />
+                    <Input value={req} onChange={(e) => updateItem("ppdbRequirements", i, e.target.value)} />
                     <Button variant="ghost" size="icon" className="text-destructive" onClick={() => removeItem("ppdbRequirements", i)}><Trash2 className="h-4 w-4" /></Button>
                   </div>
                 ))}
@@ -246,19 +300,17 @@ export default function AdminSettings() {
             <Card className="border-none shadow-sm">
               <CardHeader className="bg-slate-50/50 flex flex-row items-center justify-between">
                 <CardTitle className="text-lg flex items-center gap-2"><BarChart3 className="h-5 w-5" /> Jalur & Kuota</CardTitle>
-                <Button variant="outline" size="sm" onClick={() => addItem("ppdbQuotas", {label: "", value: "", description: ""})} className="h-8 gap-1">
-                  <Plus className="h-3 w-3" /> Tambah
-                </Button>
+                <Button variant="outline" size="sm" onClick={() => addItem("ppdbQuotas", {label: "", value: "", description: ""})}><Plus className="h-3 w-3" /></Button>
               </CardHeader>
               <CardContent className="pt-6 space-y-4">
                 {formData.ppdbQuotas.map((q: any, i: number) => (
-                  <div key={i} className="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-3 relative">
+                  <div key={i} className="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-3">
                     <div className="grid grid-cols-2 gap-2">
                       <Input placeholder="Nama Jalur" value={q.label} onChange={(e) => updateItem("ppdbQuotas", i, {...q, label: e.target.value})} />
                       <Input placeholder="Kuota (%)" value={q.value} onChange={(e) => updateItem("ppdbQuotas", i, {...q, value: e.target.value})} />
                     </div>
-                    <Input placeholder="Keterangan singkat" value={q.description} onChange={(e) => updateItem("ppdbQuotas", i, {...q, description: e.target.value})} />
-                    <Button variant="ghost" size="sm" className="w-full text-destructive text-[10px]" onClick={() => removeItem("ppdbQuotas", i)}>HAPUS JALUR</Button>
+                    <Input placeholder="Keterangan" value={q.description} onChange={(e) => updateItem("ppdbQuotas", i, {...q, description: e.target.value})} />
+                    <Button variant="ghost" size="sm" className="w-full text-destructive" onClick={() => removeItem("ppdbQuotas", i)}>Hapus</Button>
                   </div>
                 ))}
               </CardContent>
