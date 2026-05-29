@@ -266,7 +266,7 @@ export default function AdminSettings() {
                     <Input value={s.label} onChange={(e) => updateStat(i, "label", e.target.value)} placeholder="Siswa Aktif" />
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-[10px] uppercase font-bold">Value</Heading>
+                    <Label className="text-[10px] uppercase font-bold">Value</Label>
                     <Input value={s.value} onChange={(e) => updateStat(i, "value", e.target.value)} placeholder="850+" />
                   </div>
                   <div className="space-y-2">
