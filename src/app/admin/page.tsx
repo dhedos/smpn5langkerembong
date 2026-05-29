@@ -11,7 +11,11 @@ import {
   ArrowUpRight, 
   LayoutDashboard,
   Settings,
-  Bell
+  Bell,
+  Sparkles,
+  Database,
+  ChevronRight,
+  ExternalLink
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -24,10 +28,10 @@ import {
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from "recharts";
 
 const stats = [
-  { title: "Total Pengunjung", value: "12,450", change: "+12.5%", icon: Eye, color: "bg-blue-500" },
-  { title: "Pendaftar PPDB", value: "482", change: "+5.2%", icon: Users, color: "bg-green-500" },
-  { title: "Berita Aktif", value: "128", change: "+2.4%", icon: Newspaper, color: "bg-purple-500" },
-  { title: "File Download", value: "3,200", change: "+8.1%", icon: FileText, color: "bg-orange-500" },
+  { title: "Kunjungan Situs", value: "12,450", change: "+12.5%", icon: Eye, color: "bg-blue-500" },
+  { title: "Registrasi PPDB", value: "482", change: "+5.2%", icon: Users, color: "bg-green-500" },
+  { title: "Artikel Berita", value: "128", change: "+2.4%", icon: Newspaper, color: "bg-purple-500" },
+  { title: "Total Dokumen", value: "3,200", change: "+8.1%", icon: Database, color: "bg-orange-500" },
 ];
 
 const visitorData = [
@@ -43,75 +47,108 @@ const visitorData = [
 const chartConfig = {
   visitors: {
     label: "Pengunjung",
-    color: "hsl(var(--primary))",
+    color: "#1a73e8",
   },
 } satisfies ChartConfig;
 
 export default function AdminDashboard() {
   return (
-    <div className="p-8 space-y-8">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div>
-          <h1 className="text-3xl font-bold font-headline text-primary flex items-center gap-2">
-            <LayoutDashboard className="h-8 w-8 text-secondary" /> Dashboard Ringkasan
-          </h1>
-          <p className="text-muted-foreground text-sm">Statistik performa website dan aktivitas sekolah hari ini.</p>
-        </div>
-        <div className="flex gap-2">
-          <Button variant="outline" size="icon" className="rounded-full">
-            <Bell className="h-5 w-5" />
-          </Button>
-          <Button className="bg-primary shadow-lg shadow-primary/20">Unduh Laporan</Button>
+    <div className="p-8 space-y-8 max-w-7xl mx-auto">
+      {/* Cloud Firestore Style Hero Banner */}
+      <div className="bg-[#1a1a1a] rounded-[2.5rem] p-10 md:p-14 relative overflow-hidden shadow-2xl border border-white/5">
+        <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-gradient-to-l from-primary/20 to-transparent rounded-full translate-x-1/4 -translate-y-1/4 blur-[80px]" />
+        
+        <div className="flex flex-col md:flex-row items-center justify-between gap-10 relative z-10">
+          <div className="space-y-6 max-w-xl text-center md:text-left">
+            <div className="space-y-2">
+              <h1 className="text-4xl md:text-5xl font-bold text-white font-headline tracking-tighter leading-tight">Selamat Datang di Cloud Console</h1>
+              <p className="text-lg text-white/50 leading-relaxed font-medium">
+                Pusat kendali EduVista SMP. Kelola data sekolah, berita, dan registrasi PPDB dalam satu lingkungan cloud yang aman.
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-4 justify-center md:justify-start">
+              <Button 
+                size="lg" 
+                className="bg-white text-black hover:bg-slate-200 px-8 py-6 rounded-full font-bold shadow-xl"
+                asChild
+              >
+                <a href="/admin/berita">Kelola Berita</a>
+              </Button>
+              <Button 
+                variant="outline" 
+                size="lg" 
+                className="border-white/20 text-white hover:bg-white/10 px-8 py-6 rounded-full font-bold gap-2"
+              >
+                <Sparkles className="h-5 w-5 text-secondary" /> Ask Gemini
+              </Button>
+            </div>
+          </div>
+          
+          <div className="hidden lg:flex relative">
+             <div className="w-64 h-64 bg-gradient-to-tr from-orange-500/20 to-yellow-400/20 rounded-full border border-white/10 flex items-center justify-center animate-pulse">
+                <Database className="h-32 w-32 text-secondary/40" />
+             </div>
+             <div className="absolute -bottom-6 -right-6 bg-white/5 backdrop-blur-xl border border-white/10 p-6 rounded-[2rem] shadow-3xl rotate-6">
+                <div className="flex flex-col gap-2">
+                   <div className="h-2 w-16 bg-secondary/50 rounded-full" />
+                   <div className="h-2 w-24 bg-secondary rounded-full" />
+                   <div className="h-2 w-20 bg-secondary/30 rounded-full" />
+                </div>
+             </div>
+          </div>
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {stats.map((stat) => (
-          <Card key={stat.title} className="border-none shadow-sm hover:shadow-md transition-shadow">
+          <Card key={stat.title} className="border-none shadow-sm hover:shadow-md transition-all rounded-[1.5rem] bg-white border border-slate-100">
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-4">
-                <div className={`p-3 rounded-xl ${stat.color} bg-opacity-10`}>
+                <div className={`p-3 rounded-2xl ${stat.color} bg-opacity-10`}>
                   <stat.icon className={`h-6 w-6 text-${stat.color.split('-')[1]}-600`} />
                 </div>
                 <div className="flex items-center text-[10px] font-bold text-green-600 bg-green-50 px-2 py-0.5 rounded-full border border-green-100">
                   {stat.change} <ArrowUpRight className="h-3 w-3 ml-1" />
                 </div>
               </div>
-              <div className="text-xs text-muted-foreground font-semibold uppercase tracking-wider">{stat.title}</div>
-              <div className="text-2xl font-bold text-slate-800">{stat.value}</div>
+              <div className="text-xs text-slate-400 font-bold uppercase tracking-widest">{stat.title}</div>
+              <div className="text-2xl font-bold text-slate-900">{stat.value}</div>
             </CardContent>
           </Card>
         ))}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <Card className="lg:col-span-2 border-none shadow-sm">
-          <CardHeader>
-            <CardTitle className="text-lg">Trafik Pengunjung</CardTitle>
-            <CardDescription>Visualisasi kunjungan dalam 7 hari terakhir.</CardDescription>
+        <Card className="lg:col-span-2 border-none shadow-sm rounded-[2rem] bg-white border border-slate-100">
+          <CardHeader className="p-8">
+            <CardTitle className="text-xl flex items-center justify-between">
+              Statistik Kunjungan
+              <Button variant="ghost" size="sm" className="text-[#1a73e8] hover:bg-blue-50">View Details <ExternalLink className="ml-2 h-4 w-4" /></Button>
+            </CardTitle>
+            <CardDescription>Grafik aktivitas website dalam 7 hari terakhir.</CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-8 pt-0">
             <div className="h-[300px] w-full">
               <ChartContainer config={chartConfig}>
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={visitorData}>
                     <defs>
                       <linearGradient id="colorVis" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.2}/>
-                        <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0}/>
+                        <stop offset="5%" stopColor="#1a73e8" stopOpacity={0.15}/>
+                        <stop offset="95%" stopColor="#1a73e8" stopOpacity={0}/>
                       </linearGradient>
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f1f1" />
-                    <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{fontSize: 12}} />
+                    <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{fontSize: 12, fontWeight: 600, fill: '#94a3b8'}} />
                     <YAxis hide />
                     <ChartTooltip content={<ChartTooltipContent />} />
                     <Area 
                       type="monotone" 
                       dataKey="visitors" 
-                      stroke="hsl(var(--primary))" 
+                      stroke="#1a73e8" 
                       fillOpacity={1} 
                       fill="url(#colorVis)" 
-                      strokeWidth={3}
+                      strokeWidth={4}
                     />
                   </AreaChart>
                 </ResponsiveContainer>
@@ -120,28 +157,37 @@ export default function AdminDashboard() {
           </CardContent>
         </Card>
 
-        <Card className="border-none shadow-sm bg-white">
-          <CardHeader>
-            <CardTitle className="text-lg">Log Aktivitas</CardTitle>
+        <Card className="border-none shadow-sm rounded-[2rem] bg-white border border-slate-100">
+          <CardHeader className="p-8">
+            <CardTitle className="text-xl">Log Aktivitas Terbaru</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-6">
+          <CardContent className="p-8 pt-0 space-y-8">
             {[
-              { time: "2m lalu", event: "Pendaftaran PPDB Baru", user: "Rian K." },
-              { time: "15m lalu", event: "Update Berita", user: "Admin S." },
-              { time: "1j lalu", event: "Upload File Modul", user: "Admin B." },
-              { time: "3j lalu", event: "Pendaftaran PPDB Baru", user: "Anisa P." },
-              { time: "5j lalu", event: "Login Sukses", user: "Admin Utama" },
+              { time: "2m lalu", event: "Pendaftaran PPDB", user: "Rian K.", status: "Success" },
+              { time: "15m lalu", event: "Update Berita", user: "Admin S.", status: "Warning" },
+              { time: "1j lalu", event: "Upload Galeri", user: "Admin B.", status: "Success" },
+              { time: "3j lalu", event: "Update Pengaturan", user: "Anisa P.", status: "Info" },
             ].map((act, i) => (
-              <div key={i} className="flex gap-4 items-start">
-                <div className="h-8 w-8 rounded-lg bg-slate-50 border border-slate-100 flex items-center justify-center shrink-0">
-                  <div className="h-1.5 w-1.5 rounded-full bg-primary" />
+              <div key={i} className="flex gap-4 items-start group">
+                <div className={cn(
+                  "h-10 w-10 rounded-xl flex items-center justify-center shrink-0 border border-slate-50 transition-all group-hover:scale-110",
+                  act.status === 'Success' ? "bg-green-50" : act.status === 'Warning' ? "bg-orange-50" : "bg-blue-50"
+                )}>
+                  <div className={cn(
+                    "h-2 w-2 rounded-full",
+                    act.status === 'Success' ? "bg-green-500" : act.status === 'Warning' ? "bg-orange-500" : "bg-blue-500"
+                  )} />
                 </div>
-                <div>
-                  <div className="text-xs font-bold text-slate-800">{act.event}</div>
-                  <div className="text-[10px] text-muted-foreground uppercase">{act.user} • {act.time}</div>
+                <div className="flex-1">
+                  <div className="text-sm font-bold text-slate-800">{act.event}</div>
+                  <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">{act.user} • {act.time}</div>
                 </div>
+                <ChevronRight className="h-4 w-4 text-slate-300 group-hover:translate-x-1 transition-transform" />
               </div>
             ))}
+            <Button variant="outline" className="w-full rounded-xl border-slate-100 text-slate-500 font-bold text-xs uppercase tracking-widest py-6">
+               See full logs
+            </Button>
           </CardContent>
         </Card>
       </div>

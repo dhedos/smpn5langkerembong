@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { 
@@ -15,7 +15,12 @@ import {
   LogOut,
   ShieldCheck,
   Lock,
-  AlertTriangle
+  Sparkles,
+  ExternalLink,
+  Database,
+  Terminal,
+  HelpCircle,
+  Bell
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -49,7 +54,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const auth = useAuth();
   const db = useFirestore();
 
-  // Check whitelist in Firestore
   const adminRef = useMemo(() => {
     return (db && user?.email) ? doc(db, "admins", user.email) : null;
   }, [db, user?.email]);
@@ -69,71 +73,125 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   if (authLoading || (user && dbLoading)) {
     return (
-      <div className="h-screen w-full flex items-center justify-center bg-slate-50">
-        <div className="flex flex-col items-center gap-4">
-          <div className="h-12 w-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
-          <p className="text-sm font-bold text-slate-500 animate-pulse uppercase tracking-widest">Memeriksa Hak Akses...</p>
+      <div className="h-screen w-full flex items-center justify-center bg-[#1a1a1a]">
+        <div className="flex flex-col items-center gap-6">
+          <div className="relative">
+            <div className="h-16 w-16 border-4 border-secondary border-t-transparent rounded-full animate-spin" />
+            <Database className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-6 w-6 text-white" />
+          </div>
+          <p className="text-sm font-bold text-white/50 animate-pulse uppercase tracking-widest">Inisialisasi Firestore...</p>
         </div>
       </div>
     );
   }
 
-  // State 1: Not Authenticated - Show Login Screen
+  // Login Screen (Firebase Style)
   if (!user) {
     return (
-      <div className="h-screen w-full flex items-center justify-center bg-slate-50 px-4">
-        <div className="max-w-md w-full space-y-8 text-center animate-in fade-in zoom-in duration-500">
-          <div className="bg-white p-10 rounded-[2.5rem] shadow-2xl border border-slate-100">
-            <div className="bg-primary w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-primary/20">
-              <Lock className="h-8 w-8 text-white" />
+      <div className="h-screen w-full flex items-center justify-center bg-[#1a1a1a] px-4">
+        <div className="max-w-4xl w-full grid grid-cols-1 md:grid-cols-2 bg-[#252525] rounded-[2rem] overflow-hidden shadow-2xl border border-white/5">
+          <div className="p-12 flex flex-col justify-center space-y-8">
+            <div className="bg-primary w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg shadow-primary/20">
+              <Lock className="h-7 w-7 text-white" />
             </div>
-            <h1 className="text-3xl font-bold font-headline text-slate-900 mb-2 tracking-tight">Panel Admin</h1>
-            <p className="text-slate-500 text-sm mb-8 leading-relaxed">
-              Selamat datang. Silakan masuk dengan akun Google Anda yang terdaftar sebagai administrator.
-            </p>
+            <div className="space-y-2">
+              <h1 className="text-4xl font-bold font-headline text-white tracking-tight">Cloud Console</h1>
+              <p className="text-white/60 text-sm leading-relaxed">
+                Akses panel manajemen EduVista SMP. Autentikasi diperlukan untuk melanjutkan ke database Firestore.
+              </p>
+            </div>
             <Button 
               size="lg" 
-              className="w-full bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 shadow-sm py-8 rounded-2xl gap-3 text-lg font-bold transition-all hover:scale-[1.02]"
+              className="w-full bg-white text-black hover:bg-slate-200 py-8 rounded-2xl gap-3 text-lg font-bold transition-transform hover:scale-[1.02]"
               onClick={handleLogin}
             >
               <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" className="h-6 w-6" alt="Google" />
-              Masuk dengan Google
+              Sign in with Google
             </Button>
-            <div className="mt-8 pt-6 border-t border-slate-50">
-              <Button variant="link" className="text-slate-400 text-xs hover:text-primary" asChild>
-                <Link href="/">Kembali ke Website Utama</Link>
-              </Button>
+            <Link href="/" className="text-white/40 text-xs hover:text-white text-center flex items-center justify-center gap-2">
+              <Globe className="h-3 w-3" /> Back to public website
+            </Link>
+          </div>
+          <div className="hidden md:block bg-gradient-to-br from-primary to-[#0d1117] relative p-12 overflow-hidden">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-secondary/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl" />
+            <div className="relative z-10 h-full flex flex-col justify-end">
+               <div className="space-y-4">
+                  <div className="flex gap-2">
+                    <div className="h-2 w-12 bg-secondary rounded-full" />
+                    <div className="h-2 w-4 bg-white/20 rounded-full" />
+                  </div>
+                  <h2 className="text-3xl font-bold text-white">Sistem Manajemen Berbasis Cloud</h2>
+                  <p className="text-white/70 text-sm">Kelola seluruh aspek sekolah dalam satu dashboard yang aman dan terintegrasi dengan Firebase.</p>
+               </div>
             </div>
           </div>
-          <p className="text-[10px] text-slate-400 font-bold tracking-widest uppercase">EduVista SMP • Secured Access</p>
         </div>
       </div>
     );
   }
 
-  // State 2: Authenticated but NOT an Admin in Firestore
+  // Not Authorized Screen (Mirrors the provided Firestore Banner image)
   if (user && !adminData) {
     return (
-      <div className="h-screen w-full flex items-center justify-center bg-slate-50 px-4">
-        <div className="max-w-md w-full space-y-8 text-center animate-in fade-in zoom-in duration-500">
-          <div className="bg-white p-10 rounded-[2.5rem] shadow-2xl border border-red-100">
-            <div className="bg-destructive w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-destructive/20">
-              <AlertTriangle className="h-8 w-8 text-white" />
+      <div className="h-screen w-full flex items-center justify-center bg-[#121212] px-4">
+        <div className="max-w-5xl w-full bg-[#1e1e1e] rounded-[2.5rem] p-12 md:p-20 relative overflow-hidden border border-white/5 shadow-3xl">
+          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gradient-to-l from-secondary/20 to-transparent rounded-full translate-x-1/3 -translate-y-1/3 blur-[100px]" />
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center relative z-10">
+            <div className="space-y-10">
+              <div className="space-y-4">
+                <h1 className="text-5xl md:text-6xl font-bold text-white font-headline tracking-tighter">Cloud Firestore</h1>
+                <p className="text-xl text-white/60 leading-relaxed max-w-md">
+                  Realtime updates, powerful queries, automatic scaling, and EduVista compatibility.
+                </p>
+              </div>
+              
+              <div className="flex flex-wrap gap-4">
+                <Button 
+                  size="lg" 
+                  className="bg-white text-black hover:bg-slate-200 px-8 py-7 rounded-full font-bold text-lg"
+                  asChild
+                >
+                   <a href="https://console.firebase.google.com" target="_blank">Create database</a>
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="lg" 
+                  className="border-white/20 text-white hover:bg-white/10 px-8 py-7 rounded-full font-bold text-lg gap-2"
+                >
+                  <Sparkles className="h-5 w-5 text-secondary" /> Ask Gemini
+                </Button>
+              </div>
+
+              <div className="pt-8 space-y-4">
+                <div className="flex items-center gap-3 text-white/40 text-sm font-medium">
+                  <div className="h-1.5 w-1.5 rounded-full bg-red-500 animate-pulse" />
+                  Email <strong>{user.email}</strong> belum terdaftar di whitelist.
+                </div>
+                <Button variant="link" className="text-secondary p-0 h-auto font-bold" onClick={handleLogout}>
+                   Sign out to try another account
+                </Button>
+              </div>
             </div>
-            <h1 className="text-2xl font-bold font-headline text-slate-900 mb-2">Akses Ditolak</h1>
-            <p className="text-slate-500 text-sm mb-4 leading-relaxed">
-              Email <strong>{user.email}</strong> berhasil masuk, namun belum terdaftar sebagai administrator di sistem kami.
-            </p>
-            <div className="bg-slate-50 p-4 rounded-xl text-xs text-slate-400 mb-8 italic">
-              Hubungi pengembang untuk mendaftarkan email Anda ke koleksi "admins" di Firestore.
-            </div>
-            <div className="space-y-3">
-              <Button variant="outline" className="w-full rounded-2xl" onClick={handleLogout}>
-                <LogOut className="h-4 w-4 mr-2" /> Keluar Akun
-              </Button>
-              <Button variant="link" className="text-slate-400 text-xs" asChild>
-                <Link href="/">Kembali ke Beranda</Link>
-              </Button>
+
+            <div className="flex justify-center md:justify-end">
+              <div className="relative w-64 h-64 md:w-80 md:h-80">
+                {/* Visual representation of the Firestore logo from the image */}
+                <div className="absolute inset-0 bg-gradient-to-tr from-orange-600 to-yellow-400 rounded-full shadow-[0_0_100px_rgba(245,158,11,0.3)] animate-pulse" />
+                <div className="absolute inset-0 flex items-center justify-center">
+                   <div className="w-3/5 h-3/5 border-[12px] border-white/20 rounded-xl rotate-45 flex flex-col gap-2 p-4">
+                      <div className="h-4 w-full bg-white/40 rounded-full" />
+                      <div className="h-4 w-full bg-white/40 rounded-full" />
+                      <div className="h-4 w-full bg-white/40 rounded-full" />
+                   </div>
+                </div>
+                {/* Stack icons from the image */}
+                <div className="absolute -bottom-4 -right-4 bg-[#2a2a2a] p-4 rounded-2xl border border-white/10 shadow-2xl flex flex-col gap-1 rotate-12">
+                   <div className="h-3 w-12 bg-orange-500/50 rounded-full" />
+                   <div className="h-3 w-12 bg-orange-500 rounded-full" />
+                   <div className="h-3 w-12 bg-orange-500/50 rounded-full" />
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -141,23 +199,22 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     );
   }
 
-  // State 3: Authenticated and Authorized Admin
   return (
     <SidebarProvider>
-      <div className="flex min-h-screen w-full bg-slate-50/50">
-        <Sidebar className="border-r border-slate-200 shadow-sm">
-          <SidebarHeader className="p-6">
+      <div className="flex min-h-screen w-full bg-[#f8f9fa]">
+        <Sidebar className="border-r border-slate-200 bg-white">
+          <SidebarHeader className="p-6 border-b border-slate-50">
             <div className="flex items-center gap-3">
-              <div className="bg-primary p-2 rounded-xl">
-                <ShieldCheck className="h-5 w-5 text-white" />
+              <div className="bg-[#1a73e8] p-2 rounded-xl shadow-lg shadow-blue-500/20">
+                <Database className="h-5 w-5 text-white" />
               </div>
               <div className="flex flex-col text-left">
-                <span className="font-bold text-sm tracking-tight text-primary uppercase">Admin Panel</span>
-                <span className="text-[10px] text-muted-foreground uppercase font-semibold">EduVista Dashboard</span>
+                <span className="font-bold text-sm tracking-tight text-slate-900 uppercase">Cloud Console</span>
+                <span className="text-[10px] text-blue-500 font-extrabold uppercase tracking-tighter">SMPN 5 L.R.website</span>
               </div>
             </div>
           </SidebarHeader>
-          <SidebarContent className="px-3">
+          <SidebarContent className="px-3 pt-4">
             <SidebarMenu>
               {adminMenuItems.map((item) => (
                 <SidebarMenuItem key={item.name}>
@@ -167,54 +224,54 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     className={cn(
                       "py-6 px-4 rounded-xl transition-all duration-200 mb-1",
                       pathname === item.href 
-                        ? "bg-primary text-white hover:bg-primary shadow-md" 
-                        : "hover:bg-slate-100 text-slate-600"
+                        ? "bg-[#e8f0fe] text-[#1a73e8] hover:bg-[#e8f0fe] shadow-none" 
+                        : "hover:bg-slate-50 text-slate-600"
                     )}
                   >
                     <Link href={item.href}>
-                      <item.icon className={cn("h-5 w-5", pathname === item.href ? "text-secondary" : "")} />
-                      <span className="font-medium">{item.name}</span>
+                      <item.icon className={cn("h-5 w-5", pathname === item.href ? "text-[#1a73e8]" : "text-slate-400")} />
+                      <span className="font-semibold">{item.name}</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>
           </SidebarContent>
-          <SidebarFooter className="p-4 border-t border-slate-100 space-y-2">
+          <SidebarFooter className="p-4 border-t border-slate-50 space-y-1">
+             <div className="px-4 py-2">
+                <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Service Status</div>
+                <div className="flex items-center gap-2">
+                   <div className="h-2 w-2 rounded-full bg-green-500" />
+                   <span className="text-[10px] font-bold text-slate-600">Firestore Active</span>
+                </div>
+             </div>
             <Button 
               variant="ghost" 
-              className="w-full justify-start gap-3 text-slate-500 hover:text-destructive hover:bg-destructive/5" 
+              className="w-full justify-start gap-3 text-slate-500 hover:text-red-600 hover:bg-red-50 rounded-xl" 
               onClick={handleLogout}
             >
               <LogOut className="h-4 w-4" />
-              Keluar Sesi
-            </Button>
-            <Button variant="ghost" className="w-full justify-start gap-3 text-slate-500 hover:text-primary hover:bg-primary/5" asChild>
-              <Link href="/">
-                <Globe className="h-4 w-4" />
-                Website Utama
-              </Link>
+              Sign Out
             </Button>
           </SidebarFooter>
         </Sidebar>
 
         <SidebarInset className="flex flex-col">
-          <header className="h-16 border-b bg-white/50 backdrop-blur-md flex items-center justify-between px-8 sticky top-0 z-30">
+          <header className="h-16 border-b bg-white/80 backdrop-blur-md flex items-center justify-between px-8 sticky top-0 z-30">
             <div className="flex items-center gap-4">
               <SidebarTrigger />
               <div className="h-4 w-px bg-slate-200" />
-              <div className="text-xs font-medium text-slate-400 flex items-center gap-2">
-                Menu <ChevronRight className="h-3 w-3" /> {pathname === '/admin' ? 'Dashboard' : pathname.split('/').pop()?.replace('-', ' ')}
+              <div className="text-xs font-bold text-slate-400 flex items-center gap-2 uppercase tracking-tighter">
+                Project <ChevronRight className="h-3 w-3" /> {pathname === '/admin' ? 'Dashboard' : pathname.split('/').pop()?.replace('-', ' ')}
               </div>
             </div>
             <div className="flex items-center gap-4">
-               <div className="hidden md:flex flex-col items-end">
-                  <span className="text-xs font-bold text-slate-700">{user.displayName || "Administrator"}</span>
-                  <span className="text-[10px] text-green-500 font-bold flex items-center gap-1">
-                    <div className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse" /> Sesi Aktif
-                  </span>
+               <div className="flex gap-1 mr-4">
+                  <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-400 hover:text-primary"><Bell className="h-4 w-4" /></Button>
+                  <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-400 hover:text-primary"><Terminal className="h-4 w-4" /></Button>
+                  <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-400 hover:text-primary"><HelpCircle className="h-4 w-4" /></Button>
                </div>
-               <div className="h-10 w-10 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center overflow-hidden">
+               <div className="h-10 w-10 rounded-full bg-slate-100 border-2 border-white shadow-sm flex items-center justify-center overflow-hidden">
                  {user.photoURL ? (
                    <img src={user.photoURL} alt="Avatar" className="h-full w-full object-cover" />
                  ) : (
@@ -223,7 +280,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                </div>
             </div>
           </header>
-          <main className="flex-1 overflow-y-auto bg-slate-50/30">
+          <main className="flex-1 overflow-y-auto bg-[#f8f9fa]">
             {children}
           </main>
         </SidebarInset>
