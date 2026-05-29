@@ -10,6 +10,7 @@
         "schoolLogoUrl": { "type": "string", "description": "URL logo sekolah (PNG/SVG)" },
         "heroTitle": { "type": "string" },
         "heroSubtitle": { "type": "string" },
+        "heroImageUrl": { "type": "string", "description": "URL foto latar belakang utama" },
         "welcomeTitle": { "type": "string" },
         "welcomeMessage": { "type": "string" },
         "headmasterName": { "type": "string" },
