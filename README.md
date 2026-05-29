@@ -24,9 +24,9 @@ Jika Anda melihat error ini saat mencoba login:
 4. Masuk ke tab **Users**, klik **Add user** dan daftarkan email (bebas email apa saja) serta password.
 
 ### Error: `auth/unauthorized-domain`
-Jika login gagal saat menggunakan domain baru atau preview:
+Jika login gagal saat menggunakan domain baru atau preview (terutama di lingkungan Cloud Workstations):
 1. Buka **Authentication** > Tab **Settings** > **Authorized domains**.
-2. Klik **Add domain** dan masukkan domain website Anda (misal: `smpn5langkerembong.vercel.app`).
+2. Klik **Add domain** dan masukkan domain website Anda (misal: `9000-firebase-studio-1779520840203.cluster-edb2jv34dnhjisxuq5m7l37ccy.cloudworkstations.dev`).
 
 ---
 © 2024 SMPN 5 Langke Rembong. Dikembangkan dengan EduVista Framework.
