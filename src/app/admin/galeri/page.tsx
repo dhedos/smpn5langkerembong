@@ -8,17 +8,19 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useFirestore, useCollection } from "@/firebase";
-import { collection, addDoc, deleteDoc, doc, serverTimestamp } from "firebase/firestore";
+import { collection, addDoc, deleteDoc, doc, serverTimestamp, query, orderBy } from "firebase/firestore";
 import { toast } from "@/hooks/use-toast";
 import Image from "next/image";
 
 export default function AdminGaleri() {
   const db = useFirestore();
-  const galleryRef = useMemo(() => db ? collection(db, "gallery") : null, [db]);
+  // Gunakan query yang sama untuk konsistensi tampilan di admin
+  const galleryRef = useMemo(() => db ? query(collection(db, "gallery"), orderBy("date", "desc")) : null, [db]);
   const { data: photos, loading } = useCollection(galleryRef);
 
   const [title, setTitle] = useState("");
   const [imageUrl, setImageUrl] = useState("");
+  const [isUploading, setIsUploading] = useState(false);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -41,6 +43,7 @@ export default function AdminGaleri() {
       return;
     }
 
+    setIsUploading(true);
     try {
       await addDoc(collection(db, "gallery"), {
         title,
@@ -53,6 +56,8 @@ export default function AdminGaleri() {
       toast({ title: "Berhasil", description: "Foto galeri telah ditambahkan." });
     } catch (error) {
       toast({ title: "Gagal", description: "Terjadi kesalahan saat menyimpan.", variant: "destructive" });
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -67,66 +72,80 @@ export default function AdminGaleri() {
   };
 
   return (
-    <div className="p-8 space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold font-headline text-primary flex items-center gap-2">
-          <Camera className="h-8 w-8 text-secondary" /> Manajemen Galeri
-        </h1>
-        <p className="text-muted-foreground text-sm">Kelola dokumentasi foto kegiatan sekolah.</p>
+    <div className="p-8 space-y-8 max-w-7xl mx-auto">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <h1 className="text-3xl font-bold font-headline text-primary flex items-center gap-3">
+            <div className="bg-secondary p-2 rounded-xl">
+              <Camera className="h-6 w-6 text-primary" />
+            </div>
+            Manajemen Galeri
+          </h1>
+          <p className="text-muted-foreground text-sm font-medium">Kelola dokumentasi foto kegiatan sekolah.</p>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <Card className="lg:col-span-1 border-none shadow-sm h-fit">
-          <CardHeader>
+        <Card className="lg:col-span-1 border-none shadow-xl rounded-[2.5rem] h-fit overflow-hidden">
+          <CardHeader className="bg-slate-50/50 border-b">
             <CardTitle className="text-lg">Tambah Foto Baru</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label>Judul Kegiatan</Label>
-              <Input placeholder="E.g. Upacara Bendera" value={title} onChange={(e) => setTitle(e.target.value)} />
+          <CardContent className="p-8 space-y-6">
+            <div className="space-y-3">
+              <Label className="text-xs font-bold uppercase text-slate-500">Judul Kegiatan</Label>
+              <Input 
+                className="h-12 rounded-xl bg-slate-50 border-slate-100"
+                placeholder="E.g. Praktek Rangkaian Listrik" 
+                value={title} 
+                onChange={(e) => setTitle(e.target.value)} 
+              />
             </div>
-            <div className="space-y-2">
-              <Label>Unggah Foto (Lokal)</Label>
-              <div className="space-y-3">
-                <div className="relative h-48 w-full border-2 border-dashed rounded-2xl overflow-hidden bg-slate-50 flex items-center justify-center">
+            <div className="space-y-3">
+              <Label className="text-xs font-bold uppercase text-slate-500">Unggah Foto (Lokal)</Label>
+              <div className="space-y-4">
+                <div className="relative aspect-square w-full border-2 border-dashed border-slate-200 rounded-[2rem] overflow-hidden bg-slate-50 flex items-center justify-center group">
                   {imageUrl ? (
-                    <Image src={imageUrl} alt="Preview" fill className="object-cover" />
+                    <img src={imageUrl} alt="Preview" className="w-full h-full object-cover" />
                   ) : (
-                    <div className="text-center p-4">
-                      <Upload className="mx-auto h-10 w-10 text-slate-300 mb-2" />
-                      <span className="text-xs text-slate-400">Pilih foto dari komputer (Maks 1MB)</span>
+                    <div className="text-center p-6">
+                      <Upload className="mx-auto h-12 w-12 text-slate-300 mb-4 group-hover:scale-110 transition-transform" />
+                      <span className="text-xs text-slate-400 font-medium">Klik pilih file (Maks 1MB)</span>
                     </div>
                   )}
                 </div>
-                <Input type="file" accept="image/*" onChange={handleFileChange} className="text-xs" />
+                <Input type="file" accept="image/*" onChange={handleFileChange} className="text-xs cursor-pointer" />
               </div>
             </div>
-            <Button className="w-full gap-2" onClick={handleSave}>
-              <Plus className="h-4 w-4" /> Tambahkan ke Galeri
+            <Button 
+              className="w-full h-14 rounded-2xl gap-2 font-bold shadow-lg shadow-primary/20" 
+              onClick={handleSave}
+              disabled={isUploading}
+            >
+              <Plus className="h-5 w-5" /> {isUploading ? "Memproses..." : "Tambahkan ke Galeri"}
             </Button>
           </CardContent>
         </Card>
 
-        <Card className="lg:col-span-2 border-none shadow-sm">
-          <CardHeader>
+        <Card className="lg:col-span-2 border-none shadow-xl rounded-[2.5rem] overflow-hidden">
+          <CardHeader className="bg-slate-50/50 border-b">
             <CardTitle className="text-lg">Koleksi Galeri</CardTitle>
           </CardHeader>
-          <CardContent className="p-6">
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          <CardContent className="p-8">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
               {loading ? (
-                <div className="col-span-full text-center py-10 text-muted-foreground animate-pulse">Memuat foto...</div>
+                <div className="col-span-full text-center py-20 text-muted-foreground animate-pulse font-medium italic">Memuat koleksi foto...</div>
               ) : photos && photos.length > 0 ? photos.map((photo: any) => (
-                <div key={photo.id} className="group relative aspect-square rounded-xl overflow-hidden shadow-sm border border-slate-100">
-                  <Image src={photo.imageUrl} alt={photo.title} fill className="object-cover transition-transform group-hover:scale-110" />
-                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center p-4 text-center">
-                    <div className="text-white text-xs font-bold mb-2 line-clamp-2">{photo.title}</div>
-                    <Button variant="destructive" size="icon" className="h-8 w-8" onClick={() => handleDelete(photo.id)}>
-                      <Trash2 className="h-4 w-4" />
+                <div key={photo.id} className="group relative aspect-square rounded-[2rem] overflow-hidden shadow-md border border-slate-100 bg-slate-50">
+                  <img src={photo.imageUrl} alt={photo.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                  <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-all flex flex-col items-center justify-center p-6 text-center">
+                    <div className="text-white text-sm font-bold mb-4 line-clamp-3">{photo.title}</div>
+                    <Button variant="destructive" size="icon" className="h-10 w-10 rounded-xl" onClick={() => handleDelete(photo.id)}>
+                      <Trash2 className="h-5 w-5" />
                     </Button>
                   </div>
                 </div>
               )) : (
-                <div className="col-span-full text-center py-10 text-slate-400 italic">Belum ada foto dalam galeri.</div>
+                <div className="col-span-full text-center py-20 text-slate-400 italic font-medium">Belum ada foto dalam galeri.</div>
               )}
             </div>
           </CardContent>
