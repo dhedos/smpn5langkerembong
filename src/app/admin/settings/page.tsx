@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
@@ -150,7 +149,7 @@ export default function AdminSettings() {
             </div>
             Konfigurasi Website
           </h1>
-          <p className="text-muted-foreground text-sm font-medium mt-1">Sesuaikan identitas dan konten utama sekolah Anda secara real-time.</p>
+          <p className="text-muted-foreground text-sm font-medium mt-1">Sesuaikan identitas dan statistik sekolah secara real-time.</p>
         </div>
         <Button 
           size="lg"
@@ -191,14 +190,8 @@ export default function AdminSettings() {
                         <img src={formData.schoolLogoUrl} alt="Logo" className="max-h-full max-w-full object-contain" />
                       </div>
                     )}
-                    <div className="relative group">
-                      <Input type="file" accept="image/*" onChange={(e) => handleFileChange(e, "schoolLogoUrl")} className="h-12 cursor-pointer" />
-                    </div>
+                    <Input type="file" accept="image/*" onChange={(e) => handleFileChange(e, "schoolLogoUrl")} className="h-12 cursor-pointer" />
                   </div>
-                </div>
-                <div className="space-y-3">
-                  <Label className="text-xs font-bold uppercase text-slate-400">Alamat Lengkap</Label>
-                  <Textarea value={formData.address} onChange={(e) => setFormData({...formData, address: e.target.value})} className="min-h-[120px] bg-slate-50 border-slate-100 rounded-xl" />
                 </div>
               </CardContent>
             </Card>
@@ -209,12 +202,8 @@ export default function AdminSettings() {
               </CardHeader>
               <CardContent className="space-y-6 p-8">
                 <div className="space-y-3">
-                  <Label className="text-xs font-bold uppercase text-slate-400">WhatsApp Admin (Format: 62812...)</Label>
+                  <Label className="text-xs font-bold uppercase text-slate-400">WhatsApp Admin</Label>
                   <Input value={formData.whatsappNumber} onChange={(e) => setFormData({...formData, whatsappNumber: e.target.value})} className="h-12 bg-slate-50 border-slate-100 rounded-xl" />
-                </div>
-                <div className="space-y-3">
-                  <Label className="text-xs font-bold uppercase text-slate-400">Telepon Kantor</Label>
-                  <Input value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} className="h-12 bg-slate-50 border-slate-100 rounded-xl" />
                 </div>
                 <div className="space-y-3">
                   <Label className="text-xs font-bold uppercase text-slate-400">Email Sekolah</Label>
@@ -223,79 +212,6 @@ export default function AdminSettings() {
               </CardContent>
             </Card>
           </div>
-        </TabsContent>
-
-        <TabsContent value="hero" className="space-y-8">
-          <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden">
-            <CardHeader className="bg-slate-50/50 border-b p-8">
-              <CardTitle className="text-xl flex items-center gap-3"><ImageIcon className="h-6 w-6 text-primary" /> Tampilan Beranda Utama</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-8 p-8">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div className="space-y-6">
-                  <div className="space-y-3">
-                    <Label className="text-xs font-bold uppercase text-slate-400">Judul Headline (Hero Title)</Label>
-                    <Input value={formData.heroTitle} onChange={(e) => setFormData({...formData, heroTitle: e.target.value})} className="h-14 font-bold text-lg bg-slate-50 border-slate-100 rounded-xl" />
-                  </div>
-                  <div className="space-y-3">
-                    <Label className="text-xs font-bold uppercase text-slate-400">Sub-judul (Keterangan)</Label>
-                    <Textarea value={formData.heroSubtitle} onChange={(e) => setFormData({...formData, heroSubtitle: e.target.value})} className="min-h-[150px] bg-slate-50 border-slate-100 rounded-xl" />
-                  </div>
-                </div>
-                <div className="space-y-3">
-                  <Label className="text-xs font-bold uppercase text-slate-400">Foto Latar Belakang Utama (Maks 1MB)</Label>
-                  <div className="relative aspect-video w-full border-2 border-slate-100 rounded-[2.5rem] overflow-hidden bg-slate-50 mb-4 flex items-center justify-center">
-                    {formData.heroImageUrl ? (
-                      <img src={formData.heroImageUrl} alt="Hero Preview" className="w-full h-full object-cover" />
-                    ) : (
-                      <div className="text-slate-300 flex flex-col items-center">
-                        <Upload className="h-12 w-12 mb-2" />
-                        <span className="font-medium">Belum ada foto latar</span>
-                      </div>
-                    )}
-                  </div>
-                  <Input type="file" accept="image/*" onChange={(e) => handleFileChange(e, "heroImageUrl")} className="cursor-pointer" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="welcome" className="animate-in fade-in duration-500">
-          <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden">
-            <CardHeader className="bg-slate-50/50 border-b p-8">
-              <CardTitle className="text-xl flex items-center gap-3"><GraduationCap className="h-6 w-6 text-primary" /> Pesan Kepala Sekolah</CardTitle>
-            </CardHeader>
-            <CardContent className="p-8 space-y-8">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div className="md:col-span-1 space-y-3">
-                  <Label className="text-xs font-bold uppercase text-slate-400">Foto Kepala Sekolah</Label>
-                  <div className="relative aspect-[3/4] w-full border-2 border-slate-100 rounded-[2.5rem] overflow-hidden bg-slate-50 flex items-center justify-center">
-                    {formData.headmasterPhotoUrl ? (
-                      <img src={formData.headmasterPhotoUrl} alt="Kepala Sekolah" className="w-full h-full object-cover" />
-                    ) : (
-                      <Upload className="h-12 w-12 text-slate-300" />
-                    )}
-                  </div>
-                  <Input type="file" accept="image/*" onChange={(e) => handleFileChange(e, "headmasterPhotoUrl")} className="mt-4" />
-                </div>
-                <div className="md:col-span-2 space-y-6">
-                  <div className="space-y-3">
-                    <Label className="text-xs font-bold uppercase text-slate-400">Nama Lengkap & Gelar</Label>
-                    <Input value={formData.headmasterName} onChange={(e) => setFormData({...formData, headmasterName: e.target.value})} className="h-12 bg-slate-50 rounded-xl" />
-                  </div>
-                  <div className="space-y-3">
-                    <Label className="text-xs font-bold uppercase text-slate-400">Label Jabatan</Label>
-                    <Input value={formData.headmasterTitle} onChange={(e) => setFormData({...formData, headmasterTitle: e.target.value})} placeholder="E.g. Kepala Sekolah" className="h-12 bg-slate-50 rounded-xl" />
-                  </div>
-                  <div className="space-y-3">
-                    <Label className="text-xs font-bold uppercase text-slate-400">Isi Sambutan</Label>
-                    <Textarea className="min-h-[250px] bg-slate-50 rounded-xl" value={formData.welcomeMessage} onChange={(e) => setFormData({...formData, welcomeMessage: e.target.value})} />
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
         </TabsContent>
 
         <TabsContent value="stats" className="space-y-8">
@@ -352,24 +268,34 @@ export default function AdminSettings() {
           </Card>
         </TabsContent>
 
-        <TabsContent value="ppdb" className="space-y-8">
-          <Card className="border-none shadow-xl rounded-[2.5rem] border-l-8 border-l-secondary overflow-hidden">
-            <CardHeader className="bg-slate-50/50 border-b p-8 flex flex-row items-center justify-between">
-              <div>
-                <CardTitle className="text-xl flex items-center gap-3 text-primary"><FileText className="h-6 w-6 text-secondary" /> Kontrol Sistem PPDB</CardTitle>
-                <CardDescription className="font-bold">Aktifkan atau nonaktifkan pendaftaran online secara global.</CardDescription>
-              </div>
-              <div className="flex items-center gap-4 bg-white p-4 rounded-2xl border shadow-sm">
-                <span className={`text-xs font-black uppercase tracking-widest ${formData.ppdbIsActive ? 'text-green-600' : 'text-slate-400'}`}>
-                  {formData.ppdbIsActive ? "Sistem Aktif" : "Sistem Nonaktif"}
-                </span>
-                <Switch checked={formData.ppdbIsActive} onCheckedChange={(val) => setFormData({...formData, ppdbIsActive: val})} />
-              </div>
+        <TabsContent value="hero" className="space-y-8">
+          <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden">
+            <CardHeader className="bg-slate-50/50 border-b p-8">
+              <CardTitle className="text-xl flex items-center gap-3"><ImageIcon className="h-6 w-6 text-primary" /> Tampilan Beranda Utama</CardTitle>
             </CardHeader>
-            <CardContent className="p-8 space-y-8">
-              <div className="max-w-md space-y-3">
-                <Label className="text-xs font-bold uppercase text-slate-500">Tahun Pelajaran</Label>
-                <Input className="h-14 font-bold text-lg rounded-xl bg-slate-50" value={formData.ppdbYear} onChange={(e) => setFormData({...formData, ppdbYear: e.target.value})} />
+            <CardContent className="space-y-8 p-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="space-y-6">
+                  <div className="space-y-3">
+                    <Label className="text-xs font-bold uppercase text-slate-400">Judul Headline</Label>
+                    <Input value={formData.heroTitle} onChange={(e) => setFormData({...formData, heroTitle: e.target.value})} className="h-14 font-bold text-lg bg-slate-50 border-slate-100 rounded-xl" />
+                  </div>
+                  <div className="space-y-3">
+                    <Label className="text-xs font-bold uppercase text-slate-400">Sub-judul</Label>
+                    <Textarea value={formData.heroSubtitle} onChange={(e) => setFormData({...formData, heroSubtitle: e.target.value})} className="min-h-[150px] bg-slate-50 border-slate-100 rounded-xl" />
+                  </div>
+                </div>
+                <div className="space-y-3">
+                  <Label className="text-xs font-bold uppercase text-slate-400">Foto Hero (Latar Belakang)</Label>
+                  <div className="relative aspect-video w-full border-2 border-slate-100 rounded-[2.5rem] overflow-hidden bg-slate-50 mb-4 flex items-center justify-center">
+                    {formData.heroImageUrl ? (
+                      <img src={formData.heroImageUrl} alt="Hero Preview" className="w-full h-full object-cover" />
+                    ) : (
+                      <Upload className="h-12 w-12 text-slate-300" />
+                    )}
+                  </div>
+                  <Input type="file" accept="image/*" onChange={(e) => handleFileChange(e, "heroImageUrl")} />
+                </div>
               </div>
             </CardContent>
           </Card>
