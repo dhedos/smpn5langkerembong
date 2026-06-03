@@ -9,16 +9,10 @@ import {
   Settings, 
   ChevronRight, 
   Building2,
-  Globe,
   Camera,
   LogOut,
   Lock,
   Database,
-  Terminal,
-  HelpCircle,
-  Bell,
-  Mail,
-  KeyRound,
   ArrowRight,
   Eye,
   EyeOff
@@ -83,10 +77,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       console.error("Login failed", error);
       let message = "Email atau password salah.";
       
-      if (error.code === 'auth/configuration-not-found') {
-        message = "Metode Email/Password belum diaktifkan di Firebase Console.";
-      } else if (error.code === 'auth/unauthorized-domain') {
-        message = "Domain ini belum diizinkan di Firebase Console.";
+      if (error.code === 'auth/api-key-not-valid') {
+        message = "Kunci API tidak valid. Periksa konfigurasi Firebase.";
+      } else if (error.code === 'auth/configuration-not-found') {
+        message = "Metode Login belum diaktifkan di Firebase Console.";
       }
       
       toast({
@@ -112,56 +106,56 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   if (!user) {
     return (
       <div className="h-screen w-full flex items-center justify-center bg-[#1a1a1a] px-4">
-        <div className="max-w-md w-full bg-[#252525] p-10 rounded-[2.5rem] border border-white/5 space-y-8">
+        <div className="max-w-md w-full bg-[#252525] p-10 rounded-[2.5rem] border border-white/5 space-y-8 shadow-2xl">
           <div className="flex flex-col items-center text-center space-y-4">
             <div className="bg-primary p-4 rounded-2xl shadow-lg">
               <Lock className="h-8 w-8 text-white" />
             </div>
-            <h1 className="text-3xl font-bold font-headline text-white">Cloud Console</h1>
+            <h1 className="text-3xl font-bold text-white tracking-tighter">Cloud Console</h1>
             <p className="text-white/50 text-sm">Masuk untuk mengelola website sekolah.</p>
           </div>
           
           <form onSubmit={handleLogin} className="space-y-6">
             <div className="space-y-2">
-              <Label className="text-white/70 text-xs font-bold uppercase">Email</Label>
+              <Label className="text-white/70 text-xs font-bold uppercase tracking-widest">Email Admin</Label>
               <Input 
                 type="email"
-                placeholder="admin@email.com"
+                placeholder="admin@sekolah.sch.id"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="bg-white/5 border-white/10 text-white h-12 rounded-xl"
+                className="bg-white/5 border-white/10 text-white h-12 rounded-xl focus:ring-primary"
                 required
               />
             </div>
             <div className="space-y-2 relative">
-              <Label className="text-white/70 text-xs font-bold uppercase">Password</Label>
+              <Label className="text-white/70 text-xs font-bold uppercase tracking-widest">Kata Sandi</Label>
               <Input 
                 type={showPassword ? "text" : "password"}
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="bg-white/5 border-white/10 text-white h-12 rounded-xl pr-12"
+                className="bg-white/5 border-white/10 text-white h-12 rounded-xl pr-12 focus:ring-primary"
                 required
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-9 text-white/30 hover:text-white"
+                className="absolute right-4 top-9 text-white/30 hover:text-white transition-colors"
               >
                 {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
               </button>
             </div>
             <Button 
               type="submit" 
-              className="w-full bg-white text-black hover:bg-slate-200 h-14 rounded-2xl font-bold gap-2"
+              className="w-full bg-white text-black hover:bg-slate-200 h-14 rounded-2xl font-bold gap-2 transition-transform active:scale-95"
               disabled={isLoggingIn}
             >
-              {isLoggingIn ? "Memproses..." : "Masuk Sekarang"} <ArrowRight className="h-4 w-4" />
+              {isLoggingIn ? "Memverifikasi..." : "Masuk Sekarang"} <ArrowRight className="h-4 w-4" />
             </Button>
           </form>
           
-          <Link href="/" className="block text-center text-white/30 text-xs hover:text-white">
-            Kembali ke Website
+          <Link href="/" className="block text-center text-white/30 text-xs hover:text-white underline underline-offset-4">
+            Kembali ke Beranda
           </Link>
         </div>
       </div>
