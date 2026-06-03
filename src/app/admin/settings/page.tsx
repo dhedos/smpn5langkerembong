@@ -90,8 +90,9 @@ export default function AdminSettings() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, field: string) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 1024 * 1024) {
-        toast({ title: "File terlalu besar", description: "Maksimal ukuran file gambar adalah 1MB.", variant: "destructive" });
+      // Perkecil ukuran file di sini jika perlu, sementara kita pakai limit 1MB
+      if (file.size > 800 * 1024) { 
+        toast({ title: "File Terlalu Besar", description: "Gunakan gambar di bawah 800KB agar database tetap optimal.", variant: "destructive" });
         return;
       }
       const reader = new FileReader();
@@ -103,16 +104,36 @@ export default function AdminSettings() {
   };
 
   const handleSave = async () => {
-    if (!db) return;
+    if (!db) {
+      toast({ title: "Koneksi Bermasalah", description: "Database belum siap. Silakan refresh halaman.", variant: "destructive" });
+      return;
+    }
+
     setIsSaving(true);
+    
     try {
-      await setDoc(doc(db, "settings", "general"), formData, { merge: true });
-      toast({ title: "Berhasil", description: "Seluruh pengaturan telah disimpan secara permanen." });
+      // Membersihkan undefined values agar tidak error di Firestore
+      const cleanData = JSON.parse(JSON.stringify(formData));
+      
+      await setDoc(doc(db, "settings", "general"), cleanData, { merge: true });
+      
+      toast({ 
+        title: "Perubahan Disimpan", 
+        description: "Seluruh pengaturan telah diperbarui secara permanen.",
+      });
     } catch (error: any) {
       console.error("Save error:", error);
+      let errorMessage = "Terjadi kesalahan saat menyimpan ke database.";
+      
+      if (error.code === 'permission-denied') {
+        errorMessage = "Anda tidak memiliki izin untuk mengubah pengaturan ini.";
+      } else if (error.message?.includes("too large")) {
+        errorMessage = "Ukuran data terlalu besar. Coba kurangi ukuran gambar yang diunggah.";
+      }
+
       toast({ 
         title: "Gagal Menyimpan", 
-        description: "Terjadi kesalahan saat menyimpan ke database.", 
+        description: errorMessage, 
         variant: "destructive" 
       });
     } finally {
@@ -155,7 +176,7 @@ export default function AdminSettings() {
         </div>
         <Button 
           size="lg"
-          className="bg-primary hover:bg-primary/90 shadow-2xl shadow-primary/20 flex gap-2 h-14 px-10 rounded-2xl font-bold text-lg transition-transform active:scale-95" 
+          className="bg-primary hover:bg-primary/90 shadow-2xl shadow-primary/20 flex gap-2 h-14 px-10 rounded-2xl font-bold text-lg transition-transform active:scale-95 disabled:opacity-70" 
           onClick={handleSave}
           disabled={isSaving}
         >
