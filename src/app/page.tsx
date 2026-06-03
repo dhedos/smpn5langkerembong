@@ -1,3 +1,4 @@
+
 "use client";
 
 import Image from "next/image";
@@ -23,7 +24,7 @@ export default function Home() {
   const settingsRef = useMemo(() => db ? doc(db, "settings", "general") : null, [db]);
   const { data: settings } = useDoc(settingsRef);
 
-  const newsQuery = useMemo(() => db ? query(collection(db, "news"), orderBy("createdAt", "desc"), limit(3)) : null, [db]);
+  const newsQuery = useMemo(() => db ? query(collection(db, "news"), orderBy("date", "desc"), limit(3)) : null, [db]);
   const { data: newsItems } = useCollection(newsQuery);
 
   const facilitiesQuery = useMemo(() => db ? query(collection(db, "facilities"), limit(4)) : null, [db]);

@@ -168,8 +168,8 @@ export default function AdminSettings() {
           <TabsTrigger value="hero" className="rounded-xl px-8 py-3 font-bold">Hero</TabsTrigger>
           <TabsTrigger value="welcome" className="rounded-xl px-8 py-3 font-bold">Sambutan</TabsTrigger>
           <TabsTrigger value="profile" className="rounded-xl px-8 py-3 font-bold">Visi Misi</TabsTrigger>
-          <TabsTrigger value="stats" className="rounded-xl px-8 py-3 font-bold">Statistik</TabsTrigger>
-          <TabsTrigger value="ppdb" className="rounded-xl px-8 py-3 font-bold text-secondary">PPDB Online</TabsTrigger>
+          <TabsTrigger value="stats" className="rounded-xl px-8 py-3 font-bold text-secondary">Statistik</TabsTrigger>
+          <TabsTrigger value="ppdb" className="rounded-xl px-8 py-3 font-bold">PPDB Online</TabsTrigger>
         </TabsList>
 
         <TabsContent value="general" className="space-y-8">
