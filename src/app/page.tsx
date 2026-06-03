@@ -5,7 +5,6 @@ import Link from "next/link";
 import { ArrowRight, GraduationCap, Users, Award, BookOpen, Calendar, ChevronRight, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { useDoc, useCollection, useFirestore } from "@/firebase";
 import { doc, collection, query, limit, orderBy } from "firebase/firestore";
 import { useMemo } from "react";
@@ -24,7 +23,7 @@ export default function Home() {
   const settingsRef = useMemo(() => db ? doc(db, "settings", "general") : null, [db]);
   const { data: settings } = useDoc(settingsRef);
 
-  const newsQuery = useMemo(() => db ? query(collection(db, "news"), orderBy("date", "desc"), limit(3)) : null, [db]);
+  const newsQuery = useMemo(() => db ? query(collection(db, "news"), orderBy("createdAt", "desc"), limit(3)) : null, [db]);
   const { data: newsItems } = useCollection(newsQuery);
 
   const facilitiesQuery = useMemo(() => db ? query(collection(db, "facilities"), limit(4)) : null, [db]);
@@ -85,20 +84,24 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="relative -mt-24 z-20 px-6">
-        <div className="max-w-7xl mx-auto grid grid-cols-2 lg:grid-cols-4 gap-8">
+      {/* Stats Section - Presisi Sesuai Gambar */}
+      <section className="relative -mt-32 z-20 px-6">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-10">
           {displayStats.map((stat: any, i: number) => {
             const Icon = iconMap[stat.icon] || Users;
             return (
-              <Card key={i} className="bg-white/95 backdrop-blur-2xl border-white/50 shadow-2xl hover:translate-y-[-12px] transition-all duration-700 rounded-[3.5rem] group">
-                <CardContent className="p-12 flex flex-col items-center text-center gap-8">
-                  <div className="p-6 bg-slate-50 rounded-[2rem] group-hover:bg-primary transition-colors duration-500">
-                    <Icon className="h-12 w-12 text-primary group-hover:text-white transition-colors duration-500" />
+              <Card key={i} className="bg-white border-none shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] hover:translate-y-[-10px] transition-all duration-500 rounded-[3rem] group overflow-hidden">
+                <CardContent className="p-12 md:p-14 flex flex-col items-center text-center">
+                  <div className="p-6 bg-slate-50 rounded-3xl group-hover:bg-primary/5 transition-colors duration-500 mb-10">
+                    <Icon className="h-10 w-10 text-primary group-hover:scale-110 transition-transform duration-500" />
                   </div>
-                  <div>
-                    <div className="text-6xl font-bold text-slate-900 font-headline tracking-tighter mb-2">{stat.value}</div>
-                    <div className="text-xs text-slate-400 font-bold uppercase tracking-widest">{stat.label}</div>
+                  <div className="space-y-2">
+                    <div className="text-5xl md:text-6xl font-bold text-slate-900 font-headline tracking-tighter">
+                      {stat.value}
+                    </div>
+                    <div className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em]">
+                      {stat.label}
+                    </div>
                   </div>
                 </CardContent>
               </Card>

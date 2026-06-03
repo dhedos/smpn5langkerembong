@@ -18,7 +18,8 @@ import {
   GraduationCap,
   Award,
   ImageIcon,
-  Layout
+  Layout,
+  Type
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -26,6 +27,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useFirestore, useDoc } from "@/firebase";
 import { doc, setDoc } from "firebase/firestore";
 import { toast } from "@/hooks/use-toast";
@@ -298,29 +300,51 @@ export default function AdminSettings() {
 
         <TabsContent value="stats" className="space-y-6 animate-in fade-in duration-500">
           <Card className="border-none shadow-sm">
-            <CardHeader className="bg-slate-50/50">
-              <CardTitle className="text-lg flex items-center gap-2"><BarChart3 className="h-5 w-5" /> Statistik Sekolah</CardTitle>
-              <CardDescription>Angka yang muncul di bagian atas halaman beranda.</CardDescription>
+            <CardHeader className="bg-slate-50/50 flex flex-row items-center justify-between">
+              <div>
+                <CardTitle className="text-lg flex items-center gap-2"><BarChart3 className="h-5 w-5" /> Statistik Sekolah</CardTitle>
+                <CardDescription>Ubah angka yang muncul di bagian atas halaman beranda.</CardDescription>
+              </div>
+              <Button variant="outline" size="sm" onClick={() => addItem("stats", { label: "Baru", value: "0", icon: "Users" })}>
+                <Plus className="h-4 w-4 mr-2" /> Tambah
+              </Button>
             </CardHeader>
             <CardContent className="pt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
               {formData.stats?.map((stat: any, i: number) => (
-                <div key={i} className="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-3">
-                  <div className="flex items-center gap-2 font-bold text-primary mb-2">
-                    {stat.icon === "Users" && <Users className="h-4 w-4" />}
-                    {stat.icon === "GraduationCap" && <GraduationCap className="h-4 w-4" />}
-                    {stat.icon === "Award" && <Award className="h-4 w-4" />}
-                    {stat.icon === "BookOpen" && <BookOpen className="h-4 w-4" />}
-                    {stat.label}
+                <div key={i} className="bg-slate-50 p-6 rounded-3xl border border-slate-100 space-y-4 relative group">
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity text-destructive"
+                    onClick={() => removeItem("stats", i)}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label className="text-xs font-bold uppercase text-slate-400">Label</Label>
+                      <Input value={stat.label} onChange={(e) => updateItem("stats", i, {...stat, label: e.target.value})} placeholder="E.g. Siswa Aktif" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-xs font-bold uppercase text-slate-400">Nilai</Label>
+                      <Input value={stat.value} onChange={(e) => updateItem("stats", i, {...stat, value: e.target.value})} placeholder="E.g. 850+" />
+                    </div>
                   </div>
-                  <div className="grid grid-cols-2 gap-2">
-                    <div className="space-y-1">
-                      <Label className="text-[10px] uppercase text-slate-400">Label</Label>
-                      <Input value={stat.label} onChange={(e) => updateItem("stats", i, {...stat, label: e.target.value})} />
-                    </div>
-                    <div className="space-y-1">
-                      <Label className="text-[10px] uppercase text-slate-400">Nilai (E.g. 850+)</Label>
-                      <Input value={stat.value} onChange={(e) => updateItem("stats", i, {...stat, value: e.target.value})} />
-                    </div>
+                  
+                  <div className="space-y-2">
+                    <Label className="text-xs font-bold uppercase text-slate-400">Ikon</Label>
+                    <Select value={stat.icon} onValueChange={(val) => updateItem("stats", i, {...stat, icon: val})}>
+                      <SelectTrigger className="bg-white">
+                        <SelectValue placeholder="Pilih Ikon" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Users">Users (Siswa)</SelectItem>
+                        <SelectItem value="GraduationCap">GraduationCap (Guru)</SelectItem>
+                        <SelectItem value="Award">Award (Prestasi)</SelectItem>
+                        <SelectItem value="BookOpen">BookOpen (Ekskul)</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
               ))}
