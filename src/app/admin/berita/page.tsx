@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { Newspaper, Plus, Search, Sparkles, Wand2, Trash2, Edit, Save } from "lucide-react";
+import { Newspaper, Search, Sparkles, Wand2, Trash2, Edit, Save, X } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,13 +23,14 @@ export default function AdminBerita() {
   const [content, setContent] = useState("");
   const [summary, setSummary] = useState("");
   const [tags, setTags] = useState<string[]>([]);
+  const [newTag, setNewTag] = useState("");
   const [optimizing, setOptimizing] = useState(false);
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("Kegiatan");
 
   const handleOptimize = async () => {
     if (!content.trim()) {
-      toast({ title: "Konten Kosong", description: "Silakan masukkan isi berita terlebih dahulu.", variant: "destructive" });
+      toast({ title: "Konten Kosong", description: "Silakan masukkan isi berita terlebih dahulu agar AI dapat menganalisis.", variant: "destructive" });
       return;
     }
 
@@ -38,17 +39,32 @@ export default function AdminBerita() {
       const result = await adminContentOptimizer({ content });
       setSummary(result.summary);
       setTags(result.seoTags);
-      toast({ title: "Optimasi Berhasil", description: "AI telah membuat ringkasan dan tag SEO." });
+      toast({ title: "Optimasi Berhasil", description: "AI telah membuat ringkasan dan tag SEO berdasarkan konten Anda." });
     } catch (error) {
-      toast({ title: "Gagal Mengoptimasi", description: "Terjadi kesalahan pada AI Service.", variant: "destructive" });
+      console.error("AI Error:", error);
+      toast({ title: "Gagal Mengoptimasi", description: "Terjadi kesalahan pada AI Service. Pastikan kuota API tersedia.", variant: "destructive" });
     } finally {
       setOptimizing(false);
     }
   };
 
+  const handleAddTag = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && newTag.trim()) {
+      e.preventDefault();
+      if (!tags.includes(newTag.trim())) {
+        setTags([...tags, newTag.trim()]);
+      }
+      setNewTag("");
+    }
+  };
+
+  const removeTag = (tagToRemove: string) => {
+    setTags(tags.filter(t => t !== tagToRemove));
+  };
+
   const handleSave = async () => {
     if (!db || !title || !content) {
-      toast({ title: "Data Belum Lengkap", description: "Judul dan konten wajib diisi.", variant: "destructive" });
+      toast({ title: "Data Belum Lengkap", description: "Judul dan konten utama wajib diisi.", variant: "destructive" });
       return;
     }
 
@@ -68,7 +84,7 @@ export default function AdminBerita() {
       setContent("");
       setSummary("");
       setTags([]);
-      toast({ title: "Berhasil", description: "Berita telah dipublikasikan." });
+      toast({ title: "Berhasil", description: "Berita telah dipublikasikan ke website." });
     } catch (error) {
       toast({ title: "Gagal Menyimpan", description: "Terjadi kesalahan saat menyimpan ke database.", variant: "destructive" });
     }
@@ -78,108 +94,127 @@ export default function AdminBerita() {
     if (!db) return;
     try {
       await deleteDoc(doc(db, "news", id));
-      toast({ title: "Dihapus", description: "Berita telah dihapus." });
+      toast({ title: "Dihapus", description: "Berita telah dihapus secara permanen." });
     } catch (error) {
       toast({ title: "Gagal", description: "Gagal menghapus berita.", variant: "destructive" });
     }
   };
 
   return (
-    <div className="p-8 space-y-8">
+    <div className="p-8 space-y-8 max-w-7xl mx-auto">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-3xl font-bold font-headline text-primary flex items-center gap-2">
             <Newspaper className="h-8 w-8 text-secondary" /> Publikasi Berita
           </h1>
-          <p className="text-muted-foreground text-sm">Kelola artikel, pengumuman, dan prestasi sekolah.</p>
+          <p className="text-muted-foreground text-sm font-medium">Tulis artikel dan gunakan AI untuk mengoptimalkan konten.</p>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
         {/* Editor Section */}
-        <Card className="border-none shadow-sm rounded-2xl overflow-hidden">
-          <CardHeader className="bg-slate-50/50 border-b">
-            <CardTitle className="text-lg flex items-center gap-2">
-              <Edit className="h-5 w-5 text-primary" /> Editor Konten
+        <Card className="lg:col-span-3 border-none shadow-xl rounded-[2.5rem] overflow-hidden">
+          <CardHeader className="bg-slate-50/50 border-b p-8">
+            <CardTitle className="text-xl flex items-center gap-2">
+              <Edit className="h-6 w-6 text-primary" /> Penulisan Berita
             </CardTitle>
           </CardHeader>
-          <CardContent className="p-6 space-y-6">
-            <div className="grid grid-cols-2 gap-4">
+          <CardContent className="p-8 space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <Label className="text-xs uppercase font-bold text-slate-500">Judul</Label>
+                <Label className="text-xs uppercase font-extrabold text-slate-400 tracking-widest">Judul Berita</Label>
                 <Input 
-                  className="bg-slate-50 border-slate-100"
-                  placeholder="Judul berita..." 
+                  className="h-12 bg-slate-50 border-slate-100 rounded-xl font-bold"
+                  placeholder="Masukkan judul menarik..." 
                   value={title} 
                   onChange={(e) => setTitle(e.target.value)} 
                 />
               </div>
               <div className="space-y-2">
-                <Label className="text-xs uppercase font-bold text-slate-500">Kategori</Label>
+                <Label className="text-xs uppercase font-extrabold text-slate-400 tracking-widest">Kategori</Label>
                 <Input 
-                  className="bg-slate-50 border-slate-100"
-                  placeholder="E.g. Prestasi" 
+                  className="h-12 bg-slate-50 border-slate-100 rounded-xl"
+                  placeholder="E.g. Prestasi, Pengumuman" 
                   value={category} 
                   onChange={(e) => setCategory(e.target.value)} 
                 />
               </div>
             </div>
             <div className="space-y-2">
-              <Label className="text-xs uppercase font-bold text-slate-500">Konten Utama</Label>
+              <Label className="text-xs uppercase font-extrabold text-slate-400 tracking-widest">Konten Utama</Label>
               <Textarea 
-                placeholder="Tulis detail berita di sini..." 
-                className="min-h-[250px] bg-slate-50 border-slate-100"
+                placeholder="Tulis detail berita di sini secara lengkap..." 
+                className="min-h-[350px] bg-slate-50 border-slate-100 rounded-[2rem] p-6 leading-relaxed"
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
               />
             </div>
-            <div className="flex justify-between items-center gap-4 border-t pt-6">
+            <div className="flex justify-between items-center gap-4 border-t pt-8">
               <Button 
                 variant="outline" 
-                className="flex gap-2 border-primary text-primary hover:bg-primary/5"
+                className="h-12 px-6 rounded-xl flex gap-2 border-primary/20 text-primary hover:bg-primary/5 font-bold"
                 onClick={handleOptimize}
                 disabled={optimizing}
               >
                 {optimizing ? (
-                  <Sparkles className="h-4 w-4 animate-spin" />
+                  <Sparkles className="h-5 w-5 animate-spin text-secondary" />
                 ) : (
-                  <Wand2 className="h-4 w-4" />
+                  <Wand2 className="h-5 w-5 text-secondary" />
                 )}
-                AI Optimize
+                {optimizing ? "Menganalisis..." : "AI Optimize"}
               </Button>
-              <Button className="bg-primary shadow-lg shadow-primary/20 flex gap-2" onClick={handleSave}>
-                <Save className="h-4 w-4" /> Publikasikan
+              <Button className="h-12 px-8 rounded-xl bg-primary shadow-lg shadow-primary/20 flex gap-2 font-bold" onClick={handleSave}>
+                <Save className="h-5 w-5" /> Publikasikan Berita
               </Button>
             </div>
           </CardContent>
         </Card>
 
-        {/* AI Results Section */}
-        <Card className="border-none shadow-sm rounded-2xl bg-slate-50/50 border border-slate-100">
-          <CardHeader className="border-b">
-            <CardTitle className="text-lg flex items-center gap-2 text-primary">
-              <Sparkles className="h-5 w-5 text-secondary" /> AI Suggestions
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-6 space-y-8">
-            <div className="space-y-3">
-              <Label className="text-xs font-bold uppercase text-slate-500">Ringkasan Otomatis</Label>
-              <div className="bg-white p-4 rounded-xl border border-slate-100 text-sm text-slate-600 min-h-[120px] shadow-sm italic">
-                {summary || "Klik 'AI Optimize' untuk membuat ringkasan."}
+        {/* AI Suggestions Section */}
+        <Card className="lg:col-span-2 border-none shadow-xl rounded-[2.5rem] bg-white border border-slate-100 flex flex-col">
+          <CardHeader className="bg-slate-50/50 border-b p-8">
+            <CardTitle className="text-xl flex items-center gap-3 text-primary">
+              <div className="bg-secondary p-2 rounded-lg">
+                <Sparkles className="h-5 w-5 text-primary" />
               </div>
-            </div>
+              AI Suggestions
+            </CardTitle>
+            <CardDescription className="font-medium">Hasil optimasi kecerdasan buatan untuk SEO dan ringkasan.</CardDescription>
+          </CardHeader>
+          <CardContent className="p-8 space-y-8 flex-1">
             <div className="space-y-3">
-              <Label className="text-xs font-bold uppercase text-slate-500">Tag SEO</Label>
-              <div className="flex flex-wrap gap-2">
+              <Label className="text-xs font-extrabold uppercase text-slate-400 tracking-widest">Ringkasan Otomatis (Dapat Diedit)</Label>
+              <Textarea 
+                className="bg-slate-50 border-slate-100 rounded-2xl text-sm min-h-[150px] italic leading-relaxed"
+                placeholder="Klik 'AI Optimize' untuk membuat ringkasan otomatis..."
+                value={summary}
+                onChange={(e) => setSummary(e.target.value)}
+              />
+            </div>
+            <div className="space-y-4">
+              <Label className="text-xs font-extrabold uppercase text-slate-400 tracking-widest">Tag SEO</Label>
+              <div className="flex flex-wrap gap-2 mb-4">
                 {tags.length > 0 ? (
                   tags.map((tag) => (
-                    <Badge key={tag} variant="secondary" className="bg-white border-slate-100 text-primary px-3 py-1">
+                    <Badge key={tag} variant="secondary" className="bg-slate-100 border-slate-200 text-primary px-4 py-2 rounded-xl flex items-center gap-2 group">
                       #{tag}
+                      <button onClick={() => removeTag(tag)} className="opacity-0 group-hover:opacity-100 transition-opacity">
+                        <X className="h-3 w-3 text-destructive" />
+                      </button>
                     </Badge>
                   ))
                 ) : (
-                  <span className="text-xs text-muted-foreground">Belum ada tag.</span>
+                  <span className="text-sm text-muted-foreground italic">Belum ada tag yang dihasilkan.</span>
                 )}
+              </div>
+              <div className="relative">
+                <Input 
+                  placeholder="Tambah tag manual (Tekan Enter)..." 
+                  value={newTag}
+                  onChange={(e) => setNewTag(e.target.value)}
+                  onKeyDown={handleAddTag}
+                  className="bg-slate-50 border-slate-100 rounded-xl h-12"
+                />
               </div>
             </div>
           </CardContent>
@@ -187,50 +222,52 @@ export default function AdminBerita() {
       </div>
 
       {/* List Table */}
-      <Card className="border-none shadow-sm overflow-hidden">
-        <CardHeader className="bg-white p-6 flex flex-col md:flex-row justify-between items-center gap-4 border-b">
+      <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden">
+        <CardHeader className="bg-white p-8 flex flex-col md:flex-row justify-between items-center gap-4 border-b">
           <div>
-            <CardTitle className="text-lg">Database Berita</CardTitle>
-            <CardDescription className="text-xs">Daftar semua artikel yang tersimpan.</CardDescription>
+            <CardTitle className="text-xl">Arsip Berita</CardTitle>
+            <CardDescription className="font-medium">Kelola semua konten yang telah Anda publikasikan.</CardDescription>
           </div>
-          <div className="relative w-full md:w-72">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-            <Input className="pl-9 bg-slate-50 border-slate-100" placeholder="Cari judul..." />
+          <div className="relative w-full md:w-80">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+            <Input className="pl-12 h-12 bg-slate-50 border-slate-100 rounded-2xl" placeholder="Cari berdasarkan judul..." />
           </div>
         </CardHeader>
         <CardContent className="p-0">
           <Table>
-            <TableHeader className="bg-slate-50">
+            <TableHeader className="bg-slate-50/50">
               <TableRow>
-                <TableHead className="w-[400px]">Judul</TableHead>
-                <TableHead>Kategori</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Tanggal</TableHead>
-                <TableHead className="text-right">Aksi</TableHead>
+                <TableHead className="px-8 font-bold">Judul Artikel</TableHead>
+                <TableHead className="font-bold">Kategori</TableHead>
+                <TableHead className="font-bold">Status</TableHead>
+                <TableHead className="font-bold">Tanggal</TableHead>
+                <TableHead className="text-right px-8 font-bold">Aksi</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {loading ? (
-                <TableRow><TableCell colSpan={5} className="text-center py-12 text-slate-400">Memuat data...</TableCell></TableRow>
+                <TableRow><TableCell colSpan={5} className="text-center py-20 text-slate-400 animate-pulse font-medium">Menghubungkan ke database...</TableCell></TableRow>
               ) : newsItems && newsItems.length > 0 ? newsItems.map((item: any) => (
-                <TableRow key={item.id} className="hover:bg-slate-50/50">
-                  <TableCell className="font-bold text-slate-700">{item.title}</TableCell>
+                <TableRow key={item.id} className="hover:bg-slate-50/50 transition-colors">
+                  <TableCell className="px-8 font-bold text-slate-800 py-6">{item.title}</TableCell>
                   <TableCell>
-                    <Badge variant="outline" className="text-[10px] uppercase">{item.category}</Badge>
+                    <Badge variant="outline" className="text-[10px] uppercase font-black tracking-widest border-primary/20 text-primary">{item.category}</Badge>
                   </TableCell>
                   <TableCell>
-                    <div className="flex items-center gap-1.5">
-                       <div className="h-1.5 w-1.5 rounded-full bg-green-500" />
-                       <span className="text-[10px] font-bold text-green-700 uppercase">{item.status}</span>
+                    <div className="flex items-center gap-2">
+                       <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+                       <span className="text-[10px] font-black text-green-700 uppercase tracking-widest">{item.status}</span>
                     </div>
                   </TableCell>
-                  <TableCell className="text-xs text-slate-500">{item.date}</TableCell>
-                  <TableCell className="text-right">
-                    <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:bg-destructive/10" onClick={() => handleDelete(item.id)}><Trash2 className="h-4 w-4" /></Button>
+                  <TableCell className="text-xs font-bold text-slate-400">{item.date}</TableCell>
+                  <TableCell className="text-right px-8">
+                    <Button variant="ghost" size="icon" className="h-10 w-10 text-destructive hover:bg-destructive/10 rounded-xl" onClick={() => handleDelete(item.id)}>
+                      <Trash2 className="h-5 w-5" />
+                    </Button>
                   </TableCell>
                 </TableRow>
               )) : (
-                <TableRow><TableCell colSpan={5} className="text-center py-12 text-slate-400 italic">Belum ada berita yang diterbitkan.</TableCell></TableRow>
+                <TableRow><TableCell colSpan={5} className="text-center py-20 text-slate-400 italic">Belum ada berita yang diterbitkan. Mulailah menulis di atas!</TableCell></TableRow>
               )}
             </TableBody>
           </Table>
