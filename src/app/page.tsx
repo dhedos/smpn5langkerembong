@@ -1,4 +1,3 @@
-
 "use client";
 
 import Image from "next/image";
@@ -85,7 +84,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Stats Section - Presisi Sesuai Gambar */}
+      {/* Stats Section */}
       <section className="relative -mt-32 z-20 px-6">
         <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-10">
           {displayStats.map((stat: any, i: number) => {
