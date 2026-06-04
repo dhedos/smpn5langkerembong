@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
@@ -21,7 +22,9 @@ import {
   Upload,
   UserCircle,
   Clock,
-  CheckCircle2
+  CheckCircle2,
+  History,
+  Info
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -103,15 +106,15 @@ export default function AdminSettings() {
 
   const handleSave = async () => {
     if (!db) {
-      toast({ title: "Koneksi Bermasalah", description: "Database belum siap. Silakan refresh halaman.", variant: "destructive" });
+      toast({ title: "Koneksi Bermasalah", description: "Database belum siap.", variant: "destructive" });
       return;
     }
 
     setIsSaving(true);
     
     try {
-      const cleanData = JSON.parse(JSON.stringify(formData));
-      await setDoc(doc(db, "settings", "general"), cleanData, { merge: true });
+      // Simpan data ke Firestore
+      await setDoc(doc(db, "settings", "general"), formData, { merge: true });
       
       toast({ 
         title: "Perubahan Disimpan", 
@@ -119,17 +122,9 @@ export default function AdminSettings() {
       });
     } catch (error: any) {
       console.error("Save error:", error);
-      let errorMessage = "Terjadi kesalahan saat menyimpan ke database.";
-      
-      if (error.code === 'permission-denied') {
-        errorMessage = "Anda tidak memiliki izin untuk mengubah pengaturan ini.";
-      } else if (error.message?.includes("too large")) {
-        errorMessage = "Ukuran data terlalu besar. Coba kurangi ukuran gambar yang diunggah.";
-      }
-
       toast({ 
         title: "Gagal Menyimpan", 
-        description: errorMessage, 
+        description: "Terjadi kesalahan saat menyimpan ke database.", 
         variant: "destructive" 
       });
     } finally {
@@ -161,40 +156,43 @@ export default function AdminSettings() {
   return (
     <div className="p-8 max-w-7xl mx-auto space-y-10">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-        <div>
-          <h1 className="text-4xl font-bold font-headline text-primary flex items-center gap-3">
-            <div className="bg-secondary p-2.5 rounded-2xl">
-              <Settings className="h-8 w-8 text-primary" />
-            </div>
-            Konfigurasi Website
-          </h1>
-          <p className="text-muted-foreground text-sm font-medium mt-1">Sesuaikan identitas dan statistik sekolah secara real-time.</p>
+        <div className="flex items-center gap-4">
+          <div className="bg-[#f2a100] p-3 rounded-2xl shadow-lg">
+            <Settings className="h-8 w-8 text-white" />
+          </div>
+          <div>
+            <h1 className="text-4xl font-bold font-headline text-primary tracking-tight">
+              Konfigurasi Website
+            </h1>
+            <p className="text-muted-foreground text-sm font-medium">Sesuaikan identitas dan statistik sekolah secara real-time.</p>
+          </div>
         </div>
         <Button 
           size="lg"
-          className="bg-primary hover:bg-primary/90 shadow-2xl shadow-primary/20 flex gap-2 h-14 px-10 rounded-2xl font-bold text-lg transition-transform active:scale-95 disabled:opacity-70" 
+          className="bg-primary hover:bg-primary/90 shadow-xl flex gap-2 h-14 px-10 rounded-2xl font-bold text-lg transition-all active:scale-95 disabled:opacity-70" 
           onClick={handleSave}
           disabled={isSaving}
         >
-          {isSaving ? "Menyimpan Data..." : "Simpan Perubahan"} <Save className="h-5 w-5" />
+          {isSaving ? "Menyimpan..." : "Simpan Perubahan"} <Save className="h-5 w-5" />
         </Button>
       </div>
 
       <Tabs defaultValue="general" className="space-y-8">
-        <TabsList className="bg-slate-100/80 p-1.5 rounded-2xl w-full md:w-auto flex overflow-x-auto h-auto backdrop-blur-sm border border-slate-200">
-          <TabsTrigger value="general" className="rounded-xl px-8 py-3 font-bold">Identitas</TabsTrigger>
-          <TabsTrigger value="hero" className="rounded-xl px-8 py-3 font-bold">Hero</TabsTrigger>
-          <TabsTrigger value="welcome" className="rounded-xl px-8 py-3 font-bold">Sambutan</TabsTrigger>
-          <TabsTrigger value="profile" className="rounded-xl px-8 py-3 font-bold">Visi Misi</TabsTrigger>
-          <TabsTrigger value="stats" className="rounded-xl px-8 py-3 font-bold">Statistik</TabsTrigger>
-          <TabsTrigger value="ppdb" className="rounded-xl px-8 py-3 font-bold">SPMB Online</TabsTrigger>
+        <TabsList className="bg-slate-100/50 p-1.5 rounded-2xl w-full flex flex-wrap h-auto border border-slate-200 gap-1">
+          <TabsTrigger value="general" className="rounded-xl px-6 py-3 font-bold flex-1 data-[state=active]:bg-white data-[state=active]:shadow-sm">Identitas</TabsTrigger>
+          <TabsTrigger value="hero" className="rounded-xl px-6 py-3 font-bold flex-1 data-[state=active]:bg-white data-[state=active]:shadow-sm">Hero</TabsTrigger>
+          <TabsTrigger value="welcome" className="rounded-xl px-6 py-3 font-bold flex-1 data-[state=active]:bg-white data-[state=active]:shadow-sm">Sambutan</TabsTrigger>
+          <TabsTrigger value="profile" className="rounded-xl px-6 py-3 font-bold flex-1 data-[state=active]:bg-white data-[state=active]:shadow-sm">Visi Misi</TabsTrigger>
+          <TabsTrigger value="stats" className="rounded-xl px-6 py-3 font-bold flex-1 data-[state=active]:bg-white data-[state=active]:shadow-sm">Statistik</TabsTrigger>
+          <TabsTrigger value="spmb" className="rounded-xl px-6 py-3 font-bold flex-1 data-[state=active]:bg-white data-[state=active]:shadow-sm">SPMB Online</TabsTrigger>
         </TabsList>
 
         <TabsContent value="general" className="space-y-8">
            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden">
+            <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden bg-white">
               <CardHeader className="bg-slate-50/50 border-b p-8">
-                <CardTitle className="text-xl flex items-center gap-3 font-headline"><School className="h-6 w-6 text-primary" /> Identitas Sekolah</CardTitle>
+                <CardTitle className="text-xl flex items-center gap-3 font-headline text-primary"><School className="h-6 w-6 text-secondary" /> Identitas Sekolah</CardTitle>
+                <CardDescription>Nama resmi dan logo yang akan tampil di navigasi.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-6 p-8">
                 <div className="space-y-3">
@@ -203,14 +201,14 @@ export default function AdminSettings() {
                     value={formData.schoolName} 
                     onChange={(e) => setFormData({...formData, schoolName: e.target.value})} 
                     className="h-14 bg-slate-50 border-slate-100 rounded-2xl font-bold" 
-                    placeholder="Masukkan nama lengkap sekolah"
+                    placeholder="E.g. SMPN 5 Langke Rembong"
                   />
                 </div>
                 <div className="space-y-3">
                   <Label className="text-xs font-bold uppercase text-slate-400 tracking-widest">Logo Sekolah (PNG/SVG)</Label>
                   <div className="flex flex-col gap-4">
                     {formData.schoolLogoUrl && (
-                      <div className="h-32 w-32 relative border-2 border-slate-100 rounded-[2rem] bg-white p-4 flex items-center justify-center">
+                      <div className="h-24 w-24 relative border-2 border-slate-100 rounded-2xl bg-white p-2 flex items-center justify-center">
                         <img src={formData.schoolLogoUrl} alt="Logo" className="max-h-full max-w-full object-contain" />
                       </div>
                     )}
@@ -220,28 +218,30 @@ export default function AdminSettings() {
               </CardContent>
             </Card>
 
-            <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden">
+            <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden bg-white">
               <CardHeader className="bg-slate-50/50 border-b p-8">
-                <CardTitle className="text-xl flex items-center gap-3 font-headline"><Phone className="h-6 w-6 text-primary" /> Kontak Resmi</CardTitle>
+                <CardTitle className="text-xl flex items-center gap-3 font-headline text-primary"><Phone className="h-6 w-6 text-secondary" /> Kontak & Alamat</CardTitle>
+                <CardDescription>Informasi kontak resmi sekolah untuk footer.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-6 p-8">
                 <div className="space-y-3">
-                  <Label className="text-xs font-bold uppercase text-slate-400 tracking-widest">WhatsApp Admin</Label>
+                  <Label className="text-xs font-bold uppercase text-slate-400 tracking-widest">WhatsApp Admin (Format: 628...)</Label>
                   <Input 
                     value={formData.whatsappNumber} 
                     onChange={(e) => setFormData({...formData, whatsappNumber: e.target.value})} 
                     className="h-14 bg-slate-50 border-slate-100 rounded-2xl" 
-                    placeholder="Contoh: 628123456789"
+                    placeholder="628123456789"
                   />
                 </div>
-                <div className="space-y-3">
-                  <Label className="text-xs font-bold uppercase text-slate-400 tracking-widest">Email Sekolah</Label>
-                  <Input 
-                    value={formData.email} 
-                    onChange={(e) => setFormData({...formData, email: e.target.value})} 
-                    className="h-14 bg-slate-50 border-slate-100 rounded-2xl" 
-                    placeholder="info@sekolah.sch.id"
-                  />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-3">
+                    <Label className="text-xs font-bold uppercase text-slate-400 tracking-widest">Email Resmi</Label>
+                    <Input value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} className="h-12 bg-slate-50 border-slate-100 rounded-xl" />
+                  </div>
+                  <div className="space-y-3">
+                    <Label className="text-xs font-bold uppercase text-slate-400 tracking-widest">Telepon Kantor</Label>
+                    <Input value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} className="h-12 bg-slate-50 border-slate-100 rounded-xl" />
+                  </div>
                 </div>
                 <div className="space-y-3">
                   <Label className="text-xs font-bold uppercase text-slate-400 tracking-widest">Alamat Lengkap</Label>
@@ -249,7 +249,6 @@ export default function AdminSettings() {
                     value={formData.address} 
                     onChange={(e) => setFormData({...formData, address: e.target.value})} 
                     className="min-h-[100px] bg-slate-50 border-slate-100 rounded-2xl" 
-                    placeholder="Jl. Pendidikan No. 123..."
                   />
                 </div>
               </CardContent>
@@ -258,43 +257,38 @@ export default function AdminSettings() {
         </TabsContent>
 
         <TabsContent value="hero" className="space-y-8">
-          <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden">
+          <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden bg-white">
             <CardHeader className="bg-slate-50/50 border-b p-8">
-              <CardTitle className="text-xl flex items-center gap-3 font-headline"><ImageIcon className="h-6 w-6 text-primary" /> Tampilan Beranda Utama</CardTitle>
-              <CardDescription>Atur teks dan latar belakang yang muncul pertama kali saat pengunjung membuka website.</CardDescription>
+              <CardTitle className="text-xl flex items-center gap-3 font-headline text-primary"><ImageIcon className="h-6 w-6 text-secondary" /> Visual Beranda Utama</CardTitle>
+              <CardDescription>Teks headline dan foto latar belakang utama website.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-8 p-8">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="space-y-6">
                   <div className="space-y-3">
-                    <Label className="text-xs font-bold uppercase text-slate-400 tracking-widest">Judul Headline (Besar)</Label>
+                    <Label className="text-xs font-bold uppercase text-slate-400 tracking-widest">Judul Utama (Headline)</Label>
                     <Input 
                       value={formData.heroTitle} 
                       onChange={(e) => setFormData({...formData, heroTitle: e.target.value})} 
                       className="h-16 font-bold text-xl bg-slate-50 border-slate-100 rounded-2xl" 
-                      placeholder="Wujudkan Masa Depan"
                     />
                   </div>
                   <div className="space-y-3">
-                    <Label className="text-xs font-bold uppercase text-slate-400 tracking-widest">Sub-judul / Deskripsi</Label>
+                    <Label className="text-xs font-bold uppercase text-slate-400 tracking-widest">Sub-judul / Deskripsi Singkat</Label>
                     <Textarea 
                       value={formData.heroSubtitle} 
                       onChange={(e) => setFormData({...formData, heroSubtitle: e.target.value})} 
                       className="min-h-[180px] bg-slate-50 border-slate-100 rounded-2xl text-lg" 
-                      placeholder="Teks penjelas di bawah judul..."
                     />
                   </div>
                 </div>
-                <div className="space-y-3">
-                  <Label className="text-xs font-bold uppercase text-slate-400 tracking-widest">Foto Hero (Background - Rekomendasi 1920x1080)</Label>
-                  <div className="relative aspect-video w-full border-2 border-dashed border-slate-200 rounded-[2.5rem] overflow-hidden bg-slate-50 mb-4 flex items-center justify-center group">
+                <div className="space-y-4">
+                  <Label className="text-xs font-bold uppercase text-slate-400 tracking-widest">Foto Latar Belakang (Rekomendasi Landscape)</Label>
+                  <div className="relative aspect-video w-full border-2 border-dashed border-slate-200 rounded-[2rem] overflow-hidden bg-slate-50 mb-4 flex items-center justify-center">
                     {formData.heroImageUrl ? (
                       <img src={formData.heroImageUrl} alt="Hero Preview" className="w-full h-full object-cover" />
                     ) : (
-                      <div className="text-center">
-                        <Upload className="h-12 w-12 text-slate-300 mx-auto mb-2" />
-                        <span className="text-xs text-slate-400">Pilih Foto Background</span>
-                      </div>
+                      <Upload className="h-10 w-10 text-slate-200" />
                     )}
                   </div>
                   <Input type="file" accept="image/*" onChange={(e) => handleFileChange(e, "heroImageUrl")} className="h-12 rounded-2xl cursor-pointer" />
@@ -306,30 +300,31 @@ export default function AdminSettings() {
 
         <TabsContent value="welcome" className="space-y-8">
           <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
-            <Card className="md:col-span-3 border-none shadow-xl rounded-[2.5rem] overflow-hidden">
+            <Card className="md:col-span-3 border-none shadow-xl rounded-[2.5rem] overflow-hidden bg-white">
               <CardHeader className="bg-slate-50/50 border-b p-8">
-                <CardTitle className="text-xl flex items-center gap-3 font-headline"><Type className="h-6 w-6 text-primary" /> Isi Sambutan</CardTitle>
+                <CardTitle className="text-xl flex items-center gap-3 font-headline text-primary"><Type className="h-6 w-6 text-secondary" /> Pesan Sambutan</CardTitle>
+                <CardDescription>Pesan pembuka dari Kepala Sekolah di halaman utama.</CardDescription>
               </CardHeader>
               <CardContent className="p-8 space-y-6">
                 <div className="space-y-3">
-                  <Label className="text-xs font-bold uppercase text-slate-400 tracking-widest">Label Judul Kecil</Label>
+                  <Label className="text-xs font-bold uppercase text-slate-400 tracking-widest">Label Judul (Kecil)</Label>
                   <Input value={formData.welcomeTitle} onChange={(e) => setFormData({...formData, welcomeTitle: e.target.value})} className="h-14 bg-slate-50 border-slate-100 rounded-2xl font-bold" />
                 </div>
                 <div className="space-y-3">
-                  <Label className="text-xs font-bold uppercase text-slate-400 tracking-widest">Pesan Utama Sambutan</Label>
-                  <Textarea value={formData.welcomeMessage} onChange={(e) => setFormData({...formData, welcomeMessage: e.target.value})} className="min-h-[250px] bg-slate-50 border-slate-100 rounded-3xl p-6 text-lg italic" />
+                  <Label className="text-xs font-bold uppercase text-slate-400 tracking-widest">Teks Lengkap Sambutan</Label>
+                  <Textarea value={formData.welcomeMessage} onChange={(e) => setFormData({...formData, welcomeMessage: e.target.value})} className="min-h-[250px] bg-slate-50 border-slate-100 rounded-3xl p-6 text-lg italic leading-relaxed" />
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="md:col-span-2 border-none shadow-xl rounded-[2.5rem] overflow-hidden">
+            <Card className="md:col-span-2 border-none shadow-xl rounded-[2.5rem] overflow-hidden bg-white">
               <CardHeader className="bg-slate-50/50 border-b p-8">
-                <CardTitle className="text-xl flex items-center gap-3 font-headline"><UserCircle className="h-6 w-6 text-primary" /> Profil Kepala Sekolah</CardTitle>
+                <CardTitle className="text-xl flex items-center gap-3 font-headline text-primary"><UserCircle className="h-6 w-6 text-secondary" /> Kepala Sekolah</CardTitle>
               </CardHeader>
               <CardContent className="p-8 space-y-6">
                 <div className="space-y-3">
-                  <Label className="text-xs font-bold uppercase text-slate-400 tracking-widest">Foto Kepala Sekolah</Label>
-                  <div className="relative aspect-[3/4] w-full border-2 border-slate-100 rounded-[2.5rem] overflow-hidden bg-slate-50 mb-4 flex items-center justify-center">
+                  <Label className="text-xs font-bold uppercase text-slate-400 tracking-widest">Foto Resmi</Label>
+                  <div className="relative aspect-[3/4] w-full border-2 border-slate-100 rounded-[2rem] overflow-hidden bg-slate-50 mb-4 flex items-center justify-center">
                     {formData.headmasterPhotoUrl ? (
                       <img src={formData.headmasterPhotoUrl} alt="Kepsek" className="w-full h-full object-cover" />
                     ) : (
@@ -342,10 +337,6 @@ export default function AdminSettings() {
                   <Label className="text-xs font-bold uppercase text-slate-400 tracking-widest">Nama Lengkap & Gelar</Label>
                   <Input value={formData.headmasterName} onChange={(e) => setFormData({...formData, headmasterName: e.target.value})} className="h-14 bg-slate-50 border-slate-100 rounded-2xl font-bold" />
                 </div>
-                <div className="space-y-3">
-                  <Label className="text-xs font-bold uppercase text-slate-400 tracking-widest">Jabatan</Label>
-                  <Input value={formData.headmasterTitle} onChange={(e) => setFormData({...formData, headmasterTitle: e.target.value})} className="h-14 bg-slate-50 border-slate-100 rounded-2xl" />
-                </div>
               </CardContent>
             </Card>
           </div>
@@ -353,26 +344,26 @@ export default function AdminSettings() {
 
         <TabsContent value="profile" className="space-y-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden">
+            <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden bg-white">
               <CardHeader className="bg-slate-50/50 border-b p-8">
-                <CardTitle className="text-xl flex items-center gap-3 font-headline"><Target className="h-6 w-6 text-primary" /> Visi & Sejarah</CardTitle>
+                <CardTitle className="text-xl flex items-center gap-3 font-headline text-primary"><Target className="h-6 w-6 text-secondary" /> Visi & Sejarah</CardTitle>
               </CardHeader>
               <CardContent className="p-8 space-y-8">
                 <div className="space-y-3">
-                  <Label className="text-xs font-bold uppercase text-slate-400 tracking-widest">Teks Visi Sekolah</Label>
+                  <Label className="text-xs font-bold uppercase text-slate-400 tracking-widest">Visi Sekolah</Label>
                   <Textarea value={formData.vision} onChange={(e) => setFormData({...formData, vision: e.target.value})} className="min-h-[120px] bg-slate-50 border-slate-100 rounded-2xl p-4 font-medium italic" />
                 </div>
                 <div className="space-y-3">
-                  <Label className="text-xs font-bold uppercase text-slate-400 tracking-widest">Sejarah Singkat Sekolah</Label>
+                  <Label className="text-xs font-bold uppercase text-slate-400 tracking-widest">Sejarah Sekolah</Label>
                   <Textarea value={formData.history} onChange={(e) => setFormData({...formData, history: e.target.value})} className="min-h-[200px] bg-slate-50 border-slate-100 rounded-2xl p-4" />
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden">
+            <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden bg-white">
               <CardHeader className="bg-slate-50/50 border-b p-8 flex flex-row items-center justify-between">
-                <CardTitle className="text-xl flex items-center gap-3 font-headline"><CheckCircle2 className="h-6 w-6 text-primary" /> Misi Sekolah</CardTitle>
-                <Button variant="outline" size="sm" className="rounded-xl font-bold" onClick={() => addItem("mission", "Misi baru...")}>
+                <CardTitle className="text-xl flex items-center gap-3 font-headline text-primary"><CheckCircle2 className="h-6 w-6 text-secondary" /> Misi Sekolah</CardTitle>
+                <Button variant="outline" size="sm" className="rounded-xl font-bold h-10 px-4" onClick={() => addItem("mission", "")}>
                   <Plus className="h-4 w-4 mr-2" /> Tambah Misi
                 </Button>
               </CardHeader>
@@ -383,62 +374,64 @@ export default function AdminSettings() {
                       value={m} 
                       onChange={(e) => updateItem("mission", i, e.target.value)} 
                       className="bg-slate-50 border-slate-100 h-12 rounded-xl"
+                      placeholder={`Misi ${i + 1}`}
                     />
-                    <Button variant="ghost" size="icon" className="text-destructive hover:bg-destructive/10 rounded-xl" onClick={() => removeItem("mission", i)}>
+                    <Button variant="ghost" size="icon" className="text-destructive hover:bg-destructive/10 rounded-xl shrink-0" onClick={() => removeItem("mission", i)}>
                       <Trash2 className="h-4 w-4" />
                     </Button>
                   </div>
                 ))}
+                {formData.mission?.length === 0 && <p className="text-center py-10 text-slate-400 italic">Belum ada misi yang ditambahkan.</p>}
               </CardContent>
             </Card>
           </div>
         </TabsContent>
 
         <TabsContent value="stats" className="space-y-8">
-          <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden">
+          <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden bg-white">
             <CardHeader className="bg-slate-50/50 border-b p-8 flex flex-row items-center justify-between">
               <div>
-                <CardTitle className="text-xl flex items-center gap-3 font-headline"><BarChart3 className="h-6 w-6 text-primary" /> Statistik Sekolah</CardTitle>
-                <CardDescription className="font-medium text-slate-400">Edit angka pencapaian yang tampil secara menonjol di Beranda.</CardDescription>
+                <CardTitle className="text-xl flex items-center gap-3 font-headline text-primary"><BarChart3 className="h-6 w-6 text-secondary" /> Statistik Sekolah</CardTitle>
+                <CardDescription>Edit data numerik pencapaian sekolah yang tampil di Beranda.</CardDescription>
               </div>
-              <Button variant="outline" size="sm" className="rounded-xl font-bold border-primary text-primary hover:bg-primary/5 h-12 px-6" onClick={() => addItem("stats", { label: "Stat Baru", value: "0", icon: "Users" })}>
-                <Plus className="h-4 w-4 mr-2" /> Tambah Item Statistik
+              <Button variant="outline" size="sm" className="rounded-xl font-bold border-primary text-primary hover:bg-primary/5 h-12 px-6" onClick={() => addItem("stats", { label: "Item Baru", value: "0", icon: "Users" })}>
+                <Plus className="h-4 w-4 mr-2" /> Tambah Item
               </Button>
             </CardHeader>
             <CardContent className="p-8 grid grid-cols-1 md:grid-cols-2 gap-8">
               {formData.stats?.map((stat: any, i: number) => (
-                <div key={i} className="bg-slate-50/50 p-8 rounded-[2.5rem] border border-slate-100 space-y-6 relative group hover:bg-white hover:shadow-2xl transition-all duration-500">
+                <div key={i} className="bg-slate-50/50 p-6 rounded-[2rem] border border-slate-100 space-y-4 relative group hover:bg-white hover:shadow-md transition-all">
                   <Button 
                     variant="ghost" 
                     size="icon" 
-                    className="absolute top-6 right-6 opacity-0 group-hover:opacity-100 transition-opacity text-destructive hover:bg-destructive/10 rounded-full h-10 w-10"
+                    className="absolute top-4 right-4 text-destructive hover:bg-destructive/10 rounded-full h-8 w-8"
                     onClick={() => removeItem("stats", i)}
                   >
-                    <Trash2 className="h-5 w-5" />
+                    <Trash2 className="h-4 w-4" />
                   </Button>
                   
-                  <div className="grid grid-cols-2 gap-6">
+                  <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label className="text-[10px] font-extrabold uppercase text-slate-400 tracking-widest">Label Stat</Label>
+                      <Label className="text-[10px] font-extrabold uppercase text-slate-400">Label Statistik</Label>
                       <Input value={stat.label} onChange={(e) => updateItem("stats", i, {...stat, label: e.target.value})} className="bg-white rounded-xl h-12" />
                     </div>
                     <div className="space-y-2">
-                      <Label className="text-[10px] font-extrabold uppercase text-slate-400 tracking-widest">Angka/Nilai</Label>
-                      <Input value={stat.value} onChange={(e) => updateItem("stats", i, {...stat, value: e.target.value})} className="bg-white rounded-xl h-12 font-bold text-lg" />
+                      <Label className="text-[10px] font-extrabold uppercase text-slate-400">Nilai (E.g. 100+)</Label>
+                      <Input value={stat.value} onChange={(e) => updateItem("stats", i, {...stat, value: e.target.value})} className="bg-white rounded-xl h-12 font-bold" />
                     </div>
                   </div>
                   
                   <div className="space-y-2">
-                    <Label className="text-[10px] font-extrabold uppercase text-slate-400 tracking-widest">Pilih Ikon</Label>
+                    <Label className="text-[10px] font-extrabold uppercase text-slate-400">Pilih Ikon</Label>
                     <Select value={stat.icon} onValueChange={(val) => updateItem("stats", i, {...stat, icon: val})}>
                       <SelectTrigger className="bg-white h-12 rounded-xl">
-                        <SelectValue placeholder="Pilih Ikon" />
+                        <SelectValue />
                       </SelectTrigger>
-                      <SelectContent className="rounded-xl">
+                      <SelectContent>
                         <SelectItem value="Users">Siswa (Users)</SelectItem>
                         <SelectItem value="GraduationCap">Guru (Graduation)</SelectItem>
                         <SelectItem value="Award">Prestasi (Award)</SelectItem>
-                        <SelectItem value="BookOpen">Ekskul (Book)</SelectItem>
+                        <SelectItem value="BookOpen">Kegiatan (Book)</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -448,17 +441,18 @@ export default function AdminSettings() {
           </Card>
         </TabsContent>
 
-        <TabsContent value="ppdb" className="space-y-8">
+        <TabsContent value="spmb" className="space-y-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden">
+            <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden bg-white">
               <CardHeader className="bg-slate-50/50 border-b p-8">
-                <CardTitle className="text-xl flex items-center gap-3 font-headline"><Clock className="h-6 w-6 text-primary" /> Status SPMB</CardTitle>
+                <CardTitle className="text-xl flex items-center gap-3 font-headline text-primary"><Clock className="h-6 w-6 text-secondary" /> Status SPMB Online</CardTitle>
+                <CardDescription>Atur ketersediaan pendaftaran siswa baru.</CardDescription>
               </CardHeader>
               <CardContent className="p-8 space-y-6">
-                <div className="flex items-center justify-between p-6 bg-slate-50 rounded-2xl">
+                <div className="flex items-center justify-between p-6 bg-slate-50 rounded-2xl border border-slate-100">
                   <div className="space-y-1">
                     <Label className="text-lg font-bold">Aktifkan Pendaftaran</Label>
-                    <p className="text-sm text-slate-400">Tombol pendaftaran akan muncul di website.</p>
+                    <p className="text-sm text-slate-400">Tombol SPMB akan muncul di menu utama.</p>
                   </div>
                   <Switch 
                     checked={formData.ppdbIsActive} 
@@ -466,16 +460,16 @@ export default function AdminSettings() {
                   />
                 </div>
                 <div className="space-y-3">
-                  <Label className="text-xs font-bold uppercase text-slate-400 tracking-widest">Tahun Ajaran</Label>
+                  <Label className="text-xs font-bold uppercase text-slate-400 tracking-widest">Tahun Ajaran Aktif</Label>
                   <Input value={formData.ppdbYear} onChange={(e) => setFormData({...formData, ppdbYear: e.target.value})} className="h-14 bg-slate-50 border-slate-100 rounded-2xl font-bold" />
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden">
+            <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden bg-white">
               <CardHeader className="bg-slate-50/50 border-b p-8 flex flex-row items-center justify-between">
-                <CardTitle className="text-xl flex items-center gap-3 font-headline"><FileText className="h-6 w-6 text-primary" /> Persyaratan</CardTitle>
-                <Button variant="outline" size="sm" className="rounded-xl font-bold" onClick={() => addItem("ppdbRequirements", "Syarat baru...")}>
+                <CardTitle className="text-xl flex items-center gap-3 font-headline text-primary"><FileText className="h-6 w-6 text-secondary" /> Persyaratan Berkas</CardTitle>
+                <Button variant="outline" size="sm" className="rounded-xl font-bold" onClick={() => addItem("ppdbRequirements", "")}>
                   <Plus className="h-4 w-4 mr-2" /> Tambah Syarat
                 </Button>
               </CardHeader>
@@ -486,15 +480,53 @@ export default function AdminSettings() {
                       value={req} 
                       onChange={(e) => updateItem("ppdbRequirements", i, e.target.value)} 
                       className="bg-slate-50 border-slate-100 h-12 rounded-xl"
+                      placeholder={`Persyaratan ${i + 1}`}
                     />
                     <Button variant="ghost" size="icon" className="text-destructive hover:bg-destructive/10 rounded-xl" onClick={() => removeItem("ppdbRequirements", i)}>
                       <Trash2 className="h-4 w-4" />
                     </Button>
                   </div>
                 ))}
+                {formData.ppdbRequirements?.length === 0 && <p className="text-center py-10 text-slate-400 italic">Belum ada persyaratan diatur.</p>}
               </CardContent>
             </Card>
           </div>
+
+          <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden bg-white">
+            <CardHeader className="bg-slate-50/50 border-b p-8 flex flex-row items-center justify-between">
+              <CardTitle className="text-xl flex items-center gap-3 font-headline text-primary"><Info className="h-6 w-6 text-secondary" /> Jalur Pendaftaran & Kuota</CardTitle>
+              <Button variant="outline" size="sm" className="rounded-xl font-bold" onClick={() => addItem("ppdbQuotas", { label: "", value: "", description: "" })}>
+                <Plus className="h-4 w-4 mr-2" /> Tambah Jalur
+              </Button>
+            </CardHeader>
+            <CardContent className="p-8">
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                 {formData.ppdbQuotas?.map((q: any, i: number) => (
+                   <div key={i} className="bg-slate-50/50 p-6 rounded-2xl border border-slate-100 relative group">
+                      <Button variant="ghost" size="icon" className="absolute top-2 right-2 text-destructive" onClick={() => removeItem("ppdbQuotas", i)}>
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                      <div className="space-y-4">
+                        <div className="grid grid-cols-3 gap-3">
+                          <div className="col-span-2 space-y-2">
+                            <Label className="text-[10px] font-bold uppercase text-slate-400">Nama Jalur</Label>
+                            <Input value={q.label} onChange={(e) => updateItem("ppdbQuotas", i, {...q, label: e.target.value})} className="bg-white" />
+                          </div>
+                          <div className="space-y-2">
+                            <Label className="text-[10px] font-bold uppercase text-slate-400">Kuota (%)</Label>
+                            <Input value={q.value} onChange={(e) => updateItem("ppdbQuotas", i, {...q, value: e.target.value})} className="bg-white" />
+                          </div>
+                        </div>
+                        <div className="space-y-2">
+                          <Label className="text-[10px] font-bold uppercase text-slate-400">Deskripsi Singkat</Label>
+                          <Input value={q.description} onChange={(e) => updateItem("ppdbQuotas", i, {...q, description: e.target.value})} className="bg-white" />
+                        </div>
+                      </div>
+                   </div>
+                 ))}
+               </div>
+            </CardContent>
+          </Card>
         </TabsContent>
       </Tabs>
     </div>

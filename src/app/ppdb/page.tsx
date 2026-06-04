@@ -30,7 +30,7 @@ export default function PPDBPage() {
     });
   };
 
-  if (loading) return <div className="pt-32 text-center text-slate-400">Memuat informasi PPDB...</div>;
+  if (loading) return <div className="pt-32 text-center text-slate-400">Memuat informasi pendaftaran...</div>;
 
   const ppdbYear = settings?.ppdbYear || "2024/2025";
   const isActive = settings?.ppdbIsActive !== false;
@@ -65,7 +65,7 @@ export default function PPDBPage() {
         <div className="bg-slate-50 p-16 rounded-[3rem] border-2 border-dashed border-slate-200">
            <AlertCircle className="h-16 w-16 text-slate-300 mx-auto mb-6" />
            <h2 className="text-3xl font-bold text-slate-700 font-headline mb-4">Pendaftaran Ditutup</h2>
-           <p className="text-slate-500 mb-8">Mohon maaf, periode pendaftaran siswa baru Tahun Pelajaran {ppdbYear} saat ini belum dibuka atau sudah berakhir.</p>
+           <p className="text-slate-500 mb-8">Mohon maaf, periode pendaftaran siswa baru (SPMB) Tahun Pelajaran {ppdbYear} saat ini belum dibuka atau sudah berakhir.</p>
            <Button variant="outline" className="rounded-full px-10" asChild><Link href="/">Kembali ke Beranda</Link></Button>
         </div>
       </div>
@@ -78,8 +78,8 @@ export default function PPDBPage() {
       <section className="bg-primary py-24 text-white text-center relative overflow-hidden">
         <div className="absolute inset-0 bg-secondary/5 skew-y-3 translate-y-24" />
         <div className="container mx-auto px-4 relative z-10">
-          <h1 className="text-5xl md:text-7xl font-bold font-headline mb-6 tracking-tighter">Penerimaan Siswa Baru</h1>
-          <p className="text-white/70 max-w-xl mx-auto text-xl">Tahun Pelajaran {ppdbYear}. Bergabunglah bersama komunitas belajar terbaik.</p>
+          <h1 className="text-5xl md:text-7xl font-bold font-headline mb-6 tracking-tighter">SPMB Online</h1>
+          <p className="text-white/70 max-w-xl mx-auto text-xl">Penerimaan Siswa Baru Tahun Pelajaran {ppdbYear}.</p>
         </div>
       </section>
 
