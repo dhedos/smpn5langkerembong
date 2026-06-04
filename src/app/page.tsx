@@ -51,13 +51,7 @@ export default function Home() {
         
         <div className="container relative z-10 px-6 md:px-12 mx-auto">
           <div className="max-w-4xl space-y-12 animate-in fade-in slide-in-from-left duration-1000">
-            <div className="inline-flex items-center gap-3 bg-white/10 backdrop-blur-2xl border border-white/20 text-white px-8 py-3 rounded-full text-[10px] font-bold tracking-widest uppercase shadow-2xl">
-              <span className="relative flex h-2.5 w-2.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-secondary"></span>
-              </span>
-              {settings?.ppdbIsActive ? `Pendaftaran Online ${settings.ppdbYear} Dibuka` : "Ekselensi Pendidikan Modern"}
-            </div>
+            {/* Lencana status dihapus sesuai permintaan user */}
             
             <h1 className="text-6xl md:text-[8rem] font-bold text-white font-headline leading-[0.9] tracking-tighter">
               {settings?.heroTitle || "Wujudkan Masa Depan"} <br/>
