@@ -45,6 +45,7 @@ export default function AdminSettings() {
     heroTitle: "Membangun Masa Depan Bersama Kami",
     heroSubtitle: "Pendidikan berkualitas untuk generasi emas bangsa melalui kurikulum yang inovatif dan lingkungan yang mendukung.",
     heroImageUrl: "",
+    welcomeSectionLabel: "Sambutan Kepala Sekolah",
     welcomeTitle: "Mendidik dengan Hati & Teknologi",
     welcomeMessage: "Kami berkomitmen untuk memberikan pengalaman belajar terbaik bagi putra-putri Anda melalui kurikulum yang inovatif dan lingkungan yang mendukung.",
     headmasterName: "Kepala Sekolah",
@@ -90,6 +91,7 @@ export default function AdminSettings() {
         mission: (currentSettings.mission && currentSettings.mission.length > 0) ? currentSettings.mission : prev.mission,
         heroTitle: currentSettings.heroTitle || prev.heroTitle,
         heroSubtitle: currentSettings.heroSubtitle || prev.heroSubtitle,
+        welcomeSectionLabel: currentSettings.welcomeSectionLabel || prev.welcomeSectionLabel,
         welcomeTitle: currentSettings.welcomeTitle || prev.welcomeTitle,
       }));
     }
@@ -297,13 +299,22 @@ export default function AdminSettings() {
           <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden bg-white">
             <CardHeader className="bg-slate-50/50 border-b p-8">
               <CardTitle className="text-xl flex items-center gap-3 font-headline text-primary">
-                <UserCircle className="h-6 w-6 text-secondary" /> Sambutan Kepala Sekolah
+                <UserCircle className="h-6 w-6 text-secondary" /> {formData.welcomeSectionLabel || "Sambutan Kepala Sekolah"}
               </CardTitle>
               <CardDescription>Atur pesan sambutan dan profil pimpinan sekolah aktif.</CardDescription>
             </CardHeader>
             <CardContent className="p-8 space-y-8">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="space-y-6">
+                  <div className="space-y-3">
+                    <Label className="text-xs font-bold uppercase text-slate-400">Judul Bagian (Contoh: Sambutan Kepala Sekolah)</Label>
+                    <Input 
+                      value={formData.welcomeSectionLabel} 
+                      onChange={(e) => setFormData({...formData, welcomeSectionLabel: e.target.value})} 
+                      className="h-12 bg-slate-50 rounded-xl"
+                      placeholder="Sambutan Kepala Sekolah"
+                    />
+                  </div>
                   <div className="space-y-3">
                     <Label className="text-xs font-bold uppercase text-slate-400">Judul Sambutan (Highlight)</Label>
                     <Input 

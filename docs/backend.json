@@ -11,6 +11,7 @@
         "heroTitle": { "type": "string" },
         "heroSubtitle": { "type": "string" },
         "heroImageUrl": { "type": "string", "description": "URL foto latar belakang utama" },
+        "welcomeSectionLabel": { "type": "string", "description": "Label kecil di atas sambutan (contoh: Sambutan Kepala Sekolah)" },
         "welcomeTitle": { "type": "string" },
         "welcomeMessage": { "type": "string" },
         "headmasterName": { "type": "string" },

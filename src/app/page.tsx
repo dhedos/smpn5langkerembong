@@ -34,6 +34,7 @@ export default function Home() {
   const heroTitle = settings?.heroTitle || "Membangun Masa Depan";
   const heroSubtitle = settings?.heroSubtitle || "Pendidikan berkualitas untuk generasi emas bangsa melalui kurikulum inovatif.";
   
+  const welcomeSectionLabel = settings?.welcomeSectionLabel || "Sambutan Kepala Sekolah";
   const welcomeTitle = settings?.welcomeTitle || "Mendidik dengan Hati & Teknologi";
   const welcomeMessage = settings?.welcomeMessage || "Kami berkomitmen untuk memberikan pengalaman belajar terbaik bagi putra-putri Anda melalui kurikulum yang inovatif dan lingkungan yang mendukung.";
 
@@ -69,7 +70,9 @@ export default function Home() {
       {/* Sambutan Section */}
       <section className="py-40 bg-white">
         <div className="container mx-auto px-6 md:px-12 text-center">
-          <div className="inline-block bg-slate-100 text-slate-500 font-bold tracking-widest uppercase text-[9px] px-6 py-3 rounded-full mb-8">Sambutan Kepala Sekolah</div>
+          <div className="inline-block bg-slate-100 text-slate-500 font-bold tracking-widest uppercase text-[9px] px-6 py-3 rounded-full mb-8">
+            {welcomeSectionLabel}
+          </div>
           
           <h2 className="text-5xl md:text-[4.5rem] font-bold text-primary leading-[1] font-headline tracking-tighter mb-12 whitespace-pre-line">
             {welcomeTitle}
