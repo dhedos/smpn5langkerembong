@@ -24,7 +24,8 @@ import {
   User,
   Search,
   ExternalLink,
-  Map as MapIcon
+  Map as MapIcon,
+  Copyright
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -128,7 +129,6 @@ export default function AdminSettings() {
   };
 
   const handleMapUrlChange = (val: string) => {
-    // Otomatis ekstrak src jika user paste full <iframe> tag
     const srcMatch = val.match(/src="([^"]+)"/);
     const finalUrl = srcMatch ? srcMatch[1] : val;
     setFormData({ ...formData, googleMapsEmbedUrl: finalUrl });
@@ -137,12 +137,8 @@ export default function AdminSettings() {
 
   const handleSearchLocation = () => {
     if (!addressSearch.trim()) return;
-    // Generate URL embed sederhana berdasarkan pencarian alamat
     const encodedAddress = encodeURIComponent(addressSearch);
-    const generatedUrl = `https://www.google.com/maps/embed/v1/place?key=YOUR_API_KEY_HERE&q=${encodedAddress}`;
-    // Catatan: Google Maps Embed API butuh API Key untuk 'place'. 
-    // Pendekatan alternatif tanpa key yang lebih sering dipakai untuk iframe statis:
-    const simpleUrl = `https://maps.google.com/maps?q=${encodedAddress}&t=&z=13&ie=UTF8&iwloc=&output=embed`;
+    const simpleUrl = `https://maps.google.com/maps?q=${encodedAddress}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
     
     setFormData({ ...formData, googleMapsEmbedUrl: simpleUrl });
     toast({ title: "Lokasi Ditemukan", description: "URL peta telah diperbarui berdasarkan alamat pencarian." });
@@ -270,6 +266,9 @@ export default function AdminSettings() {
                     onChange={(e) => setFormData({...formData, schoolName: e.target.value})} 
                     className="h-14 bg-slate-50 rounded-2xl font-bold" 
                   />
+                  <div className="flex items-center gap-2 text-[10px] font-bold text-blue-500 uppercase tracking-tight">
+                    <Copyright className="h-3 w-3" /> Nama ini akan tampil sebagai Hak Cipta (Copyright) di seluruh website.
+                  </div>
                 </div>
                 <div className="space-y-3">
                   <Label className="text-xs font-bold uppercase text-slate-400">Logo Sekolah</Label>
