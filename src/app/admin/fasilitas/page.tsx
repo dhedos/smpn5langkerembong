@@ -9,8 +9,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { useFirestore, useCollection } from "@/firebase";
-import { collection, addDoc, deleteDoc, doc, updateDoc, serverTimestamp } from "firebase/firestore";
+import { useFirestore, useCollection, useUser } from "@/firebase";
+import { collection, addDoc, deleteDoc, doc, updateDoc, serverTimestamp, query, where } from "firebase/firestore";
 import { toast } from "@/hooks/use-toast";
 import Image from "next/image";
 import { errorEmitter } from '@/firebase/error-emitter';
@@ -19,7 +19,14 @@ import { cn } from "@/lib/utils";
 
 export default function AdminFasilitas() {
   const db = useFirestore();
-  const facilitiesRef = useMemo(() => db ? collection(db, "facilities") : null, [db]);
+  const { profile } = useUser();
+  const schoolId = profile?.schoolId || 'smpn5-langke-rembong';
+
+  const facilitiesRef = useMemo(() => {
+    if (!db) return null;
+    return query(collection(db, "facilities"), where("schoolId", "==", schoolId));
+  }, [db, schoolId]);
+
   const { data: facilities, loading } = useCollection(facilitiesRef);
 
   const [name, setName] = useState("");
@@ -31,7 +38,7 @@ export default function AdminFasilitas() {
     const file = e.target.files?.[0];
     if (file) {
       if (file.size > 800 * 1024) {
-        toast({ title: "File Terlalu Besar", description: "Maksimal 800KB untuk menjaga efisiensi database.", variant: "destructive" });
+        toast({ title: "File Terlalu Besar", description: "Maksimal 800KB.", variant: "destructive" });
         return;
       }
       const reader = new FileReader();
@@ -54,6 +61,7 @@ export default function AdminFasilitas() {
       description,
       imageUrl: imageUrl || "https://picsum.photos/seed/facility/800/600",
       status,
+      schoolId,
       createdAt: serverTimestamp()
     };
 
@@ -119,13 +127,13 @@ export default function AdminFasilitas() {
     <div className="p-8 space-y-8 max-w-7xl mx-auto">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-4xl font-bold font-headline text-primary flex items-center gap-3">
+          <h1 className="text-4xl font-bold font-headline text-primary flex items-center gap-3 uppercase tracking-tighter">
             <div className="bg-secondary p-2 rounded-xl">
               <Building2 className="h-6 w-6 text-primary" />
             </div>
             Manajemen Fasilitas
           </h1>
-          <p className="text-muted-foreground text-sm font-medium">Kelola sarana prasarana sekolah secara fleksibel.</p>
+          <p className="text-muted-foreground text-sm font-medium">Kelola sarana prasarana sekolah {schoolId}.</p>
         </div>
       </div>
 
@@ -133,7 +141,7 @@ export default function AdminFasilitas() {
         <Card className="lg:col-span-1 border-none shadow-xl rounded-[2.5rem] overflow-hidden bg-white h-fit">
           <CardHeader className="bg-slate-50/50 border-b p-8">
             <CardTitle className="text-xl">Tambah Fasilitas</CardTitle>
-            <CardDescription>Tambah satu per satu untuk dokumentasi yang rapi.</CardDescription>
+            <CardDescription>Dokumentasikan infrastruktur unggulan sekolah.</CardDescription>
           </CardHeader>
           <CardContent className="p-8 space-y-6">
             <div className="space-y-3">
@@ -201,7 +209,7 @@ export default function AdminFasilitas() {
         <Card className="lg:col-span-2 border-none shadow-xl rounded-[2.5rem] overflow-hidden bg-white">
           <CardHeader className="bg-slate-50/50 border-b p-8">
             <CardTitle className="text-xl">Daftar Inventaris</CardTitle>
-            <CardDescription>Aktifkan toggle mata untuk menampilkan ke pengunjung.</CardDescription>
+            <CardDescription>Tampilkan fasilitas yang tersedia di website.</CardDescription>
           </CardHeader>
           <CardContent className="p-0">
             <Table>
@@ -246,7 +254,7 @@ export default function AdminFasilitas() {
                     </TableCell>
                   </TableRow>
                 )) : (
-                  <TableRow><TableCell colSpan={4} className="text-center py-20 text-slate-400 italic">Belum ada data fasilitas yang ditambahkan.</TableCell></TableRow>
+                  <TableRow><TableCell colSpan={4} className="text-center py-20 text-slate-400 italic">Belum ada data fasilitas untuk sekolah ini.</TableCell></TableRow>
                 )}
               </TableBody>
             </Table>
