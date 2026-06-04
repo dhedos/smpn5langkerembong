@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
@@ -24,7 +25,6 @@ export function Navbar() {
   const isHome = pathname === "/";
 
   const db = useFirestore();
-  // Multi-tenant: Default school ID for current deployment
   const currentSchoolId = 'smpn5-langke-rembong';
   const settingsRef = useMemo(() => db ? doc(db, "schools", currentSchoolId) : null, [db]);
   const { data: settings } = useDoc(settingsRef);
@@ -44,7 +44,7 @@ export function Navbar() {
 
   const schoolName = settings?.schoolName || "GN Nusantara";
   const schoolLogo = settings?.schoolLogoUrl;
-  const isSpmbActive = settings?.ppdbIsActive !== false;
+  const isSpmbActive = settings?.ppdbIsActive === true;
   const spmbLabel = settings?.ppdbMenuTitle || "SPMB ONLINE";
 
   const navItems = useMemo(() => {
@@ -105,7 +105,6 @@ export function Navbar() {
           </span>
         </Link>
 
-        {/* Desktop Nav */}
         <nav className="hidden lg:flex items-center gap-10">
           {navItems.map((item) => (
             <div key={item.name} className="relative group">
@@ -157,7 +156,6 @@ export function Navbar() {
           )}
         </div>
 
-        {/* Mobile Toggle */}
         <button
           className={cn("lg:hidden p-2.5 rounded-xl transition-colors shadow-md", isSolid ? "bg-slate-100 text-primary" : "bg-white text-primary")}
           onClick={() => setIsOpen(true)}
@@ -166,7 +164,6 @@ export function Navbar() {
         </button>
       </div>
 
-      {/* Mobile Drawer */}
       {isOpen && (
         <div 
           className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm lg:hidden"

@@ -62,6 +62,7 @@ export default function Home() {
   const welcomeSectionLabel = settings?.welcomeSectionLabel || "Sambutan Kepala Sekolah";
   const welcomeTitle = settings?.welcomeTitle || "Mendidik dengan Hati & Teknologi";
   const welcomeMessage = settings?.welcomeMessage || "Kami berkomitmen untuk memberikan pengalaman belajar terbaik bagi putra-putri Anda melalui kurikulum yang inovatif dan lingkungan yang mendukung.";
+  const isSpmbActive = settings?.ppdbIsActive === true;
 
   const stats = settings?.stats || [
     { label: "Guru", value: "0", icon: "GraduationCap" },
@@ -88,11 +89,13 @@ export default function Home() {
               {heroSubtitle}
             </p>
             <div className="flex flex-wrap gap-6 pt-6">
-              <Button size="lg" className="bg-secondary text-primary font-bold hover:bg-secondary/90 px-12 py-8 text-xl rounded-full shadow-2xl group border-none" asChild>
-                <Link href="/ppdb" className="flex items-center gap-3">
-                  {settings?.ppdbMenuTitle || "SPMB ONLINE"} <ArrowRight className="h-6 w-6 group-hover:translate-x-3 transition-transform" />
-                </Link>
-              </Button>
+              {isSpmbActive && (
+                <Button size="lg" className="bg-secondary text-primary font-bold hover:bg-secondary/90 px-12 py-8 text-xl rounded-full shadow-2xl group border-none" asChild>
+                  <Link href="/ppdb" className="flex items-center gap-3">
+                    {settings?.ppdbMenuTitle || "SPMB ONLINE"} <ArrowRight className="h-6 w-6 group-hover:translate-x-3 transition-transform" />
+                  </Link>
+                </Button>
+              )}
               <Button size="lg" className="bg-white text-primary font-bold hover:bg-slate-100 px-12 py-8 text-xl rounded-full shadow-xl transition-all" asChild>
                 <Link href="/profil">Pelajari Profil Kami</Link>
               </Button>

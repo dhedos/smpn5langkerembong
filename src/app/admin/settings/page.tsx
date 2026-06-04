@@ -18,13 +18,17 @@ import {
   Layout,
   UserCircle,
   BarChart3,
-  Users
+  Users,
+  UserPlus,
+  CheckCircle2,
+  FileText
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import { useFirestore, useDoc, useUser } from "@/firebase";
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { toast } from "@/hooks/use-toast";
@@ -86,6 +90,7 @@ export default function AdminSettings() {
   const [formData, setFormData] = useState<any>(defaultValues);
   const [isSaving, setIsSaving] = useState(false);
   const [newMission, setNewMission] = useState("");
+  const [newRequirement, setNewRequirement] = useState("");
 
   useEffect(() => {
     if (currentSettings) {
@@ -93,6 +98,9 @@ export default function AdminSettings() {
         ...prev,
         ...currentSettings,
         stats: (currentSettings.stats && currentSettings.stats.length > 0) ? currentSettings.stats : prev.stats,
+        mission: currentSettings.mission || prev.mission,
+        ppdbRequirements: currentSettings.ppdbRequirements || prev.ppdbRequirements,
+        ppdbQuotas: currentSettings.ppdbQuotas || prev.ppdbQuotas,
       }));
     }
   }, [currentSettings]);
@@ -126,6 +134,23 @@ export default function AdminSettings() {
     setFormData((prev: any) => ({
       ...prev,
       mission: prev.mission.filter((_: any, i: number) => i !== index)
+    }));
+  };
+
+  const handleAddRequirement = () => {
+    if (newRequirement.trim()) {
+      setFormData((prev: any) => ({
+        ...prev,
+        ppdbRequirements: [...(prev.ppdbRequirements || []), newRequirement.trim()]
+      }));
+      setNewRequirement("");
+    }
+  };
+
+  const handleRemoveRequirement = (index: number) => {
+    setFormData((prev: any) => ({
+      ...prev,
+      ppdbRequirements: prev.ppdbRequirements.filter((_: any, i: number) => i !== index)
     }));
   };
 
@@ -196,12 +221,13 @@ export default function AdminSettings() {
 
       <Tabs defaultValue="general" className="space-y-8">
         <TabsList className="bg-slate-100/50 p-1.5 rounded-2xl w-full flex flex-wrap h-auto border border-slate-200 gap-1">
-          <TabsTrigger value="general" className="rounded-xl px-6 py-3 font-bold flex-1 data-[state=active]:bg-white text-xs">Identitas</TabsTrigger>
-          <TabsTrigger value="hero" className="rounded-xl px-6 py-3 font-bold flex-1 data-[state=active]:bg-white text-xs">Beranda</TabsTrigger>
-          <TabsTrigger value="welcome" className="rounded-xl px-6 py-3 font-bold flex-1 data-[state=active]:bg-white text-xs">Sambutan</TabsTrigger>
-          <TabsTrigger value="stats" className="rounded-xl px-6 py-3 font-bold flex-1 data-[state=active]:bg-white text-xs">Statistik</TabsTrigger>
-          <TabsTrigger value="profile" className="rounded-xl px-6 py-3 font-bold flex-1 data-[state=active]:bg-white text-xs">Profil Sekolah</TabsTrigger>
-          <TabsTrigger value="social" className="rounded-xl px-6 py-3 font-bold flex-1 data-[state=active]:bg-white text-xs">Media Sosial</TabsTrigger>
+          <TabsTrigger value="general" className="rounded-xl px-4 py-3 font-bold flex-1 data-[state=active]:bg-white text-[10px] uppercase">Identitas</TabsTrigger>
+          <TabsTrigger value="hero" className="rounded-xl px-4 py-3 font-bold flex-1 data-[state=active]:bg-white text-[10px] uppercase">Beranda</TabsTrigger>
+          <TabsTrigger value="welcome" className="rounded-xl px-4 py-3 font-bold flex-1 data-[state=active]:bg-white text-[10px] uppercase">Sambutan</TabsTrigger>
+          <TabsTrigger value="stats" className="rounded-xl px-4 py-3 font-bold flex-1 data-[state=active]:bg-white text-[10px] uppercase">Statistik</TabsTrigger>
+          <TabsTrigger value="profile" className="rounded-xl px-4 py-3 font-bold flex-1 data-[state=active]:bg-white text-[10px] uppercase">Profil</TabsTrigger>
+          <TabsTrigger value="spmb" className="rounded-xl px-4 py-3 font-bold flex-1 data-[state=active]:bg-white text-[10px] uppercase">SPMB</TabsTrigger>
+          <TabsTrigger value="social" className="rounded-xl px-4 py-3 font-bold flex-1 data-[state=active]:bg-white text-[10px] uppercase">Sosmed</TabsTrigger>
         </TabsList>
 
         <TabsContent value="general" className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -308,27 +334,24 @@ export default function AdminSettings() {
               <CardTitle className="text-xl flex items-center gap-3 font-headline text-primary">
                 <UserCircle className="h-6 w-6 text-secondary" /> {formData.welcomeSectionLabel || "Sambutan Kepala Sekolah"}
               </CardTitle>
-              <CardDescription>Atur pesan sambutan dan profil pimpinan sekolah aktif.</CardDescription>
             </CardHeader>
             <CardContent className="p-8 space-y-8">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="space-y-6">
                   <div className="space-y-3">
-                    <Label className="text-xs font-bold uppercase text-slate-400">Judul Bagian (Contoh: Sambutan Kepala Sekolah)</Label>
+                    <Label className="text-xs font-bold uppercase text-slate-400">Label Bagian (Contoh: Sambutan Kepala Sekolah)</Label>
                     <Input 
                       value={formData.welcomeSectionLabel} 
                       onChange={(e) => setFormData({...formData, welcomeSectionLabel: e.target.value})} 
                       className="h-12 bg-slate-50 rounded-xl"
-                      placeholder="Sambutan Kepala Sekolah"
                     />
                   </div>
                   <div className="space-y-3">
-                    <Label className="text-xs font-bold uppercase text-slate-400">Judul Sambutan (Highlight)</Label>
+                    <Label className="text-xs font-bold uppercase text-slate-400">Judul Sambutan</Label>
                     <Input 
                       value={formData.welcomeTitle} 
                       onChange={(e) => setFormData({...formData, welcomeTitle: e.target.value})} 
                       className="h-14 bg-slate-50 rounded-2xl font-bold"
-                      placeholder="Contoh: Mendidik dengan Hati & Teknologi"
                     />
                   </div>
                   <div className="space-y-3">
@@ -336,8 +359,7 @@ export default function AdminSettings() {
                     <Textarea 
                       value={formData.welcomeMessage} 
                       onChange={(e) => setFormData({...formData, welcomeMessage: e.target.value})} 
-                      className="min-h-[180px] bg-slate-50 rounded-2xl leading-relaxed"
-                      placeholder="Tuliskan kata sambutan di sini..."
+                      className="min-h-[180px] bg-slate-50 rounded-2xl"
                     />
                   </div>
                 </div>
@@ -363,7 +385,7 @@ export default function AdminSettings() {
                   </div>
                   
                   <div className="space-y-3">
-                    <Label className="text-xs font-bold uppercase text-slate-400">Foto Kepala Sekolah (Maks 500KB)</Label>
+                    <Label className="text-xs font-bold uppercase text-slate-400">Foto Kepala Sekolah</Label>
                     <div className="relative aspect-[3/4] w-48 rounded-[2rem] overflow-hidden border-2 border-dashed border-slate-200 bg-slate-50 flex items-center justify-center">
                       {formData.headmasterPhotoUrl ? (
                         <img src={formData.headmasterPhotoUrl} alt="Kepala Sekolah" className="w-full h-full object-cover" />
@@ -388,7 +410,6 @@ export default function AdminSettings() {
               <CardTitle className="text-xl flex items-center gap-3 font-headline text-primary">
                 <BarChart3 className="h-6 w-6 text-secondary" /> Statistik Sekolah
               </CardTitle>
-              <CardDescription>Kelola data jumlah Guru, Tenaga Pendidik, dan Siswa.</CardDescription>
             </CardHeader>
             <CardContent className="p-8 space-y-8">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -401,30 +422,76 @@ export default function AdminSettings() {
                       <Label className="text-xs font-bold uppercase text-primary">{stat.label}</Label>
                     </div>
                     <div className="space-y-2">
-                      <Label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Jumlah {stat.label}</Label>
+                      <Label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Jumlah</Label>
                       <Input 
                         type="text"
                         value={stat.value} 
                         onChange={(e) => handleStatChange(idx, "value", e.target.value)} 
-                        className="h-12 bg-white rounded-xl font-bold text-lg"
-                        placeholder="Contoh: 45"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Label Tampilan</Label>
-                      <Input 
-                        value={stat.label} 
-                        onChange={(e) => handleStatChange(idx, "label", e.target.value)} 
-                        className="h-10 bg-white/50 rounded-xl text-xs"
+                        className="h-12 bg-white rounded-xl font-bold"
                       />
                     </div>
                   </div>
                 ))}
               </div>
-              <div className="bg-blue-50 p-6 rounded-2xl border border-blue-100">
-                <p className="text-xs text-blue-700 font-medium leading-relaxed">
-                  Statistik ini akan ditampilkan di halaman utama untuk memberikan gambaran kapasitas sekolah kepada pengunjung.
-                </p>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="spmb" className="space-y-8">
+          <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden bg-white">
+            <CardHeader className="bg-slate-50/50 border-b p-8">
+              <div className="flex justify-between items-center">
+                <CardTitle className="text-xl flex items-center gap-3 font-headline text-primary">
+                  <UserPlus className="h-6 w-6 text-secondary" /> Manajemen SPMB Online
+                </CardTitle>
+                <div className="flex items-center gap-3">
+                  <Label className="text-xs font-bold uppercase text-slate-400">Status Pendaftaran</Label>
+                  <Switch 
+                    checked={formData.ppdbIsActive} 
+                    onCheckedChange={(checked) => setFormData({...formData, ppdbIsActive: checked})} 
+                  />
+                  <Badge className={formData.ppdbIsActive ? "bg-green-500" : "bg-slate-400"}>
+                    {formData.ppdbIsActive ? "AKTIF" : "NON-AKTIF"}
+                  </Badge>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="p-8 space-y-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="space-y-6">
+                  <div className="space-y-3">
+                    <Label className="text-xs font-bold uppercase text-slate-400">Judul Tombol Navigasi</Label>
+                    <Input 
+                      value={formData.ppdbMenuTitle} 
+                      onChange={(e) => setFormData({...formData, ppdbMenuTitle: e.target.value})} 
+                      className="h-12 bg-slate-50 rounded-xl"
+                    />
+                  </div>
+                  <div className="space-y-3">
+                    <Label className="text-xs font-bold uppercase text-slate-400">Tahun Ajaran</Label>
+                    <Input 
+                      value={formData.ppdbYear} 
+                      onChange={(e) => setFormData({...formData, ppdbYear: e.target.value})} 
+                      className="h-12 bg-slate-50 rounded-xl"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <Label className="text-xs font-bold uppercase text-slate-400">Daftar Persyaratan</Label>
+                  <div className="flex gap-2">
+                    <Input value={newRequirement} onChange={(e) => setNewRequirement(e.target.value)} placeholder="Contoh: Akta Kelahiran..." className="h-12 bg-slate-50 rounded-xl" />
+                    <Button onClick={handleAddRequirement} className="h-12 bg-secondary text-primary font-bold rounded-xl"><Plus /></Button>
+                  </div>
+                  <div className="space-y-2">
+                    {formData.ppdbRequirements?.map((r: string, i: number) => (
+                      <div key={i} className="flex items-center justify-between bg-slate-50 p-3 rounded-xl border">
+                        <span className="text-sm font-medium">{r}</span>
+                        <Button variant="ghost" size="icon" onClick={() => handleRemoveRequirement(i)} className="text-destructive"><Trash2 className="h-4 w-4" /></Button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>
