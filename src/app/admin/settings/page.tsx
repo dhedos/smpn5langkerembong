@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
@@ -90,7 +89,6 @@ export default function AdminSettings() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, field: string) => {
     const file = e.target.files?.[0];
     if (file) {
-      // Perkecil ukuran file di sini jika perlu, sementara kita pakai limit 1MB
       if (file.size > 800 * 1024) { 
         toast({ title: "File Terlalu Besar", description: "Gunakan gambar di bawah 800KB agar database tetap optimal.", variant: "destructive" });
         return;
@@ -112,9 +110,7 @@ export default function AdminSettings() {
     setIsSaving(true);
     
     try {
-      // Membersihkan undefined values agar tidak error di Firestore
       const cleanData = JSON.parse(JSON.stringify(formData));
-      
       await setDoc(doc(db, "settings", "general"), cleanData, { merge: true });
       
       toast({ 
@@ -191,7 +187,7 @@ export default function AdminSettings() {
           <TabsTrigger value="welcome" className="rounded-xl px-8 py-3 font-bold">Sambutan</TabsTrigger>
           <TabsTrigger value="profile" className="rounded-xl px-8 py-3 font-bold">Visi Misi</TabsTrigger>
           <TabsTrigger value="stats" className="rounded-xl px-8 py-3 font-bold">Statistik</TabsTrigger>
-          <TabsTrigger value="ppdb" className="rounded-xl px-8 py-3 font-bold">PPDB Online</TabsTrigger>
+          <TabsTrigger value="ppdb" className="rounded-xl px-8 py-3 font-bold">SPMB Online</TabsTrigger>
         </TabsList>
 
         <TabsContent value="general" className="space-y-8">
@@ -456,7 +452,7 @@ export default function AdminSettings() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden">
               <CardHeader className="bg-slate-50/50 border-b p-8">
-                <CardTitle className="text-xl flex items-center gap-3 font-headline"><Clock className="h-6 w-6 text-primary" /> Status PPDB</CardTitle>
+                <CardTitle className="text-xl flex items-center gap-3 font-headline"><Clock className="h-6 w-6 text-primary" /> Status SPMB</CardTitle>
               </CardHeader>
               <CardContent className="p-8 space-y-6">
                 <div className="flex items-center justify-between p-6 bg-slate-50 rounded-2xl">

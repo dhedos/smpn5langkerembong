@@ -29,7 +29,7 @@ const navItems = [
   },
   { name: "Berita", href: "/berita" },
   { name: "Galeri", href: "/galeri" },
-  { name: "PPDB", href: "/ppdb" },
+  { name: "SPMB", href: "/ppdb" },
 ];
 
 export function Navbar() {
@@ -177,7 +177,7 @@ export function Navbar() {
             ))}
             <div className="pt-12 border-t border-slate-100 mt-auto pb-20">
               <Button size="lg" className="w-full bg-primary h-16 text-white rounded-[2rem] font-bold text-lg" asChild onClick={() => setIsOpen(false)}>
-                <Link href="/ppdb">Daftar PPDB Online</Link>
+                <Link href="/ppdb">Daftar SPMB Online</Link>
               </Button>
             </div>
           </nav>
