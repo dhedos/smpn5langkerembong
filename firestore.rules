@@ -1,0 +1,39 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Fungsi pembantu untuk mengecek apakah user adalah superadmin
+    function isSuperAdmin() {
+      return request.auth != null && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'superadmin';
+    }
+
+    // Fungsi pembantu untuk mengecek apakah user admin sekolah tersebut
+    function isAdminOfSchool(schoolId) {
+      return request.auth != null && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.schoolId == schoolId;
+    }
+
+    // Aturan untuk profil User
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+      allow read: if isSuperAdmin();
+    }
+
+    // Aturan untuk Koleksi Sekolah
+    match /schools/{schoolId} {
+      allow read: if true; // Publik bisa baca profil sekolah
+      allow write: if isSuperAdmin() || isAdminOfSchool(schoolId);
+    }
+
+    // Aturan untuk Berita, Galeri, dll (Multi-Tenant)
+    match /{collectionName}/{docId} {
+      allow read: if true; // Publik bisa baca konten
+      allow create, update, delete: if isSuperAdmin() || 
+        (request.auth != null && request.resource.data.schoolId == get(/databases/$(database)/documents/users/$(request.auth.uid)).data.schoolId);
+      
+      // Filter list data berdasarkan schoolId
+      allow list: if isSuperAdmin() || 
+        (request.auth != null && resource.data.schoolId == get(/databases/$(database)/documents/users/$(request.auth.uid)).data.schoolId);
+    }
+  }
+}

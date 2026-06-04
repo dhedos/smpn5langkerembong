@@ -24,12 +24,24 @@ export function useUser() {
     return onAuthStateChanged(auth, async (firebaseUser) => {
       setUser(firebaseUser);
       if (firebaseUser) {
-        const docRef = doc(db, 'users', firebaseUser.uid);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          setProfile(docSnap.data() as UserProfile);
-        } else {
-          // Fallback default profile if document doesn't exist yet
+        try {
+          const docRef = doc(db, 'users', firebaseUser.uid);
+          const docSnap = await getDoc(docRef);
+          if (docSnap.exists()) {
+            setProfile(docSnap.data() as UserProfile);
+          } else {
+            // Fallback default profile if document doesn't exist yet
+            setProfile({
+              uid: firebaseUser.uid,
+              name: firebaseUser.displayName || 'Admin',
+              email: firebaseUser.email || '',
+              role: 'admin',
+              schoolId: 'default-school'
+            });
+          }
+        } catch (error) {
+          console.error("Firestore Permission Error handled:", error);
+          // Don't crash the app, provide fallback for initialization
           setProfile({
             uid: firebaseUser.uid,
             name: firebaseUser.displayName || 'Admin',
