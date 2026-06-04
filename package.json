@@ -1,3 +1,4 @@
+
 {
   "name": "nextn",
   "version": "0.1.0",
@@ -9,7 +10,8 @@
     "build": "NODE_ENV=production next build",
     "start": "next start",
     "lint": "next lint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "push": "git add . && git commit -m 'update' && git push"
   },
   "dependencies": {
     "@genkit-ai/google-genai": "^1.28.0",
@@ -52,7 +54,9 @@
     "recharts": "^2.15.1",
     "tailwind-merge": "^3.0.1",
     "tailwindcss-animate": "^1.0.7",
-    "zod": "^3.24.2"
+    "zod": "^3.24.2",
+    "wav": "^1.0.2",
+    "node-fetch": "^3.3.2"
   },
   "devDependencies": {
     "@types/node": "^20",
