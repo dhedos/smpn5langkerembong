@@ -37,7 +37,7 @@ export default function Home() {
     { label: "Ekstrakurikuler", value: "24", icon: "BookOpen" },
   ];
 
-  const displayStats = settings?.stats || defaultStats;
+  const displayStats = settings?.stats?.length > 0 ? settings.stats : defaultStats;
   const heroImageUrl = settings?.heroImageUrl || "https://picsum.photos/seed/school1/1920/1080";
 
   return (

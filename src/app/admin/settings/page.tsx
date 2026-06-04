@@ -17,13 +17,11 @@ import {
   GraduationCap,
   Award,
   ImageIcon,
-  Layout,
   Type,
   Upload,
   UserCircle,
   Clock,
   CheckCircle2,
-  History,
   Info
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -37,7 +35,8 @@ import { useFirestore, useDoc } from "@/firebase";
 import { doc, setDoc } from "firebase/firestore";
 import { toast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import Image from "next/image";
+import { errorEmitter } from '@/firebase/error-emitter';
+import { FirestorePermissionError, type SecurityRuleContext } from '@/firebase/errors';
 
 export default function AdminSettings() {
   const db = useFirestore();
@@ -62,13 +61,8 @@ export default function AdminSettings() {
     history: "",
     vision: "",
     mission: [],
-    stats: [
-      { label: "Siswa Aktif", value: "850+", icon: "Users" },
-      { label: "Guru & Staff", value: "65+", icon: "GraduationCap" },
-      { label: "Prestasi Siswa", value: "120+", icon: "Award" },
-      { label: "Ekstrakurikuler", value: "24", icon: "BookOpen" },
-    ],
-    ppdbYear: "2024/2025",
+    stats: [],
+    ppdbYear: "",
     ppdbIsActive: true,
     ppdbRequirements: [],
     ppdbQuotas: []
@@ -104,32 +98,33 @@ export default function AdminSettings() {
     }
   };
 
-  const handleSave = async () => {
+  const handleSave = () => {
     if (!db) {
       toast({ title: "Koneksi Bermasalah", description: "Database belum siap.", variant: "destructive" });
       return;
     }
 
     setIsSaving(true);
+    const docRef = doc(db, "settings", "general");
     
-    try {
-      // Simpan data ke Firestore
-      await setDoc(doc(db, "settings", "general"), formData, { merge: true });
-      
-      toast({ 
-        title: "Perubahan Disimpan", 
-        description: "Seluruh pengaturan telah diperbarui secara permanen.",
+    // Non-blocking mutation call as per guidelines
+    setDoc(docRef, formData, { merge: true })
+      .then(() => {
+        setIsSaving(false);
+        toast({ 
+          title: "Perubahan Disimpan", 
+          description: "Seluruh pengaturan telah diperbarui secara permanen.",
+        });
+      })
+      .catch(async (error) => {
+        setIsSaving(false);
+        const permissionError = new FirestorePermissionError({
+          path: docRef.path,
+          operation: 'write',
+          requestResourceData: formData,
+        } satisfies SecurityRuleContext);
+        errorEmitter.emit('permission-error', permissionError);
       });
-    } catch (error: any) {
-      console.error("Save error:", error);
-      toast({ 
-        title: "Gagal Menyimpan", 
-        description: "Terjadi kesalahan saat menyimpan ke database.", 
-        variant: "destructive" 
-      });
-    } finally {
-      setIsSaving(false);
-    }
   };
 
   const addItem = (field: string, defaultValue: any) => {
@@ -157,7 +152,7 @@ export default function AdminSettings() {
     <div className="p-8 max-w-7xl mx-auto space-y-10">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div className="flex items-center gap-4">
-          <div className="bg-[#f2a100] p-3 rounded-2xl shadow-lg">
+          <div className="bg-primary p-3 rounded-2xl shadow-lg">
             <Settings className="h-8 w-8 text-white" />
           </div>
           <div>
@@ -169,7 +164,7 @@ export default function AdminSettings() {
         </div>
         <Button 
           size="lg"
-          className="bg-primary hover:bg-primary/90 shadow-xl flex gap-2 h-14 px-10 rounded-2xl font-bold text-lg transition-all active:scale-95 disabled:opacity-70" 
+          className="bg-primary hover:bg-primary/90 shadow-xl flex gap-2 h-14 px-10 rounded-2xl font-bold text-lg transition-all active:scale-95" 
           onClick={handleSave}
           disabled={isSaving}
         >
@@ -336,6 +331,10 @@ export default function AdminSettings() {
                 <div className="space-y-3">
                   <Label className="text-xs font-bold uppercase text-slate-400 tracking-widest">Nama Lengkap & Gelar</Label>
                   <Input value={formData.headmasterName} onChange={(e) => setFormData({...formData, headmasterName: e.target.value})} className="h-14 bg-slate-50 border-slate-100 rounded-2xl font-bold" />
+                </div>
+                <div className="space-y-3">
+                  <Label className="text-xs font-bold uppercase text-slate-400 tracking-widest">Jabatan</Label>
+                  <Input value={formData.headmasterTitle} onChange={(e) => setFormData({...formData, headmasterTitle: e.target.value})} className="h-14 bg-slate-50 border-slate-100 rounded-2xl" />
                 </div>
               </CardContent>
             </Card>
