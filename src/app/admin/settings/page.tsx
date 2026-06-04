@@ -386,8 +386,8 @@ export default function AdminSettings() {
                   </div>
                   
                   <div className="space-y-3">
-                    <Label className="text-xs font-bold uppercase text-slate-400">Foto Kepala Sekolah</Label>
-                    <div className="relative aspect-[3/4] w-48 rounded-[2rem] overflow-hidden border-2 border-dashed border-slate-200 bg-slate-50 flex items-center justify-center">
+                    <Label className="text-xs font-bold uppercase text-slate-400">Foto Kepala Sekolah (Rasio 4:6)</Label>
+                    <div className="relative aspect-[2/3] w-48 rounded-[2rem] overflow-hidden border-2 border-dashed border-slate-200 bg-slate-50 flex items-center justify-center">
                       {formData.headmasterPhotoUrl ? (
                         <img src={formData.headmasterPhotoUrl} alt="Kepala Sekolah" className="w-full h-full object-cover" />
                       ) : (

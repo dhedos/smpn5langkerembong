@@ -129,11 +129,12 @@ export default function Home() {
         <div className="container mx-auto px-6 md:px-12">
           <div className="flex flex-col lg:flex-row items-center gap-20">
             <div className="w-full lg:w-1/2 relative">
-              <div className="relative aspect-[4/5] w-full max-w-md mx-auto rounded-[4rem] overflow-hidden shadow-2xl border-[15px] border-slate-50 group">
+              <div className="relative aspect-[2/3] w-full max-w-md mx-auto rounded-[4rem] overflow-hidden shadow-2xl border-[15px] border-slate-50 group">
                 <img 
-                  src={settings?.headmasterPhotoUrl || "https://picsum.photos/seed/headmaster/600/800"} 
+                  src={settings?.headmasterPhotoUrl || "https://picsum.photos/seed/headmaster/600/900"} 
                   alt="Kepala Sekolah" 
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
+                  data-ai-hint="headmaster portrait"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-primary/60 to-transparent" />
                 <div className="absolute bottom-10 left-10 text-white">
