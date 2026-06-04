@@ -25,9 +25,7 @@ import {
   Copyright,
   Calendar,
   Globe,
-  Tag,
-  Link as LinkIcon,
-  ExternalLink
+  Link as LinkIcon
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -134,13 +132,6 @@ export default function AdminSettings() {
     }
   };
 
-  const handleMapUrlChange = (val: string) => {
-    const srcMatch = val.match(/src="([^"]+)"/);
-    const finalUrl = srcMatch ? srcMatch[1] : val;
-    setFormData({ ...formData, googleMapsEmbedUrl: finalUrl });
-    setShowMapPreview(false);
-  };
-
   const handleSearchLocation = () => {
     if (!addressSearch.trim()) return;
     const encodedAddress = encodeURIComponent(addressSearch);
@@ -153,10 +144,8 @@ export default function AdminSettings() {
 
   const handleAddOfficialWebsite = () => {
     if (newOfficialTitle.trim() && newOfficialUrl.trim()) {
-      setFormData((prev: any) => ({
-        ...prev,
-        officialWebsites: [...(prev.officialWebsites || []), { title: newOfficialTitle.trim(), url: newOfficialUrl.trim() }]
-      }));
+      const newList = [...(formData.officialWebsites || []), { title: newOfficialTitle.trim(), url: newOfficialUrl.trim() }];
+      setFormData({ ...formData, officialWebsites: newList });
       setNewOfficialTitle("");
       setNewOfficialUrl("");
     } else {
@@ -165,10 +154,8 @@ export default function AdminSettings() {
   };
 
   const handleRemoveOfficialWebsite = (index: number) => {
-    setFormData((prev: any) => ({
-      ...prev,
-      officialWebsites: prev.officialWebsites.filter((_: any, i: number) => i !== index)
-    }));
+    const newList = formData.officialWebsites.filter((_: any, i: number) => i !== index);
+    setFormData({ ...formData, officialWebsites: newList });
   };
 
   const handleAddMission = () => {
@@ -349,7 +336,6 @@ export default function AdminSettings() {
                       ))}
                     </div>
                   </div>
-                  <p className="text-[10px] text-slate-400 italic">Daftar website instansi akan tampil tepat di bawah branding pada footer.</p>
                 </div>
 
                 <div className="space-y-3 pt-4 border-t">
@@ -398,24 +384,11 @@ export default function AdminSettings() {
                     <Label className="text-xs font-bold uppercase text-slate-400">URL Peta (Google Maps Embed)</Label>
                     <Input 
                       value={formData.googleMapsEmbedUrl} 
-                      onChange={(e) => handleMapUrlChange(e.target.value)} 
+                      onChange={(e) => setFormData({...formData, googleMapsEmbedUrl: e.target.value})} 
                       placeholder="Tempel link src atau kode iframe di sini..."
                       className="h-12 bg-slate-50 rounded-xl font-mono text-[10px]" 
                     />
                   </div>
-
-                  {showMapPreview && formData.googleMapsEmbedUrl && (
-                    <div className="aspect-video w-full rounded-2xl overflow-hidden border shadow-inner bg-slate-100">
-                      <iframe 
-                        src={formData.googleMapsEmbedUrl} 
-                        width="100%" 
-                        height="100%" 
-                        style={{ border: 0 }} 
-                        allowFullScreen 
-                        loading="lazy"
-                      />
-                    </div>
-                  )}
                 </div>
 
                 <div className="space-y-3 pt-4 border-t">
