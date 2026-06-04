@@ -50,7 +50,7 @@ export default function Home() {
           style={{ 
             backgroundImage: `url('${heroImageUrl}')`, 
             backgroundAttachment: 'fixed',
-            transition: 'transform 4000ms ease-out'
+            transitionDuration: '4000ms'
           }}
         />
         <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/70 to-transparent z-[1]" />
@@ -193,7 +193,7 @@ export default function Home() {
                   alt={f.name} 
                   fill 
                   className="object-cover group-hover:scale-110" 
-                  style={{ transition: 'transform 2000ms ease-out' }}
+                  style={{ transitionDuration: '2000ms' }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900/95 via-slate-900/30 to-transparent p-12 flex flex-col justify-end">
                   <h3 className="text-white text-3xl md:text-4xl font-bold font-headline tracking-tight leading-none">{f.name}</h3>
