@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { User, onAuthStateChanged } from 'firebase/auth';
-import { doc, getDoc, setDoc, onSnapshot } from 'firebase/firestore';
+import { doc, setDoc, onSnapshot } from 'firebase/firestore';
 import { useAuth, useFirestore } from '../provider';
 
 export type UserProfile = {
@@ -27,28 +27,27 @@ export function useUser() {
       if (firebaseUser) {
         const userDocRef = doc(db, 'users', firebaseUser.uid);
         
-        // Use onSnapshot for real-time profile updates
         const unsubscribe = onSnapshot(userDocRef, (docSnap) => {
           if (docSnap.exists()) {
             setProfile(docSnap.data() as UserProfile);
             setLoading(false);
           } else {
-            // Auto-create profile if missing to avoid permission issues
             const defaultProfile: UserProfile = {
               uid: firebaseUser.uid,
-              name: firebaseUser.displayName || 'Admin',
+              name: firebaseUser.displayName || 'Administrator',
               email: firebaseUser.email || '',
               role: 'admin',
-              schoolId: 'default-school'
+              schoolId: 'smpn5-langke-rembong' // Default ID untuk sekolah pertama
             };
             
-            // Set doc in background
-            setDoc(userDocRef, defaultProfile, { merge: true });
+            setDoc(userDocRef, defaultProfile, { merge: true })
+              .catch(err => console.error("Auto-profile creation failed:", err));
+              
             setProfile(defaultProfile);
             setLoading(false);
           }
         }, (error) => {
-          console.error("Profile listen error:", error);
+          console.error("Profile sync error:", error);
           setLoading(false);
         });
 

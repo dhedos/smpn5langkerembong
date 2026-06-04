@@ -1,29 +1,28 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Fungsi pembantu
+    // Fungsi pembantu global
     function isSignedIn() {
       return request.auth != null;
     }
 
-    // Mengizinkan user untuk mengelola profil mereka sendiri
-    // Penting untuk inisialisasi awal profil setelah login
+    // Aturan untuk profil pengguna
     match /users/{userId} {
+      // Mengizinkan user untuk mengelola profil mereka sendiri
       allow read, write: if isSignedIn() && request.auth.uid == userId;
     }
 
     // Aturan untuk Sekolah (Tenant)
     match /schools/{schoolId} {
       allow read: if true;
-      // Admin dapat mengedit data sekolah jika mereka terautentikasi
-      // Dalam mode pengembangan ini kita permudah untuk inisialisasi
+      // Admin dapat mengedit data sekolah mereka
       allow write: if isSignedIn();
     }
 
-    // Aturan global untuk koleksi konten lainnya
+    // Aturan global untuk koleksi konten dengan filter schoolId
     match /{collectionName}/{docId} {
       allow read: if true;
-      // Mengizinkan tulis jika user login (filter schoolId dilakukan di level aplikasi)
+      // Mengizinkan tulis jika user login (Validasi schoolId dilakukan di level UI)
       allow write: if isSignedIn();
     }
   }
