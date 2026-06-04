@@ -175,7 +175,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Berita Terbaru Section */}
+      {/* Informasi Terbaru Section */}
       <section className="py-40 bg-slate-50">
         <div className="container mx-auto px-6 md:px-12">
           <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-8">
@@ -183,10 +183,10 @@ export default function Home() {
               <div className="text-secondary font-bold tracking-widest uppercase text-xs px-4 py-2 bg-secondary/10 rounded-full inline-flex items-center gap-2">
                 <Newspaper className="h-4 w-4" /> Informasi & Agenda
               </div>
-              <h2 className="text-5xl font-bold text-primary font-headline tracking-tighter">Berita Terbaru</h2>
+              <h2 className="text-5xl font-bold text-primary font-headline tracking-tighter">Informasi Terbaru</h2>
             </div>
             <Button variant="outline" className="rounded-full px-10 border-slate-200" asChild>
-              <Link href="/informasi">Lihat Semua Berita</Link>
+              <Link href="/informasi">Lihat Semua Informasi</Link>
             </Button>
           </div>
 
@@ -231,7 +231,7 @@ export default function Home() {
           ) : (
             <div className="text-center py-24 bg-white rounded-[3rem] border-2 border-dashed border-slate-100">
                <Newspaper className="h-16 w-16 text-slate-100 mx-auto mb-4" />
-               <p className="text-slate-400 font-medium italic">Belum ada berita yang diterbitkan.</p>
+               <p className="text-slate-400 font-medium italic">Belum ada informasi yang diterbitkan.</p>
             </div>
           )}
         </div>
