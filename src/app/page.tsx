@@ -18,7 +18,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useDoc, useCollection, useFirestore } from "@/firebase";
-import { doc, collection, query, limit, orderBy, where } from "firebase/firestore";
+import { doc, collection, query, where } from "firebase/firestore";
 
 const IconMap: Record<string, any> = {
   GraduationCap: GraduationCap,
@@ -34,17 +34,29 @@ export default function Home() {
   const settingsRef = useMemo(() => db ? doc(db, "schools", currentSchoolId) : null, [db]);
   const { data: settings, loading: settingsLoading } = useDoc(settingsRef);
 
+  // Gunakan kueri sederhana untuk menghindari masalah indeks Firestore
   const newsQuery = useMemo(() => {
     if (!db) return null;
     return query(
       collection(db, "news"), 
-      where("schoolId", "==", currentSchoolId),
-      where("status", "==", "Published"),
-      orderBy("updatedAt", "desc"), 
-      limit(3)
+      where("schoolId", "==", currentSchoolId)
     );
   }, [db]);
-  const { data: newsItems, loading: newsLoading } = useCollection(newsQuery);
+
+  const { data: rawNews, loading: newsLoading } = useCollection(newsQuery);
+
+  // Proses filter dan sortir di sisi klien agar lebih robust
+  const newsItems = useMemo(() => {
+    if (!rawNews) return [];
+    return rawNews
+      .filter((item: any) => item.status === "Published")
+      .sort((a: any, b: any) => {
+        const dateA = a.createdAt?.seconds || 0;
+        const dateB = b.createdAt?.seconds || 0;
+        return dateB - dateA;
+      })
+      .slice(0, 3);
+  }, [rawNews]);
 
   if (settingsLoading) {
     return (
@@ -196,7 +208,7 @@ export default function Home() {
                 <div key={i} className="h-96 bg-white rounded-[3rem] animate-pulse shadow-sm" />
               ))}
             </div>
-          ) : newsItems && newsItems.length > 0 ? (
+          ) : newsItems.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
               {newsItems.map((item: any) => (
                 <Card key={item.id} className="group overflow-hidden border-none shadow-xl hover:shadow-2xl transition-all duration-500 rounded-[3rem] bg-white flex flex-col">
@@ -232,6 +244,7 @@ export default function Home() {
             <div className="text-center py-24 bg-white rounded-[3rem] border-2 border-dashed border-slate-100">
                <Newspaper className="h-16 w-16 text-slate-100 mx-auto mb-4" />
                <p className="text-slate-400 font-medium italic">Belum ada informasi yang diterbitkan.</p>
+               <p className="text-slate-300 text-xs mt-2">Pastikan Admin telah menyetel status informasi menjadi <span className="text-green-600 font-bold uppercase">Published</span>.</p>
             </div>
           )}
         </div>
