@@ -5,24 +5,9 @@ import React, { useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { GraduationCap, Facebook, Instagram, Youtube, MapPin, Phone, Mail, LogIn, ExternalLink, Globe } from "lucide-react";
+import { GraduationCap, Facebook, Instagram, Youtube, MapPin, Phone, Mail, LogIn, ExternalLink, Globe, Twitter } from "lucide-react";
 import { useFirestore, useDoc } from "@/firebase";
 import { doc } from "firebase/firestore";
-
-// Simple TikTok SVG icon
-const TikTokIcon = ({ className }: { className?: string }) => (
-  <svg 
-    viewBox="0 0 24 24" 
-    fill="none" 
-    stroke="currentColor" 
-    strokeWidth="2" 
-    strokeLinecap="round" 
-    strokeLinejoin="round" 
-    className={className}
-  >
-    <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5" />
-  </svg>
-);
 
 export function Footer() {
   const pathname = usePathname();
@@ -39,145 +24,108 @@ export function Footer() {
 
   if (isAdminPage) return null;
 
-  const schoolName = settings?.schoolName || "SMPN 5 LANGKE REMBONG";
+  const schoolName = settings?.schoolName || "SMPN 5 Langke Rembong";
   const schoolLogo = settings?.schoolLogoUrl;
   const officialWebsite = settings?.officialWebsiteUrl;
   const officialWebsiteTitle = settings?.officialWebsiteTitle || "PORTAL RESMI INSTANSI";
-  const address = settings?.address || "Mando, kelurahan compang carep, kec.Langke Rembong";
+  const address = settings?.address || "Jl. Pendidikan No. 5, Langke Rembong";
   const phone = settings?.phone || "6285281814006";
   const email = settings?.email || "smpn5lr@gmail.com";
 
   const socialLinks = [
     { icon: Facebook, href: settings?.facebookUrl || "#" },
     { icon: Instagram, href: settings?.instagramUrl || "#" },
-    { icon: TikTokIcon, href: settings?.tiktokUrl || "#" },
+    { icon: Twitter, href: "#" }, 
     { icon: Youtube, href: settings?.youtubeUrl || "#" },
   ];
 
-  const akademikLinks = [
-    { name: "Kurikulum Merdeka", href: "#" },
-    { name: "E-Learning", href: "#" },
-    { name: "Perpustakaan", href: "#" },
-    { name: "Ekstrakurikuler", href: "/ekstrakurikuler" },
-  ];
-
-  const renderSchoolName = () => {
-    const parts = schoolName.toUpperCase().split(" ");
-    if (parts.length <= 1) return schoolName;
-    
-    return (
-      <div className="flex flex-col leading-[0.9] tracking-tighter">
-        {parts.map((part, index) => (
-          <span key={index} className="block">{part}</span>
-        ))}
-      </div>
-    );
-  };
-
   return (
-    <footer className="bg-primary text-white pt-24 pb-12 relative overflow-hidden">
-      <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl pointer-events-none" />
-      
-      <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-16 md:gap-8 lg:gap-16 mb-20">
-          {/* Column 1: School Brand */}
-          <div className="md:col-span-4 space-y-10">
-            <div className="flex items-start gap-6">
-              <div className="bg-white p-4 rounded-[1.5rem] shadow-2xl shrink-0">
+    <footer className="bg-primary text-white pt-20 pb-10 border-t border-white/5">
+      <div className="container mx-auto px-6 md:px-12">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+          {/* Brand Column */}
+          <div className="space-y-8">
+            <div className="flex items-center gap-4">
+              <div className="bg-white p-3 rounded-2xl shadow-xl shrink-0">
                 {schoolLogo ? (
-                  <div className="relative h-12 w-12">
+                  <div className="relative h-10 w-10">
                     <Image src={schoolLogo} alt="Logo" fill className="object-contain" />
                   </div>
                 ) : (
-                  <GraduationCap className="h-12 w-12 text-primary" />
+                  <GraduationCap className="h-10 w-10 text-primary" />
                 )}
               </div>
-              <h3 className="font-headline font-black text-3xl md:text-4xl uppercase">
-                {renderSchoolName()}
+              <h3 className="font-headline font-bold text-2xl tracking-tight leading-tight uppercase">
+                {schoolName}
               </h3>
             </div>
             
-            <p className="text-primary-foreground/70 text-base leading-relaxed font-medium max-w-xs">
+            <p className="text-white/60 text-sm leading-relaxed font-medium">
               Membangun fondasi pendidikan unggul yang menginspirasi kreativitas bagi masa depan bangsa.
             </p>
 
-            <div className="flex gap-4 pt-4">
+            <div className="flex gap-3 pt-4">
               {socialLinks.map((social, i) => (
                 <Link 
                   key={i} 
                   href={social.href} 
-                  target={social.href !== "#" ? "_blank" : undefined}
-                  className="h-12 w-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-secondary hover:text-primary transition-all shadow-sm"
+                  target="_blank"
+                  className="h-10 w-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-all"
                 >
-                  <social.icon className="h-6 w-6" />
+                  <social.icon className="h-5 w-5" />
                 </Link>
               ))}
             </div>
           </div>
 
-          {/* Column 2: Quick Links */}
-          <div className="md:col-span-2">
-            <h4 className="font-headline font-bold mb-10 text-[11px] tracking-[0.2em] uppercase text-secondary">Tautan Cepat</h4>
-            <ul className="space-y-6 text-sm font-bold text-primary-foreground/60">
-              <li key="beranda"><Link href="/" className="hover:text-white transition-colors">Beranda</Link></li>
-              <li key="profil"><Link href="/profil" className="hover:text-white transition-colors">Profil Sekolah</Link></li>
-              <li key="informasi"><Link href="/informasi" className="hover:text-white transition-colors">Informasi Terbaru</Link></li>
-              <li key="spmb"><Link href="/ppdb" className="hover:text-white transition-colors">SPMB Online</Link></li>
+          {/* Quick Links Column */}
+          <div>
+            <h4 className="font-headline font-black mb-10 text-xs tracking-[0.2em] uppercase text-secondary">Tautan Cepat</h4>
+            <ul className="space-y-4 text-sm font-medium text-white/70">
+              <li><Link href="/profil" className="hover:text-white transition-colors">Profil Sekolah</Link></li>
+              <li><Link href="/informasi" className="hover:text-white transition-colors">Informasi Terbaru</Link></li>
+              <li><Link href="/ppdb" className="hover:text-white transition-colors">SPMB Online</Link></li>
+              <li><Link href="/galeri" className="hover:text-white transition-colors">Galeri Kegiatan</Link></li>
             </ul>
           </div>
 
-          {/* Column 3: Akademik */}
-          <div className="md:col-span-2">
-            <h4 className="font-headline font-bold mb-10 text-[11px] tracking-[0.2em] uppercase text-secondary">Akademik</h4>
-            <ul className="space-y-6 text-sm font-bold text-primary-foreground/60">
-              {akademikLinks.map((item) => (
-                <li key={item.name}>
-                  {item.href === "#" ? (
-                    <span className="hover:text-white transition-colors cursor-pointer">{item.name}</span>
-                  ) : (
-                    <Link href={item.href} className="hover:text-white transition-colors">
-                      {item.name}
-                    </Link>
-                  )}
-                </li>
-              ))}
+          {/* Academic Column */}
+          <div>
+            <h4 className="font-headline font-black mb-10 text-xs tracking-[0.2em] uppercase text-secondary">Akademik</h4>
+            <ul className="space-y-4 text-sm font-medium text-white/70">
+              <li><span className="hover:text-white transition-colors cursor-pointer">Kurikulum Merdeka</span></li>
+              <li><span className="hover:text-white transition-colors cursor-pointer">E-Learning</span></li>
+              <li><span className="hover:text-white transition-colors cursor-pointer">Perpustakaan</span></li>
+              <li><Link href="/ekstrakurikuler" className="hover:text-white transition-colors">Ekstrakurikuler</Link></li>
             </ul>
           </div>
 
-          {/* Column 4: Hubungi Kami */}
-          <div className="md:col-span-4">
-            <h4 className="font-headline font-bold mb-10 text-[11px] tracking-[0.2em] uppercase text-secondary">Hubungi Kami</h4>
-            <ul className="space-y-8 text-sm text-white font-medium">
-              <li className="flex gap-5 items-start">
-                <div className="bg-white/5 p-2.5 rounded-xl">
-                  <MapPin className="h-5 w-5 text-secondary shrink-0" /> 
-                </div>
-                <span className="leading-relaxed opacity-90 pt-1">{address}</span>
+          {/* Contact Column */}
+          <div>
+            <h4 className="font-headline font-black mb-10 text-xs tracking-[0.2em] uppercase text-secondary">Hubungi Kami</h4>
+            <ul className="space-y-6 text-sm text-white/80 font-medium">
+              <li className="flex gap-4 items-start">
+                <MapPin className="h-5 w-5 text-secondary shrink-0 mt-0.5" /> 
+                <span className="leading-relaxed">{address}</span>
               </li>
-              <li className="flex gap-5 items-center">
-                <div className="bg-white/5 p-2.5 rounded-xl">
-                  <Phone className="h-5 w-5 text-secondary shrink-0" /> 
-                </div>
-                <span className="opacity-90">{phone}</span>
+              <li className="flex gap-4 items-center">
+                <Phone className="h-5 w-5 text-secondary shrink-0" /> 
+                <span>{phone}</span>
               </li>
-              <li className="flex gap-5 items-center">
-                <div className="bg-white/5 p-2.5 rounded-xl">
-                  <Mail className="h-5 w-5 text-secondary shrink-0" /> 
-                </div>
-                <span className="opacity-90">{email}</span>
+              <li className="flex gap-4 items-center">
+                <Mail className="h-5 w-5 text-secondary shrink-0" /> 
+                <span>{email}</span>
               </li>
               {officialWebsite && (
-                <li className="flex gap-5 items-center pt-2">
-                  <div className="bg-white/5 p-2.5 rounded-xl">
-                    <Globe className="h-5 w-5 text-secondary shrink-0" /> 
-                  </div>
+                <li className="flex gap-4 items-center pt-2 border-t border-white/5 mt-4">
+                  <Globe className="h-5 w-5 text-secondary shrink-0" /> 
                   <a 
                     href={officialWebsite} 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="opacity-90 hover:text-secondary hover:opacity-100 transition-all flex items-center gap-2 uppercase text-[10px] font-black tracking-[0.1em]"
+                    className="hover:text-secondary transition-all flex items-center gap-2 uppercase text-[10px] font-black tracking-widest"
                   >
-                    {officialWebsiteTitle.toUpperCase()} <ExternalLink className="h-3 w-3" />
+                    {officialWebsiteTitle} <ExternalLink className="h-3 w-3" />
                   </a>
                 </li>
               )}
@@ -185,11 +133,11 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-white/10 pt-10 flex flex-col md:flex-row justify-between items-center gap-6 text-[10px] font-bold text-primary-foreground/40 tracking-[0.2em] uppercase">
-          <p>© {displayYear} {schoolName.toUpperCase()}. ALL RIGHTS RESERVED.</p>
-          <div className="flex gap-10 items-center">
-            <Link href="/admin" className="opacity-30 hover:opacity-100 transition-all flex items-center gap-2 bg-white/5 px-4 py-2 rounded-full border border-white/10">
-              <LogIn className="h-3 w-3" /> ADMIN CONSOLE
+        <div className="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] font-bold text-white/30 tracking-[0.2em] uppercase">
+          <p>© {displayYear} {schoolName}. ALL RIGHTS RESERVED.</p>
+          <div className="flex gap-6 items-center">
+            <Link href="/admin" className="opacity-30 hover:opacity-100 transition-all flex items-center gap-2">
+              ADMIN CONSOLE
             </Link>
           </div>
         </div>
