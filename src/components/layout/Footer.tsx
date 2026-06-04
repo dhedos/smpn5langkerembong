@@ -5,7 +5,7 @@ import React, { useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { GraduationCap, Facebook, Instagram, Youtube, MapPin, Phone, Mail, LogIn, ExternalLink, Globe, Twitter } from "lucide-react";
+import { GraduationCap, Facebook, Instagram, Youtube, MapPin, Phone, Mail, ExternalLink, Globe, Twitter } from "lucide-react";
 import { useFirestore, useDoc } from "@/firebase";
 import { doc } from "firebase/firestore";
 
@@ -46,25 +46,29 @@ export function Footer() {
           {/* Brand Column */}
           <div className="space-y-8">
             <div className="flex items-center gap-4">
-              <div className="bg-white p-3 rounded-2xl shadow-xl shrink-0">
+              <div className="bg-white p-3 rounded-[1.5rem] shadow-xl shrink-0">
                 {schoolLogo ? (
-                  <div className="relative h-10 w-10">
+                  <div className="relative h-12 w-12">
                     <Image src={schoolLogo} alt="Logo" fill className="object-contain" />
                   </div>
                 ) : (
-                  <GraduationCap className="h-10 w-10 text-primary" />
+                  <GraduationCap className="h-12 w-12 text-primary" />
                 )}
               </div>
-              <h3 className="font-headline font-bold text-2xl tracking-tight leading-tight uppercase">
-                {schoolName}
+              <h3 className="font-headline font-bold text-2xl md:text-3xl tracking-tight leading-none uppercase">
+                {schoolName.split(' ').map((word, i) => (
+                  <React.Fragment key={i}>
+                    {word}<br />
+                  </React.Fragment>
+                ))}
               </h3>
             </div>
             
-            <p className="text-white/60 text-sm leading-relaxed font-medium">
+            <p className="text-white/60 text-sm leading-relaxed font-medium max-w-xs">
               Membangun fondasi pendidikan unggul yang menginspirasi kreativitas bagi masa depan bangsa.
             </p>
 
-            <div className="flex gap-3 pt-4">
+            <div className="flex gap-2 pt-2">
               {socialLinks.map((social, i) => (
                 <Link 
                   key={i} 
@@ -72,7 +76,7 @@ export function Footer() {
                   target="_blank"
                   className="h-10 w-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-all"
                 >
-                  <social.icon className="h-5 w-5" />
+                  <social.icon className="h-4 w-4" />
                 </Link>
               ))}
             </div>
@@ -80,7 +84,7 @@ export function Footer() {
 
           {/* Quick Links Column */}
           <div>
-            <h4 className="font-headline font-black mb-10 text-xs tracking-[0.2em] uppercase text-secondary">Tautan Cepat</h4>
+            <h4 className="font-headline font-black mb-10 text-[10px] tracking-[0.2em] uppercase text-secondary">Tautan Cepat</h4>
             <ul className="space-y-4 text-sm font-medium text-white/70">
               <li><Link href="/profil" className="hover:text-white transition-colors">Profil Sekolah</Link></li>
               <li><Link href="/informasi" className="hover:text-white transition-colors">Informasi Terbaru</Link></li>
@@ -91,7 +95,7 @@ export function Footer() {
 
           {/* Academic Column */}
           <div>
-            <h4 className="font-headline font-black mb-10 text-xs tracking-[0.2em] uppercase text-secondary">Akademik</h4>
+            <h4 className="font-headline font-black mb-10 text-[10px] tracking-[0.2em] uppercase text-secondary">Akademik</h4>
             <ul className="space-y-4 text-sm font-medium text-white/70">
               <li><span className="hover:text-white transition-colors cursor-pointer">Kurikulum Merdeka</span></li>
               <li><span className="hover:text-white transition-colors cursor-pointer">E-Learning</span></li>
@@ -102,23 +106,31 @@ export function Footer() {
 
           {/* Contact Column */}
           <div>
-            <h4 className="font-headline font-black mb-10 text-xs tracking-[0.2em] uppercase text-secondary">Hubungi Kami</h4>
+            <h4 className="font-headline font-black mb-10 text-[10px] tracking-[0.2em] uppercase text-secondary">Hubungi Kami</h4>
             <ul className="space-y-6 text-sm text-white/80 font-medium">
               <li className="flex gap-4 items-start">
-                <MapPin className="h-5 w-5 text-secondary shrink-0 mt-0.5" /> 
-                <span className="leading-relaxed">{address}</span>
+                <div className="bg-white/5 p-2 rounded-lg">
+                  <MapPin className="h-4 w-4 text-secondary shrink-0" /> 
+                </div>
+                <span className="leading-relaxed pt-1">{address}</span>
               </li>
               <li className="flex gap-4 items-center">
-                <Phone className="h-5 w-5 text-secondary shrink-0" /> 
+                <div className="bg-white/5 p-2 rounded-lg">
+                  <Phone className="h-4 w-4 text-secondary shrink-0" /> 
+                </div>
                 <span>{phone}</span>
               </li>
               <li className="flex gap-4 items-center">
-                <Mail className="h-5 w-5 text-secondary shrink-0" /> 
+                <div className="bg-white/5 p-2 rounded-lg">
+                  <Mail className="h-4 w-4 text-secondary shrink-0" /> 
+                </div>
                 <span>{email}</span>
               </li>
               {officialWebsite && (
                 <li className="flex gap-4 items-center pt-2 border-t border-white/5 mt-4">
-                  <Globe className="h-5 w-5 text-secondary shrink-0" /> 
+                  <div className="bg-white/5 p-2 rounded-lg">
+                    <Globe className="h-4 w-4 text-secondary shrink-0" /> 
+                  </div>
                   <a 
                     href={officialWebsite} 
                     target="_blank" 
