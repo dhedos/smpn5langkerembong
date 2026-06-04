@@ -39,7 +39,7 @@ export function Footer() {
 
   if (isAdminPage) return null;
 
-  const schoolName = settings?.schoolName || "SMPN 5 Langke Rembong";
+  const schoolName = settings?.schoolName || "SMPN 5 LANGKE REMBONG";
   const schoolLogo = settings?.schoolLogoUrl;
   const officialWebsite = settings?.officialWebsiteUrl;
   const officialWebsiteTitle = settings?.officialWebsiteTitle || "PORTAL RESMI INSTANSI";
@@ -61,48 +61,71 @@ export function Footer() {
     { name: "Ekstrakurikuler", href: "/ekstrakurikuler" },
   ];
 
+  // Fungsi untuk memecah nama sekolah menjadi beberapa baris agar sesuai gambar
+  const renderSchoolName = () => {
+    const parts = schoolName.split(" ");
+    if (parts.length <= 2) return schoolName;
+    
+    // Pecah jadi baris-baris (SMPN 5, LANGKE, REMBONG)
+    return (
+      <div className="flex flex-col leading-tight">
+        <span className="block">{parts.slice(0, 2).join(" ")}</span>
+        {parts.slice(2).map((part, i) => (
+          <span key={i} className="block">{part}</span>
+        ))}
+      </div>
+    );
+  };
+
   return (
     <footer className="bg-primary text-white pt-24 pb-12 relative overflow-hidden">
       <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl pointer-events-none" />
       
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 mb-20">
-          {/* Column 1: Info */}
-          <div className="space-y-8">
-            <div className="flex items-center gap-4">
-              <div className="bg-white p-2.5 rounded-2xl">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 mb-20">
+          {/* Column 1: Info (Lebih lebar sesuai gambar) */}
+          <div className="md:col-span-4 space-y-8">
+            <div className="flex items-start gap-5">
+              <div className="bg-white p-3 rounded-2xl shadow-xl shrink-0">
                 {schoolLogo ? (
-                  <div className="relative h-8 w-8"><Image src={schoolLogo} alt="Logo" fill className="object-contain" /></div>
+                  <div className="relative h-10 w-10">
+                    <Image src={schoolLogo} alt="Logo" fill className="object-contain" />
+                  </div>
                 ) : (
-                  <GraduationCap className="h-8 w-8 text-primary" />
+                  <GraduationCap className="h-10 w-10 text-primary" />
                 )}
               </div>
-              <span className="font-headline font-bold text-2xl tracking-tighter uppercase">
-                {schoolName}
-              </span>
+              <h3 className="font-headline font-black text-2xl md:text-3xl tracking-tighter uppercase leading-[0.9]">
+                {renderSchoolName()}
+              </h3>
             </div>
-            <p className="text-primary-foreground/70 text-sm leading-relaxed font-medium">
+            
+            <p className="text-primary-foreground/70 text-sm leading-relaxed font-medium max-w-xs">
               Membangun fondasi pendidikan unggul yang menginspirasi kreativitas bagi masa depan bangsa.
             </p>
             
             {officialWebsite && (
-              <a 
-                href={officialWebsite} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 px-4 py-2 rounded-xl text-[10px] font-black transition-all border border-white/10 uppercase tracking-widest"
-              >
-                <Globe className="h-3 w-3 text-secondary" /> {officialWebsiteTitle} <ExternalLink className="h-3 w-3 opacity-50" />
-              </a>
+              <div className="pt-2">
+                <a 
+                  href={officialWebsite} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-3 bg-white/5 hover:bg-white/10 px-5 py-2.5 rounded-xl text-[10px] font-black transition-all border border-white/10 uppercase tracking-widest group"
+                >
+                  <Globe className="h-4 w-4 text-secondary" /> 
+                  <span>{officialWebsiteTitle}</span>
+                  <ExternalLink className="h-3 w-3 opacity-30 group-hover:opacity-100 transition-opacity" />
+                </a>
+              </div>
             )}
 
-            <div className="flex gap-4">
+            <div className="flex gap-3 pt-4">
               {socialLinks.map((social, i) => (
                 <Link 
                   key={i} 
                   href={social.href} 
                   target={social.href !== "#" ? "_blank" : undefined}
-                  className="h-10 w-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-secondary hover:text-primary transition-all"
+                  className="h-10 w-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-secondary hover:text-primary transition-all shadow-sm"
                 >
                   <social.icon className="h-5 w-5" />
                 </Link>
@@ -111,8 +134,8 @@ export function Footer() {
           </div>
 
           {/* Column 2: Quick Links */}
-          <div className="lg:pl-8">
-            <h4 className="font-headline font-bold mb-10 text-xs tracking-[0.2em] uppercase text-secondary">Tautan Cepat</h4>
+          <div className="md:col-span-2">
+            <h4 className="font-headline font-bold mb-10 text-[11px] tracking-[0.2em] uppercase text-secondary">Tautan Cepat</h4>
             <ul className="space-y-5 text-sm font-bold text-primary-foreground/60">
               <li key="beranda"><Link href="/" className="hover:text-white transition-colors">Beranda</Link></li>
               <li key="profil"><Link href="/profil" className="hover:text-white transition-colors">Profil Sekolah</Link></li>
@@ -122,8 +145,8 @@ export function Footer() {
           </div>
 
           {/* Column 3: Akademik */}
-          <div className="lg:pl-4">
-            <h4 className="font-headline font-bold mb-10 text-xs tracking-[0.2em] uppercase text-secondary">Akademik</h4>
+          <div className="md:col-span-2">
+            <h4 className="font-headline font-bold mb-10 text-[11px] tracking-[0.2em] uppercase text-secondary">Akademik</h4>
             <ul className="space-y-5 text-sm font-bold text-primary-foreground/60">
               {akademikLinks.map((item) => (
                 <li key={item.name}>
@@ -140,20 +163,26 @@ export function Footer() {
           </div>
 
           {/* Column 4: Hubungi Kami */}
-          <div>
-            <h4 className="font-headline font-bold mb-10 text-xs tracking-[0.2em] uppercase text-secondary">Hubungi Kami</h4>
+          <div className="md:col-span-4">
+            <h4 className="font-headline font-bold mb-10 text-[11px] tracking-[0.2em] uppercase text-secondary">Hubungi Kami</h4>
             <ul className="space-y-8 text-sm text-white font-medium">
               <li className="flex gap-5 items-start">
-                <MapPin className="h-6 w-6 text-secondary shrink-0" /> 
-                <span className="leading-relaxed">{address}</span>
+                <div className="bg-white/5 p-2 rounded-lg">
+                  <MapPin className="h-5 w-5 text-secondary shrink-0" /> 
+                </div>
+                <span className="leading-relaxed opacity-90">{address}</span>
               </li>
               <li className="flex gap-5 items-center">
-                <Phone className="h-6 w-6 text-secondary shrink-0" /> 
-                <span>{phone}</span>
+                <div className="bg-white/5 p-2 rounded-lg">
+                  <Phone className="h-5 w-5 text-secondary shrink-0" /> 
+                </div>
+                <span className="opacity-90">{phone}</span>
               </li>
               <li className="flex gap-5 items-center">
-                <Mail className="h-6 w-6 text-secondary shrink-0" /> 
-                <span>{email}</span>
+                <div className="bg-white/5 p-2 rounded-lg">
+                  <Mail className="h-5 w-5 text-secondary shrink-0" /> 
+                </div>
+                <span className="opacity-90">{email}</span>
               </li>
             </ul>
           </div>
