@@ -164,7 +164,7 @@ export function Navbar() {
 
         {/* Mobile Toggle */}
         <button
-          className={cn("lg:hidden p-2.5 rounded-xl transition-colors", isSolid ? "bg-slate-100 text-primary" : "bg-white text-primary")}
+          className={cn("lg:hidden p-2.5 rounded-xl transition-colors shadow-md", isSolid ? "bg-slate-100 text-primary" : "bg-white text-primary")}
           onClick={() => setIsOpen(true)}
         >
           <Menu className="h-6 w-6" />
@@ -174,7 +174,7 @@ export function Navbar() {
       {/* Mobile Drawer Overlay */}
       {isOpen && (
         <div 
-          className="fixed inset-0 z-[100] bg-black/60 transition-opacity duration-300 lg:hidden"
+          className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm transition-opacity duration-300 lg:hidden"
           onClick={() => setIsOpen(false)}
         />
       )}
@@ -182,20 +182,20 @@ export function Navbar() {
       {/* Mobile Menu Drawer - SOLID WHITE SIDE DRAWER */}
       <div 
         className={cn(
-          "lg:hidden fixed top-0 right-0 h-screen w-[80%] z-[110] bg-white shadow-2xl transition-transform duration-500 ease-in-out transform flex flex-col",
+          "lg:hidden fixed top-0 right-0 h-screen w-[85%] z-[110] bg-white shadow-2xl transition-transform duration-500 ease-in-out transform flex flex-col",
           isOpen ? "translate-x-0" : "translate-x-full"
         )}
       >
         <div className="flex justify-between items-center p-6 border-b border-slate-100 bg-white shrink-0">
           <div className="flex items-center gap-3">
-            <div className="bg-primary p-2 rounded-xl shadow-md">
-              <GraduationCap className="h-5 w-5 text-white" />
+            <div className="bg-primary p-2.5 rounded-2xl shadow-lg">
+              <GraduationCap className="h-6 w-6 text-white" />
             </div>
-            <span className="font-headline font-bold text-primary tracking-tighter uppercase text-sm">NAVIGASI</span>
+            <span className="font-headline font-bold text-primary tracking-tighter uppercase text-sm">Menu Utama</span>
           </div>
           <button 
             onClick={() => setIsOpen(false)} 
-            className="p-2.5 bg-slate-50 rounded-full text-slate-500 hover:text-primary transition-colors"
+            className="p-3 bg-slate-100 rounded-full text-slate-500 hover:text-primary transition-colors active:scale-90"
           >
             <X className="h-6 w-6" />
           </button>
@@ -231,14 +231,14 @@ export function Navbar() {
             </div>
           ))}
           
-          <div className="mt-8 pt-8 border-t border-slate-100 bg-white pb-8">
+          <div className="mt-auto pt-8 border-t border-slate-100 bg-white pb-10">
             {isSpmbActive && (
-              <Button size="lg" className="w-full bg-primary h-14 text-white rounded-2xl font-bold text-base shadow-lg shadow-primary/20" asChild>
+              <Button size="lg" className="w-full bg-primary h-14 text-white rounded-2xl font-bold text-base shadow-lg shadow-primary/20 mb-6" asChild>
                 <Link href="/ppdb">{spmbLabel}</Link>
               </Button>
             )}
-            <p className="text-center text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-6 leading-relaxed">
-              SMPN 5 Langke Rembong <br /> Excellence in Education
+            <p className="text-center text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em] leading-relaxed">
+              {schoolName} <br /> Excellence in Education
             </p>
           </div>
         </nav>
