@@ -15,7 +15,8 @@ import {
   Plus,
   Trash2,
   History,
-  Target
+  Target,
+  Layout
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -83,7 +84,6 @@ export default function AdminSettings() {
       setFormData((prev: any) => ({
         ...prev,
         ...currentSettings,
-        // Pastikan field yang kosong di DB tetap menggunakan default teks jika diinginkan
         history: currentSettings.history || prev.history,
         vision: currentSettings.vision || prev.vision,
         mission: (currentSettings.mission && currentSettings.mission.length > 0) ? currentSettings.mission : prev.mission,
@@ -94,8 +94,8 @@ export default function AdminSettings() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, field: string) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 200 * 1024) { 
-        toast({ title: "File Terlalu Besar", description: "Maksimal 200KB.", variant: "destructive" });
+      if (file.size > 800 * 1024) { 
+        toast({ title: "File Terlalu Besar", description: "Maksimal 800KB.", variant: "destructive" });
         return;
       }
       const reader = new FileReader();
@@ -185,6 +185,7 @@ export default function AdminSettings() {
       <Tabs defaultValue="general" className="space-y-8">
         <TabsList className="bg-slate-100/50 p-1.5 rounded-2xl w-full flex flex-wrap h-auto border border-slate-200 gap-1">
           <TabsTrigger value="general" className="rounded-xl px-6 py-3 font-bold flex-1 data-[state=active]:bg-white">Identitas</TabsTrigger>
+          <TabsTrigger value="hero" className="rounded-xl px-6 py-3 font-bold flex-1 data-[state=active]:bg-white">Beranda</TabsTrigger>
           <TabsTrigger value="profile" className="rounded-xl px-6 py-3 font-bold flex-1 data-[state=active]:bg-white">Manajemen Profil</TabsTrigger>
           <TabsTrigger value="social" className="rounded-xl px-6 py-3 font-bold flex-1 data-[state=active]:bg-white">Media Sosial</TabsTrigger>
           <TabsTrigger value="spmb" className="rounded-xl px-6 py-3 font-bold flex-1 data-[state=active]:bg-white">SPMB</TabsTrigger>
@@ -225,7 +226,7 @@ export default function AdminSettings() {
                     <Input value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} className="h-12 bg-slate-50 rounded-xl" />
                   </div>
                   <div className="space-y-3">
-                    <Label className="text-xs font-bold uppercase text-slate-400">Email</Label>
+                    <Label className="text-xs font-bold uppercase text-slate-400">Email Resmi</Label>
                     <Input value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} className="h-12 bg-slate-50 rounded-xl" />
                   </div>
                 </div>
@@ -239,6 +240,61 @@ export default function AdminSettings() {
                 </div>
               </CardContent>
             </Card>
+        </TabsContent>
+
+        <TabsContent value="hero" className="space-y-8">
+          <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden bg-white">
+            <CardHeader className="bg-slate-50/50 border-b p-8">
+              <CardTitle className="text-xl flex items-center gap-3 font-headline text-primary">
+                <Layout className="h-6 w-6 text-secondary" /> Tampilan Beranda
+              </CardTitle>
+              <CardDescription>Atur judul dan gambar yang muncul di bagian paling atas website.</CardDescription>
+            </CardHeader>
+            <CardContent className="p-8 space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="space-y-6">
+                  <div className="space-y-3">
+                    <Label className="text-xs font-bold uppercase text-slate-400">Judul Gambar Utama (Hero Title)</Label>
+                    <Input 
+                      value={formData.heroTitle} 
+                      onChange={(e) => setFormData({...formData, heroTitle: e.target.value})} 
+                      className="h-14 bg-slate-50 rounded-2xl font-extrabold text-lg" 
+                      placeholder="Contoh: Pendidikan Berkualitas"
+                    />
+                  </div>
+                  <div className="space-y-3">
+                    <Label className="text-xs font-bold uppercase text-slate-400">Sub-judul Beranda</Label>
+                    <Textarea 
+                      value={formData.heroSubtitle} 
+                      onChange={(e) => setFormData({...formData, heroSubtitle: e.target.value})} 
+                      className="min-h-[120px] bg-slate-50 rounded-2xl"
+                      placeholder="Teks penjelasan singkat di bawah judul..."
+                    />
+                  </div>
+                </div>
+                
+                <div className="space-y-3">
+                  <Label className="text-xs font-bold uppercase text-slate-400">Foto Latar Belakang (Maks 800KB)</Label>
+                  <div className="relative aspect-video w-full rounded-[2rem] overflow-hidden border-2 border-dashed border-slate-200 bg-slate-50 flex items-center justify-center group">
+                    {formData.heroImageUrl ? (
+                      <img src={formData.heroImageUrl} alt="Hero Preview" className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="text-center text-slate-400">
+                        <ImageIcon className="h-12 w-12 mx-auto mb-2 opacity-20" />
+                        <span className="text-xs font-bold">Belum ada foto</span>
+                      </div>
+                    )}
+                    <input 
+                      type="file" 
+                      accept="image/*" 
+                      onChange={(e) => handleFileChange(e, "heroImageUrl")} 
+                      className="absolute inset-0 opacity-0 cursor-pointer" 
+                    />
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
 
         <TabsContent value="profile" className="space-y-8">
