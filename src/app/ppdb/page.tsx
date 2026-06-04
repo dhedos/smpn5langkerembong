@@ -32,7 +32,7 @@ export default function PPDBPage() {
 
   if (loading) return <div className="pt-32 text-center text-slate-400">Memuat informasi pendaftaran...</div>;
 
-  const ppdbYear = settings?.ppdbYear || "2024/2025";
+  const spmbYear = settings?.ppdbYear || "2024/2025";
   const isActive = settings?.ppdbIsActive !== false;
 
   if (submitted) {
@@ -44,7 +44,7 @@ export default function PPDBPage() {
           </div>
           <h1 className="text-3xl font-bold text-primary font-headline mb-4">Terima Kasih!</h1>
           <p className="text-muted-foreground mb-8 text-lg">
-            Data pendaftaran putra-putri Anda telah kami terima. Tim admin akan melakukan verifikasi berkas dalam 2-3 hari kerja.
+            Data pendaftaran putra-putri Anda telah kami terima. Tim admin GN Nusantara akan melakukan verifikasi berkas dalam 2-3 hari kerja.
           </p>
           <div className="bg-primary/5 p-6 rounded-2xl mb-8">
             <div className="text-sm text-muted-foreground uppercase tracking-widest font-bold mb-2">Nomor Registrasi</div>
@@ -65,7 +65,7 @@ export default function PPDBPage() {
         <div className="bg-slate-50 p-16 rounded-[3rem] border-2 border-dashed border-slate-200">
            <AlertCircle className="h-16 w-16 text-slate-300 mx-auto mb-6" />
            <h2 className="text-3xl font-bold text-slate-700 font-headline mb-4">Pendaftaran Ditutup</h2>
-           <p className="text-slate-500 mb-8">Mohon maaf, periode pendaftaran siswa baru (SPMB) Tahun Pelajaran {ppdbYear} saat ini belum dibuka atau sudah berakhir.</p>
+           <p className="text-slate-500 mb-8">Mohon maaf, periode pendaftaran siswa baru (SPMB) Tahun Pelajaran {spmbYear} saat ini belum dibuka atau sudah berakhir.</p>
            <Button variant="outline" className="rounded-full px-10" asChild><Link href="/">Kembali ke Beranda</Link></Button>
         </div>
       </div>
@@ -79,7 +79,7 @@ export default function PPDBPage() {
         <div className="absolute inset-0 bg-secondary/5 skew-y-3 translate-y-24" />
         <div className="container mx-auto px-4 relative z-10">
           <h1 className="text-5xl md:text-7xl font-bold font-headline mb-6 tracking-tighter">SPMB Online</h1>
-          <p className="text-white/70 max-w-xl mx-auto text-xl">Penerimaan Siswa Baru Tahun Pelajaran {ppdbYear}.</p>
+          <p className="text-white/70 max-w-xl mx-auto text-xl">Penerimaan Siswa Baru Tahun Pelajaran {spmbYear}.</p>
         </div>
       </section>
 

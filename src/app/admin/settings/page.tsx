@@ -120,25 +120,17 @@ export default function AdminSettings() {
         setIsSaving(false);
         toast({ 
           title: "Berhasil Disimpan", 
-          description: "Pengaturan website telah diperbarui secara otomatis.",
+          description: "Pengaturan website telah diperbarui secara otomatis oleh GN Nusantara.",
         });
       })
       .catch(async (error: any) => {
         setIsSaving(false);
-        if (error.code === 'permission-denied') {
-          const permissionError = new FirestorePermissionError({
-            path: docRef.path,
-            operation: 'write',
-            requestResourceData: formData,
-          } satisfies SecurityRuleContext);
-          errorEmitter.emit('permission-error', permissionError);
-        } else {
-          toast({ 
-            title: "Gagal Menyimpan", 
-            description: error.message || "Gagal menyimpan data.", 
-            variant: "destructive" 
-          });
-        }
+        const permissionError = new FirestorePermissionError({
+          path: docRef.path,
+          operation: 'write',
+          requestResourceData: formData,
+        } satisfies SecurityRuleContext);
+        errorEmitter.emit('permission-error', permissionError);
       });
   };
 
@@ -174,7 +166,7 @@ export default function AdminSettings() {
             <h1 className="text-4xl font-bold font-headline text-primary tracking-tight">
               Konfigurasi Website
             </h1>
-            <p className="text-muted-foreground text-sm font-medium">Sinkronisasi data otomatis oleh Goetnik Nusantara (GN Nusantara).</p>
+            <p className="text-muted-foreground text-sm font-medium">Dikelola secara global oleh Goetnik Nusantara (GN Nusantara).</p>
           </div>
         </div>
         <Button 
@@ -294,7 +286,7 @@ export default function AdminSettings() {
                   </div>
                 </div>
                 <div className="space-y-4">
-                  <Label className="text-xs font-bold uppercase text-slate-400 tracking-widest">Foto Latar Belakang (Rekomendasi Landscape)</Label>
+                  <Label className="text-xs font-bold uppercase text-slate-400 tracking-widest">Foto Latar Belakang</Label>
                   <div className="relative aspect-video w-full border-2 border-dashed border-slate-200 rounded-[2rem] overflow-hidden bg-slate-50 mb-4 flex items-center justify-center">
                     {formData.heroImageUrl ? (
                       <img src={formData.heroImageUrl} alt="Hero Preview" className="w-full h-full object-cover" />
