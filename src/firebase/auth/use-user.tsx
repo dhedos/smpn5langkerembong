@@ -32,22 +32,24 @@ export function useUser() {
             setProfile(docSnap.data() as UserProfile);
             setLoading(false);
           } else {
+            // Inisialisasi profil jika belum ada
             const defaultProfile: UserProfile = {
               uid: firebaseUser.uid,
-              name: firebaseUser.displayName || 'Administrator',
+              name: firebaseUser.displayName || 'GN Admin',
               email: firebaseUser.email || '',
               role: 'admin',
-              schoolId: 'smpn5-langke-rembong' // Default ID untuk sekolah pertama
+              schoolId: 'smpn5-langke-rembong' // Default tenant ID
             };
             
+            // Mencoba membuat profil secara otomatis (Rules mengizinkan ini untuk pemilik UID)
             setDoc(userDocRef, defaultProfile, { merge: true })
-              .catch(err => console.error("Auto-profile creation failed:", err));
+              .catch(err => console.warn("Auto-profile sync delayed:", err));
               
             setProfile(defaultProfile);
             setLoading(false);
           }
         }, (error) => {
-          console.error("Profile sync error:", error);
+          console.error("Profile access denied:", error);
           setLoading(false);
         });
 

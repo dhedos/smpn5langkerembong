@@ -16,9 +16,8 @@ import {
   ArrowRight,
   Eye,
   EyeOff,
-  Users,
-  Megaphone,
-  School
+  School,
+  Megaphone
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -52,16 +51,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   const adminMenuItems = [
     { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
-    { name: "Informasi", href: "/admin/informasi", icon: Newspaper },
-    { name: "Pengumuman", href: "/admin/pengumuman", icon: Megaphone },
+    { name: "Informasi", href: "/admin/berita", icon: Newspaper },
     { name: "Fasilitas", href: "/admin/fasilitas", icon: Building2 },
     { name: "Galeri", href: "/admin/galeri", icon: Camera },
     { name: "Pengaturan Situs", href: "/admin/settings", icon: Settings },
   ];
-
-  if (profile?.role === 'superadmin') {
-    adminMenuItems.push({ name: "Kelola Sekolah", href: "/admin/schools", icon: School });
-  }
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -87,7 +81,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <Lock className="h-8 w-8 text-white" />
             </div>
             <h1 className="text-3xl font-bold text-white tracking-tighter uppercase">GN Nusantara</h1>
-            <p className="text-white/50 text-sm">Global Console Management System</p>
+            <p className="text-white/50 text-sm font-medium uppercase tracking-widest">Global Admin Console</p>
           </div>
           <form onSubmit={handleLogin} className="space-y-6">
             <div className="space-y-2">
@@ -116,12 +110,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <Sidebar className="border-r border-slate-200 bg-white">
           <SidebarHeader className="p-6 border-b border-slate-50">
             <div className="flex items-center gap-3">
-              <div className="bg-[#1a73e8] p-2 rounded-xl shadow-lg">
+              <div className="bg-primary p-2 rounded-xl shadow-lg">
                 <Database className="h-5 w-5 text-white" />
               </div>
               <div className="flex flex-col text-left">
                 <span className="font-bold text-sm tracking-tight text-slate-900 uppercase">GN Nusantara</span>
-                <span className="text-[10px] text-blue-500 font-extrabold uppercase">{profile?.role} Console</span>
+                <span className="text-[10px] text-blue-500 font-extrabold uppercase">Global Console</span>
               </div>
             </div>
           </SidebarHeader>
@@ -141,7 +135,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </SidebarContent>
           <SidebarFooter className="p-4 border-t border-slate-50">
             <div className="px-4 py-2 mb-4 bg-slate-50 rounded-xl text-[10px] font-bold text-slate-400 uppercase">
-              School ID: <span className="text-primary">{profile?.schoolId || 'Global'}</span>
+              School ID: <span className="text-primary">{profile?.schoolId || 'GN-GLOBAL'}</span>
             </div>
             <Button variant="ghost" className="w-full justify-start gap-3 text-slate-500 hover:text-red-600 hover:bg-red-50 rounded-xl" onClick={() => signOut(auth)}>
               <LogOut className="h-4 w-4" /> Keluar Sesi
@@ -153,7 +147,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <div className="flex items-center gap-4">
               <SidebarTrigger />
               <div className="h-4 w-px bg-slate-200" />
-              <div className="text-xs font-bold text-slate-400 uppercase">
+              <div className="text-xs font-bold text-slate-400 uppercase tracking-widest">
                 GN Global <ChevronRight className="h-3 w-3 inline" /> {pathname.split('/').pop()?.replace('-', ' ')}
               </div>
             </div>

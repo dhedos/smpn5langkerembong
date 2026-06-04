@@ -7,7 +7,8 @@ import {
   Phone, 
   School, 
   Loader2,
-  Image as ImageIcon
+  Image as ImageIcon,
+  CheckCircle2
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -25,6 +26,7 @@ export default function AdminSettings() {
   const db = useFirestore();
   const { profile } = useUser();
   
+  // Multi-tenant: targets current school's document
   const targetSchoolId = profile?.schoolId || 'default-school';
   const settingsRef = useMemo(() => db ? doc(db, "schools", targetSchoolId) : null, [db, targetSchoolId]);
   const { data: currentSettings, loading } = useDoc(settingsRef);
@@ -48,7 +50,7 @@ export default function AdminSettings() {
     vision: "",
     mission: [],
     stats: [],
-    ppdbYear: "",
+    ppdbYear: "2024/2025",
     ppdbIsActive: true,
     ppdbMenuTitle: "SPMB ONLINE",
     ppdbRequirements: [],
@@ -69,8 +71,8 @@ export default function AdminSettings() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, field: string) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 200 * 1024) { 
-        toast({ title: "File Terlalu Besar", description: "Maksimal 200KB per gambar.", variant: "destructive" });
+      if (file.size > 300 * 1024) { 
+        toast({ title: "Gagal Unggah", description: "Ukuran file maksimal 300KB.", variant: "destructive" });
         return;
       }
       const reader = new FileReader();
@@ -82,9 +84,8 @@ export default function AdminSettings() {
   };
 
   const handleSave = () => {
-    if (!db) return;
+    if (!db || !settingsRef) return;
     setIsSaving(true);
-    const docRef = doc(db, "schools", targetSchoolId);
     
     const dataToSave = { 
       ...formData, 
@@ -92,15 +93,18 @@ export default function AdminSettings() {
       updatedAt: serverTimestamp()
     };
 
-    setDoc(docRef, dataToSave, { merge: true })
+    setDoc(settingsRef, dataToSave, { merge: true })
       .then(() => {
         setIsSaving(false);
-        toast({ title: "Berhasil Disimpan", description: `Konfigurasi sekolah telah diperbarui.` });
+        toast({ 
+          title: "Berhasil!", 
+          description: `Konfigurasi sekolah "${formData.schoolName || targetSchoolId}" telah diperbarui.` 
+        });
       })
       .catch(async (error: any) => {
         setIsSaving(false);
         const permissionError = new FirestorePermissionError({
-          path: docRef.path,
+          path: settingsRef.path,
           operation: 'write',
           requestResourceData: dataToSave,
         } satisfies SecurityRuleContext);
@@ -111,7 +115,7 @@ export default function AdminSettings() {
   if (loading) return (
     <div className="p-12 text-center space-y-4">
       <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" />
-      <p className="text-muted-foreground animate-pulse font-medium italic">Sinkronisasi GN Global...</p>
+      <p className="text-muted-foreground animate-pulse font-medium italic">Sinkronisasi GN Nusantara Global...</p>
     </div>
   );
 
@@ -123,22 +127,27 @@ export default function AdminSettings() {
             <Settings className="h-8 w-8 text-white" />
           </div>
           <div>
-            <h1 className="text-4xl font-bold font-headline text-primary tracking-tight uppercase">Pengaturan Website Sekolah</h1>
-            <p className="text-muted-foreground text-sm font-medium">Dikelola secara terpusat oleh GN Nusantara Console.</p>
+            <h1 className="text-4xl font-bold font-headline text-primary tracking-tight uppercase">Pengaturan Situs Sekolah</h1>
+            <p className="text-muted-foreground text-sm font-medium">Data di bawah ini akan tampil pada halaman publik sekolah Anda.</p>
           </div>
         </div>
-        <Button size="lg" className="bg-primary hover:bg-primary/90 shadow-xl flex gap-2 h-14 px-10 rounded-2xl font-bold" onClick={handleSave} disabled={isSaving}>
+        <Button 
+          size="lg" 
+          className="bg-primary hover:bg-primary/90 shadow-xl flex gap-2 h-14 px-10 rounded-2xl font-bold" 
+          onClick={handleSave} 
+          disabled={isSaving}
+        >
           {isSaving ? <Loader2 className="h-5 w-5 animate-spin" /> : <Save className="h-5 w-5" />}
-          {isSaving ? "Proses Simpan..." : "Simpan Konfigurasi"}
+          {isSaving ? "Menyimpan..." : "Simpan Perubahan"}
         </Button>
       </div>
 
       <Tabs defaultValue="general" className="space-y-8">
         <TabsList className="bg-slate-100/50 p-1.5 rounded-2xl w-full flex flex-wrap h-auto border border-slate-200 gap-1">
-          <TabsTrigger value="general" className="rounded-xl px-6 py-3 font-bold flex-1 data-[state=active]:bg-white">Identitas</TabsTrigger>
-          <TabsTrigger value="hero" className="rounded-xl px-6 py-3 font-bold flex-1 data-[state=active]:bg-white">Tampilan Utama</TabsTrigger>
-          <TabsTrigger value="profile" className="rounded-xl px-6 py-3 font-bold flex-1 data-[state=active]:bg-white">Visi Misi</TabsTrigger>
-          <TabsTrigger value="spmb" className="rounded-xl px-6 py-3 font-bold flex-1 data-[state=active]:bg-white">SPMB</TabsTrigger>
+          <TabsTrigger value="general" className="rounded-xl px-6 py-3 font-bold flex-1 data-[state=active]:bg-white">Identitas Dasar</TabsTrigger>
+          <TabsTrigger value="hero" className="rounded-xl px-6 py-3 font-bold flex-1 data-[state=active]:bg-white">Banner Utama</TabsTrigger>
+          <TabsTrigger value="profile" className="rounded-xl px-6 py-3 font-bold flex-1 data-[state=active]:bg-white">Visi & Misi</TabsTrigger>
+          <TabsTrigger value="spmb" className="rounded-xl px-6 py-3 font-bold flex-1 data-[state=active]:bg-white">Pengaturan SPMB</TabsTrigger>
         </TabsList>
 
         <TabsContent value="general" className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -146,11 +155,15 @@ export default function AdminSettings() {
               <CardHeader className="bg-slate-50/50 border-b p-8"><CardTitle className="text-xl flex items-center gap-3 font-headline text-primary"><School className="h-6 w-6 text-secondary" /> Identitas Sekolah</CardTitle></CardHeader>
               <CardContent className="space-y-6 p-8">
                 <div className="space-y-3">
-                  <Label className="text-xs font-bold uppercase text-slate-400">Nama Lengkap Sekolah</Label>
-                  <Input value={formData.schoolName} onChange={(e) => setFormData({...formData, schoolName: e.target.value})} className="h-14 bg-slate-50 rounded-2xl font-bold" />
+                  <Label className="text-xs font-bold uppercase text-slate-400">Nama Sekolah</Label>
+                  <Input 
+                    value={formData.schoolName} 
+                    onChange={(e) => setFormData({...formData, schoolName: e.target.value})} 
+                    className="h-14 bg-slate-50 rounded-2xl font-bold" 
+                  />
                 </div>
                 <div className="space-y-3">
-                  <Label className="text-xs font-bold uppercase text-slate-400">Logo Resmi</Label>
+                  <Label className="text-xs font-bold uppercase text-slate-400">Logo Sekolah</Label>
                   <div className="flex flex-col gap-4">
                     {formData.schoolLogoUrl && (
                       <div className="h-24 w-24 relative bg-slate-50 rounded-xl border p-2 flex items-center justify-center">
@@ -163,38 +176,58 @@ export default function AdminSettings() {
               </CardContent>
             </Card>
             <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden bg-white">
-              <CardHeader className="bg-slate-50/50 border-b p-8"><CardTitle className="text-xl flex items-center gap-3 font-headline text-primary"><Phone className="h-6 w-6 text-secondary" /> Kontak & Alamat</CardTitle></CardHeader>
+              <CardHeader className="bg-slate-50/50 border-b p-8"><CardTitle className="text-xl flex items-center gap-3 font-headline text-primary"><Phone className="h-6 w-6 text-secondary" /> Kontak Resmi</CardTitle></CardHeader>
               <CardContent className="space-y-6 p-8">
                 <div className="space-y-3">
-                  <Label className="text-xs font-bold uppercase text-slate-400">WhatsApp Admin (Aktif)</Label>
-                  <Input value={formData.whatsappNumber} onChange={(e) => setFormData({...formData, whatsappNumber: e.target.value})} className="h-14 bg-slate-50 rounded-2xl" placeholder="628..." />
+                  <Label className="text-xs font-bold uppercase text-slate-400">WhatsApp Admin (Format: 628...)</Label>
+                  <Input value={formData.whatsappNumber} onChange={(e) => setFormData({...formData, whatsappNumber: e.target.value})} className="h-14 bg-slate-50 rounded-2xl" placeholder="628123456789" />
                 </div>
                 <div className="space-y-3">
-                  <Label className="text-xs font-bold uppercase text-slate-400">Alamat Lengkap</Label>
+                  <Label className="text-xs font-bold uppercase text-slate-400">Alamat Lengkap Kantor</Label>
                   <Textarea value={formData.address} onChange={(e) => setFormData({...formData, address: e.target.value})} className="min-h-[120px] bg-slate-50 rounded-2xl" />
                 </div>
               </CardContent>
             </Card>
         </TabsContent>
 
+        <TabsContent value="spmb">
+          <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden bg-white">
+            <CardHeader className="bg-slate-50/50 border-b p-8">
+              <CardTitle className="text-xl flex items-center gap-3 font-headline text-primary"><CheckCircle2 className="h-6 w-6 text-secondary" /> Konfigurasi SPMB Online</CardTitle>
+            </CardHeader>
+            <CardContent className="p-8 space-y-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="space-y-3">
+                  <Label className="text-xs font-bold uppercase text-slate-400">Tahun Akademik</Label>
+                  <Input value={formData.ppdbYear} onChange={(e) => setFormData({...formData, ppdbYear: e.target.value})} className="h-14 bg-slate-50 rounded-2xl" placeholder="2024/2025" />
+                </div>
+                <div className="space-y-3">
+                  <Label className="text-xs font-bold uppercase text-slate-400">Label Menu di Website</Label>
+                  <Input value={formData.ppdbMenuTitle} onChange={(e) => setFormData({...formData, ppdbMenuTitle: e.target.value})} className="h-14 bg-slate-50 rounded-2xl font-bold" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+        
         <TabsContent value="hero">
           <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden bg-white">
             <CardHeader className="bg-slate-50/50 border-b p-8">
-              <CardTitle className="text-xl flex items-center gap-3 font-headline text-primary"><ImageIcon className="h-6 w-6 text-secondary" /> Konfigurasi Banner Utama</CardTitle>
+              <CardTitle className="text-xl flex items-center gap-3 font-headline text-primary"><ImageIcon className="h-6 w-6 text-secondary" /> Visual Banner Utama</CardTitle>
             </CardHeader>
             <CardContent className="p-8 grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="space-y-6">
                 <div className="space-y-3">
-                  <Label className="text-xs font-bold uppercase text-slate-400">Judul Banner (Hero Title)</Label>
+                  <Label className="text-xs font-bold uppercase text-slate-400">Judul Besar (Hero Title)</Label>
                   <Input value={formData.heroTitle} onChange={(e) => setFormData({...formData, heroTitle: e.target.value})} className="h-14 bg-slate-50 rounded-2xl font-bold" />
                 </div>
                 <div className="space-y-3">
-                  <Label className="text-xs font-bold uppercase text-slate-400">Sub-judul Banner</Label>
+                  <Label className="text-xs font-bold uppercase text-slate-400">Sub-judul Penjelas</Label>
                   <Textarea value={formData.heroSubtitle} onChange={(e) => setFormData({...formData, heroSubtitle: e.target.value})} className="h-24 bg-slate-50 rounded-2xl" />
                 </div>
               </div>
               <div className="space-y-3">
-                <Label className="text-xs font-bold uppercase text-slate-400">Foto Latar Belakang (Hero Image)</Label>
+                <Label className="text-xs font-bold uppercase text-slate-400">Foto Latar Belakang</Label>
                 <div className="space-y-4">
                   {formData.heroImageUrl && (
                     <div className="aspect-video w-full relative rounded-[2rem] overflow-hidden shadow-md">

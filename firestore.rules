@@ -1,28 +1,50 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Fungsi pembantu global
+    // Fungsi pembantu
     function isSignedIn() {
       return request.auth != null;
     }
-
-    // Aturan untuk profil pengguna
-    match /users/{userId} {
-      // Mengizinkan user untuk mengelola profil mereka sendiri
-      allow read, write: if isSignedIn() && request.auth.uid == userId;
+    
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
     }
 
-    // Aturan untuk Sekolah (Tenant)
+    // Aturan Profil Pengguna
+    match /users/{userId} {
+      allow read, write: if isOwner(userId);
+    }
+
+    // Aturan Global untuk Data Sekolah (Multi-Tenant)
+    // Mengizinkan admin yang login untuk mengelola data
     match /schools/{schoolId} {
       allow read: if true;
-      // Admin dapat mengedit data sekolah mereka
       allow write: if isSignedIn();
     }
 
-    // Aturan global untuk koleksi konten dengan filter schoolId
+    match /news/{newsId} {
+      allow read: if true;
+      allow write: if isSignedIn();
+    }
+    
+    match /facilities/{facilityId} {
+      allow read: if true;
+      allow write: if isSignedIn();
+    }
+    
+    match /gallery/{photoId} {
+      allow read: if true;
+      allow write: if isSignedIn();
+    }
+
+    match /settings/{docId} {
+      allow read: if true;
+      allow write: if isSignedIn();
+    }
+
+    // Koleksi umum lainnya
     match /{collectionName}/{docId} {
       allow read: if true;
-      // Mengizinkan tulis jika user login (Validasi schoolId dilakukan di level UI)
       allow write: if isSignedIn();
     }
   }
