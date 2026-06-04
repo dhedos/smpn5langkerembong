@@ -9,7 +9,6 @@ import {
   School, 
   Loader2,
   Image as ImageIcon,
-  CheckCircle2,
   Share2,
   BookOpen,
   Plus,
@@ -17,7 +16,9 @@ import {
   History,
   Target,
   Layout,
-  UserCircle
+  UserCircle,
+  BarChart3,
+  Users
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -62,6 +63,11 @@ export default function AdminSettings() {
       "Membangun lingkungan sekolah yang aman, nyaman, dan inspiratif.",
       "Mengembangkan potensi siswa baik di bidang akademik maupun non-akademik."
     ],
+    stats: [
+      { label: "Guru", value: "0", icon: "GraduationCap" },
+      { label: "Tenaga Pendidik", value: "0", icon: "Users" },
+      { label: "Siswa", value: "0", icon: "UserCircle" }
+    ],
     facebookUrl: "",
     instagramUrl: "",
     tiktokUrl: "",
@@ -86,13 +92,7 @@ export default function AdminSettings() {
       setFormData((prev: any) => ({
         ...prev,
         ...currentSettings,
-        history: currentSettings.history || prev.history,
-        vision: currentSettings.vision || prev.vision,
-        mission: (currentSettings.mission && currentSettings.mission.length > 0) ? currentSettings.mission : prev.mission,
-        heroTitle: currentSettings.heroTitle || prev.heroTitle,
-        heroSubtitle: currentSettings.heroSubtitle || prev.heroSubtitle,
-        welcomeSectionLabel: currentSettings.welcomeSectionLabel || prev.welcomeSectionLabel,
-        welcomeTitle: currentSettings.welcomeTitle || prev.welcomeTitle,
+        stats: (currentSettings.stats && currentSettings.stats.length > 0) ? currentSettings.stats : prev.stats,
       }));
     }
   }, [currentSettings]);
@@ -127,6 +127,12 @@ export default function AdminSettings() {
       ...prev,
       mission: prev.mission.filter((_: any, i: number) => i !== index)
     }));
+  };
+
+  const handleStatChange = (index: number, field: string, value: string) => {
+    const updatedStats = [...(formData.stats || [])];
+    updatedStats[index] = { ...updatedStats[index], [field]: value };
+    setFormData({ ...formData, stats: updatedStats });
   };
 
   const handleSave = () => {
@@ -193,6 +199,7 @@ export default function AdminSettings() {
           <TabsTrigger value="general" className="rounded-xl px-6 py-3 font-bold flex-1 data-[state=active]:bg-white text-xs">Identitas</TabsTrigger>
           <TabsTrigger value="hero" className="rounded-xl px-6 py-3 font-bold flex-1 data-[state=active]:bg-white text-xs">Beranda</TabsTrigger>
           <TabsTrigger value="welcome" className="rounded-xl px-6 py-3 font-bold flex-1 data-[state=active]:bg-white text-xs">Sambutan</TabsTrigger>
+          <TabsTrigger value="stats" className="rounded-xl px-6 py-3 font-bold flex-1 data-[state=active]:bg-white text-xs">Statistik</TabsTrigger>
           <TabsTrigger value="profile" className="rounded-xl px-6 py-3 font-bold flex-1 data-[state=active]:bg-white text-xs">Profil Sekolah</TabsTrigger>
           <TabsTrigger value="social" className="rounded-xl px-6 py-3 font-bold flex-1 data-[state=active]:bg-white text-xs">Media Sosial</TabsTrigger>
         </TabsList>
@@ -370,6 +377,54 @@ export default function AdminSettings() {
                     </div>
                   </div>
                 </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="stats" className="space-y-8">
+          <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden bg-white">
+            <CardHeader className="bg-slate-50/50 border-b p-8">
+              <CardTitle className="text-xl flex items-center gap-3 font-headline text-primary">
+                <BarChart3 className="h-6 w-6 text-secondary" /> Statistik Sekolah
+              </CardTitle>
+              <CardDescription>Kelola data jumlah Guru, Tenaga Pendidik, dan Siswa.</CardDescription>
+            </CardHeader>
+            <CardContent className="p-8 space-y-8">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                {formData.stats?.map((stat: any, idx: number) => (
+                  <div key={idx} className="bg-slate-50 p-6 rounded-[2rem] border border-slate-100 space-y-4">
+                    <div className="flex items-center gap-3">
+                      <div className="bg-primary/10 p-2 rounded-lg">
+                        <Users className="h-5 w-5 text-primary" />
+                      </div>
+                      <Label className="text-xs font-bold uppercase text-primary">{stat.label}</Label>
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Jumlah {stat.label}</Label>
+                      <Input 
+                        type="text"
+                        value={stat.value} 
+                        onChange={(e) => handleStatChange(idx, "value", e.target.value)} 
+                        className="h-12 bg-white rounded-xl font-bold text-lg"
+                        placeholder="Contoh: 45"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Label Tampilan</Label>
+                      <Input 
+                        value={stat.label} 
+                        onChange={(e) => handleStatChange(idx, "label", e.target.value)} 
+                        className="h-10 bg-white/50 rounded-xl text-xs"
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="bg-blue-50 p-6 rounded-2xl border border-blue-100">
+                <p className="text-xs text-blue-700 font-medium leading-relaxed">
+                  Statistik ini akan ditampilkan di halaman utama untuk memberikan gambaran kapasitas sekolah kepada pengunjung.
+                </p>
               </div>
             </CardContent>
           </Card>

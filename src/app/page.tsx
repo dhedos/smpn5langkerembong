@@ -3,12 +3,19 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, GraduationCap } from "lucide-react";
+import { ArrowRight, GraduationCap, Users, UserCircle, Briefcase } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useDoc, useCollection, useFirestore } from "@/firebase";
 import { doc, collection, query, limit, orderBy, where } from "firebase/firestore";
 import { useMemo } from "react";
 import { cn } from "@/lib/utils";
+
+const IconMap: Record<string, any> = {
+  GraduationCap: GraduationCap,
+  Users: Users,
+  UserCircle: UserCircle,
+  Briefcase: Briefcase,
+};
 
 export default function Home() {
   const db = useFirestore();
@@ -38,6 +45,8 @@ export default function Home() {
   const welcomeTitle = settings?.welcomeTitle || "Mendidik dengan Hati & Teknologi";
   const welcomeMessage = settings?.welcomeMessage || "Kami berkomitmen untuk memberikan pengalaman belajar terbaik bagi putra-putri Anda melalui kurikulum yang inovatif dan lingkungan yang mendukung.";
 
+  const stats = settings?.stats || [];
+
   return (
     <div className="flex flex-col gap-0">
       {/* Hero Section */}
@@ -66,6 +75,28 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Stats Section */}
+      {stats.length > 0 && (
+        <section className="relative z-20 -mt-24 px-6 md:px-12 container mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {stats.map((stat: any, idx: number) => {
+              const Icon = IconMap[stat.icon] || Users;
+              return (
+                <div key={idx} className="bg-white p-10 rounded-[3rem] shadow-2xl border border-slate-100 flex flex-col items-center text-center space-y-4 hover:translate-y-[-10px] transition-all duration-500">
+                  <div className="bg-secondary/10 p-5 rounded-3xl">
+                    <Icon className="h-10 w-10 text-secondary" />
+                  </div>
+                  <div className="space-y-1">
+                    <div className="text-5xl font-bold text-primary font-headline tracking-tighter">{stat.value}</div>
+                    <div className="text-xs font-bold text-slate-400 uppercase tracking-widest">{stat.label}</div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      )}
 
       {/* Sambutan Section */}
       <section className="py-40 bg-white">
