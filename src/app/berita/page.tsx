@@ -21,8 +21,8 @@ export default function VisitorBerita() {
       <section className="bg-primary py-24 text-white relative overflow-hidden">
         <div className="absolute inset-0 bg-secondary/5 skew-y-3 translate-y-20" />
         <div className="container mx-auto px-4 relative z-10 text-center">
-          <h1 className="text-5xl md:text-7xl font-bold font-headline mb-6 tracking-tighter">Berita & Pengumuman</h1>
-          <p className="text-xl text-white/70 max-w-2xl mx-auto font-medium">Informasi terkini mengenai kegiatan, prestasi, dan agenda EduVista SMP.</p>
+          <h1 className="text-5xl md:text-7xl font-bold font-headline mb-6 tracking-tighter">Informasi & Pengumuman</h1>
+          <p className="text-xl text-white/70 max-w-2xl mx-auto font-medium">Informasi terkini mengenai kegiatan, prestasi, dan agenda sekolah kami.</p>
         </div>
       </section>
 
@@ -30,10 +30,10 @@ export default function VisitorBerita() {
       <section className="py-24">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-center mb-12 gap-6">
-            <h2 className="text-3xl font-bold text-primary font-headline tracking-tight">Artikel Terbaru</h2>
+            <h2 className="text-3xl font-bold text-primary font-headline tracking-tight">Informasi Terbaru</h2>
             <div className="relative w-full md:w-96">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-              <Input className="pl-12 rounded-full h-12 border-slate-200" placeholder="Cari berita..." />
+              <Input className="pl-12 rounded-full h-12 border-slate-200" placeholder="Cari informasi..." />
             </div>
           </div>
 
@@ -83,7 +83,7 @@ export default function VisitorBerita() {
           ) : (
             <div className="text-center py-24 space-y-4">
               <Newspaper className="h-16 w-16 text-slate-200 mx-auto" />
-              <p className="text-slate-400 italic text-lg">Belum ada berita yang diterbitkan saat ini.</p>
+              <p className="text-slate-400 italic text-lg">Belum ada informasi yang diterbitkan saat ini.</p>
             </div>
           )}
         </div>

@@ -83,7 +83,7 @@ export default function Home() {
           {displayStats.map((stat: any, i: number) => {
             const Icon = iconMap[stat.icon] || Users;
             return (
-              <Card key={i} className="bg-white border-none shadow-[0_20px_50px_-15px_rgba(0,0,0,0.08)] hover:translate-y-[-8px] transition-all duration-500 rounded-[3.5rem] group overflow-hidden">
+              <Card key={i} className="bg-white border-none shadow-[0_20px_50px_-15px_rgba(0,0,0,0.08)] hover:translate-y-[-8px] transition-all duration-500 rounded-[4rem] group overflow-hidden">
                 <CardContent className="p-8 md:p-10 flex flex-col items-center text-center space-y-6">
                   <div className="p-4 bg-slate-50 rounded-[1.5rem] transition-colors duration-500">
                     <Icon className="h-7 w-7 text-primary/80" />
@@ -142,10 +142,10 @@ export default function Home() {
           <div className="flex flex-col md:flex-row justify-between items-end mb-24 gap-10">
             <div className="space-y-6">
               <div className="text-secondary font-bold tracking-widest uppercase text-[9px]">Update Informasi</div>
-              <h2 className="text-5xl md:text-[5rem] font-bold text-primary font-headline tracking-tighter leading-none">Kabar Terbaru</h2>
+              <h2 className="text-5xl md:text-[5rem] font-bold text-primary font-headline tracking-tighter leading-none">Informasi Terbaru</h2>
             </div>
             <Button variant="outline" className="rounded-full px-10 py-8 text-lg font-bold border-slate-200 text-slate-600 hover:bg-primary hover:text-white transition-all shadow-xl bg-white" asChild>
-              <Link href="/berita" className="flex items-center gap-4">Lihat Semua Berita <ChevronRight className="h-5 w-5" /></Link>
+              <Link href="/berita" className="flex items-center gap-4">Lihat Semua Informasi <ChevronRight className="h-5 w-5" /></Link>
             </Button>
           </div>
 

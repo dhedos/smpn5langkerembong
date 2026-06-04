@@ -17,12 +17,12 @@ export default function VisitorBeritaDetail() {
   const newsRef = useMemo(() => db && id ? doc(db, "news", id as string) : null, [db, id]);
   const { data: item, loading } = useDoc(newsRef);
 
-  if (loading) return <div className="pt-32 text-center text-slate-400 animate-pulse">Memuat berita...</div>;
+  if (loading) return <div className="pt-32 text-center text-slate-400 animate-pulse">Memuat informasi...</div>;
 
   if (!item) return (
     <div className="pt-32 text-center space-y-6">
-      <h1 className="text-3xl font-bold text-primary">Berita Tidak Ditemukan</h1>
-      <Button onClick={() => router.push("/berita")}>Kembali ke Berita</Button>
+      <h1 className="text-3xl font-bold text-primary">Informasi Tidak Ditemukan</h1>
+      <Button onClick={() => router.push("/berita")}>Kembali ke Daftar</Button>
     </div>
   );
 
@@ -34,7 +34,7 @@ export default function VisitorBeritaDetail() {
           className="mb-8 rounded-full group hover:bg-primary/5" 
           onClick={() => router.push("/berita")}
         >
-          <ChevronLeft className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform" /> Kembali
+          <ChevronLeft className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform" /> Kembali ke Informasi
         </Button>
 
         <div className="space-y-6 mb-12">
@@ -90,9 +90,8 @@ export default function VisitorBeritaDetail() {
                   <Share2 className="h-4 w-4 text-secondary" /> Bagikan
                 </h4>
                 <div className="flex gap-4">
-                  {/* Share buttons would go here */}
                   <div className="h-10 w-10 rounded-full bg-white border border-slate-200 flex items-center justify-center cursor-pointer hover:bg-primary hover:text-white transition-colors">F</div>
-                  <div className="h-10 w-10 rounded-full bg-white border border-slate-200 flex items-center justify-center cursor-pointer hover:bg-primary hover:text-white transition-colors">T</div>
+                  <div className="h-10 w-10 rounded-full bg-white border border-slate-200 flex items-center justify-center cursor-pointer hover:bg-primary hover:text-white transition-colors">I</div>
                   <div className="h-10 w-10 rounded-full bg-white border border-slate-200 flex items-center justify-center cursor-pointer hover:bg-primary hover:text-white transition-colors">W</div>
                 </div>
               </div>

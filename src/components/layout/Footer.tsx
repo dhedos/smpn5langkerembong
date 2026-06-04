@@ -1,10 +1,11 @@
+
 "use client";
 
 import React, { useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { GraduationCap, Facebook, Instagram, Twitter, Youtube, MapPin, Phone, Mail, LogIn, ArrowRight } from "lucide-react";
+import { GraduationCap, Facebook, Instagram, Twitter, Youtube, MapPin, Phone, Mail, LogIn } from "lucide-react";
 import { useFirestore, useDoc } from "@/firebase";
 import { doc } from "firebase/firestore";
 
@@ -62,9 +63,10 @@ export function Footer() {
           <div className="lg:pl-8">
             <h4 className="font-headline font-bold mb-10 text-xs tracking-[0.2em] uppercase text-secondary">Tautan Cepat</h4>
             <ul className="space-y-5 text-sm font-bold text-primary-foreground/60">
-              {["Profil Sekolah", "Berita & Acara", "SPMB Online", "Galeri Kegiatan"].map((item) => (
-                <li key={item}><Link href="#" className="hover:text-white transition-colors">{item}</Link></li>
-              ))}
+              <li key="profil"><Link href="/profil" className="hover:text-white transition-colors">Profil Sekolah</Link></li>
+              <li key="informasi"><Link href="/berita" className="hover:text-white transition-colors">Informasi & Acara</Link></li>
+              <li key="spmb"><Link href="/ppdb" className="hover:text-white transition-colors">SPMB Online</Link></li>
+              <li key="galeri"><Link href="/galeri" className="hover:text-white transition-colors">Galeri Kegiatan</Link></li>
             </ul>
           </div>
 

@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
@@ -27,7 +28,7 @@ const navItems = [
       { name: "Fasilitas", href: "/profil#fasilitas" },
     ]
   },
-  { name: "Berita", href: "/berita" },
+  { name: "Informasi", href: "/berita" },
   { name: "Galeri", href: "/galeri" },
   { name: "SPMB", href: "/ppdb" },
 ];
