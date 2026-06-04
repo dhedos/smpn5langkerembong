@@ -1,3 +1,4 @@
+
 "use client";
 
 import React from "react";
@@ -54,7 +55,7 @@ export default function AdminDashboard() {
         <div className="flex flex-col md:flex-row items-center justify-between gap-10 relative z-10">
           <div className="space-y-6 max-w-xl text-center md:text-left">
             <div className="space-y-2">
-              <h1 className="text-4xl md:text-5xl font-bold text-white font-headline tracking-tighter leading-tight">Selamat Datang di Cloud Console</h1>
+              <h1 className="text-4xl md:text-5xl font-bold text-white font-headline tracking-tighter leading-tight">Selamat Datang di GN Nusantara</h1>
               <p className="text-lg text-white/50 leading-relaxed font-medium">
                 Pusat kendali EduVista SMP. Kelola data sekolah, informasi terbaru, dan registrasi PPDB dalam satu lingkungan cloud yang aman.
               </p>
@@ -65,7 +66,7 @@ export default function AdminDashboard() {
                 className="bg-white text-black hover:bg-slate-200 px-8 py-6 rounded-full font-bold shadow-xl"
                 asChild
               >
-                <a href="/admin/berita">Kelola Informasi</a>
+                <a href="/admin/informasi">Kelola Informasi</a>
               </Button>
             </div>
           </div>

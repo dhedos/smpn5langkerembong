@@ -72,7 +72,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       await signInWithEmailAndPassword(auth, email, password);
       toast({
         title: "Login Berhasil",
-        description: "Selamat datang di Cloud Console.",
+        description: "Selamat datang di GN Nusantara.",
       });
     } catch (error: any) {
       let message = "Email atau password salah.";
@@ -107,7 +107,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <div className="bg-primary p-4 rounded-2xl shadow-lg">
               <Lock className="h-8 w-8 text-white" />
             </div>
-            <h1 className="text-3xl font-bold text-white tracking-tighter">Cloud Console</h1>
+            <h1 className="text-3xl font-bold text-white tracking-tighter">GN Nusantara</h1>
             <p className="text-white/50 text-sm">Masuk untuk mengelola website sekolah.</p>
           </div>
           
@@ -168,7 +168,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 <Database className="h-5 w-5 text-white" />
               </div>
               <div className="flex flex-col text-left">
-                <span className="font-bold text-sm tracking-tight text-slate-900 uppercase">Cloud Console</span>
+                <span className="font-bold text-sm tracking-tight text-slate-900 uppercase">GN Nusantara</span>
                 <span className="text-[10px] text-blue-500 font-extrabold uppercase">Admin Portal</span>
               </div>
             </div>
