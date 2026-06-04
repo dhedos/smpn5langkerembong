@@ -8,16 +8,37 @@ import { Newspaper, Calendar, ArrowRight, Search } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useFirestore, useCollection } from "@/firebase";
-import { collection, query, orderBy } from "firebase/firestore";
+import { collection, query, where, orderBy } from "firebase/firestore";
 
 export default function VisitorInformasi() {
   const db = useFirestore();
-  const newsQuery = useMemo(() => db ? query(collection(db, "news"), orderBy("date", "desc")) : null, [db]);
-  const { data: newsItems, loading } = useCollection(newsQuery);
+  const currentSchoolId = 'smpn5-langke-rembong';
+
+  // Menyederhanakan kueri agar tidak memerlukan composite index manual
+  const newsQuery = useMemo(() => {
+    if (!db) return null;
+    return query(
+      collection(db, "news"), 
+      where("schoolId", "==", currentSchoolId)
+    );
+  }, [db]);
+
+  const { data: rawNews, loading } = useCollection(newsQuery);
+
+  // Filtrasi dan pengurutan dilakukan di sisi klien
+  const newsItems = useMemo(() => {
+    if (!rawNews) return [];
+    return rawNews
+      .filter((item: any) => item.status === "Published")
+      .sort((a: any, b: any) => {
+        const dateA = a.createdAt?.seconds || 0;
+        const dateB = b.createdAt?.seconds || 0;
+        return dateB - dateA;
+      });
+  }, [rawNews]);
 
   return (
     <div className="pt-24 bg-white min-h-screen">
-      {/* Header */}
       <section className="bg-primary py-24 text-white relative overflow-hidden">
         <div className="absolute inset-0 bg-secondary/5 skew-y-3 translate-y-20" />
         <div className="container mx-auto px-4 relative z-10 text-center">
@@ -26,7 +47,6 @@ export default function VisitorInformasi() {
         </div>
       </section>
 
-      {/* News List */}
       <section className="py-24">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-center mb-12 gap-6">
@@ -47,7 +67,7 @@ export default function VisitorInformasi() {
                 </div>
               ))}
             </div>
-          ) : newsItems && newsItems.length > 0 ? (
+          ) : newsItems.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
               {newsItems.map((item: any) => (
                 <Card key={item.id} className="group overflow-hidden border-none shadow-xl hover:shadow-2xl transition-all duration-500 rounded-[2.5rem] bg-white flex flex-col">

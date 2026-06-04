@@ -10,29 +10,31 @@ import { doc, collection, query, where } from "firebase/firestore";
 
 export default function ProfilPage() {
   const db = useFirestore();
-  // Gunakan ID sekolah yang sama secara global
   const currentSchoolId = 'smpn5-langke-rembong';
   
   const settingsRef = useMemo(() => db ? doc(db, "schools", currentSchoolId) : null, [db, currentSchoolId]);
   const { data: settings } = useDoc(settingsRef);
 
-  // Ambil fasilitas yang HANYA berstatus Published untuk sekolah ini
+  // Menggunakan kueri sederhana (hanya schoolId) agar tidak memerlukan Composite Index manual
   const facilitiesRef = useMemo(() => {
     if (!db) return null;
     return query(
       collection(db, "facilities"), 
-      where("schoolId", "==", currentSchoolId),
-      where("status", "==", "Published")
+      where("schoolId", "==", currentSchoolId)
     );
   }, [db, currentSchoolId]);
   
-  const { data: facilities, loading: facilitiesLoading, error: facilitiesError } = useCollection(facilitiesRef);
+  const { data: rawFacilities, loading: facilitiesLoading, error: facilitiesError } = useCollection(facilitiesRef);
+
+  // Melakukan filtrasi status di sisi klien
+  const publishedFacilities = useMemo(() => {
+    return rawFacilities?.filter((f: any) => f.status === "Published") || [];
+  }, [rawFacilities]);
 
   const schoolName = settings?.schoolName || "SMPN 5 Langke Rembong";
   
   return (
     <div className="pt-24 bg-white animate-in fade-in duration-500">
-      {/* Page Header */}
       <section className="bg-primary py-24 text-white relative overflow-hidden">
         <div className="absolute inset-0 bg-secondary/5 skew-y-3 translate-y-20" />
         <div className="container mx-auto px-4 relative z-10 text-center">
@@ -41,7 +43,6 @@ export default function ProfilPage() {
         </div>
       </section>
 
-      {/* Sejarah Section */}
       <section id="sejarah" className="py-32">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row gap-20 items-center">
@@ -67,7 +68,6 @@ export default function ProfilPage() {
         </div>
       </section>
 
-      {/* Visi Misi Section */}
       <section id="visi-misi" className="py-32 bg-slate-50">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
@@ -107,7 +107,6 @@ export default function ProfilPage() {
         </div>
       </section>
 
-      {/* Fasilitas Section */}
       <section id="fasilitas" className="py-32">
         <div className="container mx-auto px-4">
            <div className="text-center mb-20 space-y-6">
@@ -127,12 +126,12 @@ export default function ProfilPage() {
           ) : facilitiesError ? (
             <div className="text-center py-20 bg-slate-50 rounded-[3rem] border-2 border-dashed border-red-200 text-red-400">
               <AlertTriangle className="h-12 w-12 mx-auto mb-4" />
-              <p className="font-bold">Indeks Firestore sedang disiapkan.</p>
-              <p className="text-sm mt-2">Mohon tunggu 1-2 menit agar data muncul secara otomatis.</p>
+              <p className="font-bold">Gagal memuat data.</p>
+              <p className="text-sm mt-2">Terjadi masalah koneksi ke database.</p>
             </div>
-          ) : facilities && facilities.length > 0 ? (
+          ) : publishedFacilities.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-              {facilities.map((f: any) => (
+              {publishedFacilities.map((f: any) => (
                 <Card key={f.id} className="overflow-hidden border-none shadow-xl hover:shadow-2xl transition-all duration-500 rounded-[2.5rem] group bg-white border border-slate-100">
                   <div className="relative h-64 overflow-hidden bg-slate-100">
                      <img 
