@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { 
@@ -53,6 +53,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+
+  useEffect(() => {
+    setCurrentYear(new Date().getFullYear());
+  }, []);
 
   // Ambil nama sekolah untuk copyright
   const schoolId = profile?.schoolId || 'smpn5-langke-rembong';
@@ -151,7 +156,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Copyright Notice</span>
               </div>
               <div className="text-[10px] font-bold text-slate-900 leading-tight">
-                © 2024 {settings?.schoolName || 'SMPN 5 Langke Rembong'}
+                © {currentYear} {settings?.schoolName || 'SMPN 5 Langke Rembong'}
               </div>
               <div className="text-[8px] text-slate-400 mt-2 uppercase font-black tracking-tighter opacity-60">
                 Powered by EduVista GN
