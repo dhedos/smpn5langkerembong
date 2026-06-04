@@ -43,9 +43,9 @@ export function Footer() {
   const schoolLogo = settings?.schoolLogoUrl;
   const officialWebsite = settings?.officialWebsiteUrl;
   const officialWebsiteTitle = settings?.officialWebsiteTitle || "PORTAL RESMI INSTANSI";
-  const address = settings?.address || "Jl. Pendidikan No. 45, Jakarta Selatan";
-  const phone = settings?.phone || "(021) 1234-5678";
-  const email = settings?.email || "info@sekolah.sch.id";
+  const address = settings?.address || "Mando, kelurahan compang carep, kec.Langke Rembong";
+  const phone = settings?.phone || "6285281814006";
+  const email = settings?.email || "smpn5lr@gmail.com";
 
   const socialLinks = [
     { icon: Facebook, href: settings?.facebookUrl || "#" },
@@ -142,10 +142,19 @@ export function Footer() {
           {/* Column 4: Hubungi Kami */}
           <div>
             <h4 className="font-headline font-bold mb-10 text-xs tracking-[0.2em] uppercase text-secondary">Hubungi Kami</h4>
-            <ul className="space-y-6 text-sm text-primary-foreground/90 font-medium">
-              <li className="flex gap-4 items-start"><MapPin className="h-5 w-5 text-secondary shrink-0" /> {address}</li>
-              <li className="flex gap-4 items-center"><Phone className="h-5 w-5 text-secondary shrink-0" /> {phone}</li>
-              <li className="flex gap-4 items-center"><Mail className="h-5 w-5 text-secondary shrink-0" /> {email}</li>
+            <ul className="space-y-8 text-sm text-white font-medium">
+              <li className="flex gap-5 items-start">
+                <MapPin className="h-6 w-6 text-secondary shrink-0" /> 
+                <span className="leading-relaxed">{address}</span>
+              </li>
+              <li className="flex gap-5 items-center">
+                <Phone className="h-6 w-6 text-secondary shrink-0" /> 
+                <span>{phone}</span>
+              </li>
+              <li className="flex gap-5 items-center">
+                <Mail className="h-6 w-6 text-secondary shrink-0" /> 
+                <span>{email}</span>
+              </li>
             </ul>
           </div>
         </div>
