@@ -1,4 +1,3 @@
-
 "use client";
 
 import Image from "next/image";
@@ -46,8 +45,12 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative min-h-[90vh] flex items-center overflow-hidden bg-slate-950">
         <div 
-          className="absolute inset-0 z-0 bg-cover bg-center transition-transform duration-[4000ms] hover:scale-105 opacity-60"
-          style={{ backgroundImage: `url('${heroImageUrl}')`, backgroundAttachment: 'fixed' }}
+          className="absolute inset-0 z-0 bg-cover bg-center transition-transform opacity-60"
+          style={{ 
+            backgroundImage: `url('${heroImageUrl}')`, 
+            backgroundAttachment: 'fixed',
+            transitionDuration: '4000ms'
+          }}
         />
         <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/70 to-transparent z-[1]" />
         
@@ -184,7 +187,13 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
             {facilities?.map((f: any, idx: number) => (
               <div key={f.id} className={cn("h-[500px] relative rounded-[3rem] overflow-hidden group shadow-lg", (idx === 0 || idx === 3) && "md:col-span-2")}>
-                <Image src={f.imageUrl || `https://picsum.photos/seed/${f.id}/800/600`} alt={f.name} fill className="object-cover group-hover:scale-110 transition-transform duration-[2000ms]" />
+                <Image 
+                  src={f.imageUrl || `https://picsum.photos/seed/${f.id}/800/600`} 
+                  alt={f.name} 
+                  fill 
+                  className="object-cover group-hover:scale-110 transition-transform" 
+                  style={{ transitionDuration: '2000ms' }}
+                />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900/95 via-slate-900/30 to-transparent p-12 flex flex-col justify-end">
                   <h3 className="text-white text-3xl md:text-4xl font-bold font-headline tracking-tight leading-none">{f.name}</h3>
                 </div>
