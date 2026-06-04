@@ -99,6 +99,20 @@ export function Footer() {
               </div>
               {renderFormattedName(schoolName)}
             </div>
+
+            {/* Portal Resmi berada tepat di bawah Logo dan Nama Sekolah */}
+            {officialWebsite && (
+              <div className="mb-6 pt-4 border-t border-white/10">
+                <a 
+                  href={officialWebsite} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-secondary hover:text-white transition-all flex items-center gap-2 uppercase text-[10px] font-black tracking-widest"
+                >
+                  <Globe className="h-3 w-3" /> {officialWebsiteTitle} <ExternalLink className="h-3 w-3" />
+                </a>
+              </div>
+            )}
             
             <p className="text-white/60 text-xs leading-relaxed font-medium max-w-xs mb-4">
               Membangun fondasi pendidikan unggul yang menginspirasi kreativitas bagi masa depan bangsa.
@@ -156,28 +170,12 @@ export function Footer() {
                 </div>
                 <span>{phone}</span>
               </li>
-              <li className="flex gap-4 items-center pb-5">
+              <li className="flex gap-4 items-center">
                 <div className="bg-white/5 p-2 rounded-lg">
                   <Mail className="h-4 w-4 text-secondary shrink-0" /> 
                 </div>
                 <span>{email}</span>
               </li>
-              
-              {officialWebsite && (
-                <li className="flex gap-4 items-center pt-5 border-t border-white/10">
-                  <div className="bg-white/5 p-2 rounded-lg">
-                    <Globe className="h-4 w-4 text-secondary shrink-0" /> 
-                  </div>
-                  <a 
-                    href={officialWebsite} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="hover:text-secondary transition-all flex items-center gap-2 uppercase text-[10px] font-black tracking-widest"
-                  >
-                    {officialWebsiteTitle} <ExternalLink className="h-3 w-3" />
-                  </a>
-                </li>
-              )}
             </ul>
           </div>
         </div>

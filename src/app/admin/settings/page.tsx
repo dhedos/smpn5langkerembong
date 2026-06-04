@@ -278,6 +278,34 @@ export default function AdminSettings() {
                   </div>
                 </div>
 
+                <div className="space-y-3 pt-4 border-t">
+                  <Label className="text-xs font-bold uppercase text-slate-400">Tahun Hak Cipta (Copyright)</Label>
+                  <div className="flex gap-4 items-center">
+                    <div className="relative flex-1">
+                       <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                       <Input 
+                        value={formData.copyrightYear} 
+                        onChange={(e) => setFormData({...formData, copyrightYear: e.target.value})} 
+                        className="h-14 bg-slate-50 rounded-2xl font-bold pl-12" 
+                        placeholder="Contoh: 2024"
+                      />
+                    </div>
+                  </div>
+                  <p className="text-[10px] text-slate-400 italic">Tahun ini akan tampil di bagian kaki (footer) website dan sidebar admin.</p>
+                </div>
+
+                <div className="space-y-3 pt-4 border-t">
+                  <Label className="text-xs font-bold uppercase text-slate-400">Logo Sekolah</Label>
+                  <div className="flex flex-col gap-4">
+                    {formData.schoolLogoUrl && (
+                      <div className="h-24 w-24 relative bg-slate-50 rounded-xl border p-2 flex items-center justify-center">
+                        <img src={formData.schoolLogoUrl} alt="Logo" className="max-h-full max-w-full object-contain" />
+                      </div>
+                    )}
+                    <Input type="file" accept="image/*" onChange={(e) => handleFileChange(e, "schoolLogoUrl")} className="h-12 bg-slate-50 rounded-2xl" />
+                  </div>
+                </div>
+
                 <div className="space-y-4 pt-4 border-t">
                   <Label className="text-xs font-bold uppercase text-slate-400">Website Instansi (Portal Resmi)</Label>
                   <div className="grid grid-cols-1 gap-4">
@@ -306,35 +334,7 @@ export default function AdminSettings() {
                       </div>
                     </div>
                   </div>
-                  <p className="text-[10px] text-slate-400 italic">Informasi ini akan ditampilkan di footer sebagai portal resmi instansi/induk sekolah.</p>
-                </div>
-
-                <div className="space-y-3 pt-4 border-t">
-                  <Label className="text-xs font-bold uppercase text-slate-400">Tahun Hak Cipta (Copyright)</Label>
-                  <div className="flex gap-4 items-center">
-                    <div className="relative flex-1">
-                       <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-                       <Input 
-                        value={formData.copyrightYear} 
-                        onChange={(e) => setFormData({...formData, copyrightYear: e.target.value})} 
-                        className="h-14 bg-slate-50 rounded-2xl font-bold pl-12" 
-                        placeholder="Contoh: 2024"
-                      />
-                    </div>
-                  </div>
-                  <p className="text-[10px] text-slate-400 italic">Tahun ini akan tampil di bagian kaki (footer) website dan sidebar admin.</p>
-                </div>
-
-                <div className="space-y-3 pt-4 border-t">
-                  <Label className="text-xs font-bold uppercase text-slate-400">Logo Sekolah</Label>
-                  <div className="flex flex-col gap-4">
-                    {formData.schoolLogoUrl && (
-                      <div className="h-24 w-24 relative bg-slate-50 rounded-xl border p-2 flex items-center justify-center">
-                        <img src={formData.schoolLogoUrl} alt="Logo" className="max-h-full max-w-full object-contain" />
-                      </div>
-                    )}
-                    <Input type="file" accept="image/*" onChange={(e) => handleFileChange(e, "schoolLogoUrl")} className="h-12 bg-slate-50 rounded-2xl" />
-                  </div>
+                  <p className="text-[10px] text-slate-400 italic">Informasi ini akan ditampilkan di footer di bawah logo sebagai portal resmi instansi/induk sekolah.</p>
                 </div>
               </CardContent>
             </Card>
