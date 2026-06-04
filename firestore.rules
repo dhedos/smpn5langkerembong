@@ -1,24 +1,17 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Fungsi pembantu
+    // Fungsi pembantu dasar
     function isSignedIn() {
       return request.auth != null;
     }
     
-    function isAdmin() {
-      return isSignedIn() && (
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'superadmin'
-      );
-    }
-
-    // Aturan untuk profil pengguna
+    // Aturan untuk profil pengguna (Penting untuk bootstrapping)
     match /users/{userId} {
       allow read, write: if isSignedIn() && request.auth.uid == userId;
     }
 
-    // Aturan untuk Schools (Settings)
+    // Aturan untuk Sekolah (Settings)
     match /schools/{schoolId} {
       allow read: if true;
       allow write: if isSignedIn();
@@ -40,7 +33,13 @@ service cloud.firestore {
       allow write: if isSignedIn();
     }
 
-    // Aturan fallback (diperlukan untuk inisialisasi awal)
+    // Aturan whitelist admin
+    match /admins/{email} {
+      allow read: if true;
+      allow write: if isSignedIn();
+    }
+
+    // Aturan fallback global untuk admin terautentikasi
     match /{document=**} {
       allow read: if true;
       allow write: if isSignedIn();

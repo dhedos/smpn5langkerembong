@@ -26,7 +26,6 @@ export default function AdminSettings() {
   const db = useFirestore();
   const { profile } = useUser();
   
-  // Multi-tenant: Target school settings based on user profile
   const targetSchoolId = profile?.schoolId || 'smpn5-langke-rembong';
   const settingsRef = useMemo(() => db ? doc(db, "schools", targetSchoolId) : null, [db, targetSchoolId]);
   const { data: currentSettings, loading } = useDoc(settingsRef);
@@ -72,7 +71,7 @@ export default function AdminSettings() {
     const file = e.target.files?.[0];
     if (file) {
       if (file.size > 200 * 1024) { 
-        toast({ title: "Gagal Unggah", description: "Ukuran file maksimal 200KB.", variant: "destructive" });
+        toast({ title: "File Terlalu Besar", description: "Maksimal 200KB.", variant: "destructive" });
         return;
       }
       const reader = new FileReader();
@@ -98,7 +97,7 @@ export default function AdminSettings() {
         setIsSaving(false);
         toast({ 
           title: "Berhasil!", 
-          description: `Konfigurasi sekolah "${formData.schoolName || targetSchoolId}" telah diperbarui.` 
+          description: `Pengaturan sekolah "${formData.schoolName || targetSchoolId}" telah diperbarui.` 
         });
       })
       .catch(async (error: any) => {
@@ -115,7 +114,7 @@ export default function AdminSettings() {
   if (loading) return (
     <div className="p-12 text-center space-y-4">
       <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" />
-      <p className="text-muted-foreground animate-pulse font-medium italic">Sinkronisasi GN Nusantara Global...</p>
+      <p className="text-muted-foreground animate-pulse font-medium italic">Sinkronisasi Data GN Nusantara...</p>
     </div>
   );
 
@@ -128,7 +127,7 @@ export default function AdminSettings() {
           </div>
           <div>
             <h1 className="text-4xl font-bold font-headline text-primary tracking-tight uppercase">Pengaturan Situs Sekolah</h1>
-            <p className="text-muted-foreground text-sm font-medium">Data di bawah ini akan tampil pada halaman publik sekolah Anda.</p>
+            <p className="text-muted-foreground text-sm font-medium">Data di bawah ini dikelola oleh GN Nusantara Global Console.</p>
           </div>
         </div>
         <Button 
@@ -156,10 +155,10 @@ export default function AdminSettings() {
               <CardContent className="space-y-6 p-8">
                 <div className="space-y-3">
                   <Label className="text-xs font-bold uppercase text-slate-400">Nama Sekolah</Label>
-                  <input 
+                  <Input 
                     value={formData.schoolName} 
                     onChange={(e) => setFormData({...formData, schoolName: e.target.value})} 
-                    className="h-14 w-full px-4 border border-input bg-slate-50 rounded-2xl font-bold focus:outline-none focus:ring-2 focus:ring-primary" 
+                    className="h-14 bg-slate-50 rounded-2xl font-bold" 
                   />
                 </div>
                 <div className="space-y-3">
