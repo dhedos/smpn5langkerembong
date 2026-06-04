@@ -31,6 +31,12 @@ export function Footer() {
   const phone = settings?.phone || "6285281814006";
   const email = settings?.email || "smpn5lr@gmail.com";
 
+  // Memecah nama sekolah untuk styling presisi
+  const nameParts = schoolName.split(" ");
+  const smpnPart = nameParts[0]; // SMPN
+  const fivePart = nameParts[1]; // 5
+  const restPart = nameParts.slice(2).join(" "); // Langke Rembong
+
   const socialLinks = [
     { 
       id: "facebook",
@@ -63,7 +69,7 @@ export function Footer() {
       <div className="container mx-auto px-6 md:px-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-16 mb-16">
           {/* Brand Column */}
-          <div className="flex flex-col space-y-6">
+          <div className="flex flex-col space-y-4">
             <div className="flex items-center gap-4">
               <div className="bg-white p-2 rounded-[1.2rem] shadow-xl shrink-0 flex items-center justify-center w-20 h-20">
                 {schoolLogo ? (
@@ -75,20 +81,20 @@ export function Footer() {
                 )}
               </div>
               <div className="font-headline font-black text-2xl md:text-3xl tracking-tighter leading-[0.85] uppercase">
-                <span className="block">SMPN <span className="text-secondary">5</span></span>
-                <span className="block">LANGKE</span>
-                <span className="block">REMBONG</span>
+                <span className="block">{smpnPart} <span className="text-secondary">{fivePart}</span></span>
+                <span className="block">{restPart.split(" ")[0]}</span>
+                <span className="block">{restPart.split(" ")[1]}</span>
               </div>
             </div>
 
-            <p className="text-white/60 text-xs leading-relaxed font-medium max-w-xs">
+            <p className="text-white/60 text-[10px] leading-relaxed font-bold uppercase tracking-widest max-w-xs">
               Membangun fondasi pendidikan unggul yang menginspirasi kreativitas bagi masa depan bangsa.
             </p>
 
-            {/* Portal Resmi Instansi */}
+            {/* Portal Resmi Instansi - Berada dibawah logo/branding */}
             {officialWebsites.length > 0 && (
               <div className="space-y-2 pt-2">
-                <h5 className="text-[10px] font-black text-secondary tracking-widest uppercase mb-3">Portal Resmi Instansi</h5>
+                <h5 className="text-[9px] font-black text-secondary tracking-widest uppercase mb-3">Portal Resmi Instansi</h5>
                 {officialWebsites.map((web: any, i: number) => (
                   <a 
                     key={i}
@@ -120,36 +126,36 @@ export function Footer() {
           </div>
 
           {/* Quick Links Column */}
-          <div>
+          <div className="pt-2">
             <h4 className="font-headline font-black mb-8 text-[10px] tracking-[0.2em] uppercase text-secondary">Tautan Cepat</h4>
-            <ul className="space-y-4 text-sm font-medium text-white/70">
-              <li><Link href="/profil" className="hover:text-white transition-colors uppercase tracking-wider block">Profil Sekolah</Link></li>
-              <li><Link href="/informasi" className="hover:text-white transition-colors uppercase tracking-wider block">Informasi Terbaru</Link></li>
-              <li><Link href="/ppdb" className="hover:text-white transition-colors uppercase tracking-wider block">SPMB Online</Link></li>
-              <li><Link href="/galeri" className="hover:text-white transition-colors uppercase tracking-wider block">Galeri Kegiatan</Link></li>
+            <ul className="space-y-4 text-[11px] font-black text-white/70">
+              <li><Link href="/profil" className="hover:text-white transition-colors uppercase tracking-[0.1em] block">Profil Sekolah</Link></li>
+              <li><Link href="/informasi" className="hover:text-white transition-colors uppercase tracking-[0.1em] block">Informasi Terbaru</Link></li>
+              <li><Link href="/ppdb" className="hover:text-white transition-colors uppercase tracking-[0.1em] block">SPMB Online</Link></li>
+              <li><Link href="/galeri" className="hover:text-white transition-colors uppercase tracking-[0.1em] block">Galeri Kegiatan</Link></li>
             </ul>
           </div>
 
           {/* Academic Column */}
-          <div>
+          <div className="pt-2">
             <h4 className="font-headline font-black mb-8 text-[10px] tracking-[0.2em] uppercase text-secondary">Akademik</h4>
-            <ul className="space-y-4 text-sm font-medium text-white/70">
-              <li className="hover:text-white transition-colors cursor-pointer uppercase tracking-wider block">Kurikulum Merdeka</li>
-              <li className="hover:text-white transition-colors cursor-pointer uppercase tracking-wider block">E-Learning</li>
-              <li className="hover:text-white transition-colors cursor-pointer uppercase tracking-wider block">Perpustakaan</li>
-              <li><Link href="/ekstrakurikuler" className="hover:text-white transition-colors uppercase tracking-wider block">Ekstrakurikuler</Link></li>
+            <ul className="space-y-4 text-[11px] font-black text-white/70">
+              <li className="hover:text-white transition-colors cursor-pointer uppercase tracking-[0.1em] block">Kurikulum Merdeka</li>
+              <li className="hover:text-white transition-colors cursor-pointer uppercase tracking-[0.1em] block">E-Learning</li>
+              <li className="hover:text-white transition-colors cursor-pointer uppercase tracking-[0.1em] block">Perpustakaan</li>
+              <li><Link href="/ekstrakurikuler" className="hover:text-white transition-colors uppercase tracking-[0.1em] block">Ekstrakurikuler</Link></li>
             </ul>
           </div>
 
           {/* Contact Column */}
-          <div>
+          <div className="pt-2">
             <h4 className="font-headline font-black mb-8 text-[10px] tracking-[0.2em] uppercase text-secondary">Hubungi Kami</h4>
-            <ul className="space-y-6 text-sm text-white/80 font-medium">
+            <ul className="space-y-6 text-[11px] text-white/80 font-black tracking-wide">
               <li className="flex gap-4 items-start">
                 <div className="bg-white/5 p-2 rounded-lg shrink-0 mt-0.5">
                   <MapPin className="h-4 w-4 text-secondary" /> 
                 </div>
-                <span className="leading-relaxed">{address}</span>
+                <span className="leading-relaxed uppercase tracking-tighter">{address}</span>
               </li>
               <li className="flex gap-4 items-center">
                 <div className="bg-white/5 p-2 rounded-lg shrink-0">
@@ -161,13 +167,13 @@ export function Footer() {
                 <div className="bg-white/5 p-2 rounded-lg shrink-0">
                   <Mail className="h-4 w-4 text-secondary" /> 
                 </div>
-                <span className="truncate">{email}</span>
+                <span className="truncate lowercase">{email}</span>
               </li>
             </ul>
           </div>
         </div>
 
-        <div className="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-6 text-[10px] font-bold text-white/30 tracking-[0.2em] uppercase text-center md:text-left">
+        <div className="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-6 text-[10px] font-black text-white/30 tracking-[0.2em] uppercase text-center md:text-left">
           <p>© {displayYear} {schoolName}. ALL RIGHTS RESERVED.</p>
           <div className="flex gap-6 items-center">
             <Link href="/admin" className="opacity-30 hover:opacity-100 transition-all flex items-center gap-2">
