@@ -4,11 +4,21 @@
 import React, { useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
-import { Calendar, ChevronLeft, User, Tag, Share2 } from "lucide-react";
+import { 
+  Calendar, 
+  ChevronLeft, 
+  User, 
+  Tag, 
+  Share2, 
+  Facebook, 
+  MessageCircle, 
+  Link as LinkIcon 
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useFirestore, useDoc } from "@/firebase";
 import { doc } from "firebase/firestore";
+import { toast } from "@/hooks/use-toast";
 
 export default function VisitorInformasiDetail() {
   const { id } = useParams();
@@ -16,6 +26,25 @@ export default function VisitorInformasiDetail() {
   const db = useFirestore();
   const newsRef = useMemo(() => db && id ? doc(db, "news", id as string) : null, [db, id]);
   const { data: item, loading } = useDoc(newsRef);
+
+  const shareUrl = typeof window !== 'undefined' ? window.location.href : '';
+
+  const handleShareFB = () => {
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`, '_blank');
+  };
+
+  const handleShareWA = () => {
+    const text = `${item?.title}\n\nBaca selengkapnya di: ${shareUrl}`;
+    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+  };
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(shareUrl);
+    toast({
+      title: "Tautan Disalin",
+      description: "Link informasi telah disalin ke clipboard.",
+    });
+  };
 
   if (loading) return <div className="pt-32 text-center text-slate-400 animate-pulse">Memuat informasi...</div>;
 
@@ -86,13 +115,37 @@ export default function VisitorInformasiDetail() {
           <div className="lg:col-span-1">
             <div className="sticky top-32 space-y-8">
               <div className="bg-slate-50 p-8 rounded-[2rem] border border-slate-100">
-                <h4 className="text-primary font-bold font-headline mb-4 flex items-center gap-2">
+                <h4 className="text-primary font-bold font-headline mb-6 flex items-center gap-2">
                   <Share2 className="h-4 w-4 text-secondary" /> Bagikan
                 </h4>
-                <div className="flex gap-4">
-                  <div className="h-10 w-10 rounded-full bg-white border border-slate-200 flex items-center justify-center cursor-pointer hover:bg-primary hover:text-white transition-colors">F</div>
-                  <div className="h-10 w-10 rounded-full bg-white border border-slate-200 flex items-center justify-center cursor-pointer hover:bg-primary hover:text-white transition-colors">I</div>
-                  <div className="h-10 w-10 rounded-full bg-white border border-slate-200 flex items-center justify-center cursor-pointer hover:bg-primary hover:text-white transition-colors">W</div>
+                <div className="flex gap-3">
+                  <Button 
+                    variant="outline" 
+                    size="icon" 
+                    className="h-12 w-12 rounded-full bg-white hover:bg-primary hover:text-white transition-all shadow-sm"
+                    onClick={handleShareFB}
+                    title="Bagikan ke Facebook"
+                  >
+                    <Facebook className="h-5 w-5" />
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="icon" 
+                    className="h-12 w-12 rounded-full bg-white hover:bg-secondary hover:text-primary transition-all shadow-sm"
+                    onClick={handleCopyLink}
+                    title="Salin Tautan"
+                  >
+                    <LinkIcon className="h-5 w-5" />
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="icon" 
+                    className="h-12 w-12 rounded-full bg-white hover:bg-[#25D366] hover:text-white transition-all shadow-sm"
+                    onClick={handleShareWA}
+                    title="Bagikan ke WhatsApp"
+                  >
+                    <MessageCircle className="h-5 w-5" />
+                  </Button>
                 </div>
               </div>
             </div>
