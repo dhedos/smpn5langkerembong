@@ -58,7 +58,7 @@ export function Navbar() {
           { name: "Fasilitas", href: "/profil#fasilitas" },
         ]
       },
-      { name: "Informasi", href: "/berita" },
+      { name: "Informasi", href: "/informasi" },
       { name: "Galeri", href: "/galeri" },
     ];
     
@@ -124,7 +124,7 @@ export function Navbar() {
                   )}>
                     {item.name} <ChevronDown className="h-4 w-4 opacity-50 group-hover:rotate-180 transition-transform" />
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="start" className="bg-white/95 backdrop-blur-md border-slate-200 shadow-2xl rounded-2xl p-2 min-w-[200px] mt-2">
+                  <DropdownMenuContent align="start" className="bg-white border-slate-200 shadow-2xl rounded-2xl p-2 min-w-[200px] mt-2">
                     {item.submenu.map((sub) => (
                       <DropdownMenuItem key={sub.name} asChild>
                         <Link href={sub.href} className="w-full cursor-pointer hover:bg-slate-100 rounded-xl px-4 py-2.5 font-bold text-slate-700 text-sm">
@@ -179,7 +179,7 @@ export function Navbar() {
         />
       )}
 
-      {/* Mobile Menu Drawer */}
+      {/* Mobile Menu Drawer - SOLID WHITESIDE DRAWER */}
       <div 
         className={cn(
           "lg:hidden fixed top-0 right-0 h-screen w-[80%] z-[110] bg-white shadow-2xl transition-transform duration-500 ease-in-out transform flex flex-col",

@@ -139,7 +139,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Highlights & News */}
+      {/* Highlights & Informasi */}
       <section className="py-40 bg-slate-50">
         <div className="container mx-auto px-6 md:px-12">
           <div className="flex flex-col md:flex-row justify-between items-end mb-24 gap-10">
@@ -148,7 +148,7 @@ export default function Home() {
               <h2 className="text-5xl md:text-[5rem] font-bold text-primary font-headline tracking-tighter leading-none">Informasi Terbaru</h2>
             </div>
             <Button variant="outline" className="rounded-full px-10 py-8 text-lg font-bold border-slate-200 text-slate-600 hover:bg-primary hover:text-white transition-all shadow-xl bg-white" asChild>
-              <Link href="/berita" className="flex items-center gap-4">Lihat Semua Informasi <ChevronRight className="h-5 w-5" /></Link>
+              <Link href="/informasi" className="flex items-center gap-4">Lihat Semua Informasi <ChevronRight className="h-5 w-5" /></Link>
             </Button>
           </div>
 
@@ -163,8 +163,8 @@ export default function Home() {
                   <div className="flex items-center gap-3 text-slate-400 text-[10px] font-bold uppercase tracking-widest"><Calendar className="h-4 w-4 text-secondary" /> {item.date}</div>
                   <h3 className="text-2xl font-bold text-primary font-headline group-hover:text-secondary transition-colors line-clamp-2 leading-tight">{item.title}</h3>
                   <p className="text-slate-500 text-base line-clamp-3 font-medium flex-1">{item.summary}</p>
-                  <Link href={`/berita/${item.id}`} className="inline-flex items-center gap-3 text-primary font-bold text-sm group/link pt-8 border-t border-slate-50">
-                    Baca Artikel <ArrowRight className="h-4 w-4 text-secondary group-hover/link:translate-x-3 transition-transform" />
+                  <Link href={`/informasi/${item.id}`} className="inline-flex items-center gap-3 text-primary font-bold text-sm group/link pt-8 border-t border-slate-50">
+                    Baca Selengkapnya <ArrowRight className="h-4 w-4 text-secondary group-hover/link:translate-x-3 transition-transform" />
                   </Link>
                 </CardContent>
               </Card>
