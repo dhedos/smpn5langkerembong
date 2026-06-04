@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useMemo } from "react";
@@ -68,9 +69,9 @@ export function Footer() {
   return (
     <footer className="bg-primary text-white pt-20 pb-10 border-t border-white/5 overflow-hidden">
       <div className="container mx-auto px-6 md:px-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-16 mb-16">
-          {/* Brand Column - Logo & Stacked Name */}
-          <div className="flex flex-col space-y-8 lg:col-span-1">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 lg:gap-8 mb-16">
+          {/* Brand Column - Logo & Stacked Name (Expanded Span) */}
+          <div className="flex flex-col space-y-6 lg:col-span-2">
             <div className="flex items-center gap-5">
               <div className="bg-white p-3 rounded-[1.8rem] shadow-2xl shrink-0 flex items-center justify-center w-28 h-28">
                 {schoolLogo ? (
@@ -81,24 +82,28 @@ export function Footer() {
                   <GraduationCap className="h-14 w-14 text-primary" />
                 )}
               </div>
-              <div className="font-headline font-black text-3xl md:text-4xl tracking-tighter leading-[0.85] uppercase">
+              <div className="font-headline font-black text-3xl md:text-5xl tracking-tighter leading-[0.8] uppercase">
                 <span className="block">{smpnLabel} <span className="text-secondary">{fiveLabel}</span></span>
                 <span className="block">{row2}</span>
                 <span className="block">{row3}</span>
               </div>
             </div>
 
-            {/* Official Portal Website - Below Logo Branding */}
-            {officialWebsites.length > 0 && (
-              <div className="space-y-2">
-                <div className="grid grid-cols-1 gap-2">
+            <div className="space-y-4">
+              <p className="text-white/60 text-[10px] leading-relaxed font-bold uppercase tracking-widest max-w-sm">
+                Membangun fondasi pendidikan unggul yang menginspirasi kreativitas bagi masa depan bangsa.
+              </p>
+
+              {/* Portal Resmi Instansi - Integrated under brand */}
+              {officialWebsites.length > 0 && (
+                <div className="flex flex-col gap-2">
                   {officialWebsites.map((web: any, i: number) => (
                     <a 
                       key={i}
                       href={web.url} 
                       target="_blank" 
                       rel="noopener noreferrer"
-                      className="text-white/80 hover:text-secondary transition-all flex items-center gap-2 uppercase text-[9px] font-black tracking-widest bg-white/5 p-3 rounded-xl border border-white/10 group w-full"
+                      className="text-white/80 hover:text-secondary transition-all flex items-center gap-2 uppercase text-[9px] font-black tracking-widest bg-white/5 p-3 rounded-xl border border-white/10 group w-fit min-w-[200px]"
                     >
                       <Globe className="h-3.5 w-3.5 text-secondary" /> 
                       <span className="truncate">{web.title}</span> 
@@ -106,15 +111,9 @@ export function Footer() {
                     </a>
                   ))}
                 </div>
-              </div>
-            )}
+              )}
 
-            <div className="space-y-6">
-              <p className="text-white/60 text-[10px] leading-relaxed font-bold uppercase tracking-widest max-w-sm">
-                Membangun fondasi pendidikan unggul yang menginspirasi kreativitas bagi masa depan bangsa.
-              </p>
-
-              <div className="flex gap-2">
+              <div className="flex gap-2 pt-2">
                 {socialLinks.map((social) => (
                   <Link 
                     key={social.id} 

@@ -34,7 +34,7 @@ export default function Home() {
   
   const currentSchoolId = 'smpn5-langke-rembong';
   const settingsRef = useMemo(() => db ? doc(db, "schools", currentSchoolId) : null, [db]);
-  const { data: settings, loading: settingsLoading } = useDoc(settingsRef);
+  const { data: settings } = useDoc(settingsRef);
 
   const newsQuery = useMemo(() => {
     if (!db) return null;
@@ -57,14 +57,6 @@ export default function Home() {
       })
       .slice(0, 3);
   }, [rawNews]);
-
-  if (settingsLoading) {
-    return (
-      <div className="fixed inset-0 flex items-center justify-center bg-transparent z-[9999]">
-        <Loader2 className="h-12 w-12 animate-spin text-primary/30" strokeWidth={1.5} />
-      </div>
-    );
-  }
 
   const heroImageUrl = settings?.heroImageUrl || "https://picsum.photos/seed/school1/1920/1080";
   const schoolName = settings?.schoolName || "SMPN 5 Langke Rembong";
