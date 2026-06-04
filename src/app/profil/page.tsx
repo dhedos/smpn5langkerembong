@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useMemo } from "react";
@@ -5,14 +6,14 @@ import Image from "next/image";
 import { CheckCircle2, Target, History, Users2, Building2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useFirestore, useDoc, useCollection } from "@/firebase";
-import { doc, collection } from "firebase/firestore";
+import { doc, collection, query, where } from "firebase/firestore";
 
 export default function ProfilPage() {
   const db = useFirestore();
   const settingsRef = useMemo(() => db ? doc(db, "settings", "general") : null, [db]);
   const { data: settings } = useDoc(settingsRef);
 
-  const facilitiesRef = useMemo(() => db ? collection(db, "facilities") : null, [db]);
+  const facilitiesRef = useMemo(() => db ? query(collection(db, "facilities"), where("status", "==", "Published")) : null, [db]);
   const { data: facilities } = useCollection(facilitiesRef);
 
   const schoolName = settings?.schoolName || "EduVista SMP";

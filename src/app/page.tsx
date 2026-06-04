@@ -7,7 +7,7 @@ import { ArrowRight, GraduationCap, Users, Award, BookOpen, Calendar, ChevronRig
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useDoc, useCollection, useFirestore } from "@/firebase";
-import { doc, collection, query, limit, orderBy } from "firebase/firestore";
+import { doc, collection, query, limit, orderBy, where } from "firebase/firestore";
 import { useMemo } from "react";
 import { cn } from "@/lib/utils";
 
@@ -27,7 +27,7 @@ export default function Home() {
   const newsQuery = useMemo(() => db ? query(collection(db, "news"), orderBy("date", "desc"), limit(3)) : null, [db]);
   const { data: newsItems } = useCollection(newsQuery);
 
-  const facilitiesQuery = useMemo(() => db ? query(collection(db, "facilities"), limit(4)) : null, [db]);
+  const facilitiesQuery = useMemo(() => db ? query(collection(db, "facilities"), where("status", "==", "Published"), limit(4)) : null, [db]);
   const { data: facilities } = useCollection(facilitiesQuery);
 
   const defaultStats = [
@@ -64,7 +64,7 @@ export default function Home() {
             <div className="flex flex-wrap gap-6 pt-6">
               <Button size="lg" className="bg-secondary text-primary font-bold hover:bg-secondary/90 px-12 py-8 text-xl rounded-full shadow-2xl group border-none" asChild>
                 <Link href="/ppdb" className="flex items-center gap-3">
-                  Daftar Sekarang <ArrowRight className="h-6 w-6 group-hover:translate-x-3 transition-transform" />
+                  {settings?.ppdbMenuTitle || "SPMB ONLINE"} <ArrowRight className="h-6 w-6 group-hover:translate-x-3 transition-transform" />
                 </Link>
               </Button>
               <Button size="lg" className="bg-white text-primary hover:bg-slate-100 px-12 py-8 text-xl rounded-full font-bold transition-all shadow-xl border-none" asChild>
