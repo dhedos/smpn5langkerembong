@@ -30,18 +30,13 @@ export function Footer() {
   const phone = settings?.phone || "6285281814006";
   const email = settings?.email || "smpn5lr@gmail.com";
 
-  // Memproses nama sekolah agar sesuai dengan gambar referensi
-  // Baris 1: SMPN 5 (5 kuning)
-  // Baris 2: LANGKE
-  // Baris 3: REMBONG
+  // Memproses nama sekolah agar sesuai dengan gambar referensi (Stacked 3 lines)
   const nameParts = schoolName.toUpperCase().split(" ");
   const smpnLabel = nameParts.includes("SMPN") ? "SMPN" : nameParts[0];
   const fiveLabel = nameParts.includes("5") ? "5" : nameParts[1];
-  
-  // Sisa nama (misal: LANGKE REMBONG)
   const restName = nameParts.filter(p => p !== "SMPN" && p !== "5");
   const row2 = restName[0] || "";
-  const row3 = restName[1] || "";
+  const row3 = restName.slice(1).join(" ") || "";
 
   const socialLinks = [
     { 
@@ -74,27 +69,48 @@ export function Footer() {
     <footer className="bg-primary text-white pt-20 pb-10 border-t border-white/5 overflow-hidden">
       <div className="container mx-auto px-6 md:px-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-16 mb-16">
-          {/* Brand Column */}
-          <div className="flex flex-col space-y-6">
-            <div className="flex items-start gap-4">
-              <div className="bg-white p-2 rounded-[1.2rem] shadow-xl shrink-0 flex items-center justify-center w-20 h-20">
+          {/* Brand Column - Logo & Stacked Name */}
+          <div className="flex flex-col space-y-8 lg:col-span-1">
+            <div className="flex items-center gap-5">
+              <div className="bg-white p-3 rounded-[1.8rem] shadow-2xl shrink-0 flex items-center justify-center w-28 h-28">
                 {schoolLogo ? (
-                  <div className="relative h-14 w-14">
+                  <div className="relative h-20 w-20">
                     <Image src={schoolLogo} alt="Logo" fill className="object-contain" />
                   </div>
                 ) : (
-                  <GraduationCap className="h-10 w-10 text-primary" />
+                  <GraduationCap className="h-14 w-14 text-primary" />
                 )}
               </div>
-              <div className="font-headline font-black text-2xl md:text-3xl tracking-tighter leading-[0.85] uppercase">
+              <div className="font-headline font-black text-3xl md:text-4xl tracking-tighter leading-[0.85] uppercase">
                 <span className="block">{smpnLabel} <span className="text-secondary">{fiveLabel}</span></span>
                 <span className="block">{row2}</span>
                 <span className="block">{row3}</span>
               </div>
             </div>
 
-            <div className="space-y-4">
-              <p className="text-white/60 text-[10px] leading-relaxed font-bold uppercase tracking-widest max-w-xs">
+            {/* Official Portal Website - Below Logo Branding */}
+            {officialWebsites.length > 0 && (
+              <div className="space-y-2">
+                <div className="grid grid-cols-1 gap-2">
+                  {officialWebsites.map((web: any, i: number) => (
+                    <a 
+                      key={i}
+                      href={web.url} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-white/80 hover:text-secondary transition-all flex items-center gap-2 uppercase text-[9px] font-black tracking-widest bg-white/5 p-3 rounded-xl border border-white/10 group w-full"
+                    >
+                      <Globe className="h-3.5 w-3.5 text-secondary" /> 
+                      <span className="truncate">{web.title}</span> 
+                      <ExternalLink className="h-3 w-3 ml-auto opacity-30 group-hover:opacity-100 shrink-0" />
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div className="space-y-6">
+              <p className="text-white/60 text-[10px] leading-relaxed font-bold uppercase tracking-widest max-w-sm">
                 Membangun fondasi pendidikan unggul yang menginspirasi kreativitas bagi masa depan bangsa.
               </p>
 
@@ -110,35 +126,13 @@ export function Footer() {
                   </Link>
                 ))}
               </div>
-
-              {/* Portal Resmi Instansi - Tampil di bawah Branding & Socmed */}
-              {officialWebsites.length > 0 && (
-                <div className="space-y-2 pt-4 border-t border-white/5">
-                  <h5 className="text-[9px] font-black text-secondary tracking-widest uppercase mb-3">Portal Resmi Instansi</h5>
-                  <div className="grid grid-cols-1 gap-2">
-                    {officialWebsites.map((web: any, i: number) => (
-                      <a 
-                        key={i}
-                        href={web.url} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="text-white/80 hover:text-secondary transition-all flex items-center gap-2 uppercase text-[9px] font-black tracking-widest bg-white/5 p-3 rounded-xl border border-white/10 group w-full"
-                      >
-                        <Globe className="h-3 w-3 text-secondary" /> 
-                        <span className="truncate">{web.title}</span> 
-                        <ExternalLink className="h-3 w-3 ml-auto opacity-30 group-hover:opacity-100 shrink-0" />
-                      </a>
-                    ))}
-                  </div>
-                </div>
-              )}
             </div>
           </div>
 
           {/* Quick Links Column */}
           <div className="pt-2">
-            <h4 className="font-headline font-black mb-8 text-[10px] tracking-[0.2em] uppercase text-secondary">Tautan Cepat</h4>
-            <ul className="space-y-4 text-[11px] font-black text-white/70">
+            <h4 className="font-headline font-black mb-8 text-[11px] tracking-[0.2em] uppercase text-secondary">Tautan Cepat</h4>
+            <ul className="space-y-5 text-[12px] font-black text-white/70">
               <li><Link href="/profil" className="hover:text-white transition-colors uppercase tracking-[0.1em] block">Profil Sekolah</Link></li>
               <li><Link href="/informasi" className="hover:text-white transition-colors uppercase tracking-[0.1em] block">Informasi Terbaru</Link></li>
               <li><Link href="/ppdb" className="hover:text-white transition-colors uppercase tracking-[0.1em] block">SPMB Online</Link></li>
@@ -148,8 +142,8 @@ export function Footer() {
 
           {/* Academic Column */}
           <div className="pt-2">
-            <h4 className="font-headline font-black mb-8 text-[10px] tracking-[0.2em] uppercase text-secondary">Akademik</h4>
-            <ul className="space-y-4 text-[11px] font-black text-white/70">
+            <h4 className="font-headline font-black mb-8 text-[11px] tracking-[0.2em] uppercase text-secondary">Akademik</h4>
+            <ul className="space-y-5 text-[12px] font-black text-white/70">
               <li className="hover:text-white transition-colors cursor-pointer uppercase tracking-[0.1em] block">Kurikulum Merdeka</li>
               <li className="hover:text-white transition-colors cursor-pointer uppercase tracking-[0.1em] block">E-Learning</li>
               <li className="hover:text-white transition-colors cursor-pointer uppercase tracking-[0.1em] block">Perpustakaan</li>
@@ -159,22 +153,22 @@ export function Footer() {
 
           {/* Contact Column */}
           <div className="pt-2">
-            <h4 className="font-headline font-black mb-8 text-[10px] tracking-[0.2em] uppercase text-secondary">Hubungi Kami</h4>
-            <ul className="space-y-6 text-[11px] text-white/80 font-black tracking-wide">
+            <h4 className="font-headline font-black mb-8 text-[11px] tracking-[0.2em] uppercase text-secondary">Hubungi Kami</h4>
+            <ul className="space-y-6 text-[12px] text-white/80 font-black tracking-wide">
               <li className="flex gap-4 items-start">
-                <div className="bg-white/5 p-2 rounded-lg shrink-0 mt-0.5">
+                <div className="bg-white/5 p-2.5 rounded-xl shrink-0 mt-0.5">
                   <MapPin className="h-4 w-4 text-secondary" /> 
                 </div>
                 <span className="leading-relaxed uppercase tracking-tighter">{address}</span>
               </li>
               <li className="flex gap-4 items-center">
-                <div className="bg-white/5 p-2 rounded-lg shrink-0">
+                <div className="bg-white/5 p-2.5 rounded-xl shrink-0">
                   <Phone className="h-4 w-4 text-secondary" /> 
                 </div>
                 <span>{phone}</span>
               </li>
               <li className="flex gap-4 items-center">
-                <div className="bg-white/5 p-2 rounded-lg shrink-0">
+                <div className="bg-white/5 p-2.5 rounded-xl shrink-0">
                   <Mail className="h-4 w-4 text-secondary" /> 
                 </div>
                 <span className="truncate lowercase">{email}</span>
@@ -183,7 +177,7 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-6 text-[10px] font-black text-white/30 tracking-[0.2em] uppercase text-center md:text-left">
+        <div className="border-t border-white/5 pt-10 flex flex-col md:flex-row justify-between items-center gap-6 text-[10px] font-black text-white/30 tracking-[0.2em] uppercase text-center md:text-left">
           <p>© {displayYear} {schoolName.toUpperCase()}. ALL RIGHTS RESERVED.</p>
           <div className="flex gap-6 items-center">
             <Link href="/admin" className="opacity-30 hover:opacity-100 transition-all flex items-center gap-2">

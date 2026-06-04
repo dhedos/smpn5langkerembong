@@ -17,7 +17,8 @@ export function FirebaseClientProvider({ children }: { children: React.ReactNode
 
   useEffect(() => {
     // Inisialisasi dilakukan hanya sekali di sisi client
-    setServices(initializeFirebase());
+    const initializedServices = initializeFirebase();
+    setServices(initializedServices);
     setMounted(true);
   }, []);
 
