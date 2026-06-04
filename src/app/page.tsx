@@ -68,7 +68,7 @@ export default function Home() {
 
   const heroImageUrl = settings?.heroImageUrl || "https://picsum.photos/seed/school1/1920/1080";
   const schoolName = settings?.schoolName || "SMPN 5 Langke Rembong";
-  const heroTitle = settings?.heroTitle || "Membangun Masa Depan";
+  const heroTitle = settings?.heroTitle || "Membangun Masa Depan Bersama Kami";
   const heroSubtitle = settings?.heroSubtitle || "Pendidikan berkualitas untuk generasi emas bangsa melalui kurikulum inovatif.";
   
   const welcomeSectionLabel = settings?.welcomeSectionLabel || "Sambutan Kepala Sekolah";
@@ -270,7 +270,6 @@ export default function Home() {
             <div className="text-center py-24 bg-white rounded-[3rem] border-2 border-dashed border-slate-100">
                <Newspaper className="h-16 w-16 text-slate-100 mx-auto mb-4" />
                <p className="text-slate-400 font-medium italic">Belum ada informasi yang diterbitkan.</p>
-               <p className="text-slate-300 text-xs mt-2">Pastikan Admin telah menyetel status informasi menjadi <span className="text-green-600 font-bold uppercase">Published</span>.</p>
             </div>
           )}
         </div>
@@ -299,7 +298,7 @@ export default function Home() {
                   width="100%" 
                   height="100%" 
                   style={{ border: 0 }} 
-                  allowFullScreen={true} 
+                  allowFullScreen 
                   loading="lazy" 
                   referrerPolicy="no-referrer-when-downgrade"
                 />

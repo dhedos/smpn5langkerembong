@@ -21,7 +21,10 @@ import {
   Users,
   UserPlus,
   MapPin,
-  User
+  User,
+  Search,
+  ExternalLink,
+  Map as MapIcon
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -93,6 +96,8 @@ export default function AdminSettings() {
   const [isSaving, setIsSaving] = useState(false);
   const [newMission, setNewMission] = useState("");
   const [newRequirement, setNewRequirement] = useState("");
+  const [addressSearch, setAddressSearch] = useState("");
+  const [showMapPreview, setShowMapPreview] = useState(false);
 
   useEffect(() => {
     if (currentSettings) {
@@ -120,6 +125,28 @@ export default function AdminSettings() {
       };
       reader.readAsDataURL(file);
     }
+  };
+
+  const handleMapUrlChange = (val: string) => {
+    // Otomatis ekstrak src jika user paste full <iframe> tag
+    const srcMatch = val.match(/src="([^"]+)"/);
+    const finalUrl = srcMatch ? srcMatch[1] : val;
+    setFormData({ ...formData, googleMapsEmbedUrl: finalUrl });
+    setShowMapPreview(false);
+  };
+
+  const handleSearchLocation = () => {
+    if (!addressSearch.trim()) return;
+    // Generate URL embed sederhana berdasarkan pencarian alamat
+    const encodedAddress = encodeURIComponent(addressSearch);
+    const generatedUrl = `https://www.google.com/maps/embed/v1/place?key=YOUR_API_KEY_HERE&q=${encodedAddress}`;
+    // Catatan: Google Maps Embed API butuh API Key untuk 'place'. 
+    // Pendekatan alternatif tanpa key yang lebih sering dipakai untuk iframe statis:
+    const simpleUrl = `https://maps.google.com/maps?q=${encodedAddress}&t=&z=13&ie=UTF8&iwloc=&output=embed`;
+    
+    setFormData({ ...formData, googleMapsEmbedUrl: simpleUrl });
+    toast({ title: "Lokasi Ditemukan", description: "URL peta telah diperbarui berdasarkan alamat pencarian." });
+    setShowMapPreview(true);
   };
 
   const handleAddMission = () => {
@@ -166,12 +193,8 @@ export default function AdminSettings() {
     if (!db || !settingsRef) return;
     setIsSaving(true);
     
-    // Clean URL
-    const cleanMapUrl = formData.googleMapsEmbedUrl?.trim() || "";
-
     const dataToSave = { 
       ...formData, 
-      googleMapsEmbedUrl: cleanMapUrl,
       schoolId: targetSchoolId,
       updatedAt: serverTimestamp()
     };
@@ -263,7 +286,7 @@ export default function AdminSettings() {
             </Card>
 
             <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden bg-white">
-              <CardHeader className="bg-slate-50/50 border-b p-8"><CardTitle className="text-xl flex items-center gap-3 font-headline text-primary"><Phone className="h-6 w-6 text-secondary" /> Kontak & Lokasi</CardTitle></CardHeader>
+              <CardHeader className="bg-slate-50/50 border-b p-8"><CardTitle className="text-xl flex items-center gap-3 font-headline text-primary"><MapIcon className="h-6 w-6 text-secondary" /> Kontak & Lokasi</CardTitle></CardHeader>
               <CardContent className="space-y-6 p-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-3">
@@ -275,23 +298,53 @@ export default function AdminSettings() {
                     <Input value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} className="h-12 bg-slate-50 rounded-xl" />
                   </div>
                 </div>
-                <div className="space-y-3">
-                  <Label className="text-xs font-bold uppercase text-slate-400">WhatsApp (62...)</Label>
-                  <Input value={formData.whatsappNumber} onChange={(e) => setFormData({...formData, whatsappNumber: e.target.value})} className="h-12 bg-slate-50 rounded-xl" />
+                
+                <div className="space-y-4 pt-4 border-t">
+                  <Label className="text-xs font-bold uppercase text-slate-400">Pencarian Titik Lokasi Peta</Label>
+                  <div className="flex gap-2">
+                    <Input 
+                      placeholder="Ketik alamat atau nama sekolah..." 
+                      value={addressSearch} 
+                      onChange={(e) => setAddressSearch(e.target.value)}
+                      className="h-12 bg-slate-50 rounded-xl"
+                    />
+                    <Button variant="secondary" className="h-12 px-6 rounded-xl font-bold" onClick={handleSearchLocation}>
+                      <Search className="h-4 w-4 mr-2" /> Cari
+                    </Button>
+                  </div>
+                  <div className="space-y-3">
+                    <Label className="text-xs font-bold uppercase text-slate-400">URL Peta (Google Maps Embed)</Label>
+                    <Input 
+                      value={formData.googleMapsEmbedUrl} 
+                      onChange={(e) => handleMapUrlChange(e.target.value)} 
+                      placeholder="Tempel link src atau kode iframe di sini..."
+                      className="h-12 bg-slate-50 rounded-xl font-mono text-[10px]" 
+                    />
+                    <div className="flex justify-between items-center">
+                       <p className="text-[10px] text-slate-400 italic">Sistem akan otomatis mengambil URL dari kode iframe.</p>
+                       <Button variant="link" size="sm" className="h-auto p-0 text-[10px] font-bold" onClick={() => setShowMapPreview(!showMapPreview)}>
+                         {showMapPreview ? "Sembunyikan" : "Lihat Pratinjau"}
+                       </Button>
+                    </div>
+                  </div>
+
+                  {showMapPreview && formData.googleMapsEmbedUrl && (
+                    <div className="aspect-video w-full rounded-2xl overflow-hidden border shadow-inner bg-slate-100">
+                      <iframe 
+                        src={formData.googleMapsEmbedUrl} 
+                        width="100%" 
+                        height="100%" 
+                        style={{ border: 0 }} 
+                        allowFullScreen 
+                        loading="lazy"
+                      />
+                    </div>
+                  )}
                 </div>
-                <div className="space-y-3">
-                  <Label className="text-xs font-bold uppercase text-slate-400">Alamat Sekolah</Label>
-                  <Textarea value={formData.address} onChange={(e) => setFormData({...formData, address: e.target.value})} className="min-h-[100px] bg-slate-50 rounded-xl" />
-                </div>
-                <div className="space-y-3">
-                  <Label className="text-xs font-bold uppercase text-slate-400">Google Maps Embed URL</Label>
-                  <Input 
-                    value={formData.googleMapsEmbedUrl} 
-                    onChange={(e) => setFormData({...formData, googleMapsEmbedUrl: e.target.value})} 
-                    placeholder="https://www.google.com/maps/embed?..."
-                    className="h-12 bg-slate-50 rounded-xl" 
-                  />
-                  <p className="text-[10px] text-slate-400 italic">Dapatkan URL dari 'Share' &gt; 'Embed a map' &gt; ambil nilai atribut 'src'. Pastikan hanya URL saja yang dimasukkan.</p>
+
+                <div className="space-y-3 pt-4 border-t">
+                  <Label className="text-xs font-bold uppercase text-slate-400">Alamat Lengkap (Teks)</Label>
+                  <Textarea value={formData.address} onChange={(e) => setFormData({...formData, address: e.target.value})} className="min-h-[80px] bg-slate-50 rounded-xl" />
                 </div>
               </CardContent>
             </Card>
@@ -308,7 +361,7 @@ export default function AdminSettings() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="space-y-6">
                   <div className="space-y-3">
-                    <Label className="text-xs font-bold uppercase text-slate-400">Judul Gambar Utama (Hero Title)</Label>
+                    <Label className="text-xs font-bold uppercase text-slate-400">Judul Utama (Membangun Masa Depan...)</Label>
                     <Input 
                       value={formData.heroTitle} 
                       onChange={(e) => setFormData({...formData, heroTitle: e.target.value})} 
