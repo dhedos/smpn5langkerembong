@@ -63,7 +63,7 @@ export function Navbar() {
   return (
     <header
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
+        "fixed top-0 left-0 right-0 z-[60] transition-all duration-500",
         isSolid 
           ? "bg-white/95 backdrop-blur-xl border-b border-slate-200 py-3 shadow-[0_4px_30px_rgba(0,0,0,0.03)]" 
           : "bg-transparent py-5"
@@ -159,7 +159,7 @@ export function Navbar() {
       {/* Mobile Drawer Overlay */}
       <div 
         className={cn(
-          "fixed inset-0 z-[60] bg-black/60 transition-opacity duration-300 lg:hidden",
+          "fixed inset-0 z-[100] bg-black/60 transition-opacity duration-300 lg:hidden",
           isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         )}
         onClick={() => setIsOpen(false)}
@@ -168,12 +168,12 @@ export function Navbar() {
       {/* Mobile Menu Drawer (Solid Background, Half Width) */}
       <div 
         className={cn(
-          "lg:hidden fixed top-0 right-0 h-full w-[280px] z-[70] bg-white shadow-2xl transition-transform duration-500 ease-in-out transform flex flex-col",
+          "lg:hidden fixed top-0 right-0 h-full w-[280px] z-[110] bg-white shadow-2xl transition-transform duration-500 ease-in-out transform flex flex-col",
           isOpen ? "translate-x-0" : "translate-x-full"
         )}
       >
-        <div className="flex justify-between items-center p-8 border-b border-slate-100 bg-white">
-          <div className="flex items-center gap-2">
+        <div className="flex justify-between items-center p-6 border-b border-slate-100 bg-white">
+          <div className="flex items-center gap-3">
             <div className="bg-primary p-2 rounded-xl">
               <GraduationCap className="h-5 w-5 text-white" />
             </div>
@@ -187,7 +187,7 @@ export function Navbar() {
           </button>
         </div>
         
-        <nav className="flex flex-col p-8 gap-2 bg-white flex-1 overflow-y-auto">
+        <nav className="flex flex-col p-6 gap-2 bg-white flex-1 overflow-y-auto">
           {navItems.map((item) => (
             <Link
               key={item.name}
@@ -204,7 +204,7 @@ export function Navbar() {
             </Link>
           ))}
           
-          <div className="mt-8 pt-8 border-t border-slate-100">
+          <div className="mt-8 pt-8 border-t border-slate-100 bg-white">
             <Button size="lg" className="w-full bg-primary h-14 text-white rounded-2xl font-bold text-base shadow-lg shadow-primary/20" asChild onClick={() => setIsOpen(false)}>
               <Link href="/ppdb">DAFTAR SPMB</Link>
             </Button>
