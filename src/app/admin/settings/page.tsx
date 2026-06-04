@@ -22,7 +22,8 @@ import {
   UserCircle,
   Clock,
   CheckCircle2,
-  Info
+  Info,
+  MousePointer2
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -64,6 +65,7 @@ export default function AdminSettings() {
     stats: [],
     ppdbYear: "",
     ppdbIsActive: true,
+    ppdbMenuTitle: "SPMB ONLINE",
     ppdbRequirements: [],
     ppdbQuotas: []
   });
@@ -107,7 +109,6 @@ export default function AdminSettings() {
     setIsSaving(true);
     const docRef = doc(db, "settings", "general");
     
-    // Non-blocking mutation call as per guidelines
     setDoc(docRef, formData, { merge: true })
       .then(() => {
         setIsSaving(false);
@@ -444,20 +445,33 @@ export default function AdminSettings() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden bg-white">
               <CardHeader className="bg-slate-50/50 border-b p-8">
-                <CardTitle className="text-xl flex items-center gap-3 font-headline text-primary"><Clock className="h-6 w-6 text-secondary" /> Status SPMB Online</CardTitle>
-                <CardDescription>Atur ketersediaan pendaftaran siswa baru.</CardDescription>
+                <CardTitle className="text-xl flex items-center gap-3 font-headline text-primary"><Clock className="h-6 w-6 text-secondary" /> Status & Judul Menu</CardTitle>
+                <CardDescription>Atur ketersediaan dan label tombol pendaftaran.</CardDescription>
               </CardHeader>
-              <CardContent className="p-8 space-y-6">
+              <CardContent className="p-8 space-y-8">
                 <div className="flex items-center justify-between p-6 bg-slate-50 rounded-2xl border border-slate-100">
                   <div className="space-y-1">
-                    <Label className="text-lg font-bold">Aktifkan Pendaftaran</Label>
-                    <p className="text-sm text-slate-400">Tombol SPMB akan muncul di menu utama.</p>
+                    <Label className="text-lg font-bold">Aktifkan Menu SPMB</Label>
+                    <p className="text-sm text-slate-400">Muncul di navigasi utama dan beranda.</p>
                   </div>
                   <Switch 
                     checked={formData.ppdbIsActive} 
                     onCheckedChange={(checked) => setFormData({...formData, ppdbIsActive: checked})} 
                   />
                 </div>
+                
+                <div className="space-y-3">
+                  <Label className="text-xs font-bold uppercase text-slate-400 tracking-widest flex items-center gap-2">
+                    <MousePointer2 className="h-3 w-3 text-secondary" /> Judul Tombol Navigasi
+                  </Label>
+                  <Input 
+                    value={formData.ppdbMenuTitle} 
+                    onChange={(e) => setFormData({...formData, ppdbMenuTitle: e.target.value})} 
+                    className="h-14 bg-slate-50 border-slate-100 rounded-2xl font-bold" 
+                    placeholder="E.g. SPMB ONLINE"
+                  />
+                </div>
+
                 <div className="space-y-3">
                   <Label className="text-xs font-bold uppercase text-slate-400 tracking-widest">Tahun Ajaran Aktif</Label>
                   <Input value={formData.ppdbYear} onChange={(e) => setFormData({...formData, ppdbYear: e.target.value})} className="h-14 bg-slate-50 border-slate-100 rounded-2xl font-bold" />

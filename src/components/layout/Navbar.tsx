@@ -17,22 +17,6 @@ import {
 import { useFirestore, useDoc } from "@/firebase";
 import { doc } from "firebase/firestore";
 
-const navItems = [
-  { name: "Home", href: "/" },
-  { 
-    name: "Profil", 
-    href: "/profil",
-    submenu: [
-      { name: "Sejarah", href: "/profil#sejarah" },
-      { name: "Visi Misi", href: "/profil#visi-misi" },
-      { name: "Fasilitas", href: "/profil#fasilitas" },
-    ]
-  },
-  { name: "Informasi", href: "/berita" },
-  { name: "Galeri", href: "/galeri" },
-  { name: "SPMB", href: "/ppdb" },
-];
-
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -53,13 +37,37 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Tutup menu saat pindah halaman
   useEffect(() => {
     setIsOpen(false);
   }, [pathname]);
 
   const schoolName = settings?.schoolName || "SMPN 5 Langke Rembong";
   const schoolLogo = settings?.schoolLogoUrl;
+  const isSpmbActive = settings?.ppdbIsActive !== false;
+  const spmbLabel = settings?.ppdbMenuTitle || "SPMB ONLINE";
+
+  const navItems = useMemo(() => {
+    const items = [
+      { name: "Home", href: "/" },
+      { 
+        name: "Profil", 
+        href: "/profil",
+        submenu: [
+          { name: "Sejarah", href: "/profil#sejarah" },
+          { name: "Visi Misi", href: "/profil#visi-misi" },
+          { name: "Fasilitas", href: "/profil#fasilitas" },
+        ]
+      },
+      { name: "Informasi", href: "/berita" },
+      { name: "Galeri", href: "/galeri" },
+    ];
+    
+    if (isSpmbActive) {
+      items.push({ name: "SPMB", href: "/ppdb" });
+    }
+    
+    return items;
+  }, [isSpmbActive]);
 
   if (isAdminPage) return null;
 
@@ -144,12 +152,14 @@ export function Navbar() {
         </nav>
 
         <div className="hidden lg:flex items-center gap-4">
-          <Button size="lg" className={cn(
-            "rounded-full px-8 font-bold shadow-xl transition-all hover:scale-105 active:scale-95 uppercase tracking-widest text-xs",
-            isSolid ? "bg-primary text-white" : "bg-secondary text-primary hover:bg-secondary/90 shadow-secondary/20"
-          )} asChild>
-            <Link href="/ppdb">SPMB Online</Link>
-          </Button>
+          {isSpmbActive && (
+            <Button size="lg" className={cn(
+              "rounded-full px-8 font-bold shadow-xl transition-all hover:scale-105 active:scale-95 uppercase tracking-widest text-xs",
+              isSolid ? "bg-primary text-white" : "bg-secondary text-primary hover:bg-secondary/90 shadow-secondary/20"
+            )} asChild>
+              <Link href="/ppdb">{spmbLabel}</Link>
+            </Button>
+          )}
         </div>
 
         {/* Mobile Toggle */}
@@ -169,7 +179,7 @@ export function Navbar() {
         />
       )}
 
-      {/* Mobile Menu Drawer (Solid Background, Fully Non-Transparent) */}
+      {/* Mobile Menu Drawer */}
       <div 
         className={cn(
           "lg:hidden fixed top-0 right-0 h-screen w-[300px] z-[110] bg-white shadow-2xl transition-transform duration-500 ease-in-out transform flex flex-col",
@@ -222,9 +232,11 @@ export function Navbar() {
           ))}
           
           <div className="mt-8 pt-8 border-t border-slate-100 bg-white pb-8">
-            <Button size="lg" className="w-full bg-primary h-14 text-white rounded-2xl font-bold text-base shadow-lg shadow-primary/20" asChild>
-              <Link href="/ppdb">DAFTAR SPMB</Link>
-            </Button>
+            {isSpmbActive && (
+              <Button size="lg" className="w-full bg-primary h-14 text-white rounded-2xl font-bold text-base shadow-lg shadow-primary/20" asChild>
+                <Link href="/ppdb">{spmbLabel}</Link>
+              </Button>
+            )}
             <p className="text-center text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-6 leading-relaxed">
               Modern Excellence <br /> in Education
             </p>
