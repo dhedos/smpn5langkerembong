@@ -68,7 +68,8 @@
         "tags": { "type": "array", "items": { "type": "string" } },
         "status": { "type": "string", "enum": ["Draft", "Published"] },
         "date": { "type": "string" },
-        "imageUrl": { "type": "string" }
+        "imageUrl": { "type": "string" },
+        "externalUrl": { "type": "string", "description": "Link opsional ke website berita lain" }
       }
     },
     "Facility": {

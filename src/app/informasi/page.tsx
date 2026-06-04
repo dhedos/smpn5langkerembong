@@ -1,9 +1,10 @@
+
 "use client";
 
 import React, { useMemo, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Newspaper, Calendar, ArrowRight, Search, Loader2 } from "lucide-react";
+import { Newspaper, Calendar, ArrowRight, Search, ExternalLink } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useFirestore, useCollection } from "@/firebase";
@@ -22,7 +23,7 @@ export default function VisitorInformasi() {
     );
   }, [db]);
 
-  const { data: rawNews, loading, error } = useCollection(newsQuery);
+  const { data: rawNews, loading } = useCollection(newsQuery);
 
   const newsItems = useMemo(() => {
     if (!rawNews) return [];
@@ -77,37 +78,57 @@ export default function VisitorInformasi() {
             </div>
           ) : newsItems.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-              {newsItems.map((item: any) => (
-                <Card key={item.id} className="group overflow-hidden border-none shadow-xl hover:shadow-2xl transition-all duration-500 rounded-[2.5rem] bg-white flex flex-col">
-                  <div className="relative h-64 overflow-hidden">
-                    <Image
-                      src={item.imageUrl || `https://picsum.photos/seed/${item.id}/600/400`}
-                      alt={item.title}
-                      fill
-                      className="object-cover group-hover:scale-110 transition-transform duration-700"
-                      data-ai-hint="school news"
-                    />
-                    <div className="absolute top-6 left-6 bg-white/90 backdrop-blur-md text-primary text-[10px] font-bold px-4 py-1.5 rounded-full uppercase tracking-widest">
-                      {item.category}
+              {newsItems.map((item: any) => {
+                const isExternal = !!item.externalUrl;
+                const linkHref = isExternal ? item.externalUrl : `/informasi/${item.id}`;
+                
+                return (
+                  <Card key={item.id} className="group overflow-hidden border-none shadow-xl hover:shadow-2xl transition-all duration-500 rounded-[2.5rem] bg-white flex flex-col">
+                    <div className="relative h-64 overflow-hidden">
+                      <Image
+                        src={item.imageUrl || `https://picsum.photos/seed/${item.id}/600/400`}
+                        alt={item.title}
+                        fill
+                        className="object-cover group-hover:scale-110 transition-transform duration-700"
+                        data-ai-hint="school news"
+                      />
+                      <div className="absolute top-6 left-6 bg-white/90 backdrop-blur-md text-primary text-[10px] font-bold px-4 py-1.5 rounded-full uppercase tracking-widest">
+                        {item.category}
+                      </div>
                     </div>
-                  </div>
-                  <CardContent className="p-8 flex flex-col flex-1 space-y-4">
-                    <div className="flex items-center gap-2 text-slate-400 text-xs font-bold uppercase tracking-widest">
-                      <Calendar className="h-3 w-3" />
-                      <span>{item.date}</span>
-                    </div>
-                    <h3 className="text-2xl font-bold text-primary font-headline group-hover:text-secondary transition-colors line-clamp-2 leading-snug">
-                      {item.title}
-                    </h3>
-                    <p className="text-slate-500 text-sm line-clamp-3 font-medium flex-1">
-                      {item.summary}
-                    </p>
-                    <Link href={`/informasi/${item.id}`} className="inline-flex items-center gap-3 text-primary font-bold text-sm hover:gap-4 transition-all pt-4 group/link">
-                      Baca Selengkapnya <ArrowRight className="h-4 w-4 text-secondary group-hover/link:translate-x-1 transition-transform" />
-                    </Link>
-                  </CardContent>
-                </Card>
-              ))}
+                    <CardContent className="p-8 flex flex-col flex-1 space-y-4">
+                      <div className="flex items-center gap-2 text-slate-400 text-xs font-bold uppercase tracking-widest">
+                        <Calendar className="h-3 w-3" />
+                        <span>{item.date}</span>
+                      </div>
+                      <h3 className="text-2xl font-bold text-primary font-headline group-hover:text-secondary transition-colors line-clamp-2 leading-snug">
+                        {item.title}
+                      </h3>
+                      <p className="text-slate-500 text-sm line-clamp-3 font-medium flex-1">
+                        {item.summary}
+                      </p>
+                      
+                      {isExternal ? (
+                        <a 
+                          href={linkHref} 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="inline-flex items-center gap-3 text-primary font-bold text-sm hover:gap-4 transition-all pt-4 group/link"
+                        >
+                          Baca Selengkapnya <ExternalLink className="h-4 w-4 text-secondary group-hover/link:translate-x-1 transition-transform" />
+                        </a>
+                      ) : (
+                        <Link 
+                          href={linkHref} 
+                          className="inline-flex items-center gap-3 text-primary font-bold text-sm hover:gap-4 transition-all pt-4 group/link"
+                        >
+                          Baca Selengkapnya <ArrowRight className="h-4 w-4 text-secondary group-hover/link:translate-x-1 transition-transform" />
+                        </Link>
+                      )}
+                    </CardContent>
+                  </Card>
+                );
+              })}
             </div>
           ) : (
             <div className="text-center py-24 space-y-4 bg-slate-50 rounded-[3rem] border-2 border-dashed border-slate-200">

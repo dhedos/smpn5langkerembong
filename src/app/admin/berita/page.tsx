@@ -1,7 +1,8 @@
+
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { Newspaper, Sparkles, Wand2, Trash2, Edit, Save, Loader2, Image as ImageIcon, RotateCcw, Eye, EyeOff, ExternalLink, AlertCircle } from "lucide-react";
+import { Newspaper, Sparkles, Wand2, Trash2, Edit, Save, Loader2, Image as ImageIcon, RotateCcw, Eye, EyeOff, ExternalLink, AlertCircle, Link as LinkIcon } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -46,6 +47,7 @@ export default function AdminBerita() {
   const [summary, setSummary] = useState("");
   const [tags, setTags] = useState<string[]>([]);
   const [imageUrl, setImageUrl] = useState("");
+  const [externalUrl, setExternalUrl] = useState("");
   
   const [optimizing, setOptimizing] = useState(false);
   const [generatingImg, setGeneratingImg] = useState(false);
@@ -119,6 +121,7 @@ export default function AdminBerita() {
     setSummary("");
     setTags([]);
     setImageUrl("");
+    setExternalUrl("");
     setAiError(null);
   };
 
@@ -130,6 +133,7 @@ export default function AdminBerita() {
     setSummary(item.summary || "");
     setTags(item.tags || []);
     setImageUrl(item.imageUrl || "");
+    setExternalUrl(item.externalUrl || "");
     setAiError(null);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -149,6 +153,7 @@ export default function AdminBerita() {
       tags,
       status,
       imageUrl,
+      externalUrl,
       schoolId,
       date: new Date().toLocaleDateString('id-ID'),
       updatedAt: serverTimestamp(),
@@ -255,6 +260,20 @@ export default function AdminBerita() {
                   onChange={(e) => setCategory(e.target.value)} 
                 />
               </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label className="text-xs uppercase font-extrabold text-slate-400">Tautan Eksternal (Opsional)</Label>
+              <div className="relative">
+                <LinkIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                <Input 
+                  className="h-12 bg-slate-50 border-slate-100 rounded-xl pl-12"
+                  placeholder="https://contoh-berita-lain.com" 
+                  value={externalUrl} 
+                  onChange={(e) => setExternalUrl(e.target.value)} 
+                />
+              </div>
+              <p className="text-[10px] text-slate-400 italic">Jika diisi, pengunjung akan diarahkan ke link ini saat mengklik "Baca Selengkapnya".</p>
             </div>
 
             <div className="space-y-4">
