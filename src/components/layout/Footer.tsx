@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useMemo } from "react";
@@ -25,6 +26,13 @@ export function Footer() {
   const phone = settings?.phone || "(021) 1234-5678";
   const email = settings?.email || "info@sekolah.sch.id";
 
+  const socialLinks = [
+    { icon: Facebook, href: settings?.facebookUrl || "#" },
+    { icon: Instagram, href: settings?.instagramUrl || "#" },
+    { icon: Twitter, href: settings?.twitterUrl || "#" },
+    { icon: Youtube, href: settings?.youtubeUrl || "#" },
+  ];
+
   return (
     <footer className="bg-primary text-white pt-24 pb-12 relative overflow-hidden">
       <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl pointer-events-none" />
@@ -49,9 +57,14 @@ export function Footer() {
               Membangun fondasi pendidikan unggul yang menginspirasi kreativitas bagi masa depan bangsa.
             </p>
             <div className="flex gap-4">
-              {[Facebook, Instagram, Twitter, Youtube].map((Icon, i) => (
-                <Link key={i} href="#" className="h-10 w-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-secondary hover:text-primary transition-all">
-                  <Icon className="h-5 w-5" />
+              {socialLinks.map((social, i) => (
+                <Link 
+                  key={i} 
+                  href={social.href} 
+                  target={social.href !== "#" ? "_blank" : undefined}
+                  className="h-10 w-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-secondary hover:text-primary transition-all"
+                >
+                  <social.icon className="h-5 w-5" />
                 </Link>
               ))}
             </div>

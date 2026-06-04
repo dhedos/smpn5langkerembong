@@ -23,6 +23,10 @@
         "history": { "type": "string", "description": "Teks sejarah sekolah" },
         "vision": { "type": "string", "description": "Teks visi sekolah" },
         "mission": { "type": "array", "items": { "type": "string" }, "description": "Daftar poin-poin misi" },
+        "facebookUrl": { "type": "string", "description": "Link halaman Facebook" },
+        "instagramUrl": { "type": "string", "description": "Link profil Instagram" },
+        "twitterUrl": { "type": "string", "description": "Link profil Twitter/X" },
+        "youtubeUrl": { "type": "string", "description": "Link channel YouTube" },
         "stats": {
           "type": "array",
           "items": {
