@@ -69,7 +69,7 @@ export default function Home() {
             <div className="flex flex-wrap gap-6 pt-6">
               {isSpmbActive && (
                 <Button size="lg" className="bg-secondary text-primary font-bold hover:bg-secondary/90 px-12 py-8 text-xl rounded-full shadow-2xl group border-none" asChild>
-                  <Link href="/ppdb" className="flex items-center gap-3">
+                  <Link href="/spmb" className="flex items-center gap-3">
                     {settings?.ppdbMenuTitle || "SPMB ONLINE"} <ArrowRight className="h-6 w-6 group-hover:translate-x-3 transition-transform" />
                   </Link>
                 </Button>
