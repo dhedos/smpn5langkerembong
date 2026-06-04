@@ -48,6 +48,13 @@ export function Footer() {
     { icon: Youtube, href: settings?.youtubeUrl || "#" },
   ];
 
+  const akademikLinks = [
+    { name: "Kurikulum Merdeka", href: "#" },
+    { name: "E-Learning", href: "#" },
+    { name: "Perpustakaan", href: "#" },
+    { name: "Ekstrakurikuler", href: "/ekstrakurikuler" },
+  ];
+
   return (
     <footer className="bg-primary text-white pt-24 pb-12 relative overflow-hidden">
       <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl pointer-events-none" />
@@ -100,8 +107,16 @@ export function Footer() {
           <div className="lg:pl-4">
             <h4 className="font-headline font-bold mb-10 text-xs tracking-[0.2em] uppercase text-secondary">Akademik</h4>
             <ul className="space-y-5 text-sm font-bold text-primary-foreground/60">
-              {["Kurikulum Merdeka", "E-Learning", "Perpustakaan", "Ekstrakurikuler"].map((item) => (
-                <li key={item}><span className="hover:text-white transition-colors cursor-pointer">{item}</span></li>
+              {akademikLinks.map((item) => (
+                <li key={item.name}>
+                  {item.href === "#" ? (
+                    <span className="hover:text-white transition-colors cursor-pointer">{item.name}</span>
+                  ) : (
+                    <Link href={item.href} className="hover:text-white transition-colors">
+                      {item.name}
+                    </Link>
+                  )}
+                </li>
               ))}
             </ul>
           </div>
