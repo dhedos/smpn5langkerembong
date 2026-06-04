@@ -93,7 +93,7 @@ export default function Home() {
                   {settings?.ppdbMenuTitle || "SPMB ONLINE"} <ArrowRight className="h-6 w-6 group-hover:translate-x-3 transition-transform" />
                 </Link>
               </Button>
-              <Button size="lg" variant="outline" className="border-white/20 text-white hover:bg-white/10 px-12 py-8 text-xl rounded-full backdrop-blur-md" asChild>
+              <Button size="lg" className="bg-white text-primary font-bold hover:bg-slate-100 px-12 py-8 text-xl rounded-full shadow-xl transition-all" asChild>
                 <Link href="/profil">Pelajari Profil Kami</Link>
               </Button>
             </div>
