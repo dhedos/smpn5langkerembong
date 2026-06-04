@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { User, onAuthStateChanged } from 'firebase/auth';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc, onSnapshot } from 'firebase/firestore';
 import { useAuth, useFirestore } from '../provider';
 
 export type UserProfile = {
@@ -10,7 +10,7 @@ export type UserProfile = {
   name: string;
   email: string;
   role: 'superadmin' | 'admin';
-  schoolId: string | null;
+  schoolId: string;
 };
 
 export function useUser() {
@@ -25,41 +25,38 @@ export function useUser() {
       setUser(firebaseUser);
       
       if (firebaseUser) {
-        try {
-          const userDocRef = doc(db, 'users', firebaseUser.uid);
-          const userDocSnap = await getDoc(userDocRef);
-          
-          if (userDocSnap.exists()) {
-            setProfile(userDocSnap.data() as UserProfile);
+        const userDocRef = doc(db, 'users', firebaseUser.uid);
+        
+        // Use onSnapshot for real-time profile updates
+        const unsubscribe = onSnapshot(userDocRef, (docSnap) => {
+          if (docSnap.exists()) {
+            setProfile(docSnap.data() as UserProfile);
+            setLoading(false);
           } else {
-            // Jika dokumen profil belum ada, buatkan default untuk mencegah error permission
+            // Auto-create profile if missing to avoid permission issues
             const defaultProfile: UserProfile = {
               uid: firebaseUser.uid,
-              name: firebaseUser.displayName || 'Admin Baru',
+              name: firebaseUser.displayName || 'Admin',
               email: firebaseUser.email || '',
               role: 'admin',
               schoolId: 'default-school'
             };
             
-            // Simpan ke Firestore
-            await setDoc(userDocRef, defaultProfile);
+            // Set doc in background
+            setDoc(userDocRef, defaultProfile, { merge: true });
             setProfile(defaultProfile);
+            setLoading(false);
           }
-        } catch (error) {
-          console.warn("Permission handling during init:", error);
-          // Fallback lokal jika Firestore belum siap atau rules memblokir sementara
-          setProfile({
-            uid: firebaseUser.uid,
-            name: firebaseUser.displayName || 'Admin',
-            email: firebaseUser.email || '',
-            role: 'admin',
-            schoolId: 'default-school'
-          });
-        }
+        }, (error) => {
+          console.error("Profile listen error:", error);
+          setLoading(false);
+        });
+
+        return () => unsubscribe();
       } else {
         setProfile(null);
+        setLoading(false);
       }
-      setLoading(false);
     });
   }, [auth, db]);
 

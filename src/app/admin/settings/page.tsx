@@ -6,40 +6,25 @@ import {
   Save, 
   Phone, 
   School, 
-  Plus, 
-  Trash2, 
-  BarChart3, 
-  FileText, 
-  ImageIcon,
-  Type,
-  Upload,
-  UserCircle,
-  Clock,
-  CheckCircle2,
-  Info,
-  MousePointer2,
-  Loader2,
-  Target,
-  History
+  Loader2
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
 import { useFirestore, useDoc, useUser } from "@/firebase";
 import { doc, setDoc } from "firebase/firestore";
 import { toast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { errorEmitter } from '@/firebase/error-emitter';
-import { FirestorePermissionError } from '@/firebase/errors';
+import { FirestorePermissionError, type SecurityRuleContext } from '@/firebase/errors';
 
 export default function AdminSettings() {
   const db = useFirestore();
   const { profile } = useUser();
   
-  // Gunakan schoolId dari profil user untuk multi-tenancy
+  // Multi-tenancy: default to the school assigned to the admin
   const targetSchoolId = profile?.schoolId || 'default-school';
   const settingsRef = useMemo(() => db ? doc(db, "schools", targetSchoolId) : null, [db, targetSchoolId]);
   const { data: currentSettings, loading } = useDoc(settingsRef);
@@ -84,8 +69,9 @@ export default function AdminSettings() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, field: string) => {
     const file = e.target.files?.[0];
     if (file) {
+      // Optimasi ukuran file untuk Firestore (Max 200KB)
       if (file.size > 200 * 1024) { 
-        toast({ title: "File Terlalu Besar", description: "Maksimal 200KB per gambar untuk performa optimal.", variant: "destructive" });
+        toast({ title: "File Terlalu Besar", description: "Maksimal 200KB per gambar agar tetap aman di database.", variant: "destructive" });
         return;
       }
       const reader = new FileReader();
@@ -101,20 +87,33 @@ export default function AdminSettings() {
     setIsSaving(true);
     const docRef = doc(db, "schools", targetSchoolId);
     
-    // Pastikan schoolId disertakan dalam data yang disimpan
-    setDoc(docRef, { ...formData, schoolId: targetSchoolId }, { merge: true })
+    // Save to Firestore without awaiting to leverage optimistic UI
+    setDoc(docRef, { 
+      ...formData, 
+      schoolId: targetSchoolId,
+      updatedAt: new Date().toISOString()
+    }, { merge: true })
       .then(() => {
         setIsSaving(false);
-        toast({ title: "Berhasil Disimpan", description: `Konfigurasi sekolah "${formData.schoolName}" telah diperbarui.` });
+        toast({ title: "Berhasil Disimpan", description: `Konfigurasi sekolah "${formData.schoolName || targetSchoolId}" telah diperbarui.` });
       })
-      .catch((error: any) => {
+      .catch(async (error: any) => {
         setIsSaving(false);
-        console.error("Save error:", error);
-        toast({ title: "Gagal Menyimpan", description: "Cek izin akses atau koneksi Anda.", variant: "destructive" });
+        const permissionError = new FirestorePermissionError({
+          path: docRef.path,
+          operation: 'write',
+          requestResourceData: formData,
+        } satisfies SecurityRuleContext);
+        errorEmitter.emit('permission-error', permissionError);
       });
   };
 
-  if (loading) return <div className="p-12 text-center text-muted-foreground animate-pulse font-medium italic">Sinkronisasi Cloud...</div>;
+  if (loading) return (
+    <div className="p-12 text-center space-y-4">
+      <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" />
+      <p className="text-muted-foreground animate-pulse font-medium italic">Sinkronisasi GN Global...</p>
+    </div>
+  );
 
   return (
     <div className="p-8 max-w-7xl mx-auto space-y-10">
@@ -130,7 +129,7 @@ export default function AdminSettings() {
         </div>
         <Button size="lg" className="bg-primary hover:bg-primary/90 shadow-xl flex gap-2 h-14 px-10 rounded-2xl font-bold" onClick={handleSave} disabled={isSaving}>
           {isSaving ? <Loader2 className="h-5 w-5 animate-spin" /> : <Save className="h-5 w-5" />}
-          {isSaving ? "Menyimpan..." : "Simpan Konfigurasi"}
+          {isSaving ? "Proses Simpan..." : "Simpan Konfigurasi"}
         </Button>
       </div>
 
