@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState } from "react";
@@ -40,10 +39,10 @@ import { toast } from "@/hooks/use-toast";
 
 const adminMenuItems = [
   { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
-  { name: "Manajemen Informasi", href: "/admin/informasi", icon: Newspaper },
-  { name: "Manajemen Fasilitas", href: "/admin/fasilitas", icon: Building2 },
-  { name: "Manajemen Galeri", href: "/admin/galeri", icon: Camera },
-  { name: "Pengaturan Situs", href: "/admin/settings", icon: Settings },
+  { name: "Informasi", href: "/admin/informasi", icon: Newspaper },
+  { name: "Fasilitas", href: "/admin/fasilitas", icon: Building2 },
+  { name: "Galeri", href: "/admin/galeri", icon: Camera },
+  { name: "Pengaturan GN", href: "/admin/settings", icon: Settings },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -75,13 +74,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         description: "Selamat datang di GN Nusantara.",
       });
     } catch (error: any) {
-      let message = "Email atau password salah.";
-      if (error.code === 'auth/configuration-not-found') {
-        message = "Metode login email/password belum diaktifkan di Firebase Console.";
-      }
       toast({
         title: "Login Gagal",
-        description: message,
+        description: "Email atau password salah.",
         variant: "destructive"
       });
     } finally {
@@ -108,7 +103,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <Lock className="h-8 w-8 text-white" />
             </div>
             <h1 className="text-3xl font-bold text-white tracking-tighter">GN Nusantara</h1>
-            <p className="text-white/50 text-sm">Masuk untuk mengelola website sekolah.</p>
+            <p className="text-white/50 text-sm">Masuk untuk mengelola Goetnik Nusantara.</p>
           </div>
           
           <form onSubmit={handleLogin} className="space-y-6">
@@ -116,10 +111,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <Label className="text-white/70 text-xs font-bold uppercase tracking-widest">Email Admin</Label>
               <Input 
                 type="email"
-                placeholder="admin@sekolah.sch.id"
+                placeholder="admin@gn-nusantara.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="bg-white/5 border-white/10 text-white h-12 rounded-xl focus:ring-primary"
+                className="bg-white/5 border-white/10 text-white h-12 rounded-xl"
                 required
               />
             </div>
@@ -130,13 +125,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="bg-white/5 border-white/10 text-white h-12 rounded-xl pr-12 focus:ring-primary"
+                className="bg-white/5 border-white/10 text-white h-12 rounded-xl pr-12"
                 required
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-9 text-white/30 hover:text-white transition-colors"
+                className="absolute right-4 top-9 text-white/30 hover:text-white"
               >
                 {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
               </button>
@@ -169,7 +164,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               </div>
               <div className="flex flex-col text-left">
                 <span className="font-bold text-sm tracking-tight text-slate-900 uppercase">GN Nusantara</span>
-                <span className="text-[10px] text-blue-500 font-extrabold uppercase">Admin Portal</span>
+                <span className="text-[10px] text-blue-500 font-extrabold uppercase">Global Console</span>
               </div>
             </div>
           </SidebarHeader>
@@ -183,7 +178,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     className={cn(
                       "py-6 px-4 rounded-xl transition-all duration-200 mb-1",
                       pathname === item.href 
-                        ? "bg-[#e8f0fe] text-[#1a73e8] hover:bg-[#e8f0fe]" 
+                        ? "bg-[#e8f0fe] text-[#1a73e8]" 
                         : "hover:bg-slate-50 text-slate-600"
                     )}
                   >
@@ -213,20 +208,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <div className="flex items-center gap-4">
               <SidebarTrigger />
               <div className="h-4 w-px bg-slate-200" />
-              <div className="text-xs font-bold text-slate-400 flex items-center gap-2 uppercase tracking-tighter">
-                Sistem <ChevronRight className="h-3 w-3" /> {pathname === '/admin' ? 'Dashboard' : pathname.split('/').pop()?.replace('-', ' ')}
+              <div className="text-xs font-bold text-slate-400 flex items-center gap-2 uppercase">
+                GN Global <ChevronRight className="h-3 w-3" /> {pathname === '/admin' ? 'Dashboard' : pathname.split('/').pop()?.replace('-', ' ')}
               </div>
-            </div>
-            <div className="flex items-center gap-4">
-               <div className="flex items-center gap-3">
-                 <div className="flex flex-col items-end text-right">
-                   <span className="text-xs font-bold text-slate-700">{user.email?.split('@')[0]}</span>
-                   <span className="text-[10px] text-green-500 font-bold uppercase">Online</span>
-                 </div>
-                 <div className="h-10 w-10 rounded-full bg-primary flex items-center justify-center text-white font-bold text-xs shadow-md">
-                   {user.email?.substring(0, 2).toUpperCase()}
-                 </div>
-               </div>
             </div>
           </header>
           <main className="flex-1 overflow-y-auto bg-[#f8f9fa]">

@@ -1,4 +1,3 @@
-
 "use client";
 
 import Image from "next/image";
@@ -63,13 +62,13 @@ export default function Home() {
             </h1>
             
             <p className="text-xl md:text-2xl text-white/70 max-w-2xl leading-relaxed font-medium">
-              {settings?.heroSubtitle || "Sekolah dengan komitmen tinggi dalam mencetak generasi cerdas, berintegritas, dan kompetitif bersama GN Nusantara."}
+              {settings?.heroSubtitle || "Sekolah dengan komitmen tinggi dalam mencetak generasi cerdas bersama GN Nusantara."}
             </p>
             
             <div className="flex flex-wrap gap-6 pt-6">
               {isSpmbActive && (
                 <Button size="lg" className="bg-secondary text-primary font-bold hover:bg-secondary/90 px-12 py-8 text-xl rounded-full shadow-2xl group border-none" asChild>
-                  <Link href="/spmb" className="flex items-center gap-3">
+                  <Link href="/ppdb" className="flex items-center gap-3">
                     {settings?.ppdbMenuTitle || "SPMB ONLINE"} <ArrowRight className="h-6 w-6 group-hover:translate-x-3 transition-transform" />
                   </Link>
                 </Button>
@@ -92,7 +91,7 @@ export default function Home() {
             return (
               <Card key={i} className="bg-white border-none shadow-[0_20px_50px_-15px_rgba(0,0,0,0.08)] hover:translate-y-[-8px] transition-all duration-500 rounded-[4rem] group overflow-hidden">
                 <CardContent className="p-8 md:p-10 flex flex-col items-center text-center space-y-6">
-                  <div className="p-4 bg-slate-50 rounded-[1.5rem] transition-colors duration-500">
+                  <div className="p-4 bg-slate-50 rounded-[1.5rem]">
                     <Icon className="h-7 w-7 text-primary/80" />
                   </div>
                   <div className="space-y-1">
@@ -132,7 +131,7 @@ export default function Home() {
               </h2>
               <p className="text-slate-600 text-xl leading-relaxed font-medium italic pl-12 relative">
                 <span className="absolute left-0 top-0 text-[8rem] text-secondary/20 font-serif leading-none -translate-y-10">“</span>
-                {settings?.welcomeMessage || "Visi kami adalah menciptakan ekosistem pendidikan yang unggul dan berkarakter bersama GN Nusantara."}
+                {settings?.welcomeMessage || "Visi kami adalah menciptakan ekosistem pendidikan yang unggul bersama GN Nusantara."}
               </p>
               <div className="pt-10">
                  <div className="font-bold text-3xl text-primary font-headline tracking-tight">{settings?.headmasterName || "Kepala Sekolah GN Nusantara"}</div>
@@ -152,7 +151,7 @@ export default function Home() {
               <h2 className="text-5xl md:text-[5rem] font-bold text-primary font-headline tracking-tighter leading-none">Informasi Terbaru</h2>
             </div>
             <Button variant="outline" className="rounded-full px-10 py-8 text-lg font-bold border-slate-200 text-slate-600 hover:bg-primary hover:text-white transition-all shadow-xl bg-white" asChild>
-              <Link href="/informasi" className="flex items-center gap-4">Lihat Semua Informasi <ChevronRight className="h-5 w-5" /></Link>
+              <Link href="/informasi" className="flex items-center gap-4">Lihat Semua <ChevronRight className="h-5 w-5" /></Link>
             </Button>
           </div>
 

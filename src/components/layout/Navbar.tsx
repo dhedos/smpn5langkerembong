@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
@@ -41,7 +40,7 @@ export function Navbar() {
     setIsOpen(false);
   }, [pathname]);
 
-  const schoolName = settings?.schoolName || "SMPN 5 Langke Rembong";
+  const schoolName = settings?.schoolName || "GN Nusantara";
   const schoolLogo = settings?.schoolLogoUrl;
   const isSpmbActive = settings?.ppdbIsActive !== false;
   const spmbLabel = settings?.ppdbMenuTitle || "SPMB ONLINE";
@@ -100,13 +99,7 @@ export function Navbar() {
             "font-headline font-bold text-lg md:text-xl tracking-tighter uppercase transition-colors duration-500",
             isSolid ? "text-slate-900" : "text-white drop-shadow-md"
           )}>
-            {schoolName.split(" ").map((word, i) => (
-              <span key={i} className={cn(
-                (word.toUpperCase() === "NEGERI" || word === "5") ? "text-secondary" : ""
-              )}>
-                {word}{" "}
-              </span>
-            ))}
+            {schoolName}
           </span>
         </Link>
 
@@ -171,37 +164,36 @@ export function Navbar() {
         </button>
       </div>
 
-      {/* Mobile Drawer Overlay */}
+      {/* Mobile Drawer */}
       {isOpen && (
         <div 
-          className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm transition-opacity duration-300 lg:hidden"
+          className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm lg:hidden"
           onClick={() => setIsOpen(false)}
         />
       )}
 
-      {/* Mobile Menu Drawer - SOLID WHITE */}
       <div 
         className={cn(
-          "lg:hidden fixed top-0 right-0 h-screen w-[85%] z-[110] bg-white opacity-100 shadow-2xl transition-transform duration-500 ease-in-out transform flex flex-col",
+          "lg:hidden fixed top-0 right-0 h-screen w-[85%] z-[110] bg-white shadow-2xl transition-transform duration-500 ease-in-out transform flex flex-col",
           isOpen ? "translate-x-0" : "translate-x-full"
         )}
       >
-        <div className="flex justify-between items-center p-6 border-b border-slate-100 bg-white shrink-0">
+        <div className="flex justify-between items-center p-6 border-b border-slate-100 shrink-0">
           <div className="flex items-center gap-3">
-            <div className="bg-primary p-2.5 rounded-2xl shadow-lg">
+            <div className="bg-primary p-2.5 rounded-2xl">
               <GraduationCap className="h-6 w-6 text-white" />
             </div>
-            <span className="font-headline font-bold text-primary tracking-tighter uppercase text-sm">Menu Utama</span>
+            <span className="font-headline font-bold text-primary text-sm">GN NUSANTARA</span>
           </div>
           <button 
             onClick={() => setIsOpen(false)} 
-            className="p-3 bg-slate-100 rounded-full text-slate-500 hover:text-primary transition-colors active:scale-90"
+            className="p-3 bg-slate-100 rounded-full text-slate-500"
           >
             <X className="h-6 w-6" />
           </button>
         </div>
         
-        <nav className="flex flex-col p-6 gap-2 bg-white flex-1 overflow-y-auto min-h-0">
+        <nav className="flex flex-col p-6 gap-2 flex-1 overflow-y-auto">
           {navItems.map((item) => (
             <div key={item.name} className="flex flex-col gap-1">
               <Link
@@ -210,7 +202,7 @@ export function Navbar() {
                   "text-lg font-bold p-4 rounded-2xl transition-all duration-300",
                   pathname === item.href 
                     ? "text-primary bg-primary/5" 
-                    : "text-slate-600 hover:text-primary hover:bg-slate-50"
+                    : "text-slate-600"
                 )}
               >
                 {item.name}
@@ -221,7 +213,7 @@ export function Navbar() {
                     <Link 
                       key={sub.name} 
                       href={sub.href}
-                      className="p-3 text-sm font-bold text-slate-500 hover:text-primary transition-colors"
+                      className="p-3 text-sm font-bold text-slate-500"
                     >
                       {sub.name}
                     </Link>
@@ -231,14 +223,14 @@ export function Navbar() {
             </div>
           ))}
           
-          <div className="mt-auto pt-8 border-t border-slate-100 bg-white pb-10">
+          <div className="mt-auto pt-8 border-t border-slate-100 pb-10">
             {isSpmbActive && (
-              <Button size="lg" className="w-full bg-primary h-14 text-white rounded-2xl font-bold text-base shadow-lg shadow-primary/20 mb-6" asChild>
+              <Button size="lg" className="w-full bg-primary h-14 text-white rounded-2xl font-bold" asChild>
                 <Link href="/ppdb">{spmbLabel}</Link>
               </Button>
             )}
-            <p className="text-center text-[10px] text-slate-400 font-bold uppercase tracking-[0.25em] leading-relaxed">
-              {schoolName} <br /> Excellence in Education
+            <p className="text-center text-[10px] text-slate-400 font-bold uppercase tracking-widest pt-6">
+              GN NUSANTARA GLOBAL
             </p>
           </div>
         </nav>

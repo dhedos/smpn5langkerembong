@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
@@ -7,15 +6,10 @@ import {
   Save, 
   Phone, 
   School, 
-  BookOpen, 
-  Target, 
   Plus, 
   Trash2, 
   BarChart3, 
   FileText, 
-  Users,
-  GraduationCap,
-  Award,
   ImageIcon,
   Type,
   Upload,
@@ -24,7 +18,9 @@ import {
   CheckCircle2,
   Info,
   MousePointer2,
-  Loader2
+  Loader2,
+  Target,
+  History
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -164,9 +160,9 @@ export default function AdminSettings() {
           </div>
           <div>
             <h1 className="text-4xl font-bold font-headline text-primary tracking-tight">
-              Konfigurasi Website
+              Konfigurasi GN Nusantara
             </h1>
-            <p className="text-muted-foreground text-sm font-medium">Dikelola secara global oleh Goetnik Nusantara (GN Nusantara).</p>
+            <p className="text-muted-foreground text-sm font-medium">Dikelola secara global oleh Goetnik Nusantara.</p>
           </div>
         </div>
         <Button 
@@ -195,7 +191,7 @@ export default function AdminSettings() {
             <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden bg-white">
               <CardHeader className="bg-slate-50/50 border-b p-8">
                 <CardTitle className="text-xl flex items-center gap-3 font-headline text-primary"><School className="h-6 w-6 text-secondary" /> Identitas Sekolah</CardTitle>
-                <CardDescription>Nama resmi dan logo yang akan tampil di navigasi.</CardDescription>
+                <CardDescription>Nama resmi dan logo GN Nusantara.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-6 p-8">
                 <div className="space-y-3">
@@ -204,7 +200,7 @@ export default function AdminSettings() {
                     value={formData.schoolName} 
                     onChange={(e) => setFormData({...formData, schoolName: e.target.value})} 
                     className="h-14 bg-slate-50 border-slate-100 rounded-2xl font-bold" 
-                    placeholder="E.g. GN Nusantara"
+                    placeholder="E.g. SMPN 5 Langke Rembong"
                   />
                 </div>
                 <div className="space-y-3">
@@ -224,11 +220,11 @@ export default function AdminSettings() {
             <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden bg-white">
               <CardHeader className="bg-slate-50/50 border-b p-8">
                 <CardTitle className="text-xl flex items-center gap-3 font-headline text-primary"><Phone className="h-6 w-6 text-secondary" /> Kontak & Alamat</CardTitle>
-                <CardDescription>Informasi kontak resmi sekolah untuk footer.</CardDescription>
+                <CardDescription>Informasi kontak resmi untuk footer.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-6 p-8">
                 <div className="space-y-3">
-                  <Label className="text-xs font-bold uppercase text-slate-400 tracking-widest">WhatsApp Admin (Format: 628...)</Label>
+                  <Label className="text-xs font-bold uppercase text-slate-400 tracking-widest">WhatsApp Admin (628...)</Label>
                   <Input 
                     value={formData.whatsappNumber} 
                     onChange={(e) => setFormData({...formData, whatsappNumber: e.target.value})} 
@@ -399,7 +395,7 @@ export default function AdminSettings() {
             <CardHeader className="bg-slate-50/50 border-b p-8 flex flex-row items-center justify-between">
               <div>
                 <CardTitle className="text-xl flex items-center gap-3 font-headline text-primary"><BarChart3 className="h-6 w-6 text-secondary" /> Statistik Sekolah</CardTitle>
-                <CardDescription>Edit data numerik pencapaian sekolah yang tampil di Beranda.</CardDescription>
+                <CardDescription>Edit data numerik pencapaian sekolah.</CardDescription>
               </div>
               <Button variant="outline" size="sm" className="rounded-xl font-bold border-primary text-primary hover:bg-primary/5 h-12 px-6" onClick={() => addItem("stats", { label: "Item Baru", value: "0", icon: "Users" })}>
                 <Plus className="h-4 w-4 mr-2" /> Tambah Item
@@ -423,24 +419,9 @@ export default function AdminSettings() {
                       <Input value={stat.label} onChange={(e) => updateItem("stats", i, {...stat, label: e.target.value})} className="bg-white rounded-xl h-12" />
                     </div>
                     <div className="space-y-2">
-                      <Label className="text-[10px] font-extrabold uppercase text-slate-400">Nilai (E.g. 100+)</Label>
+                      <Label className="text-[10px] font-extrabold uppercase text-slate-400">Nilai</Label>
                       <Input value={stat.value} onChange={(e) => updateItem("stats", i, {...stat, value: e.target.value})} className="bg-white rounded-xl h-12 font-bold" />
                     </div>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label className="text-[10px] font-extrabold uppercase text-slate-400">Pilih Ikon</Label>
-                    <Select value={stat.icon} onValueChange={(val) => updateItem("stats", i, {...stat, icon: val})}>
-                      <SelectTrigger className="bg-white h-12 rounded-xl">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Users">Siswa (Users)</SelectItem>
-                        <SelectItem value="GraduationCap">Guru (Graduation)</SelectItem>
-                        <SelectItem value="Award">Prestasi (Award)</SelectItem>
-                        <SelectItem value="BookOpen">Kegiatan (Book)</SelectItem>
-                      </SelectContent>
-                    </Select>
                   </div>
                 </div>
               ))}
@@ -452,14 +433,13 @@ export default function AdminSettings() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden bg-white">
               <CardHeader className="bg-slate-50/50 border-b p-8">
-                <CardTitle className="text-xl flex items-center gap-3 font-headline text-primary"><Clock className="h-6 w-6 text-secondary" /> Status & Judul Menu</CardTitle>
-                <CardDescription>Atur ketersediaan dan label tombol pendaftaran.</CardDescription>
+                <CardTitle className="text-xl flex items-center gap-3 font-headline text-primary"><Clock className="h-6 w-6 text-secondary" /> Status SPMB</CardTitle>
               </CardHeader>
               <CardContent className="p-8 space-y-8">
                 <div className="flex items-center justify-between p-6 bg-slate-50 rounded-2xl border border-slate-100">
                   <div className="space-y-1">
                     <Label className="text-lg font-bold">Aktifkan Menu SPMB</Label>
-                    <p className="text-sm text-slate-400">Muncul di navigasi utama dan beranda.</p>
+                    <p className="text-sm text-slate-400">Muncul di navigasi utama.</p>
                   </div>
                   <Switch 
                     checked={formData.ppdbIsActive} 
@@ -478,17 +458,12 @@ export default function AdminSettings() {
                     placeholder="E.g. SPMB ONLINE"
                   />
                 </div>
-
-                <div className="space-y-3">
-                  <Label className="text-xs font-bold uppercase text-slate-400 tracking-widest">Tahun Ajaran Aktif</Label>
-                  <Input value={formData.ppdbYear} onChange={(e) => setFormData({...formData, ppdbYear: e.target.value})} className="h-14 bg-slate-50 border-slate-100 rounded-2xl font-bold" />
-                </div>
               </CardContent>
             </Card>
 
             <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden bg-white">
               <CardHeader className="bg-slate-50/50 border-b p-8 flex flex-row items-center justify-between">
-                <CardTitle className="text-xl flex items-center gap-3 font-headline text-primary"><FileText className="h-6 w-6 text-secondary" /> Persyaratan Berkas</CardTitle>
+                <CardTitle className="text-xl flex items-center gap-3 font-headline text-primary"><FileText className="h-6 w-6 text-secondary" /> Persyaratan SPMB</CardTitle>
                 <Button variant="outline" size="sm" className="rounded-xl font-bold" onClick={() => addItem("ppdbRequirements", "")}>
                   <Plus className="h-4 w-4 mr-2" /> Tambah Syarat
                 </Button>
@@ -500,53 +475,15 @@ export default function AdminSettings() {
                       value={req} 
                       onChange={(e) => updateItem("ppdbRequirements", i, e.target.value)} 
                       className="bg-slate-50 border-slate-100 h-12 rounded-xl"
-                      placeholder={`Persyaratan ${i + 1}`}
                     />
                     <Button variant="ghost" size="icon" className="text-destructive hover:bg-destructive/10 rounded-xl" onClick={() => removeItem("ppdbRequirements", i)}>
                       <Trash2 className="h-4 w-4" />
                     </Button>
                   </div>
                 ))}
-                {formData.ppdbRequirements?.length === 0 && <p className="text-center py-10 text-slate-400 italic">Belum ada persyaratan diatur.</p>}
               </CardContent>
             </Card>
           </div>
-
-          <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden bg-white">
-            <CardHeader className="bg-slate-50/50 border-b p-8 flex flex-row items-center justify-between">
-              <CardTitle className="text-xl flex items-center gap-3 font-headline text-primary"><Info className="h-6 w-6 text-secondary" /> Jalur Pendaftaran & Kuota</CardTitle>
-              <Button variant="outline" size="sm" className="rounded-xl font-bold" onClick={() => addItem("ppdbQuotas", { label: "", value: "", description: "" })}>
-                <Plus className="h-4 w-4 mr-2" /> Tambah Jalur
-              </Button>
-            </CardHeader>
-            <CardContent className="p-8">
-               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                 {formData.ppdbQuotas?.map((q: any, i: number) => (
-                   <div key={i} className="bg-slate-50/50 p-6 rounded-2xl border border-slate-100 relative group">
-                      <Button variant="ghost" size="icon" className="absolute top-2 right-2 text-destructive" onClick={() => removeItem("ppdbQuotas", i)}>
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                      <div className="space-y-4">
-                        <div className="grid grid-cols-3 gap-3">
-                          <div className="col-span-2 space-y-2">
-                            <Label className="text-[10px] font-bold uppercase text-slate-400">Nama Jalur</Label>
-                            <Input value={q.label} onChange={(e) => updateItem("ppdbQuotas", i, {...q, label: e.target.value})} className="bg-white" />
-                          </div>
-                          <div className="space-y-2">
-                            <Label className="text-[10px] font-bold uppercase text-slate-400">Kuota (%)</Label>
-                            <Input value={q.value} onChange={(e) => updateItem("ppdbQuotas", i, {...q, value: e.target.value})} className="bg-white" />
-                          </div>
-                        </div>
-                        <div className="space-y-2">
-                          <Label className="text-[10px] font-bold uppercase text-slate-400">Deskripsi Singkat</Label>
-                          <Input value={q.description} onChange={(e) => updateItem("ppdbQuotas", i, {...q, description: e.target.value})} className="bg-white" />
-                        </div>
-                      </div>
-                   </div>
-                 ))}
-               </div>
-            </CardContent>
-          </Card>
         </TabsContent>
       </Tabs>
     </div>
