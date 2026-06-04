@@ -165,10 +165,10 @@ export function Navbar() {
         onClick={() => setIsOpen(false)}
       />
 
-      {/* Mobile Menu Drawer */}
+      {/* Mobile Menu Drawer (Solid Background, Half Width) */}
       <div 
         className={cn(
-          "lg:hidden fixed top-0 right-0 h-full w-[80%] max-w-sm z-[70] bg-white opacity-100 shadow-2xl transition-transform duration-500 ease-in-out transform",
+          "lg:hidden fixed top-0 right-0 h-full w-[280px] z-[70] bg-white shadow-2xl transition-transform duration-500 ease-in-out transform flex flex-col",
           isOpen ? "translate-x-0" : "translate-x-full"
         )}
       >
@@ -177,7 +177,7 @@ export function Navbar() {
             <div className="bg-primary p-2 rounded-xl">
               <GraduationCap className="h-5 w-5 text-white" />
             </div>
-            <span className="font-headline font-bold text-primary tracking-tighter">NAVIGASI</span>
+            <span className="font-headline font-bold text-primary tracking-tighter uppercase text-sm">NAVIGASI</span>
           </div>
           <button 
             onClick={() => setIsOpen(false)} 
@@ -187,14 +187,14 @@ export function Navbar() {
           </button>
         </div>
         
-        <nav className="flex flex-col p-8 gap-2 bg-white h-full">
+        <nav className="flex flex-col p-8 gap-2 bg-white flex-1 overflow-y-auto">
           {navItems.map((item) => (
             <Link
               key={item.name}
               href={item.href}
               onClick={() => setIsOpen(false)}
               className={cn(
-                "text-xl font-bold p-4 rounded-2xl transition-all duration-300",
+                "text-lg font-bold p-4 rounded-2xl transition-all duration-300",
                 pathname === item.href 
                   ? "text-primary bg-primary/5" 
                   : "text-slate-600 hover:text-primary hover:bg-slate-50"
@@ -208,8 +208,8 @@ export function Navbar() {
             <Button size="lg" className="w-full bg-primary h-14 text-white rounded-2xl font-bold text-base shadow-lg shadow-primary/20" asChild onClick={() => setIsOpen(false)}>
               <Link href="/ppdb">DAFTAR SPMB</Link>
             </Button>
-            <p className="text-center text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-6">
-              Modern Excellence in Education
+            <p className="text-center text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-6 leading-relaxed">
+              Modern Excellence <br /> in Education
             </p>
           </div>
         </nav>
