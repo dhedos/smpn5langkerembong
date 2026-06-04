@@ -16,7 +16,7 @@ export default function ProfilPage() {
   const facilitiesRef = useMemo(() => db ? query(collection(db, "facilities"), where("status", "==", "Published")) : null, [db]);
   const { data: facilities } = useCollection(facilitiesRef);
 
-  const schoolName = settings?.schoolName || "EduVista SMP";
+  const schoolName = settings?.schoolName || "SMPN 5 Langke Rembong";
   
   return (
     <div className="pt-24 bg-white animate-in fade-in duration-500">
@@ -39,7 +39,7 @@ export default function ProfilPage() {
               </div>
               <h2 className="text-5xl font-bold text-primary font-headline tracking-tighter leading-tight">Membangun Fondasi Pendidikan yang Kokoh</h2>
               <div className="space-y-6 text-slate-600 leading-relaxed text-lg font-medium whitespace-pre-line">
-                {settings?.history || "EduVista SMP didirikan dengan cita-cita mulia untuk menghadirkan standar pendidikan berkualitas tinggi yang mudah diakses. Berawal dari sebuah gedung sederhana, kini kami telah berkembang menjadi lembaga pendidikan pilihan yang dipercaya oleh ribuan orang tua untuk mendidik putra-putri mereka menjadi pemimpin masa depan."}
+                {settings?.history || `${schoolName} didirikan dengan cita-cita mulia untuk menghadirkan standar pendidikan berkualitas tinggi yang mudah diakses.`}
               </div>
             </div>
             <div className="w-full md:w-1/2 relative">
@@ -69,7 +69,7 @@ export default function ProfilPage() {
               </div>
               <h3 className="text-4xl font-bold text-primary font-headline tracking-tighter">Visi Sekolah</h3>
               <p className="text-2xl text-slate-600 italic leading-relaxed font-medium">
-                "{settings?.vision || "Menjadi lembaga pendidikan unggulan yang mencetak generasi bertakwa, berkarakter, dan berdaya saing global di era teknologi digital."}"
+                "{settings?.vision || "Menjadi lembaga pendidikan unggulan yang mencetak generasi bertakwa, berkarakter, dan berdaya saing global."}"
               </p>
             </div>
             <div className="bg-primary p-16 rounded-[3.5rem] shadow-2xl text-white space-y-8 relative overflow-hidden">
@@ -86,8 +86,7 @@ export default function ProfilPage() {
                 )) : [
                   "Menyelenggarakan pendidikan holistik berbasis teknologi modern.",
                   "Mengembangkan potensi minat dan bakat siswa secara maksimal.",
-                  "Menanamkan nilai-nilai religius dan etika dalam setiap aktivitas.",
-                  "Membangun kemitraan strategis dengan institusi global."
+                  "Menanamkan nilai-nilai religius dan etika dalam setiap aktivitas."
                 ].map((m, i) => (
                   <li key={i} className="flex gap-4 items-start group">
                     <CheckCircle2 className="h-7 w-7 text-secondary shrink-0 mt-1" />

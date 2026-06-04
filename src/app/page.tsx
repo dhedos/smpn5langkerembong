@@ -59,7 +59,7 @@ export default function Home() {
           <div className="max-w-4xl space-y-10 animate-in fade-in slide-in-from-left duration-1000">
             <h1 className="text-6xl md:text-[7rem] font-bold text-white font-headline leading-[0.9] tracking-tighter">
               {settings?.heroTitle || "Wujudkan Masa Depan"} <br/>
-              <span className="text-secondary italic font-light">{settings?.schoolName || "SMPN 5 LR"}</span>
+              <span className="text-secondary italic font-light">{settings?.schoolName || "GN Nusantara"}</span>
             </h1>
             
             <p className="text-xl md:text-2xl text-white/70 max-w-2xl leading-relaxed font-medium">
@@ -135,7 +135,7 @@ export default function Home() {
                 {settings?.welcomeMessage || "Visi kami adalah menciptakan ekosistem pendidikan yang unggul dan berkarakter."}
               </p>
               <div className="pt-10">
-                 <div className="font-bold text-3xl text-primary font-headline tracking-tight">{settings?.headmasterName || "Dr. Ahmad Hidayat, M.Pd."}</div>
+                 <div className="font-bold text-3xl text-primary font-headline tracking-tight">{settings?.headmasterName || "Kepala Sekolah GN Nusantara"}</div>
                  <div className="text-secondary font-bold uppercase text-[10px] tracking-widest mt-2">{settings?.headmasterTitle || "Kepala Sekolah"}</div>
               </div>
             </div>

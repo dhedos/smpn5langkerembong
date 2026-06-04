@@ -17,7 +17,7 @@ type Message = {
 export function ChatAssistant() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
-    { role: "bot", text: "Halo! Saya asisten virtual EduVista SMP. Ada yang bisa saya bantu terkait informasi sekolah atau PPDB?" },
+    { role: "bot", text: "Halo! Saya asisten virtual GN Nusantara. Ada yang bisa saya bantu terkait informasi sekolah atau PPDB?" },
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -48,7 +48,7 @@ export function ChatAssistant() {
             <CardTitle className="text-sm flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Bot className="h-5 w-5 text-secondary" />
-                <span>EduVista Assistant</span>
+                <span>GN Nusantara Assistant</span>
               </div>
               <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-white/10" onClick={() => setIsOpen(false)}>
                 <X className="h-4 w-4" />

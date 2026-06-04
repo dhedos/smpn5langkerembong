@@ -8,8 +8,8 @@ import { Toaster } from '@/components/ui/toaster';
 import { FirebaseClientProvider } from '@/firebase';
 
 export const metadata: Metadata = {
-  title: 'EduVista SMP - Modern Excellence in Education',
-  description: 'Official website of EduVista Junior High School. Empowering students with modern skills and institutional wisdom.',
+  title: 'GN Nusantara - Modern Excellence in Education',
+  description: 'Official website of GN Nusantara. Empowering students with modern skills and institutional wisdom.',
 };
 
 export default function RootLayout({
