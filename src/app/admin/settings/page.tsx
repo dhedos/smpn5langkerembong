@@ -26,7 +26,8 @@ export default function AdminSettings() {
   const db = useFirestore();
   const { profile } = useUser();
   
-  const targetSchoolId = profile?.schoolId || 'default-school';
+  // Multi-tenant: Target school settings based on user profile
+  const targetSchoolId = profile?.schoolId || 'smpn5-langke-rembong';
   const settingsRef = useMemo(() => db ? doc(db, "schools", targetSchoolId) : null, [db, targetSchoolId]);
   const { data: currentSettings, loading } = useDoc(settingsRef);
 
@@ -155,10 +156,10 @@ export default function AdminSettings() {
               <CardContent className="space-y-6 p-8">
                 <div className="space-y-3">
                   <Label className="text-xs font-bold uppercase text-slate-400">Nama Sekolah</Label>
-                  <Input 
+                  <input 
                     value={formData.schoolName} 
                     onChange={(e) => setFormData({...formData, schoolName: e.target.value})} 
-                    className="h-14 bg-slate-50 rounded-2xl font-bold" 
+                    className="h-14 w-full px-4 border border-input bg-slate-50 rounded-2xl font-bold focus:outline-none focus:ring-2 focus:ring-primary" 
                   />
                 </div>
                 <div className="space-y-3">

@@ -5,8 +5,15 @@ service cloud.firestore {
     function isSignedIn() {
       return request.auth != null;
     }
+    
+    function isAdmin() {
+      return isSignedIn() && (
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'superadmin'
+      );
+    }
 
-    // Aturan untuk profil pengguna (Users)
+    // Aturan untuk profil pengguna
     match /users/{userId} {
       allow read, write: if isSignedIn() && request.auth.uid == userId;
     }
@@ -17,9 +24,7 @@ service cloud.firestore {
       allow write: if isSignedIn();
     }
 
-    // Aturan untuk konten multi-tenant (news, facilities, gallery, dll)
-    // Dalam mode pengembangan, izinkan tulis bagi yang sudah login
-    // Produksi nanti bisa ditambahkan filter: request.resource.data.schoolId == userProfile.schoolId
+    // Aturan untuk berita, fasilitas, galeri
     match /news/{id} {
       allow read: if true;
       allow write: if isSignedIn();
@@ -34,18 +39,8 @@ service cloud.firestore {
       allow read: if true;
       allow write: if isSignedIn();
     }
-    
-    match /teachers/{id} {
-      allow read: if true;
-      allow write: if isSignedIn();
-    }
-    
-    match /announcements/{id} {
-      allow read: if true;
-      allow write: if isSignedIn();
-    }
 
-    // Aturan fallback
+    // Aturan fallback (diperlukan untuk inisialisasi awal)
     match /{document=**} {
       allow read: if true;
       allow write: if isSignedIn();

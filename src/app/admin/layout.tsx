@@ -62,7 +62,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     setIsLoggingIn(true);
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      toast({ title: "Login Berhasil", description: "Selamat datang di GN Nusantara Console." });
+      toast({ title: "Login Berhasil", description: "Selamat datang di GN Nusantara Global Console." });
     } catch (error: any) {
       toast({ title: "Login Gagal", description: "Email atau password salah.", variant: "destructive" });
     } finally {
@@ -96,7 +96,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               </button>
             </div>
             <Button type="submit" className="w-full bg-white text-black hover:bg-slate-200 h-14 rounded-2xl font-bold gap-2" disabled={isLoggingIn}>
-              {isLoggingIn ? "Memproses..." : "Masuk Console"} <ArrowRight className="h-4 w-4" />
+              {isLoggingIn ? "Memproses..." : "Masuk Global Console"} <ArrowRight className="h-4 w-4" />
             </Button>
           </form>
         </div>
@@ -114,8 +114,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 <Database className="h-5 w-5 text-white" />
               </div>
               <div className="flex flex-col text-left">
-                <span className="font-bold text-sm tracking-tight text-slate-900 uppercase">GN Nusantara</span>
-                <span className="text-[10px] text-blue-500 font-extrabold uppercase">Global Console</span>
+                <span className="font-bold text-sm tracking-tight text-slate-900 uppercase leading-none">GN Nusantara</span>
+                <span className="text-[10px] text-blue-500 font-extrabold uppercase mt-1">Global Console</span>
               </div>
             </div>
           </SidebarHeader>
@@ -134,8 +134,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </SidebarMenu>
           </SidebarContent>
           <SidebarFooter className="p-4 border-t border-slate-50">
-            <div className="px-4 py-2 mb-4 bg-slate-50 rounded-xl text-[10px] font-bold text-slate-400 uppercase">
-              School ID: <span className="text-primary">{profile?.schoolId || 'GN-GLOBAL'}</span>
+            <div className="px-4 py-3 mb-4 bg-slate-50 rounded-xl">
+              <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Active School ID</div>
+              <div className="text-xs font-bold text-primary truncate">{profile?.schoolId || 'GN-GLOBAL'}</div>
             </div>
             <Button variant="ghost" className="w-full justify-start gap-3 text-slate-500 hover:text-red-600 hover:bg-red-50 rounded-xl" onClick={() => signOut(auth)}>
               <LogOut className="h-4 w-4" /> Keluar Sesi
