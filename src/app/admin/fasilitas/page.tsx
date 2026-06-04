@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useMemo } from "react";
@@ -14,6 +13,8 @@ import { useFirestore, useCollection } from "@/firebase";
 import { collection, addDoc, deleteDoc, doc, updateDoc, serverTimestamp } from "firebase/firestore";
 import { toast } from "@/hooks/use-toast";
 import Image from "next/image";
+import { errorEmitter } from '@/firebase/error-emitter';
+import { FirestorePermissionError, type SecurityRuleContext } from '@/firebase/errors';
 
 export default function AdminFasilitas() {
   const db = useFirestore();
@@ -28,8 +29,9 @@ export default function AdminFasilitas() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 1024 * 1024) {
-        toast({ title: "Gagal", description: "Ukuran file maksimal 1MB.", variant: "destructive" });
+      // Batasi ukuran file di bawah 800KB untuk keamanan dokumen Firestore (limit 1MB)
+      if (file.size > 800 * 1024) {
+        toast({ title: "File Terlalu Besar", description: "Gunakan gambar di bawah 800KB agar database tetap optimal.", variant: "destructive" });
         return;
       }
       const reader = new FileReader();
@@ -40,54 +42,78 @@ export default function AdminFasilitas() {
     }
   };
 
-  const handleSave = async (status: "Draft" | "Published") => {
+  const handleSave = (status: "Draft" | "Published") => {
     if (!db || !name || !description) {
       toast({ title: "Data Tidak Lengkap", description: "Nama dan deskripsi wajib diisi.", variant: "destructive" });
       return;
     }
 
     setIsSaving(true);
-    try {
-      await addDoc(collection(db, "facilities"), {
-        name,
-        description,
-        imageUrl: imageUrl || "https://picsum.photos/seed/facility/800/600",
-        status,
-        createdAt: serverTimestamp()
+    const data = {
+      name,
+      description,
+      imageUrl: imageUrl || "https://picsum.photos/seed/facility/800/600",
+      status,
+      createdAt: serverTimestamp()
+    };
+
+    // Mengikuti panduan: Jangan gunakan await pada mutasi untuk responsivitas UI
+    addDoc(collection(db, "facilities"), data)
+      .then(() => {
+        setIsSaving(false);
+        setName("");
+        setDescription("");
+        setImageUrl("");
+        toast({ 
+          title: status === "Published" ? "Fasilitas Dipublikasikan" : "Draft Disimpan", 
+          description: `Fasilitas ${name} telah berhasil disimpan.` 
+        });
+      })
+      .catch(async (serverError) => {
+        setIsSaving(false);
+        const permissionError = new FirestorePermissionError({
+          path: 'facilities',
+          operation: 'create',
+          requestResourceData: data,
+        } satisfies SecurityRuleContext);
+        errorEmitter.emit('permission-error', permissionError);
       });
-      setName("");
-      setDescription("");
-      setImageUrl("");
-      toast({ 
-        title: status === "Published" ? "Fasilitas Dipublikasikan" : "Draft Disimpan", 
-        description: `Fasilitas ${name} telah berhasil ${status === "Published" ? "ditampilkan di website" : "disimpan sebagai draft"}.` 
-      });
-    } catch (error) {
-      toast({ title: "Gagal Menyimpan", description: "Terjadi kesalahan saat menghubungi database.", variant: "destructive" });
-    } finally {
-      setIsSaving(false);
-    }
   };
 
-  const toggleStatus = async (id: string, currentStatus: string) => {
+  const toggleStatus = (id: string, currentStatus: string) => {
     if (!db) return;
     const newStatus = currentStatus === "Published" ? "Draft" : "Published";
-    try {
-      await updateDoc(doc(db, "facilities", id), { status: newStatus });
-      toast({ title: "Status Diperbarui", description: `Fasilitas kini berstatus ${newStatus}.` });
-    } catch (error) {
-      toast({ title: "Gagal", description: "Gagal memperbarui status.", variant: "destructive" });
-    }
+    const docRef = doc(db, "facilities", id);
+
+    updateDoc(docRef, { status: newStatus })
+      .then(() => {
+        toast({ title: "Status Diperbarui", description: `Fasilitas kini berstatus ${newStatus}.` });
+      })
+      .catch(async (error) => {
+        const permissionError = new FirestorePermissionError({
+          path: docRef.path,
+          operation: 'update',
+          requestResourceData: { status: newStatus },
+        } satisfies SecurityRuleContext);
+        errorEmitter.emit('permission-error', permissionError);
+      });
   };
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = (id: string) => {
     if (!db) return;
-    try {
-      await deleteDoc(doc(db, "facilities", id));
-      toast({ title: "Dihapus", description: "Fasilitas telah dihapus secara permanen." });
-    } catch (error) {
-      toast({ title: "Gagal", description: "Gagal menghapus data.", variant: "destructive" });
-    }
+    const docRef = doc(db, "facilities", id);
+
+    deleteDoc(docRef)
+      .then(() => {
+        toast({ title: "Dihapus", description: "Fasilitas telah dihapus secara permanen." });
+      })
+      .catch(async (error) => {
+        const permissionError = new FirestorePermissionError({
+          path: docRef.path,
+          operation: 'delete',
+        } satisfies SecurityRuleContext);
+        errorEmitter.emit('permission-error', permissionError);
+      });
   };
 
   return (
@@ -103,7 +129,6 @@ export default function AdminFasilitas() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-        {/* Form Section */}
         <Card className="lg:col-span-1 border-none shadow-xl rounded-[2.5rem] overflow-hidden bg-white">
           <CardHeader className="bg-slate-50/50 border-b p-8">
             <CardTitle className="text-xl">Tambah Fasilitas</CardTitle>
@@ -167,7 +192,6 @@ export default function AdminFasilitas() {
           </CardContent>
         </Card>
 
-        {/* List Section */}
         <Card className="lg:col-span-2 border-none shadow-xl rounded-[2.5rem] overflow-hidden bg-white">
           <CardHeader className="bg-slate-50/50 border-b p-8">
             <CardTitle className="text-xl">Daftar Fasilitas</CardTitle>
