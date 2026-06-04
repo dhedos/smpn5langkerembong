@@ -6,6 +6,7 @@ import { FirebaseProvider } from './provider';
 import { FirebaseApp } from 'firebase/app';
 import { Firestore } from 'firebase/firestore';
 import { Auth } from 'firebase/auth';
+import { Loader2 } from 'lucide-react';
 
 export function FirebaseClientProvider({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false);
@@ -16,18 +17,15 @@ export function FirebaseClientProvider({ children }: { children: React.ReactNode
   } | null>(null);
 
   useEffect(() => {
-    // Inisialisasi Firebase hanya setelah komponen terpasang di klien
     const initialized = initializeFirebase();
     setServices(initialized);
     setMounted(true);
   }, []);
 
-  // Untuk menghindari kesalahan hidrasi, pastikan server dan render pertama klien sama
-  // Jika belum mounted atau services belum siap, tampilkan loading spinner yang konsisten
   if (!mounted || !services) {
     return (
-      <div className="min-h-screen w-full flex items-center justify-center bg-background">
-        <div className="h-8 w-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen w-full flex items-center justify-center bg-transparent">
+        <Loader2 className="h-10 w-10 animate-spin text-primary/20" />
       </div>
     );
   }

@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo } from "react";
 import Link from "next/link";
-import { CheckCircle2, Info, FileText, UserPlus, AlertCircle } from "lucide-react";
+import { CheckCircle2, Info, FileText, UserPlus, AlertCircle, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -29,7 +29,13 @@ export default function SPMBPage() {
     });
   };
 
-  if (loading) return <div className="pt-32 text-center text-slate-400">Memuat informasi...</div>;
+  if (loading) {
+    return (
+      <div className="min-h-[80vh] w-full flex items-center justify-center bg-transparent">
+        <Loader2 className="h-10 w-10 animate-spin text-primary/20" />
+      </div>
+    );
+  }
 
   const spmbYear = settings?.ppdbYear || "2024/2025";
   const isActive = settings?.ppdbIsActive !== false;

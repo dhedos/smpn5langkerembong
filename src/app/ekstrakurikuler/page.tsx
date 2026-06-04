@@ -1,8 +1,7 @@
-
 "use client";
 
 import React, { useMemo } from "react";
-import { Trophy, Calendar, CheckCircle2 } from "lucide-react";
+import { Trophy, Calendar, CheckCircle2, Loader2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useFirestore, useCollection } from "@/firebase";
 import { collection, query, where } from "firebase/firestore";
@@ -36,8 +35,8 @@ export default function VisitorEkstrakurikuler() {
       <section className="py-24">
         <div className="container mx-auto px-4">
           {loading ? (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-              {[1, 2, 3].map(i => <div key={i} className="h-96 bg-slate-100 rounded-[3rem] animate-pulse" />)}
+            <div className="flex justify-center items-center py-20">
+              <Loader2 className="h-10 w-10 animate-spin text-primary/20" />
             </div>
           ) : extras.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">

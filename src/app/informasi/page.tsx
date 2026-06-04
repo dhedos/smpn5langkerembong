@@ -1,10 +1,9 @@
-
 "use client";
 
-import React, { useMemo, useEffect, useState } from "react";
+import React, { useMemo, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Newspaper, Calendar, ArrowRight, Search, Info } from "lucide-react";
+import { Newspaper, Calendar, ArrowRight, Search, Loader2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useFirestore, useCollection } from "@/firebase";
@@ -15,7 +14,6 @@ export default function VisitorInformasi() {
   const currentSchoolId = 'smpn5-langke-rembong';
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Gunakan kueri paling sederhana untuk menghindari stuck loading akibat masalah indeks
   const newsQuery = useMemo(() => {
     if (!db) return null;
     return query(
@@ -26,7 +24,6 @@ export default function VisitorInformasi() {
 
   const { data: rawNews, loading, error } = useCollection(newsQuery);
 
-  // Filter status Published dan pencarian di sisi klien untuk kecepatan maksimal
   const newsItems = useMemo(() => {
     if (!rawNews) return [];
     return rawNews

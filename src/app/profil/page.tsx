@@ -1,9 +1,8 @@
-
 "use client";
 
 import React, { useMemo } from "react";
 import Image from "next/image";
-import { CheckCircle2, Target, History, Users2, Building2, AlertTriangle, Info } from "lucide-react";
+import { CheckCircle2, Target, History, Users2, Building2, AlertTriangle, Info, Loader2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useFirestore, useDoc, useCollection } from "@/firebase";
 import { doc, collection, query, where } from "firebase/firestore";
@@ -13,9 +12,8 @@ export default function ProfilPage() {
   const currentSchoolId = 'smpn5-langke-rembong';
   
   const settingsRef = useMemo(() => db ? doc(db, "schools", currentSchoolId) : null, [db, currentSchoolId]);
-  const { data: settings } = useDoc(settingsRef);
+  const { data: settings, loading: settingsLoading } = useDoc(settingsRef);
 
-  // Menggunakan kueri sederhana (hanya schoolId) agar tidak memerlukan Composite Index manual
   const facilitiesRef = useMemo(() => {
     if (!db) return null;
     return query(
@@ -26,10 +24,17 @@ export default function ProfilPage() {
   
   const { data: rawFacilities, loading: facilitiesLoading, error: facilitiesError } = useCollection(facilitiesRef);
 
-  // Melakukan filtrasi status di sisi klien
   const publishedFacilities = useMemo(() => {
     return rawFacilities?.filter((f: any) => f.status === "Published") || [];
   }, [rawFacilities]);
+
+  if (settingsLoading) {
+    return (
+      <div className="min-h-[80vh] w-full flex items-center justify-center bg-transparent">
+        <Loader2 className="h-10 w-10 animate-spin text-primary/20" />
+      </div>
+    );
+  }
 
   const schoolName = settings?.schoolName || "SMPN 5 Langke Rembong";
   

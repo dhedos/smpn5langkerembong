@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useMemo } from "react";
@@ -34,7 +33,6 @@ export default function Home() {
   const settingsRef = useMemo(() => db ? doc(db, "schools", currentSchoolId) : null, [db]);
   const { data: settings, loading: settingsLoading } = useDoc(settingsRef);
 
-  // Gunakan kueri sederhana untuk menghindari masalah indeks Firestore
   const newsQuery = useMemo(() => {
     if (!db) return null;
     return query(
@@ -45,7 +43,6 @@ export default function Home() {
 
   const { data: rawNews, loading: newsLoading } = useCollection(newsQuery);
 
-  // Proses filter dan sortir di sisi klien agar lebih robust
   const newsItems = useMemo(() => {
     if (!rawNews) return [];
     return rawNews
@@ -60,9 +57,8 @@ export default function Home() {
 
   if (settingsLoading) {
     return (
-      <div className="h-screen w-full flex flex-col items-center justify-center bg-slate-50">
-        <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
-        <p className="text-slate-400 font-bold uppercase tracking-widest animate-pulse">Menghubungkan ke GN Nusantara...</p>
+      <div className="min-h-[80vh] w-full flex items-center justify-center bg-transparent">
+        <Loader2 className="h-10 w-10 animate-spin text-primary/20" />
       </div>
     );
   }
