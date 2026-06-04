@@ -1,39 +1,45 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Fungsi pembantu untuk mengecek apakah user adalah superadmin
-    function isSuperAdmin() {
-      return request.auth != null && 
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'superadmin';
+    // Fungsi pembantu untuk mengecek status login
+    function isSignedIn() {
+      return request.auth != null;
     }
 
-    // Fungsi pembantu untuk mengecek apakah user admin sekolah tersebut
-    function isAdminOfSchool(schoolId) {
-      return request.auth != null && 
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.schoolId == schoolId;
+    // Fungsi untuk mendapatkan data user
+    function getUserData() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
     }
 
     // Aturan untuk profil User
     match /users/{userId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
-      allow read: if isSuperAdmin();
+      // User bisa baca dan tulis profilnya sendiri
+      allow read, write: if isSignedIn() && request.auth.uid == userId;
     }
 
-    // Aturan untuk Koleksi Sekolah
+    // Aturan untuk Koleksi Sekolah (Tenant)
     match /schools/{schoolId} {
-      allow read: if true; // Publik bisa baca profil sekolah
-      allow write: if isSuperAdmin() || isAdminOfSchool(schoolId);
+      // Publik bisa baca informasi sekolah
+      allow read: if true;
+      // Hanya admin sekolah tersebut atau superadmin yang bisa edit
+      allow write: if isSignedIn() && (
+        getUserData().role == 'superadmin' || 
+        getUserData().schoolId == schoolId
+      );
     }
 
-    // Aturan untuk Berita, Galeri, dll (Multi-Tenant)
+    // Aturan untuk konten (News, Gallery, dll)
+    // Menggunakan wildcard {collectionName} agar mencakup semua koleksi konten
     match /{collectionName}/{docId} {
-      allow read: if true; // Publik bisa baca konten
-      allow create, update, delete: if isSuperAdmin() || 
-        (request.auth != null && request.resource.data.schoolId == get(/databases/$(database)/documents/users/$(request.auth.uid)).data.schoolId);
+      // Publik bisa baca semua konten yang diterbitkan
+      allow read: if true;
       
-      // Filter list data berdasarkan schoolId
-      allow list: if isSuperAdmin() || 
-        (request.auth != null && resource.data.schoolId == get(/databases/$(database)/documents/users/$(request.auth.uid)).data.schoolId);
+      // Admin hanya bisa membuat/mengedit data jika schoolId sesuai
+      allow create, update, delete: if isSignedIn() && (
+        getUserData().role == 'superadmin' || 
+        request.resource.data.schoolId == getUserData().schoolId ||
+        resource.data.schoolId == getUserData().schoolId
+      );
     }
   }
 }

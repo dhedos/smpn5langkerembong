@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { User, onAuthStateChanged } from 'firebase/auth';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { useAuth, useFirestore } from '../provider';
 
 export type UserProfile = {
@@ -23,25 +23,31 @@ export function useUser() {
   useEffect(() => {
     return onAuthStateChanged(auth, async (firebaseUser) => {
       setUser(firebaseUser);
+      
       if (firebaseUser) {
         try {
-          const docRef = doc(db, 'users', firebaseUser.uid);
-          const docSnap = await getDoc(docRef);
-          if (docSnap.exists()) {
-            setProfile(docSnap.data() as UserProfile);
+          const userDocRef = doc(db, 'users', firebaseUser.uid);
+          const userDocSnap = await getDoc(userDocRef);
+          
+          if (userDocSnap.exists()) {
+            setProfile(userDocSnap.data() as UserProfile);
           } else {
-            // Fallback default profile if document doesn't exist yet
-            setProfile({
+            // Jika dokumen profil belum ada, buatkan default untuk mencegah error permission
+            const defaultProfile: UserProfile = {
               uid: firebaseUser.uid,
-              name: firebaseUser.displayName || 'Admin',
+              name: firebaseUser.displayName || 'Admin Baru',
               email: firebaseUser.email || '',
               role: 'admin',
               schoolId: 'default-school'
-            });
+            };
+            
+            // Simpan ke Firestore
+            await setDoc(userDocRef, defaultProfile);
+            setProfile(defaultProfile);
           }
         } catch (error) {
-          console.error("Firestore Permission Error handled:", error);
-          // Don't crash the app, provide fallback for initialization
+          console.warn("Permission handling during init:", error);
+          // Fallback lokal jika Firestore belum siap atau rules memblokir sementara
           setProfile({
             uid: firebaseUser.uid,
             name: firebaseUser.displayName || 'Admin',

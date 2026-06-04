@@ -33,13 +33,13 @@ import { doc, setDoc } from "firebase/firestore";
 import { toast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { errorEmitter } from '@/firebase/error-emitter';
-import { FirestorePermissionError, type SecurityRuleContext } from '@/firebase/errors';
+import { FirestorePermissionError } from '@/firebase/errors';
 
 export default function AdminSettings() {
   const db = useFirestore();
   const { profile } = useUser();
   
-  // Use user's schoolId to fetch and save settings
+  // Gunakan schoolId dari profil user untuk multi-tenancy
   const targetSchoolId = profile?.schoolId || 'default-school';
   const settingsRef = useMemo(() => db ? doc(db, "schools", targetSchoolId) : null, [db, targetSchoolId]);
   const { data: currentSettings, loading } = useDoc(settingsRef);
@@ -101,6 +101,7 @@ export default function AdminSettings() {
     setIsSaving(true);
     const docRef = doc(db, "schools", targetSchoolId);
     
+    // Pastikan schoolId disertakan dalam data yang disimpan
     setDoc(docRef, { ...formData, schoolId: targetSchoolId }, { merge: true })
       .then(() => {
         setIsSaving(false);
@@ -108,7 +109,8 @@ export default function AdminSettings() {
       })
       .catch((error: any) => {
         setIsSaving(false);
-        errorEmitter.emit('permission-error', new FirestorePermissionError({ path: docRef.path, operation: 'write' }));
+        console.error("Save error:", error);
+        toast({ title: "Gagal Menyimpan", description: "Cek izin akses atau koneksi Anda.", variant: "destructive" });
       });
   };
 
@@ -123,7 +125,7 @@ export default function AdminSettings() {
           </div>
           <div>
             <h1 className="text-4xl font-bold font-headline text-primary tracking-tight uppercase">Manajemen Website Sekolah</h1>
-            <p className="text-muted-foreground text-sm font-medium">Pengaturan terkelola secara global oleh GN Nusantara.</p>
+            <p className="text-muted-foreground text-sm font-medium">Pengaturan dikelola oleh GN Nusantara Global Console.</p>
           </div>
         </div>
         <Button size="lg" className="bg-primary hover:bg-primary/90 shadow-xl flex gap-2 h-14 px-10 rounded-2xl font-bold" onClick={handleSave} disabled={isSaving}>
