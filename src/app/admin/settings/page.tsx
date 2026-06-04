@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
@@ -15,7 +16,8 @@ import {
   Trash2,
   History,
   Target,
-  Layout
+  Layout,
+  UserCircle
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -43,7 +45,7 @@ export default function AdminSettings() {
     heroTitle: "Membangun Masa Depan Bersama Kami",
     heroSubtitle: "Pendidikan berkualitas untuk generasi emas bangsa melalui kurikulum yang inovatif dan lingkungan yang mendukung.",
     heroImageUrl: "",
-    welcomeTitle: "Selamat Datang",
+    welcomeTitle: "Mendidik dengan Hati & Teknologi",
     welcomeMessage: "Kami berkomitmen untuk memberikan pengalaman belajar terbaik bagi putra-putri Anda melalui kurikulum yang inovatif dan lingkungan yang mendukung.",
     headmasterName: "Kepala Sekolah",
     headmasterTitle: "Pimpinan Sekolah",
@@ -88,6 +90,7 @@ export default function AdminSettings() {
         mission: (currentSettings.mission && currentSettings.mission.length > 0) ? currentSettings.mission : prev.mission,
         heroTitle: currentSettings.heroTitle || prev.heroTitle,
         heroSubtitle: currentSettings.heroSubtitle || prev.heroSubtitle,
+        welcomeTitle: currentSettings.welcomeTitle || prev.welcomeTitle,
       }));
     }
   }, [currentSettings]);
@@ -185,10 +188,11 @@ export default function AdminSettings() {
 
       <Tabs defaultValue="general" className="space-y-8">
         <TabsList className="bg-slate-100/50 p-1.5 rounded-2xl w-full flex flex-wrap h-auto border border-slate-200 gap-1">
-          <TabsTrigger value="general" className="rounded-xl px-6 py-3 font-bold flex-1 data-[state=active]:bg-white">Identitas</TabsTrigger>
-          <TabsTrigger value="hero" className="rounded-xl px-6 py-3 font-bold flex-1 data-[state=active]:bg-white">Beranda</TabsTrigger>
-          <TabsTrigger value="profile" className="rounded-xl px-6 py-3 font-bold flex-1 data-[state=active]:bg-white">Profil Sekolah</TabsTrigger>
-          <TabsTrigger value="social" className="rounded-xl px-6 py-3 font-bold flex-1 data-[state=active]:bg-white">Media Sosial</TabsTrigger>
+          <TabsTrigger value="general" className="rounded-xl px-6 py-3 font-bold flex-1 data-[state=active]:bg-white text-xs">Identitas</TabsTrigger>
+          <TabsTrigger value="hero" className="rounded-xl px-6 py-3 font-bold flex-1 data-[state=active]:bg-white text-xs">Beranda</TabsTrigger>
+          <TabsTrigger value="welcome" className="rounded-xl px-6 py-3 font-bold flex-1 data-[state=active]:bg-white text-xs">Sambutan</TabsTrigger>
+          <TabsTrigger value="profile" className="rounded-xl px-6 py-3 font-bold flex-1 data-[state=active]:bg-white text-xs">Profil Sekolah</TabsTrigger>
+          <TabsTrigger value="social" className="rounded-xl px-6 py-3 font-bold flex-1 data-[state=active]:bg-white text-xs">Media Sosial</TabsTrigger>
         </TabsList>
 
         <TabsContent value="general" className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -282,6 +286,77 @@ export default function AdminSettings() {
                       </div>
                     )}
                     <input type="file" accept="image/*" onChange={(e) => handleFileChange(e, "heroImageUrl")} className="absolute inset-0 opacity-0 cursor-pointer" />
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="welcome" className="space-y-8">
+          <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden bg-white">
+            <CardHeader className="bg-slate-50/50 border-b p-8">
+              <CardTitle className="text-xl flex items-center gap-3 font-headline text-primary">
+                <UserCircle className="h-6 w-6 text-secondary" /> Sambutan Kepala Sekolah
+              </CardTitle>
+              <CardDescription>Atur pesan sambutan dan profil pimpinan sekolah aktif.</CardDescription>
+            </CardHeader>
+            <CardContent className="p-8 space-y-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="space-y-6">
+                  <div className="space-y-3">
+                    <Label className="text-xs font-bold uppercase text-slate-400">Judul Sambutan (Highlight)</Label>
+                    <Input 
+                      value={formData.welcomeTitle} 
+                      onChange={(e) => setFormData({...formData, welcomeTitle: e.target.value})} 
+                      className="h-14 bg-slate-50 rounded-2xl font-bold"
+                      placeholder="Contoh: Mendidik dengan Hati & Teknologi"
+                    />
+                  </div>
+                  <div className="space-y-3">
+                    <Label className="text-xs font-bold uppercase text-slate-400">Isi Pesan Sambutan</Label>
+                    <Textarea 
+                      value={formData.welcomeMessage} 
+                      onChange={(e) => setFormData({...formData, welcomeMessage: e.target.value})} 
+                      className="min-h-[180px] bg-slate-50 rounded-2xl leading-relaxed"
+                      placeholder="Tuliskan kata sambutan di sini..."
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-3">
+                      <Label className="text-xs font-bold uppercase text-slate-400">Nama Kepala Sekolah</Label>
+                      <Input 
+                        value={formData.headmasterName} 
+                        onChange={(e) => setFormData({...formData, headmasterName: e.target.value})} 
+                        className="h-12 bg-slate-50 rounded-xl font-bold"
+                      />
+                    </div>
+                    <div className="space-y-3">
+                      <Label className="text-xs font-bold uppercase text-slate-400">Gelar / Jabatan</Label>
+                      <Input 
+                        value={formData.headmasterTitle} 
+                        onChange={(e) => setFormData({...formData, headmasterTitle: e.target.value})} 
+                        className="h-12 bg-slate-50 rounded-xl"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-3">
+                    <Label className="text-xs font-bold uppercase text-slate-400">Foto Kepala Sekolah (Maks 500KB)</Label>
+                    <div className="relative aspect-[3/4] w-48 rounded-[2rem] overflow-hidden border-2 border-dashed border-slate-200 bg-slate-50 flex items-center justify-center">
+                      {formData.headmasterPhotoUrl ? (
+                        <img src={formData.headmasterPhotoUrl} alt="Kepala Sekolah" className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="text-center text-slate-400">
+                          <ImageIcon className="h-10 w-10 mx-auto mb-2 opacity-20" />
+                          <span className="text-[10px] font-bold">Unggah Foto</span>
+                        </div>
+                      )}
+                      <input type="file" accept="image/*" onChange={(e) => handleFileChange(e, "headmasterPhotoUrl")} className="absolute inset-0 opacity-0 cursor-pointer" />
+                    </div>
                   </div>
                 </div>
               </div>

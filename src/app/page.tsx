@@ -1,3 +1,4 @@
+
 "use client";
 
 import Image from "next/image";
@@ -32,6 +33,9 @@ export default function Home() {
   const schoolName = settings?.schoolName || "SMPN 5 Langke Rembong";
   const heroTitle = settings?.heroTitle || "Membangun Masa Depan";
   const heroSubtitle = settings?.heroSubtitle || "Pendidikan berkualitas untuk generasi emas bangsa melalui kurikulum inovatif.";
+  
+  const welcomeTitle = settings?.welcomeTitle || "Mendidik dengan Hati & Teknologi";
+  const welcomeMessage = settings?.welcomeMessage || "Kami berkomitmen untuk memberikan pengalaman belajar terbaik bagi putra-putri Anda melalui kurikulum yang inovatif dan lingkungan yang mendukung.";
 
   return (
     <div className="flex flex-col gap-0">
@@ -66,14 +70,22 @@ export default function Home() {
       <section className="py-40 bg-white">
         <div className="container mx-auto px-6 md:px-12 text-center">
           <div className="inline-block bg-slate-100 text-slate-500 font-bold tracking-widest uppercase text-[9px] px-6 py-3 rounded-full mb-8">Sambutan Kepala Sekolah</div>
-          <h2 className="text-5xl md:text-[4.5rem] font-bold text-primary leading-[1] font-headline tracking-tighter mb-12">Mendidik dengan <span className="text-secondary italic">Hati & Teknologi</span></h2>
+          
+          <h2 className="text-5xl md:text-[4.5rem] font-bold text-primary leading-[1] font-headline tracking-tighter mb-12 whitespace-pre-line">
+            {welcomeTitle}
+          </h2>
+          
           <div className="max-w-3xl mx-auto text-slate-600 text-xl leading-relaxed font-medium italic">
-             "{settings?.welcomeMessage || "Selamat datang di SMPN 5 Langke Rembong. Kami berkomitmen untuk memberikan pengalaman belajar terbaik bagi putra-putri Anda."}"
+             "{welcomeMessage}"
           </div>
           <div className="mt-12 flex flex-col items-center">
-            {settings?.headmasterPhotoUrl && (
-              <div className="w-24 h-24 rounded-full overflow-hidden mb-4 border-4 border-slate-50 shadow-lg">
+            {settings?.headmasterPhotoUrl ? (
+              <div className="w-32 h-32 rounded-full overflow-hidden mb-6 border-4 border-slate-50 shadow-xl">
                 <img src={settings.headmasterPhotoUrl} alt="Kepala Sekolah" className="w-full h-full object-cover" />
+              </div>
+            ) : (
+              <div className="w-32 h-32 rounded-full bg-slate-100 mb-6 flex items-center justify-center border-4 border-slate-50 shadow-xl">
+                 <GraduationCap className="h-12 w-12 text-slate-300" />
               </div>
             )}
             <div className="font-bold text-3xl text-primary font-headline tracking-tight">{settings?.headmasterName || "Kepala Sekolah"}</div>
