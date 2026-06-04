@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useMemo } from "react";
@@ -59,7 +58,7 @@ export default function Home() {
   if (settingsLoading) {
     return (
       <div className="flex-1 flex items-center justify-center min-h-[60vh]">
-        <Loader2 className="h-12 w-12 animate-spin text-primary/30" />
+        <Loader2 className="h-12 w-12 animate-spin text-primary/30" strokeWidth={1.5} />
       </div>
     );
   }

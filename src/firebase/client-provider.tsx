@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useEffect, useState } from 'react';
@@ -7,10 +6,8 @@ import { FirebaseProvider } from './provider';
 import { FirebaseApp } from 'firebase/app';
 import { Firestore } from 'firebase/firestore';
 import { Auth } from 'firebase/auth';
-import { Loader2 } from 'lucide-react';
 
 export function FirebaseClientProvider({ children }: { children: React.ReactNode }) {
-  const [mounted, setMounted] = useState(false);
   const [services, setServices] = useState<{
     app: FirebaseApp;
     firestore: Firestore;
@@ -18,29 +15,14 @@ export function FirebaseClientProvider({ children }: { children: React.ReactNode
   } | null>(null);
 
   useEffect(() => {
-    const initialized = initializeFirebase();
-    setServices(initialized);
-    setMounted(true);
+    // Inisialisasi dilakukan hanya sekali di sisi client
+    setServices(initializeFirebase());
   }, []);
 
-  // Mencegah hydration mismatch dengan memastikan markup awal identik di server dan client
-  if (!mounted) {
-    return (
-      <div 
-        className="fixed inset-0 flex items-center justify-center bg-transparent z-[9999]"
-        aria-hidden="true"
-      >
-        <Loader2 className="h-12 w-12 animate-spin text-primary/30" />
-      </div>
-    );
-  }
-
+  // Jika servis belum siap, kita kembalikan null untuk menghindari flash konten default
+  // Ini menghilangkan loading screen pertama yang "wagu"
   if (!services) {
-    return (
-      <div className="fixed inset-0 flex items-center justify-center bg-transparent z-[9999]">
-        <Loader2 className="h-12 w-12 animate-spin text-primary/30" />
-      </div>
-    );
+    return null;
   }
 
   return (
