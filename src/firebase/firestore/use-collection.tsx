@@ -1,6 +1,7 @@
+
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { Query, onSnapshot } from 'firebase/firestore';
 import { errorEmitter } from '../error-emitter';
 import { FirestorePermissionError } from '../errors';
@@ -9,7 +10,6 @@ export function useCollection<T = any>(query: Query | null) {
   const [data, setData] = useState<T[] | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
-  const lastQueryKey = useRef<string | null>(null);
 
   useEffect(() => {
     if (!query) {
@@ -17,10 +17,6 @@ export function useCollection<T = any>(query: Query | null) {
       setData(null);
       return;
     }
-
-    const currentQueryKey = query.toString();
-    if (lastQueryKey.current === currentQueryKey) return;
-    lastQueryKey.current = currentQueryKey;
 
     setLoading(true);
     let isMounted = true;
@@ -59,7 +55,7 @@ export function useCollection<T = any>(query: Query | null) {
       isMounted = false;
       unsubscribe();
     };
-  }, [query]); 
+  }, [query?.toString()]); // Re-run if query definition changes
 
   return { data, loading, error };
 }

@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useMemo } from "react";
+import React, { useMemo, useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Newspaper, Calendar, ArrowRight, Search, Info } from "lucide-react";
@@ -12,10 +12,10 @@ import { collection, query, where } from "firebase/firestore";
 
 export default function VisitorInformasi() {
   const db = useFirestore();
-  // Gunakan ID sekolah yang sama dengan panel Admin
   const currentSchoolId = 'smpn5-langke-rembong';
+  const [searchTerm, setSearchTerm] = useState("");
 
-  // Kueri sederhana untuk menghindari keharusan membuat Composite Index manual
+  // Gunakan kueri paling sederhana untuk menghindari stuck loading akibat masalah indeks
   const newsQuery = useMemo(() => {
     if (!db) return null;
     return query(
@@ -24,19 +24,24 @@ export default function VisitorInformasi() {
     );
   }, [db]);
 
-  const { data: rawNews, loading } = useCollection(newsQuery);
+  const { data: rawNews, loading, error } = useCollection(newsQuery);
 
-  // Filtrasi dan pengurutan dilakukan di sisi klien untuk kemudahan penggunaan tanpa Index manual
+  // Filter status Published dan pencarian di sisi klien untuk kecepatan maksimal
   const newsItems = useMemo(() => {
     if (!rawNews) return [];
     return rawNews
-      .filter((item: any) => item.status === "Published")
+      .filter((item: any) => {
+        const isPublished = item.status === "Published";
+        const matchesSearch = item.title?.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                             item.summary?.toLowerCase().includes(searchTerm.toLowerCase());
+        return isPublished && matchesSearch;
+      })
       .sort((a: any, b: any) => {
         const dateA = a.createdAt?.seconds || 0;
         const dateB = b.createdAt?.seconds || 0;
         return dateB - dateA;
       });
-  }, [rawNews]);
+  }, [rawNews, searchTerm]);
 
   return (
     <div className="pt-24 bg-white min-h-screen">
@@ -54,13 +59,18 @@ export default function VisitorInformasi() {
             <h2 className="text-3xl font-bold text-primary font-headline tracking-tight">Informasi Terbaru</h2>
             <div className="relative w-full md:w-96">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-              <Input className="pl-12 rounded-full h-12 border-slate-200" placeholder="Cari informasi..." />
+              <Input 
+                className="pl-12 rounded-full h-12 border-slate-200" 
+                placeholder="Cari informasi..." 
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
             </div>
           </div>
 
           {loading ? (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-              {[1, 2, 3, 4, 5, 6].map((i) => (
+              {[1, 2, 3].map((i) => (
                 <div key={i} className="space-y-4 animate-pulse">
                   <div className="h-64 bg-slate-100 rounded-[2.5rem]" />
                   <div className="h-6 bg-slate-100 w-3/4 rounded" />
@@ -78,6 +88,7 @@ export default function VisitorInformasi() {
                       alt={item.title}
                       fill
                       className="object-cover group-hover:scale-110 transition-transform duration-700"
+                      data-ai-hint="school news"
                     />
                     <div className="absolute top-6 left-6 bg-white/90 backdrop-blur-md text-primary text-[10px] font-bold px-4 py-1.5 rounded-full uppercase tracking-widest">
                       {item.category}
@@ -104,8 +115,8 @@ export default function VisitorInformasi() {
           ) : (
             <div className="text-center py-24 space-y-4 bg-slate-50 rounded-[3rem] border-2 border-dashed border-slate-200">
               <Newspaper className="h-16 w-16 text-slate-200 mx-auto" />
-              <p className="text-slate-400 italic text-lg font-medium">Belum ada informasi yang diterbitkan saat ini.</p>
-              <p className="text-slate-300 text-sm">Pastikan Admin telah mempublikasikan berita dengan status <span className="text-green-600 font-bold uppercase">Published</span>.</p>
+              <p className="text-slate-400 italic text-lg font-medium">Belum ada informasi yang ditemukan.</p>
+              <p className="text-slate-300 text-sm">Pastikan Admin telah mengaktifkan status <span className="text-green-600 font-bold uppercase">Published</span> pada berita.</p>
             </div>
           )}
         </div>

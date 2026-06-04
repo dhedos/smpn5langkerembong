@@ -12,7 +12,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { adminContentOptimizer } from "@/ai/flows/admin-content-optimizer-flow";
 import { toast } from "@/hooks/use-toast";
-import { useFirestore, useCollection, useUser } from "@/firebase";
+import { useFirestore, useCollection } from "@/firebase";
 import { collection, addDoc, deleteDoc, doc, updateDoc, serverTimestamp, query, where } from "firebase/firestore";
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError, type SecurityRuleContext } from '@/firebase/errors';
@@ -20,8 +20,6 @@ import { cn } from "@/lib/utils";
 
 export default function AdminBerita() {
   const db = useFirestore();
-  const { profile } = useUser();
-  // Gunakan ID sekolah yang konsisten dengan website publik
   const schoolId = 'smpn5-langke-rembong';
 
   const newsRef = useMemo(() => {
@@ -57,20 +55,6 @@ export default function AdminBerita() {
     } finally {
       setOptimizing(false);
     }
-  };
-
-  const handleAddTag = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && newTag.trim()) {
-      e.preventDefault();
-      if (!tags.includes(newTag.trim())) {
-        setTags([...tags, newTag.trim()]);
-      }
-      setNewTag("");
-    }
-  };
-
-  const removeTag = (tagToRemove: string) => {
-    setTags(tags.filter(t => t !== tagToRemove));
   };
 
   const handleSave = (status: "Draft" | "Published") => {
@@ -204,27 +188,12 @@ export default function AdminBerita() {
                 onClick={handleOptimize}
                 disabled={optimizing || isSaving}
               >
-                {optimizing ? (
-                  <Sparkles className="h-5 w-5 animate-spin text-secondary" />
-                ) : (
-                  <Wand2 className="h-5 w-5 text-secondary" />
-                )}
+                {optimizing ? <Loader2 className="h-5 w-5 animate-spin" /> : <Wand2 className="h-5 w-5 text-secondary" />}
                 {optimizing ? "AI Menganalisis..." : "AI Optimize"}
               </Button>
               <div className="flex gap-3">
-                <Button 
-                  variant="outline"
-                  className="h-12 px-6 rounded-xl font-bold" 
-                  onClick={() => handleSave("Draft")}
-                  disabled={isSaving}
-                >
-                  Simpan Draft
-                </Button>
-                <Button 
-                  className="h-12 px-8 rounded-xl bg-primary shadow-lg shadow-primary/20 flex gap-2 font-bold" 
-                  onClick={() => handleSave("Published")}
-                  disabled={isSaving}
-                >
+                <Button variant="outline" className="h-12 px-6 rounded-xl font-bold" onClick={() => handleSave("Draft")} disabled={isSaving}>Simpan Draft</Button>
+                <Button className="h-12 px-8 rounded-xl bg-primary shadow-lg shadow-primary/20 flex gap-2 font-bold" onClick={() => handleSave("Published")} disabled={isSaving}>
                   {isSaving ? <Loader2 className="h-5 w-5 animate-spin" /> : <Save className="h-5 w-5" />}
                   {isSaving ? "Memproses..." : "Publikasikan"}
                 </Button>
@@ -237,86 +206,55 @@ export default function AdminBerita() {
           <Card className="border-none shadow-xl rounded-[2.5rem] bg-white border border-slate-100">
             <CardHeader className="bg-slate-50/50 border-b p-8">
               <CardTitle className="text-xl flex items-center gap-3 text-primary">
-                <Sparkles className="h-5 w-5 text-secondary" />
-                AI Suggestions
+                <Sparkles className="h-5 w-5 text-secondary" /> AI Suggestions
               </CardTitle>
             </CardHeader>
             <CardContent className="p-8 space-y-6">
-              <div className="space-y-3">
-                <Label className="text-xs font-extrabold uppercase text-slate-400">Ringkasan Otomatis</Label>
-                <Textarea 
-                  className="bg-slate-50 border-slate-100 rounded-2xl text-sm min-h-[120px] italic leading-relaxed"
-                  placeholder="Klik 'AI Optimize' untuk menghasilkan ringkasan..."
-                  value={summary}
-                  onChange={(e) => setSummary(e.target.value)}
-                  disabled={isSaving}
-                />
-              </div>
+              <Textarea 
+                className="bg-slate-50 border-slate-100 rounded-2xl text-sm min-h-[120px] italic leading-relaxed"
+                placeholder="Klik 'AI Optimize' untuk menghasilkan ringkasan..."
+                value={summary}
+                onChange={(e) => setSummary(e.target.value)}
+              />
               <div className="space-y-4">
                 <Label className="text-xs font-extrabold uppercase text-slate-400">Tag SEO</Label>
-                <div className="flex flex-wrap gap-2 mb-2">
+                <div className="flex flex-wrap gap-2">
                   {tags.map((tag) => (
-                    <Badge key={tag} variant="secondary" className="bg-slate-100 text-primary px-4 py-1.5 rounded-xl flex items-center gap-2 group">
-                      #{tag}
-                      <button onClick={() => removeTag(tag)} className="opacity-0 group-hover:opacity-100 transition-opacity">
-                        <X className="h-3 w-3 text-destructive" />
-                      </button>
-                    </Badge>
+                    <Badge key={tag} variant="secondary" className="bg-slate-100 text-primary px-4 py-1.5 rounded-xl">#{tag}</Badge>
                   ))}
                 </div>
-                <Input 
-                  placeholder="Tambah tag manual (Tekan Enter)..." 
-                  value={newTag}
-                  onChange={(e) => setNewTag(e.target.value)}
-                  onKeyDown={handleAddTag}
-                  className="bg-slate-50 border-slate-100 rounded-xl"
-                  disabled={isSaving}
-                />
               </div>
             </CardContent>
           </Card>
-
+          
           <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden">
-            <CardHeader className="bg-slate-50/50 border-b p-8">
-              <CardTitle className="text-xl">Daftar Terbaru</CardTitle>
-            </CardHeader>
-            <CardContent className="p-0">
-              <Table>
-                <TableBody>
-                  {loading ? (
-                    <TableRow><TableCell className="text-center py-10 text-slate-400 animate-pulse italic">Memuat data...</TableCell></TableRow>
-                  ) : newsItems && newsItems.length > 0 ? newsItems.sort((a,b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0)).slice(0, 5).map((item: any) => (
-                    <TableRow key={item.id}>
-                      <TableCell className="p-6">
-                        <div className="font-bold text-slate-900 truncate max-w-[200px]">{item.title}</div>
-                        <div className="text-[10px] text-slate-400 font-bold uppercase mt-1">{item.date}</div>
-                      </TableCell>
-                      <TableCell className="text-center">
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
-                          className={cn(
-                            "rounded-full h-10 px-4 gap-2 border", 
-                            item.status === "Published" ? "text-green-600 bg-green-50 border-green-100" : "text-slate-400 bg-slate-50"
-                          )}
-                          onClick={() => toggleStatus(item.id, item.status)}
-                        >
-                          {item.status === "Published" ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
-                          <span className="text-[10px] font-black uppercase">{item.status || "Draft"}</span>
-                        </Button>
-                      </TableCell>
-                      <TableCell className="text-right p-6">
-                        <Button variant="ghost" size="icon" className="text-destructive" onClick={() => handleDelete(item.id)}>
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  )) : (
-                    <TableRow><TableCell className="text-center py-10 text-slate-300 italic">Belum ada informasi.</TableCell></TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </CardContent>
+             <CardHeader className="bg-slate-50/50 border-b p-8"><CardTitle className="text-xl">Daftar Terbaru</CardTitle></CardHeader>
+             <CardContent className="p-0">
+               <Table>
+                 <TableBody>
+                   {loading ? (
+                     <TableRow><TableCell className="text-center py-10">Memuat...</TableCell></TableRow>
+                   ) : newsItems && newsItems.length > 0 ? newsItems.sort((a,b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0)).slice(0, 5).map((item: any) => (
+                     <TableRow key={item.id}>
+                       <TableCell className="p-6 font-bold truncate max-w-[150px]">{item.title}</TableCell>
+                       <TableCell className="text-center">
+                         <Button 
+                           variant="ghost" 
+                           size="sm" 
+                           className={cn("rounded-full h-10 px-4", item.status === "Published" ? "text-green-600 bg-green-50" : "text-slate-400 bg-slate-50")}
+                           onClick={() => toggleStatus(item.id, item.status)}
+                         >
+                           {item.status === "Published" ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
+                         </Button>
+                       </TableCell>
+                       <TableCell className="text-right p-6">
+                         <Button variant="ghost" size="icon" className="text-destructive" onClick={() => handleDelete(item.id)}><Trash2 className="h-4 w-4" /></Button>
+                       </TableCell>
+                     </TableRow>
+                   )) : <TableRow><TableCell className="text-center py-10">Kosong</TableCell></TableRow>}
+                 </TableBody>
+               </Table>
+             </CardContent>
           </Card>
         </div>
       </div>
