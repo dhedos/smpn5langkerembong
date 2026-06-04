@@ -86,31 +86,38 @@ export default function Home() {
   return (
     <div className="flex flex-col gap-0">
       {/* Hero Section */}
-      <section className="relative min-h-[90vh] flex items-center overflow-hidden bg-slate-950">
+      <section className="relative min-h-[100vh] flex items-center overflow-hidden bg-slate-950">
         <div 
-          className="absolute inset-0 z-0 bg-cover bg-center opacity-60"
+          className="absolute inset-0 z-0 bg-cover bg-center opacity-70"
           style={{ backgroundImage: `url('${heroImageUrl}')`, backgroundAttachment: 'fixed' }}
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/70 to-transparent z-[1]" />
-        <div className="container relative z-10 px-6 md:px-12 mx-auto pb-48 pt-32">
-          <div className="max-w-4xl space-y-10">
-            <h1 className="text-5xl md:text-[6rem] font-bold text-white font-headline leading-[1] tracking-tighter uppercase">
-              {heroTitle} <br/>
-              <span className="text-secondary italic font-light lowercase">{schoolName}</span>
-            </h1>
-            <p className="text-xl md:text-2xl text-white/70 max-w-2xl leading-relaxed font-medium">
+        <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/40 to-transparent z-[1]" />
+        
+        <div className="container relative z-10 px-6 md:px-12 mx-auto pb-32 pt-40">
+          <div className="max-w-5xl space-y-8 animate-in fade-in slide-in-from-left duration-1000">
+            <div className="space-y-4">
+              <h1 className="text-6xl md:text-[8rem] font-black text-white font-headline leading-[0.85] tracking-tighter uppercase drop-shadow-2xl">
+                {heroTitle}
+              </h1>
+              <div className="text-3xl md:text-5xl font-bold text-secondary italic tracking-tight drop-shadow-lg lowercase mt-4 opacity-90">
+                {schoolName}
+              </div>
+            </div>
+            
+            <p className="text-lg md:text-xl text-white/80 max-w-2xl leading-relaxed font-medium drop-shadow-md border-l-4 border-secondary pl-6">
               {heroSubtitle}
             </p>
-            <div className="flex flex-wrap gap-6 pt-6">
+            
+            <div className="flex flex-wrap gap-6 pt-10">
               {isSpmbActive && (
-                <Button size="lg" className="bg-secondary text-primary font-bold hover:bg-secondary/90 px-12 py-8 text-xl rounded-full shadow-2xl group border-none" asChild>
+                <Button size="lg" className="bg-secondary text-primary font-bold hover:bg-secondary/90 px-10 py-7 text-lg rounded-full shadow-2xl group border-none" asChild>
                   <Link href="/ppdb" className="flex items-center gap-3">
-                    {settings?.ppdbMenuTitle || "SPMB ONLINE"} <ArrowRight className="h-6 w-6 group-hover:translate-x-3 transition-transform" />
+                    {settings?.ppdbMenuTitle || "SPMB ONLINE"} <ArrowRight className="h-5 w-5 group-hover:translate-x-2 transition-transform" />
                   </Link>
                 </Button>
               )}
-              <Button size="lg" className="bg-white text-primary font-bold hover:bg-slate-100 px-12 py-8 text-xl rounded-full shadow-xl transition-all" asChild>
-                <Link href="/profil">Pelajari Profil Kami</Link>
+              <Button size="lg" className="bg-white/10 backdrop-blur-md text-white border border-white/20 font-bold hover:bg-white/20 px-10 py-7 text-lg rounded-full shadow-xl transition-all" asChild>
+                <Link href="/profil">Pelajari Profil</Link>
               </Button>
             </div>
           </div>
