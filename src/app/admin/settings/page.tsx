@@ -287,7 +287,7 @@ export default function AdminSettings() {
                     placeholder="https://www.google.com/maps/embed?..."
                     className="h-12 bg-slate-50 rounded-xl" 
                   />
-                  <p className="text-[10px] text-slate-400 italic">Dapatkan URL dari 'Share' > 'Embed a map' > ambil nilai atribut 'src'.</p>
+                  <p className="text-[10px] text-slate-400 italic">Dapatkan URL dari 'Share' &gt; 'Embed a map' &gt; ambil nilai atribut 'src'.</p>
                 </div>
               </CardContent>
             </Card>
