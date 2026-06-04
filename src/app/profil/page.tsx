@@ -1,28 +1,29 @@
+
 "use client";
 
 import React, { useMemo } from "react";
 import Image from "next/image";
-import { CheckCircle2, Target, History, Users2, Building2, AlertTriangle } from "lucide-react";
+import { CheckCircle2, Target, History, Users2, Building2, AlertTriangle, Info } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useFirestore, useDoc, useCollection } from "@/firebase";
-import { doc, collection, query, where } from "firebase/firestore";
+import { doc, collection, query, where, orderBy } from "firebase/firestore";
 
 export default function ProfilPage() {
   const db = useFirestore();
   const currentSchoolId = 'smpn5-langke-rembong';
   
-  const settingsRef = useMemo(() => db ? doc(db, "schools", currentSchoolId) : null, [db]);
+  const settingsRef = useMemo(() => db ? doc(db, "schools", currentSchoolId) : null, [db, currentSchoolId]);
   const { data: settings } = useDoc(settingsRef);
 
-  // Filter fasilitas yang dipublikasikan untuk sekolah ini
+  // Kueri yang lebih fleksibel: Tampilkan semua fasilitas milik sekolah ini yang berstatus Published
   const facilitiesRef = useMemo(() => {
     if (!db) return null;
     return query(
       collection(db, "facilities"), 
-      where("schoolId", "==", currentSchoolId), 
+      where("schoolId", "==", currentSchoolId),
       where("status", "==", "Published")
     );
-  }, [db]);
+  }, [db, currentSchoolId]);
   
   const { data: facilities, loading: facilitiesLoading, error: facilitiesError } = useCollection(facilitiesRef);
 
@@ -34,7 +35,7 @@ export default function ProfilPage() {
       <section className="bg-primary py-24 text-white relative overflow-hidden">
         <div className="absolute inset-0 bg-secondary/5 skew-y-3 translate-y-20" />
         <div className="container mx-auto px-4 relative z-10 text-center">
-          <h1 className="text-5xl md:text-7xl font-bold font-headline mb-6 tracking-tighter">Profil Sekolah</h1>
+          <h1 className="text-5xl md:text-7xl font-bold font-headline mb-6 tracking-tighter uppercase">Profil Sekolah</h1>
           <p className="text-xl text-white/70 max-w-2xl mx-auto font-medium">Mengenal lebih dekat perjalanan, nilai, dan infrastruktur unggulan {schoolName}.</p>
         </div>
       </section>
@@ -49,21 +50,17 @@ export default function ProfilPage() {
               </div>
               <h2 className="text-5xl font-bold text-primary font-headline tracking-tighter leading-tight">Membangun Fondasi Pendidikan yang Kokoh</h2>
               <div className="space-y-6 text-slate-600 leading-relaxed text-lg font-medium whitespace-pre-line">
-                {settings?.history || `${schoolName} didirikan dengan cita-cita mulia untuk menghadirkan standar pendidikan berkualitas tinggi yang mudah diakses.`}
+                {settings?.history || `${schoolName} didirikan dengan cita-cita mulia untuk menghadirkan standar pendidikan berkualitas tinggi yang mudah diakses secara global.`}
               </div>
             </div>
             <div className="w-full md:w-1/2 relative">
               <div className="rounded-[3rem] overflow-hidden shadow-2xl border-[12px] border-slate-50">
-                 <Image 
+                 <img 
                   src="https://picsum.photos/seed/history/800/800" 
                   alt="Sejarah Sekolah" 
-                  width={800} 
-                  height={800} 
                   className="w-full h-auto object-cover"
-                  data-ai-hint="old building"
                 />
               </div>
-              <div className="absolute -bottom-10 -left-10 bg-secondary w-32 h-32 rounded-full opacity-20 blur-2xl" />
             </div>
           </div>
         </div>
@@ -104,7 +101,6 @@ export default function ProfilPage() {
                   </li>
                 ))}
               </ul>
-              <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-16 translate-x-16" />
             </div>
           </div>
         </div>
@@ -118,36 +114,43 @@ export default function ProfilPage() {
               <Building2 className="h-4 w-4" /> Sarana Prasarana
             </div>
             <h2 className="text-5xl font-bold text-primary font-headline tracking-tighter">Fasilitas Unggulan Kami</h2>
+            <p className="text-slate-400 max-w-xl mx-auto">Kami menyediakan infrastruktur terbaik untuk mendukung proses belajar mengajar yang maksimal.</p>
           </div>
 
           {facilitiesLoading ? (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-10 animate-pulse">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
               {[1, 2, 3].map(i => (
-                <div key={i} className="h-64 bg-slate-100 rounded-[2.5rem]" />
+                <div key={i} className="h-80 bg-slate-100 rounded-[2.5rem] animate-pulse" />
               ))}
             </div>
           ) : facilitiesError ? (
             <div className="text-center py-20 bg-slate-50 rounded-[3rem] border-2 border-dashed border-red-200 text-red-400">
               <AlertTriangle className="h-12 w-12 mx-auto mb-4" />
-              <p className="font-medium">Terjadi kendala saat memuat fasilitas. Pastikan Index Firestore sudah siap.</p>
+              <p className="font-medium">Indeks database sedang disiapkan. Mohon tunggu 1-2 menit atau periksa Firebase Console.</p>
             </div>
           ) : facilities && facilities.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-              {facilities.map((f: any, i: number) => (
-                <Card key={i} className="overflow-hidden border-none shadow-xl hover:shadow-2xl transition-all duration-500 rounded-[2.5rem] group">
-                  <div className="relative h-64 overflow-hidden">
-                     <Image src={f.imageUrl || `https://picsum.photos/seed/${f.id}/600/400`} alt={f.name} fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
+              {facilities.map((f: any) => (
+                <Card key={f.id} className="overflow-hidden border-none shadow-xl hover:shadow-2xl transition-all duration-500 rounded-[2.5rem] group bg-white">
+                  <div className="relative h-64 overflow-hidden bg-slate-100">
+                     <img 
+                      src={f.imageUrl || `https://picsum.photos/seed/${f.id}/600/400`} 
+                      alt={f.name || "Fasilitas"} 
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
+                    />
                   </div>
                   <CardContent className="p-8">
-                    <h4 className="text-2xl font-bold text-primary font-headline mb-3">{f.name}</h4>
-                    <p className="text-slate-500 font-medium text-sm leading-relaxed">{f.description}</p>
+                    <h4 className="text-2xl font-bold text-primary font-headline mb-3">{f.name || "Nama Fasilitas"}</h4>
+                    <p className="text-slate-500 font-medium text-sm leading-relaxed">{f.description || "Tidak ada deskripsi tersedia."}</p>
                   </CardContent>
                 </Card>
               ))}
             </div>
           ) : (
-            <div className="text-center py-20 bg-slate-50 rounded-[3rem] border-2 border-dashed border-slate-200">
-              <p className="text-slate-400 italic">Daftar fasilitas belum dipublikasikan oleh admin.</p>
+            <div className="text-center py-24 bg-slate-50 rounded-[3rem] border-2 border-dashed border-slate-200">
+              <Info className="h-12 w-12 text-slate-300 mx-auto mb-4" />
+              <p className="text-slate-500 font-medium">Belum ada fasilitas yang dipublikasikan.</p>
+              <p className="text-slate-400 text-sm mt-2">Pastikan Admin sudah mengubah status fasilitas menjadi "Published" di panel kontrol.</p>
             </div>
           )}
         </div>

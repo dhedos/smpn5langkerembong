@@ -1,7 +1,8 @@
+
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { Building2, Trash2, ImageIcon, Upload, CheckCircle2, Eye, EyeOff, Loader2, AlertTriangle } from "lucide-react";
+import { Building2, Trash2, ImageIcon, Upload, CheckCircle2, Eye, EyeOff, Loader2, AlertTriangle, Plus } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useFirestore, useCollection, useUser } from "@/firebase";
-import { collection, addDoc, deleteDoc, doc, updateDoc, serverTimestamp, query, where } from "firebase/firestore";
+import { collection, addDoc, deleteDoc, doc, updateDoc, serverTimestamp, query, where, orderBy } from "firebase/firestore";
 import { toast } from "@/hooks/use-toast";
 import Image from "next/image";
 import { errorEmitter } from '@/firebase/error-emitter';
@@ -23,7 +24,10 @@ export default function AdminFasilitas() {
 
   const facilitiesRef = useMemo(() => {
     if (!db) return null;
-    return query(collection(db, "facilities"), where("schoolId", "==", schoolId));
+    return query(
+      collection(db, "facilities"), 
+      where("schoolId", "==", schoolId)
+    );
   }, [db, schoolId]);
 
   const { data: facilities, loading, error } = useCollection(facilitiesRef);
@@ -159,7 +163,7 @@ export default function AdminFasilitas() {
               <div className="space-y-4">
                 <div className="relative aspect-video w-full border-2 border-dashed border-slate-200 rounded-[2rem] overflow-hidden bg-slate-50 flex items-center justify-center group">
                   {imageUrl ? (
-                    <Image src={imageUrl} alt="Preview" fill className="object-cover" />
+                    <img src={imageUrl} alt="Preview" className="w-full h-full object-cover" />
                   ) : (
                     <div className="text-center p-6">
                       <Upload className="mx-auto h-10 w-10 text-slate-300 mb-2 group-hover:scale-110 transition-transform" />
@@ -183,32 +187,30 @@ export default function AdminFasilitas() {
             </div>
 
             <div className="grid grid-cols-1 gap-4 pt-4">
-              <div className="flex gap-2">
-                <Button 
-                  variant="outline" 
-                  className="flex-1 h-12 rounded-xl font-bold" 
-                  onClick={() => handleSave("Draft")}
-                  disabled={isSaving}
-                >
-                  Draft
-                </Button>
-                <Button 
-                  className="flex-[2] h-12 rounded-xl font-bold bg-primary shadow-lg shadow-primary/20 gap-2" 
-                  onClick={() => handleSave("Published")}
-                  disabled={isSaving}
-                >
-                  {isSaving ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCircle2 className="h-4 w-4" />}
-                  {isSaving ? "Memproses..." : "Publish Sekarang"}
-                </Button>
-              </div>
+              <Button 
+                className="w-full h-14 rounded-2xl font-bold bg-primary shadow-lg shadow-primary/20 gap-2 text-lg" 
+                onClick={() => handleSave("Published")}
+                disabled={isSaving}
+              >
+                {isSaving ? <Loader2 className="h-6 w-6 animate-spin" /> : <Plus className="h-6 w-6" />}
+                {isSaving ? "Menyimpan..." : "Publish Sekarang"}
+              </Button>
+              <Button 
+                variant="ghost" 
+                className="w-full h-10 rounded-xl font-bold text-slate-400" 
+                onClick={() => handleSave("Draft")}
+                disabled={isSaving}
+              >
+                Simpan sebagai Draft
+              </Button>
             </div>
           </CardContent>
         </Card>
 
         <Card className="lg:col-span-2 border-none shadow-xl rounded-[2.5rem] overflow-hidden bg-white">
-          <CardHeader className="bg-slate-50/50 border-b p-8">
+          <CardHeader className="bg-slate-50/50 border-b p-8 text-center">
             <CardTitle className="text-xl">Daftar Inventaris</CardTitle>
-            <CardDescription>Tampilkan fasilitas yang tersedia di website.</CardDescription>
+            <CardDescription>Pastikan status adalah "Published" (Mata Hijau) agar muncul di website.</CardDescription>
           </CardHeader>
           <CardContent className="p-0">
             <Table>
@@ -216,7 +218,7 @@ export default function AdminFasilitas() {
                 <TableRow>
                   <TableHead className="px-8 font-bold">Foto</TableHead>
                   <TableHead className="font-bold">Nama</TableHead>
-                  <TableHead className="font-bold text-center">Tampil</TableHead>
+                  <TableHead className="font-bold text-center">Status Tampil</TableHead>
                   <TableHead className="text-right px-8 font-bold">Aksi</TableHead>
                 </TableRow>
               </TableHeader>
@@ -236,7 +238,7 @@ export default function AdminFasilitas() {
                   <TableRow key={f.id} className="hover:bg-slate-50/50 transition-colors">
                     <TableCell className="px-8 py-4">
                       <div className="relative h-14 w-20 rounded-xl overflow-hidden border border-slate-100 shadow-sm">
-                        <Image src={f.imageUrl || "https://picsum.photos/seed/facility/800/600"} alt={f.name} fill className="object-cover" />
+                        <img src={f.imageUrl || "https://picsum.photos/seed/facility/800/600"} alt={f.name} className="w-full h-full object-cover" />
                       </div>
                     </TableCell>
                     <TableCell className="font-bold text-slate-800">{f.name}</TableCell>
@@ -244,10 +246,11 @@ export default function AdminFasilitas() {
                       <Button 
                         variant="ghost" 
                         size="sm" 
-                        className={cn("rounded-full h-10 w-10", f.status === "Published" ? "text-green-600 bg-green-50" : "text-slate-300")}
+                        className={cn("rounded-full h-12 px-4 gap-2", f.status === "Published" ? "text-green-600 bg-green-50" : "text-slate-300 bg-slate-50")}
                         onClick={() => toggleStatus(f.id, f.status || "Draft")}
                       >
                         {f.status === "Published" ? <Eye className="h-5 w-5" /> : <EyeOff className="h-5 w-5" />}
+                        <span className="text-[10px] font-bold uppercase">{f.status || "Draft"}</span>
                       </Button>
                     </TableCell>
                     <TableCell className="text-right px-8">
@@ -262,7 +265,7 @@ export default function AdminFasilitas() {
                     </TableCell>
                   </TableRow>
                 )) : (
-                  <TableRow><TableCell colSpan={4} className="text-center py-20 text-slate-400 italic">Belum ada data fasilitas untuk sekolah ini.</TableCell></TableRow>
+                  <TableRow><TableCell colSpan={4} className="text-center py-20 text-slate-400 italic font-medium">Belum ada data fasilitas untuk sekolah ini.</TableCell></TableRow>
                 )}
               </TableBody>
             </Table>
