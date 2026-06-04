@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useState, useMemo, useEffect } from "react";
-import { Newspaper, Sparkles, Wand2, Trash2, Edit, Save, X, Eye, EyeOff, Loader2, Image as ImageIcon, RotateCcw } from "lucide-react";
+import React, { useState, useMemo } from "react";
+import { Newspaper, Sparkles, Wand2, Trash2, Edit, Save, Loader2, Image as ImageIcon, RotateCcw, Eye, EyeOff } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { adminContentOptimizer } from "@/ai/flows/admin-content-optimizer-flow";
 import { generateNewsImage } from "@/ai/flows/generate-news-image-flow";
@@ -15,7 +15,7 @@ import { toast } from "@/hooks/use-toast";
 import { useFirestore, useCollection } from "@/firebase";
 import { collection, addDoc, deleteDoc, doc, updateDoc, serverTimestamp, query, where } from "firebase/firestore";
 import { errorEmitter } from '@/firebase/error-emitter';
-import { FirestorePermissionError, type SecurityRuleContext } from '@/firebase/errors';
+import { FirestorePermissionError } from '@/firebase/errors';
 import { cn } from "@/lib/utils";
 
 export default function AdminBerita() {
@@ -71,19 +71,14 @@ export default function AdminBerita() {
     setGeneratingImg(true);
     try {
       const result = await generateNewsImage({ title });
-      if (result && result.imageUrl) {
+      if (result.error) {
+        toast({ title: "Gagal Membuat Gambar", description: result.error, variant: "destructive" });
+      } else if (result.imageUrl) {
         setImageUrl(result.imageUrl);
-        toast({ title: "Gambar Dibuat", description: "AI telah menghasilkan gambar berdasarkan judul." });
-      } else {
-        throw new Error("Empty image result");
+        toast({ title: "Gambar Berhasil Dibuat", description: "AI telah menghasilkan ilustrasi sesuai judul." });
       }
     } catch (error: any) {
-      console.error("AI Image Generation Error:", error);
-      toast({ 
-        title: "Gagal Membuat Gambar", 
-        description: error.message || "Pastikan API Gemini sudah diaktifkan di Google Cloud Console.", 
-        variant: "destructive" 
-      });
+      toast({ title: "Kesalahan Sistem", description: "Layanan AI tidak dapat dijangkau.", variant: "destructive" });
     } finally {
       setGeneratingImg(false);
     }
@@ -101,11 +96,7 @@ export default function AdminBerita() {
       setTags(result.seoTags);
       toast({ title: "Optimasi Berhasil", description: "AI telah membuat ringkasan dan tag SEO." });
     } catch (error: any) {
-      toast({ 
-        title: "Gagal Mengoptimasi", 
-        description: "Pastikan API Gemini sudah diaktifkan.",
-        variant: "destructive" 
-      });
+      toast({ title: "Gagal Mengoptimasi", description: "Gagal menghubungkan ke layanan AI.", variant: "destructive" });
     } finally {
       setOptimizing(false);
     }
@@ -162,7 +153,7 @@ export default function AdminBerita() {
         })
         .catch(async (error) => {
           setIsSaving(false);
-          errorEmitter.emit('permission-error', new FirestorePermissionError({ path: `news/${editingId}`, operation: 'update', requestResourceData: data }));
+          errorEmitter.emit('permission-error', new FirestorePermissionError({ path: `news/${editingId}`, operation: 'update' }));
         });
     } else {
       addDoc(collection(db, "news"), data)
@@ -173,7 +164,7 @@ export default function AdminBerita() {
         })
         .catch(async (error) => {
           setIsSaving(false);
-          errorEmitter.emit('permission-error', new FirestorePermissionError({ path: 'news', operation: 'create', requestResourceData: data }));
+          errorEmitter.emit('permission-error', new FirestorePermissionError({ path: 'news', operation: 'create' }));
         });
     }
   };
@@ -200,7 +191,7 @@ export default function AdminBerita() {
           <h1 className="text-3xl font-bold font-headline text-primary flex items-center gap-2 uppercase tracking-tighter">
             <Newspaper className="h-8 w-8 text-secondary" /> Manajemen Informasi
           </h1>
-          <p className="text-muted-foreground text-sm font-medium">Buat, edit, dan publikasikan informasi sekolah.</p>
+          <p className="text-muted-foreground text-sm font-medium">Buat informasi sekolah dengan bantuan AI.</p>
         </div>
         {editingId && (
           <Button variant="outline" className="rounded-xl gap-2" onClick={resetForm}>
@@ -210,10 +201,10 @@ export default function AdminBerita() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
-        <Card className="lg:col-span-3 border-none shadow-xl rounded-[2.5rem] overflow-hidden">
+        <Card className="lg:col-span-3 border-none shadow-xl rounded-[2.5rem] overflow-hidden bg-white">
           <CardHeader className="bg-slate-50/50 border-b p-8">
             <CardTitle className="text-xl flex items-center gap-2">
-              <Edit className="h-6 w-6 text-primary" /> {editingId ? "Edit Informasi" : "Penulisan Informasi Baru"}
+              <Edit className="h-6 w-6 text-primary" /> {editingId ? "Edit Informasi" : "Tulis Informasi Baru"}
             </CardTitle>
           </CardHeader>
           <CardContent className="p-8 space-y-6">
@@ -262,13 +253,13 @@ export default function AdminBerita() {
                     {generatingImg ? <Loader2 className="h-5 w-5 animate-spin" /> : <Sparkles className="h-5 w-5 text-secondary" />}
                     {generatingImg ? "AI Melukis..." : "AI Generate Gambar"}
                   </Button>
-                  <p className="text-[10px] text-slate-400 italic">Klik tombol di atas untuk membuat gambar otomatis berdasarkan judul berita.</p>
+                  <p className="text-[10px] text-slate-400 italic">Klik tombol AI di atas untuk membuat ilustrasi otomatis berdasarkan judul.</p>
                 </div>
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label className="text-xs uppercase font-extrabold text-slate-400">Konten Utama</Label>
+              <Label className="text-xs uppercase font-extrabold text-slate-400">Isi Berita</Label>
               <Textarea 
                 placeholder="Tulis detail informasi di sini..." 
                 className="min-h-[250px] bg-slate-50 border-slate-100 rounded-2xl p-6"
@@ -289,7 +280,7 @@ export default function AdminBerita() {
               </Button>
               <div className="flex gap-3">
                 <Button variant="outline" className="h-12 rounded-xl px-6" onClick={() => handleSave("Draft")} disabled={isSaving}>Simpan Draft</Button>
-                <Button className="h-12 px-8 rounded-xl bg-primary shadow-lg" onClick={() => handleSave("Published")} disabled={isSaving}>
+                <Button className="h-12 px-8 rounded-xl bg-primary text-white shadow-lg" onClick={() => handleSave("Published")} disabled={isSaving}>
                   {isSaving ? <Loader2 className="h-5 w-5 animate-spin" /> : <Save className="h-5 w-5" />}
                   {editingId ? "Perbarui" : "Publikasikan"}
                 </Button>
@@ -299,10 +290,10 @@ export default function AdminBerita() {
         </Card>
 
         <div className="lg:col-span-2 space-y-8">
-          <Card className="border-none shadow-xl rounded-[2.5rem] bg-white border border-slate-100 h-fit">
+          <Card className="border-none shadow-xl rounded-[2.5rem] bg-white border border-slate-100">
             <CardHeader className="bg-slate-50/50 border-b p-8">
               <CardTitle className="text-xl flex items-center gap-3 text-primary">
-                <Sparkles className="h-5 w-5 text-secondary" /> AI Suggestions
+                <Sparkles className="h-5 w-5 text-secondary" /> AI Suggestion
               </CardTitle>
             </CardHeader>
             <CardContent className="p-8 space-y-6">
@@ -325,15 +316,15 @@ export default function AdminBerita() {
             </CardContent>
           </Card>
           
-          <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden">
+          <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden bg-white">
              <CardHeader className="bg-slate-50/50 border-b p-8"><CardTitle className="text-xl">Daftar Informasi</CardTitle></CardHeader>
              <CardContent className="p-0">
                <Table>
                  <TableBody>
                    {loading ? (
-                     <TableRow><TableCell className="text-center py-10">Memuat...</TableCell></TableRow>
+                     <TableRow><TableCell className="text-center py-10">Memuat data...</TableCell></TableRow>
                    ) : newsItems.length > 0 ? newsItems.map((item: any) => (
-                     <TableRow key={item.id} className="group">
+                     <TableRow key={item.id} className="group border-b">
                        <TableCell className="p-6 font-bold truncate max-w-[150px]">{item.title}</TableCell>
                        <TableCell className="text-center">
                          <Button 
@@ -346,11 +337,11 @@ export default function AdminBerita() {
                          </Button>
                        </TableCell>
                        <TableCell className="text-right p-6 flex gap-2 justify-end">
-                         <Button variant="ghost" size="icon" className="text-primary" onClick={() => handleEdit(item)}><Edit className="h-4 w-4" /></Button>
-                         <Button variant="ghost" size="icon" className="text-destructive" onClick={() => handleDelete(item.id)}><Trash2 className="h-4 w-4" /></Button>
+                         <Button variant="ghost" size="icon" className="text-primary hover:bg-primary/5" onClick={() => handleEdit(item)}><Edit className="h-4 w-4" /></Button>
+                         <Button variant="ghost" size="icon" className="text-destructive hover:bg-destructive/5" onClick={() => handleDelete(item.id)}><Trash2 className="h-4 w-4" /></Button>
                        </TableCell>
                      </TableRow>
-                   )) : <TableRow><TableCell className="text-center py-10">Kosong</TableCell></TableRow>}
+                   )) : <TableRow><TableCell className="text-center py-10">Tidak ada informasi</TableCell></TableRow>}
                  </TableBody>
                </Table>
              </CardContent>
