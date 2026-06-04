@@ -50,7 +50,7 @@ export default function Home() {
         />
         <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/70 to-transparent z-[1]" />
         
-        <div className="container relative z-10 px-6 md:px-12 mx-auto pb-48 pt-32">
+        <div className="container relative z-10 px-6 md:px-12 mx-auto pb-64 pt-32">
           <div className="max-w-4xl space-y-12 animate-in fade-in slide-in-from-left duration-1000">
             <h1 className="text-6xl md:text-[8rem] font-bold text-white font-headline leading-[0.9] tracking-tighter">
               {settings?.heroTitle || "Wujudkan Masa Depan"} <br/>
@@ -62,14 +62,14 @@ export default function Home() {
             </p>
             
             <div className="flex flex-wrap gap-6 pt-10">
-              <Button size="lg" className="bg-secondary text-primary font-bold hover:bg-secondary/90 px-14 py-10 text-xl rounded-full shadow-2xl group" asChild>
+              <Button size="lg" className="bg-secondary text-primary font-bold hover:bg-secondary/90 px-14 py-10 text-xl rounded-full shadow-2xl group border-none" asChild>
                 <Link href="/ppdb" className="flex items-center gap-3">
                   Daftar Sekarang <ArrowRight className="h-6 w-6 group-hover:translate-x-3 transition-transform" />
                 </Link>
               </Button>
-              <Button size="lg" variant="outline" className="text-white border-white/30 backdrop-blur-md hover:bg-white hover:text-primary px-14 py-10 text-xl rounded-full font-bold transition-all" asChild>
+              <Button size="lg" className="bg-white text-primary hover:bg-slate-100 px-14 py-10 text-xl rounded-full font-bold transition-all shadow-xl border-none" asChild>
                 <Link href="/profil" className="flex items-center gap-3">
-                  <Play className="h-5 w-5 fill-current" /> Lihat Profil
+                  <Play className="h-5 w-5 fill-current text-secondary" /> Lihat Profil
                 </Link>
               </Button>
             </div>
@@ -77,8 +77,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Stats Section - Precise Design from Reference */}
-      <section className="relative -mt-32 z-20 px-6 mb-32">
+      {/* Stats Section */}
+      <section className="relative -mt-40 z-20 px-6 mb-32">
         <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
           {displayStats.map((stat: any, i: number) => {
             const Icon = iconMap[stat.icon] || Users;
