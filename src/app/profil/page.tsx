@@ -6,16 +6,17 @@ import Image from "next/image";
 import { CheckCircle2, Target, History, Users2, Building2, AlertTriangle, Info } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useFirestore, useDoc, useCollection } from "@/firebase";
-import { doc, collection, query, where, orderBy } from "firebase/firestore";
+import { doc, collection, query, where } from "firebase/firestore";
 
 export default function ProfilPage() {
   const db = useFirestore();
+  // Gunakan ID sekolah yang sama secara global
   const currentSchoolId = 'smpn5-langke-rembong';
   
   const settingsRef = useMemo(() => db ? doc(db, "schools", currentSchoolId) : null, [db, currentSchoolId]);
   const { data: settings } = useDoc(settingsRef);
 
-  // Kueri yang lebih fleksibel: Tampilkan semua fasilitas milik sekolah ini yang berstatus Published
+  // Ambil fasilitas yang HANYA berstatus Published untuk sekolah ini
   const facilitiesRef = useMemo(() => {
     if (!db) return null;
     return query(
@@ -114,24 +115,25 @@ export default function ProfilPage() {
               <Building2 className="h-4 w-4" /> Sarana Prasarana
             </div>
             <h2 className="text-5xl font-bold text-primary font-headline tracking-tighter">Fasilitas Unggulan Kami</h2>
-            <p className="text-slate-400 max-w-xl mx-auto">Kami menyediakan infrastruktur terbaik untuk mendukung proses belajar mengajar yang maksimal.</p>
+            <p className="text-slate-400 max-w-xl mx-auto">Infrastruktur modern yang menunjang kreativitas dan produktivitas siswa.</p>
           </div>
 
           {facilitiesLoading ? (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
               {[1, 2, 3].map(i => (
-                <div key={i} className="h-80 bg-slate-100 rounded-[2.5rem] animate-pulse" />
+                <div key={i} className="h-80 bg-slate-100 rounded-[2.5rem] animate-pulse shadow-sm" />
               ))}
             </div>
           ) : facilitiesError ? (
             <div className="text-center py-20 bg-slate-50 rounded-[3rem] border-2 border-dashed border-red-200 text-red-400">
               <AlertTriangle className="h-12 w-12 mx-auto mb-4" />
-              <p className="font-medium">Indeks database sedang disiapkan. Mohon tunggu 1-2 menit atau periksa Firebase Console.</p>
+              <p className="font-bold">Indeks Firestore sedang disiapkan.</p>
+              <p className="text-sm mt-2">Mohon tunggu 1-2 menit agar data muncul secara otomatis.</p>
             </div>
           ) : facilities && facilities.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
               {facilities.map((f: any) => (
-                <Card key={f.id} className="overflow-hidden border-none shadow-xl hover:shadow-2xl transition-all duration-500 rounded-[2.5rem] group bg-white">
+                <Card key={f.id} className="overflow-hidden border-none shadow-xl hover:shadow-2xl transition-all duration-500 rounded-[2.5rem] group bg-white border border-slate-100">
                   <div className="relative h-64 overflow-hidden bg-slate-100">
                      <img 
                       src={f.imageUrl || `https://picsum.photos/seed/${f.id}/600/400`} 
@@ -140,17 +142,17 @@ export default function ProfilPage() {
                     />
                   </div>
                   <CardContent className="p-8">
-                    <h4 className="text-2xl font-bold text-primary font-headline mb-3">{f.name || "Nama Fasilitas"}</h4>
-                    <p className="text-slate-500 font-medium text-sm leading-relaxed">{f.description || "Tidak ada deskripsi tersedia."}</p>
+                    <h4 className="text-2xl font-bold text-primary font-headline mb-3 group-hover:text-secondary transition-colors">{f.name || "Nama Fasilitas"}</h4>
+                    <p className="text-slate-500 font-medium text-sm leading-relaxed line-clamp-4">{f.description || "Tidak ada deskripsi tersedia."}</p>
                   </CardContent>
                 </Card>
               ))}
             </div>
           ) : (
-            <div className="text-center py-24 bg-slate-50 rounded-[3rem] border-2 border-dashed border-slate-200">
-              <Info className="h-12 w-12 text-slate-300 mx-auto mb-4" />
-              <p className="text-slate-500 font-medium">Belum ada fasilitas yang dipublikasikan.</p>
-              <p className="text-slate-400 text-sm mt-2">Pastikan Admin sudah mengubah status fasilitas menjadi "Published" di panel kontrol.</p>
+            <div className="text-center py-32 bg-slate-50 rounded-[3rem] border-2 border-dashed border-slate-200">
+              <Info className="h-16 w-16 text-slate-200 mx-auto mb-4" />
+              <p className="text-slate-500 font-bold text-lg">Belum ada fasilitas yang dipublikasikan.</p>
+              <p className="text-slate-400 text-sm mt-2">Admin perlu mengatur status fasilitas menjadi <span className="text-green-600 font-bold uppercase">Published</span> di panel kontrol.</p>
             </div>
           )}
         </div>
