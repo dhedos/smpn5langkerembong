@@ -132,7 +132,7 @@ export default function Home() {
               </h2>
               <p className="text-slate-600 text-xl leading-relaxed font-medium italic pl-12 relative">
                 <span className="absolute left-0 top-0 text-[8rem] text-secondary/20 font-serif leading-none -translate-y-10">“</span>
-                {settings?.welcomeMessage || "Visi kami adalah menciptakan ekosistem pendidikan yang unggul dan berkarakter bersama Goetnik Nusantara."}
+                {settings?.welcomeMessage || "Visi kami adalah menciptakan ekosistem pendidikan yang unggul dan berkarakter bersama Goetnik Nusantara (GN Nusantara)."}
               </p>
               <div className="pt-10">
                  <div className="font-bold text-3xl text-primary font-headline tracking-tight">{settings?.headmasterName || "Kepala Sekolah GN Nusantara"}</div>

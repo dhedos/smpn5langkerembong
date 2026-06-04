@@ -24,7 +24,7 @@ import { cn } from "@/lib/utils";
 
 const stats = [
   { title: "Kunjungan Situs", value: "12,450", change: "+12.5%", icon: Eye, color: "bg-blue-500" },
-  { title: "Registrasi PPDB", value: "482", change: "+5.2%", icon: Users, color: "bg-green-500" },
+  { title: "Registrasi SPMB", value: "482", change: "+5.2%", icon: Users, color: "bg-green-500" },
   { title: "Informasi Publik", value: "128", change: "+2.4%", icon: Newspaper, color: "bg-purple-500" },
   { title: "Total Dokumen", value: "3,200", change: "+8.1%", icon: Database, color: "bg-orange-500" },
 ];
@@ -57,7 +57,7 @@ export default function AdminDashboard() {
             <div className="space-y-2">
               <h1 className="text-4xl md:text-5xl font-bold text-white font-headline tracking-tighter leading-tight">Selamat Datang di GN Nusantara</h1>
               <p className="text-lg text-white/50 leading-relaxed font-medium">
-                Pusat kendali operasional digital GN Nusantara secara global. Kelola data sekolah, informasi terbaru, dan registrasi PPDB dalam satu ekosistem cloud yang aman.
+                Pusat kendali operasional digital GN Nusantara secara global. Kelola data sekolah, informasi terbaru, dan registrasi SPMB dalam satu ekosistem cloud yang aman.
               </p>
             </div>
             <div className="flex flex-wrap gap-4 justify-center md:justify-start">
@@ -143,7 +143,7 @@ export default function AdminDashboard() {
           </CardHeader>
           <CardContent className="p-8 pt-0 space-y-8">
             {[
-              { time: "2m lalu", event: "Pendaftaran PPDB", user: "Rian K.", status: "Success" },
+              { time: "2m lalu", event: "Pendaftaran SPMB", user: "Rian K.", status: "Success" },
               { time: "15m lalu", event: "Update Informasi", user: "Admin S.", status: "Warning" },
               { time: "1j lalu", event: "Upload Galeri", user: "Admin B.", status: "Success" },
               { time: "3j lalu", event: "Update Pengaturan", user: "Anisa P.", status: "Info" },

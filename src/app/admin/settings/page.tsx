@@ -174,7 +174,7 @@ export default function AdminSettings() {
             <h1 className="text-4xl font-bold font-headline text-primary tracking-tight">
               Konfigurasi Website
             </h1>
-            <p className="text-muted-foreground text-sm font-medium">Sinkronisasi data otomatis oleh Goetnik Nusantara.</p>
+            <p className="text-muted-foreground text-sm font-medium">Sinkronisasi data otomatis oleh Goetnik Nusantara (GN Nusantara).</p>
           </div>
         </div>
         <Button 
@@ -212,7 +212,7 @@ export default function AdminSettings() {
                     value={formData.schoolName} 
                     onChange={(e) => setFormData({...formData, schoolName: e.target.value})} 
                     className="h-14 bg-slate-50 border-slate-100 rounded-2xl font-bold" 
-                    placeholder="E.g. SMPN 5 Langke Rembong"
+                    placeholder="E.g. GN Nusantara"
                   />
                 </div>
                 <div className="space-y-3">
