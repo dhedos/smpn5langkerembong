@@ -11,7 +11,7 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "push": "git add . && git commit -m 'update system information and fix critical navbar issues' && git push"
+    "push": "git remote set-url origin https://github.com/dhedos/smpn5langkerembong.git && git add . && git commit -m 'Update system information and fix critical issues' && git push origin main"
   },
   "dependencies": {
     "@genkit-ai/google-genai": "^1.28.0",
