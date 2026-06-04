@@ -26,8 +26,7 @@ export function Footer() {
 
   const schoolName = settings?.schoolName || "SMPN 5 Langke Rembong";
   const schoolLogo = settings?.schoolLogoUrl;
-  const officialWebsite = settings?.officialWebsiteUrl;
-  const officialWebsiteTitle = settings?.officialWebsiteTitle || "PORTAL RESMI INSTANSI";
+  const officialWebsites = settings?.officialWebsites || [];
   const address = settings?.address || "Jl. Pendidikan No. 5, Langke Rembong";
   const phone = settings?.phone || "6285281814006";
   const email = settings?.email || "smpn5lr@gmail.com";
@@ -100,17 +99,20 @@ export function Footer() {
               {renderFormattedName(schoolName)}
             </div>
 
-            {/* Portal Resmi berada tepat di bawah Logo dan Nama Sekolah */}
-            {officialWebsite && (
-              <div className="mb-6 pt-4 border-t border-white/10">
-                <a 
-                  href={officialWebsite} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-secondary hover:text-white transition-all flex items-center gap-2 uppercase text-[10px] font-black tracking-widest"
-                >
-                  <Globe className="h-3 w-3" /> {officialWebsiteTitle} <ExternalLink className="h-3 w-3" />
-                </a>
+            {/* Render Multiple Portal Links */}
+            {officialWebsites.length > 0 && (
+              <div className="mb-6 pt-4 border-t border-white/10 space-y-2">
+                {officialWebsites.map((web: any, i: number) => (
+                  <a 
+                    key={i}
+                    href={web.url} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-secondary hover:text-white transition-all flex items-center gap-2 uppercase text-[9px] font-black tracking-widest"
+                  >
+                    <Globe className="h-3 w-3" /> {web.title} <ExternalLink className="h-3 w-3" />
+                  </a>
+                ))}
               </div>
             )}
             

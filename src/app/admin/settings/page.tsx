@@ -25,7 +25,8 @@ import {
   Copyright,
   Calendar,
   Globe,
-  Tag
+  Tag,
+  Link as LinkIcon
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -52,8 +53,7 @@ export default function AdminSettings() {
   const defaultValues = {
     schoolName: "SMPN 5 Langke Rembong",
     schoolLogoUrl: "",
-    officialWebsiteUrl: "",
-    officialWebsiteTitle: "Portal Resmi Instansi",
+    officialWebsites: [],
     copyrightYear: new Date().getFullYear().toString(),
     heroTitle: "Membangun Masa Depan Bersama Kami",
     heroSubtitle: "Pendidikan berkualitas untuk generasi emas bangsa melalui kurikulum yang inovatif dan lingkungan yang mendukung.",
@@ -104,6 +104,10 @@ export default function AdminSettings() {
   const [addressSearch, setAddressSearch] = useState("");
   const [showMapPreview, setShowMapPreview] = useState(false);
 
+  // States for multiple official websites
+  const [newOfficialTitle, setNewOfficialTitle] = useState("");
+  const [newOfficialUrl, setNewOfficialUrl] = useState("");
+
   useEffect(() => {
     if (currentSettings) {
       setFormData((prev: any) => ({
@@ -115,7 +119,7 @@ export default function AdminSettings() {
         ppdbRequirements: currentSettings.ppdbRequirements || prev.ppdbRequirements,
         ppdbQuotas: currentSettings.ppdbQuotas || prev.ppdbQuotas,
         ppdbSubtitle: currentSettings.ppdbSubtitle || prev.ppdbSubtitle,
-        officialWebsiteTitle: currentSettings.officialWebsiteTitle || prev.officialWebsiteTitle,
+        officialWebsites: currentSettings.officialWebsites || prev.officialWebsites || [],
       }));
     }
   }, [currentSettings]);
@@ -150,6 +154,26 @@ export default function AdminSettings() {
     setFormData({ ...formData, googleMapsEmbedUrl: simpleUrl });
     toast({ title: "Lokasi Ditemukan", description: "URL peta telah diperbarui berdasarkan alamat pencarian." });
     setShowMapPreview(true);
+  };
+
+  const handleAddOfficialWebsite = () => {
+    if (newOfficialTitle.trim() && newOfficialUrl.trim()) {
+      setFormData((prev: any) => ({
+        ...prev,
+        officialWebsites: [...(prev.officialWebsites || []), { title: newOfficialTitle.trim(), url: newOfficialUrl.trim() }]
+      }));
+      setNewOfficialTitle("");
+      setNewOfficialUrl("");
+    } else {
+      toast({ title: "Gagal Menambah", description: "Label dan URL wajib diisi.", variant: "destructive" });
+    }
+  };
+
+  const handleRemoveOfficialWebsite = (index: number) => {
+    setFormData((prev: any) => ({
+      ...prev,
+      officialWebsites: prev.officialWebsites.filter((_: any, i: number) => i !== index)
+    }));
   };
 
   const handleAddMission = () => {
@@ -273,25 +297,6 @@ export default function AdminSettings() {
                     onChange={(e) => setFormData({...formData, schoolName: e.target.value})} 
                     className="h-14 bg-slate-50 rounded-2xl font-bold" 
                   />
-                  <div className="flex items-center gap-2 text-[10px] font-bold text-blue-500 uppercase tracking-tight">
-                    <Copyright className="h-3 w-3" /> Nama ini akan tampil di seluruh bagian website.
-                  </div>
-                </div>
-
-                <div className="space-y-3 pt-4 border-t">
-                  <Label className="text-xs font-bold uppercase text-slate-400">Tahun Hak Cipta (Copyright)</Label>
-                  <div className="flex gap-4 items-center">
-                    <div className="relative flex-1">
-                       <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-                       <Input 
-                        value={formData.copyrightYear} 
-                        onChange={(e) => setFormData({...formData, copyrightYear: e.target.value})} 
-                        className="h-14 bg-slate-50 rounded-2xl font-bold pl-12" 
-                        placeholder="Contoh: 2024"
-                      />
-                    </div>
-                  </div>
-                  <p className="text-[10px] text-slate-400 italic">Tahun ini akan tampil di bagian kaki (footer) website dan sidebar admin.</p>
                 </div>
 
                 <div className="space-y-3 pt-4 border-t">
@@ -308,33 +313,61 @@ export default function AdminSettings() {
 
                 <div className="space-y-4 pt-4 border-t">
                   <Label className="text-xs font-bold uppercase text-slate-400">Website Instansi (Portal Resmi)</Label>
-                  <div className="grid grid-cols-1 gap-4">
-                    <div className="space-y-2">
-                      <Label className="text-[10px] font-bold text-slate-400 uppercase">Judul Instansi (Label Tombol)</Label>
-                      <div className="relative">
-                        <Tag className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-1 gap-3">
+                      <div className="space-y-1">
+                        <Label className="text-[10px] font-bold text-slate-400 uppercase">Label Portal (Contoh: DINAS PENDIDIKAN)</Label>
                         <Input 
-                          value={formData.officialWebsiteTitle} 
-                          onChange={(e) => setFormData({...formData, officialWebsiteTitle: e.target.value})} 
-                          className="h-12 bg-slate-50 rounded-xl font-bold pl-12" 
-                          placeholder="Contoh: DINAS PENDIDIKAN"
+                          value={newOfficialTitle} 
+                          onChange={(e) => setNewOfficialTitle(e.target.value)} 
+                          className="h-10 bg-slate-50 rounded-xl font-bold" 
+                          placeholder="Label tombol..."
                         />
+                      </div>
+                      <div className="space-y-1">
+                        <Label className="text-[10px] font-bold text-slate-400 uppercase">URL Website</Label>
+                        <div className="flex gap-2">
+                          <Input 
+                            value={newOfficialUrl} 
+                            onChange={(e) => setNewOfficialUrl(e.target.value)} 
+                            className="h-10 bg-slate-50 rounded-xl flex-1" 
+                            placeholder="https://www.instansi.go.id"
+                          />
+                          <Button onClick={handleAddOfficialWebsite} className="h-10 px-4 rounded-xl bg-secondary text-primary font-bold">
+                            <Plus className="h-4 w-4" />
+                          </Button>
+                        </div>
                       </div>
                     </div>
+                    
                     <div className="space-y-2">
-                      <Label className="text-[10px] font-bold text-slate-400 uppercase">URL Portal Resmi</Label>
-                      <div className="relative">
-                        <Globe className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-                        <Input 
-                          value={formData.officialWebsiteUrl} 
-                          onChange={(e) => setFormData({...formData, officialWebsiteUrl: e.target.value})} 
-                          className="h-12 bg-slate-50 rounded-xl pl-12" 
-                          placeholder="https://www.instansi.go.id"
-                        />
-                      </div>
+                      {formData.officialWebsites?.map((web: any, i: number) => (
+                        <div key={i} className="flex items-center justify-between bg-slate-50 p-3 rounded-xl border border-slate-100">
+                          <div className="flex flex-col">
+                            <span className="text-xs font-bold text-primary uppercase tracking-tighter">{web.title}</span>
+                            <span className="text-[10px] text-slate-400 truncate max-w-[200px]">{web.url}</span>
+                          </div>
+                          <Button variant="ghost" size="icon" onClick={() => handleRemoveOfficialWebsite(i)} className="text-destructive">
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      ))}
                     </div>
                   </div>
-                  <p className="text-[10px] text-slate-400 italic">Informasi ini akan ditampilkan di footer di bawah logo sebagai portal resmi instansi/induk sekolah.</p>
+                  <p className="text-[10px] text-slate-400 italic">Daftar website instansi akan tampil tepat di bawah branding pada footer.</p>
+                </div>
+
+                <div className="space-y-3 pt-4 border-t">
+                  <Label className="text-xs font-bold uppercase text-slate-400">Tahun Hak Cipta (Copyright)</Label>
+                  <div className="relative">
+                    <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                    <Input 
+                      value={formData.copyrightYear} 
+                      onChange={(e) => setFormData({...formData, copyrightYear: e.target.value})} 
+                      className="h-14 bg-slate-50 rounded-2xl font-bold pl-12" 
+                      placeholder="Contoh: 2024"
+                    />
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -374,12 +407,6 @@ export default function AdminSettings() {
                       placeholder="Tempel link src atau kode iframe di sini..."
                       className="h-12 bg-slate-50 rounded-xl font-mono text-[10px]" 
                     />
-                    <div className="flex justify-between items-center">
-                       <p className="text-[10px] text-slate-400 italic">Dapatkan URL dari 'Share' &gt; 'Embed a map' &gt; ambil nilai atribut 'src'.</p>
-                       <Button variant="link" size="sm" className="h-auto p-0 text-[10px] font-bold" onClick={() => setShowMapPreview(!showMapPreview)}>
-                         {showMapPreview ? "Sembunyikan" : "Lihat Pratinjau"}
-                       </Button>
-                    </div>
                   </div>
 
                   {showMapPreview && formData.googleMapsEmbedUrl && (
@@ -415,7 +442,7 @@ export default function AdminSettings() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="space-y-6">
                   <div className="space-y-3">
-                    <Label className="text-xs font-bold uppercase text-slate-400">Judul Utama (Membangun Masa Depan...)</Label>
+                    <Label className="text-xs font-bold uppercase text-slate-400">Judul Utama</Label>
                     <Input 
                       value={formData.heroTitle} 
                       onChange={(e) => setFormData({...formData, heroTitle: e.target.value})} 
@@ -433,7 +460,7 @@ export default function AdminSettings() {
                 </div>
                 
                 <div className="space-y-3">
-                  <Label className="text-xs font-bold uppercase text-slate-400">Foto Latar Belakang (Maks 800KB)</Label>
+                  <Label className="text-xs font-bold uppercase text-slate-400">Foto Latar Belakang</Label>
                   <div className="relative aspect-video w-full rounded-[2rem] overflow-hidden border-2 border-dashed border-slate-200 bg-slate-50 flex items-center justify-center">
                     {formData.heroImageUrl ? (
                       <img src={formData.heroImageUrl} alt="Hero" className="w-full h-full object-cover" />
@@ -455,14 +482,14 @@ export default function AdminSettings() {
           <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden bg-white">
             <CardHeader className="bg-slate-50/50 border-b p-8">
               <CardTitle className="text-xl flex items-center gap-3 font-headline text-primary">
-                <UserCircle className="h-6 w-6 text-secondary" /> {formData.welcomeSectionLabel || "Sambutan Kepala Sekolah"}
+                <UserCircle className="h-6 w-6 text-secondary" /> Sambutan
               </CardTitle>
             </CardHeader>
             <CardContent className="p-8 space-y-8">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="space-y-6">
                   <div className="space-y-3">
-                    <Label className="text-xs font-bold uppercase text-slate-400">Label Bagian (Contoh: Sambutan Kepala Sekolah)</Label>
+                    <Label className="text-xs font-bold uppercase text-slate-400">Label Bagian</Label>
                     <Input 
                       value={formData.welcomeSectionLabel} 
                       onChange={(e) => setFormData({...formData, welcomeSectionLabel: e.target.value})} 
@@ -508,7 +535,7 @@ export default function AdminSettings() {
                   </div>
                   
                   <div className="space-y-3">
-                    <Label className="text-xs font-bold uppercase text-slate-400">Foto Kepala Sekolah (Rasio 4:6)</Label>
+                    <Label className="text-xs font-bold uppercase text-slate-400">Foto Kepala Sekolah</Label>
                     <div className="relative aspect-[2/3] w-48 rounded-[2rem] overflow-hidden border-2 border-dashed border-slate-200 bg-slate-50 flex items-center justify-center">
                       {formData.headmasterPhotoUrl ? (
                         <img src={formData.headmasterPhotoUrl} alt="Kepala Sekolah" className="w-full h-full object-cover" />
@@ -539,9 +566,6 @@ export default function AdminSettings() {
                 {formData.stats?.map((stat: any, idx: number) => (
                   <div key={idx} className="bg-slate-50 p-6 rounded-[2rem] border border-slate-100 space-y-4">
                     <div className="flex items-center gap-3">
-                      <div className="bg-primary/10 p-2 rounded-lg">
-                        <Users className="h-5 w-5 text-primary" />
-                      </div>
                       <Label className="text-xs font-bold uppercase text-primary">{stat.label}</Label>
                     </div>
                     <div className="space-y-2">
@@ -583,20 +607,11 @@ export default function AdminSettings() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="space-y-6">
                   <div className="space-y-3">
-                    <Label className="text-xs font-bold uppercase text-slate-400">Judul Tombol Navigasi</Label>
+                    <Label className="text-xs font-bold uppercase text-slate-400">Judul Tombol</Label>
                     <Input 
                       value={formData.ppdbMenuTitle} 
                       onChange={(e) => setFormData({...formData, ppdbMenuTitle: e.target.value})} 
                       className="h-12 bg-slate-50 rounded-xl"
-                    />
-                  </div>
-                  <div className="space-y-3">
-                    <Label className="text-xs font-bold uppercase text-slate-400">Sub-judul Halaman SPMB</Label>
-                    <Input 
-                      value={formData.ppdbSubtitle} 
-                      onChange={(e) => setFormData({...formData, ppdbSubtitle: e.target.value})} 
-                      className="h-12 bg-slate-50 rounded-xl"
-                      placeholder="Contoh: Sistem Penerimaan Peserta Didik Baru..."
                     />
                   </div>
                   <div className="space-y-3">
