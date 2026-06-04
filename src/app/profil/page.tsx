@@ -2,7 +2,7 @@
 
 import React, { useMemo } from "react";
 import Image from "next/image";
-import { CheckCircle2, Target, History, Users2, Building2 } from "lucide-react";
+import { CheckCircle2, Target, History, Users2, Building2, AlertTriangle } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useFirestore, useDoc, useCollection } from "@/firebase";
 import { doc, collection, query, where } from "firebase/firestore";
@@ -10,11 +10,21 @@ import { doc, collection, query, where } from "firebase/firestore";
 export default function ProfilPage() {
   const db = useFirestore();
   const currentSchoolId = 'smpn5-langke-rembong';
+  
   const settingsRef = useMemo(() => db ? doc(db, "schools", currentSchoolId) : null, [db]);
   const { data: settings } = useDoc(settingsRef);
 
-  const facilitiesRef = useMemo(() => db ? query(collection(db, "facilities"), where("schoolId", "==", currentSchoolId), where("status", "==", "Published")) : null, [db]);
-  const { data: facilities } = useCollection(facilitiesRef);
+  // Filter fasilitas yang dipublikasikan untuk sekolah ini
+  const facilitiesRef = useMemo(() => {
+    if (!db) return null;
+    return query(
+      collection(db, "facilities"), 
+      where("schoolId", "==", currentSchoolId), 
+      where("status", "==", "Published")
+    );
+  }, [db]);
+  
+  const { data: facilities, loading: facilitiesLoading, error: facilitiesError } = useCollection(facilitiesRef);
 
   const schoolName = settings?.schoolName || "SMPN 5 Langke Rembong";
   
@@ -109,23 +119,37 @@ export default function ProfilPage() {
             </div>
             <h2 className="text-5xl font-bold text-primary font-headline tracking-tighter">Fasilitas Unggulan Kami</h2>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-            {facilities && facilities.length > 0 ? facilities.map((f: any, i: number) => (
-              <Card key={i} className="overflow-hidden border-none shadow-xl hover:shadow-2xl transition-all duration-500 rounded-[2.5rem] group">
-                <div className="relative h-64 overflow-hidden">
-                   <Image src={f.imageUrl || `https://picsum.photos/seed/${f.id}/600/400`} alt={f.name} fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
-                </div>
-                <CardContent className="p-8">
-                  <h4 className="text-2xl font-bold text-primary font-headline mb-3">{f.name}</h4>
-                  <p className="text-slate-500 font-medium text-sm leading-relaxed">{f.description}</p>
-                </CardContent>
-              </Card>
-            )) : (
-              <div className="col-span-3 text-center py-20 bg-slate-50 rounded-[3rem] border-2 border-dashed border-slate-200">
-                <p className="text-slate-400 italic">Daftar fasilitas akan segera diperbarui oleh admin.</p>
-              </div>
-            )}
-          </div>
+
+          {facilitiesLoading ? (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-10 animate-pulse">
+              {[1, 2, 3].map(i => (
+                <div key={i} className="h-64 bg-slate-100 rounded-[2.5rem]" />
+              ))}
+            </div>
+          ) : facilitiesError ? (
+            <div className="text-center py-20 bg-slate-50 rounded-[3rem] border-2 border-dashed border-red-200 text-red-400">
+              <AlertTriangle className="h-12 w-12 mx-auto mb-4" />
+              <p className="font-medium">Terjadi kendala saat memuat fasilitas. Pastikan Index Firestore sudah siap.</p>
+            </div>
+          ) : facilities && facilities.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+              {facilities.map((f: any, i: number) => (
+                <Card key={i} className="overflow-hidden border-none shadow-xl hover:shadow-2xl transition-all duration-500 rounded-[2.5rem] group">
+                  <div className="relative h-64 overflow-hidden">
+                     <Image src={f.imageUrl || `https://picsum.photos/seed/${f.id}/600/400`} alt={f.name} fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
+                  </div>
+                  <CardContent className="p-8">
+                    <h4 className="text-2xl font-bold text-primary font-headline mb-3">{f.name}</h4>
+                    <p className="text-slate-500 font-medium text-sm leading-relaxed">{f.description}</p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-20 bg-slate-50 rounded-[3rem] border-2 border-dashed border-slate-200">
+              <p className="text-slate-400 italic">Daftar fasilitas belum dipublikasikan oleh admin.</p>
+            </div>
+          )}
         </div>
       </section>
     </div>

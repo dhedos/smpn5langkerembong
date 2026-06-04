@@ -9,19 +9,20 @@ export function useCollection<T = any>(query: Query | null) {
   const [data, setData] = useState<T[] | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
-  const queryRef = useRef<string | null>(null);
+  const lastQueryKey = useRef<string | null>(null);
 
   useEffect(() => {
     if (!query) {
       setLoading(false);
+      setData(null);
       return;
     }
 
-    // Use a simpler stability check to avoid ID: ca9 internal errors
     const currentQueryKey = query.toString();
-    if (queryRef.current === currentQueryKey) return;
-    queryRef.current = currentQueryKey;
+    if (lastQueryKey.current === currentQueryKey) return;
+    lastQueryKey.current = currentQueryKey;
 
+    setLoading(true);
     let isMounted = true;
 
     const unsubscribe = onSnapshot(
@@ -38,6 +39,7 @@ export function useCollection<T = any>(query: Query | null) {
       },
       (serverError) => {
         if (!isMounted) return;
+        console.error("Firestore useCollection Error:", serverError);
         
         if (serverError.code === 'permission-denied') {
           const permissionError = new FirestorePermissionError({

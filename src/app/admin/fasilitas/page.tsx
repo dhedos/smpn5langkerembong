@@ -1,8 +1,7 @@
-
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { Building2, Trash2, ImageIcon, Upload, CheckCircle2, Eye, EyeOff, Loader2 } from "lucide-react";
+import { Building2, Trash2, ImageIcon, Upload, CheckCircle2, Eye, EyeOff, Loader2, AlertTriangle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -27,7 +26,7 @@ export default function AdminFasilitas() {
     return query(collection(db, "facilities"), where("schoolId", "==", schoolId));
   }, [db, schoolId]);
 
-  const { data: facilities, loading } = useCollection(facilitiesRef);
+  const { data: facilities, loading, error } = useCollection(facilitiesRef);
 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -224,6 +223,15 @@ export default function AdminFasilitas() {
               <TableBody>
                 {loading ? (
                   <TableRow><TableCell colSpan={4} className="text-center py-20 text-slate-400 animate-pulse italic font-medium">Memuat data fasilitas...</TableCell></TableRow>
+                ) : error ? (
+                  <TableRow>
+                    <TableCell colSpan={4} className="text-center py-20 text-destructive font-medium">
+                      <div className="flex flex-col items-center gap-2">
+                        <AlertTriangle className="h-8 w-8" />
+                        <p>Gagal memuat data. Silakan periksa koneksi atau index Firestore.</p>
+                      </div>
+                    </TableCell>
+                  </TableRow>
                 ) : facilities && facilities.length > 0 ? facilities.map((f: any) => (
                   <TableRow key={f.id} className="hover:bg-slate-50/50 transition-colors">
                     <TableCell className="px-8 py-4">
