@@ -1,11 +1,11 @@
 
 "use client";
 
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { GraduationCap, Facebook, Instagram, Youtube, MapPin, Phone, Mail, LogIn } from "lucide-react";
+import { GraduationCap, Facebook, Instagram, Youtube, MapPin, Phone, Mail, LogIn, ExternalLink, Globe } from "lucide-react";
 import { useFirestore, useDoc } from "@/firebase";
 import { doc } from "firebase/firestore";
 
@@ -41,6 +41,7 @@ export function Footer() {
 
   const schoolName = settings?.schoolName || "SMPN 5 Langke Rembong";
   const schoolLogo = settings?.schoolLogoUrl;
+  const officialWebsite = settings?.officialWebsiteUrl;
   const address = settings?.address || "Jl. Pendidikan No. 45, Jakarta Selatan";
   const phone = settings?.phone || "(021) 1234-5678";
   const email = settings?.email || "info@sekolah.sch.id";
@@ -75,13 +76,25 @@ export function Footer() {
                   <GraduationCap className="h-8 w-8 text-primary" />
                 )}
               </div>
-              <span className="font-headline font-bold text-2xl tracking-tighter">
+              <span className="font-headline font-bold text-2xl tracking-tighter uppercase">
                 {schoolName}
               </span>
             </div>
             <p className="text-primary-foreground/70 text-sm leading-relaxed font-medium">
               Membangun fondasi pendidikan unggul yang menginspirasi kreativitas bagi masa depan bangsa.
             </p>
+            
+            {officialWebsite && (
+              <a 
+                href={officialWebsite} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 px-4 py-2 rounded-xl text-xs font-bold transition-all border border-white/10"
+              >
+                <Globe className="h-3 w-3 text-secondary" /> PORTAL RESMI INSTANSI <ExternalLink className="h-3 w-3 opacity-50" />
+              </a>
+            )}
+
             <div className="flex gap-4">
               {socialLinks.map((social, i) => (
                 <Link 

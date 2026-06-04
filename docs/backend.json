@@ -8,6 +8,7 @@
       "properties": {
         "schoolName": { "type": "string", "description": "Nama lengkap sekolah" },
         "schoolLogoUrl": { "type": "string", "description": "URL logo sekolah (PNG/SVG)" },
+        "officialWebsiteUrl": { "type": "string", "description": "URL website resmi instansi/sekolah" },
         "copyrightYear": { "type": "string", "description": "Tahun hak cipta yang ditampilkan di footer" },
         "heroTitle": { "type": "string" },
         "heroSubtitle": { "type": "string" },

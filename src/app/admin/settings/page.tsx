@@ -23,7 +23,8 @@ import {
   Search,
   Map as MapIcon,
   Copyright,
-  Calendar
+  Calendar,
+  Globe
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -50,6 +51,7 @@ export default function AdminSettings() {
   const defaultValues = {
     schoolName: "SMPN 5 Langke Rembong",
     schoolLogoUrl: "",
+    officialWebsiteUrl: "",
     copyrightYear: new Date().getFullYear().toString(),
     heroTitle: "Membangun Masa Depan Bersama Kami",
     heroSubtitle: "Pendidikan berkualitas untuk generasi emas bangsa melalui kurikulum yang inovatif dan lingkungan yang mendukung.",
@@ -271,6 +273,20 @@ export default function AdminSettings() {
                   <div className="flex items-center gap-2 text-[10px] font-bold text-blue-500 uppercase tracking-tight">
                     <Copyright className="h-3 w-3" /> Nama ini akan tampil di seluruh bagian website.
                   </div>
+                </div>
+
+                <div className="space-y-3 pt-4 border-t">
+                  <Label className="text-xs font-bold uppercase text-slate-400">Tautan Website Resmi Instansi</Label>
+                  <div className="relative">
+                    <Globe className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                    <Input 
+                      value={formData.officialWebsiteUrl} 
+                      onChange={(e) => setFormData({...formData, officialWebsiteUrl: e.target.value})} 
+                      className="h-14 bg-slate-50 rounded-2xl font-bold pl-12" 
+                      placeholder="https://www.instansi.go.id"
+                    />
+                  </div>
+                  <p className="text-[10px] text-slate-400 italic">Link ini akan ditampilkan di footer sebagai portal resmi instansi.</p>
                 </div>
 
                 <div className="space-y-3 pt-4 border-t">
