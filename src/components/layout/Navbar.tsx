@@ -60,6 +60,7 @@ export function Navbar() {
         ]
       },
       { name: "Informasi", href: "/informasi" },
+      { name: "Eskul", href: "/ekstrakurikuler" },
       { name: "Galeri", href: "/galeri" },
     ];
     

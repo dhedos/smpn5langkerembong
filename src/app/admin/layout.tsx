@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState } from "react";
@@ -17,7 +18,8 @@ import {
   Eye,
   EyeOff,
   School,
-  Megaphone
+  Megaphone,
+  Trophy
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -53,6 +55,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
     { name: "Informasi", href: "/admin/berita", icon: Newspaper },
     { name: "Fasilitas", href: "/admin/fasilitas", icon: Building2 },
+    { name: "Eskul", href: "/admin/ekstrakurikuler", icon: Trophy },
     { name: "Galeri", href: "/admin/galeri", icon: Camera },
     { name: "Pengaturan Situs", href: "/admin/settings", icon: Settings },
   ];

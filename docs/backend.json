@@ -82,6 +82,18 @@
         "status": { "type": "string", "enum": ["Draft", "Published"] }
       }
     },
+    "Extracurricular": {
+      "title": "Extracurricular",
+      "description": "Kegiatan ekstrakurikuler sekolah.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "imageUrl": { "type": "string" },
+        "schedule": { "type": "string" },
+        "status": { "type": "string", "enum": ["Draft", "Published"] }
+      }
+    },
     "Gallery": {
       "title": "Gallery",
       "description": "Foto-foto kegiatan sekolah.",
@@ -118,6 +130,10 @@
     "/facilities/{facilityId}": {
       "schema": "Facility",
       "description": "Koleksi fasilitas sekolah"
+    },
+    "/extracurriculars/{extraId}": {
+      "schema": "Extracurricular",
+      "description": "Koleksi kegiatan ekstrakurikuler"
     },
     "/gallery/{photoId}": {
       "schema": "Gallery",
