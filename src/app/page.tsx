@@ -1,3 +1,4 @@
+
 "use client";
 
 import Image from "next/image";
@@ -42,14 +43,14 @@ export default function Home() {
   return (
     <div className="flex flex-col gap-0">
       {/* Hero Section */}
-      <section className="relative min-h-[95vh] flex items-center overflow-hidden bg-slate-950">
+      <section className="relative min-h-screen flex items-center overflow-hidden bg-slate-950">
         <div 
           className="absolute inset-0 z-0 bg-cover bg-center transition-transform duration-[4000ms] hover:scale-105 opacity-60"
           style={{ backgroundImage: `url('${heroImageUrl}')`, backgroundAttachment: 'fixed' }}
         />
         <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/70 to-transparent z-[1]" />
         
-        <div className="container relative z-10 px-6 md:px-12 mx-auto">
+        <div className="container relative z-10 px-6 md:px-12 mx-auto pb-48 pt-32">
           <div className="max-w-4xl space-y-12 animate-in fade-in slide-in-from-left duration-1000">
             <h1 className="text-6xl md:text-[8rem] font-bold text-white font-headline leading-[0.9] tracking-tighter">
               {settings?.heroTitle || "Wujudkan Masa Depan"} <br/>
@@ -77,15 +78,15 @@ export default function Home() {
       </section>
 
       {/* Stats Section - Precise Design from Reference */}
-      <section className="relative -mt-40 z-20 px-6">
+      <section className="relative -mt-32 z-20 px-6 mb-32">
         <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
           {displayStats.map((stat: any, i: number) => {
             const Icon = iconMap[stat.icon] || Users;
             return (
               <Card key={i} className="bg-white border-none shadow-[0_30px_60px_-15px_rgba(0,0,0,0.08)] hover:translate-y-[-10px] transition-all duration-500 rounded-[4rem] group overflow-hidden">
                 <CardContent className="p-10 md:p-14 flex flex-col items-center text-center space-y-8">
-                  <div className="p-5 bg-slate-50 rounded-[1.8rem] transition-colors duration-500">
-                    <Icon className="h-8 w-8 text-primary/80" />
+                  <div className="p-6 bg-slate-50 rounded-[2rem] transition-colors duration-500">
+                    <Icon className="h-10 w-10 text-primary/80" />
                   </div>
                   <div className="space-y-1">
                     <div className="text-6xl md:text-7xl font-bold text-slate-900 font-headline tracking-tighter">
