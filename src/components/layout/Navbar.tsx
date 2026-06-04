@@ -58,7 +58,7 @@ export function Navbar() {
           { name: "Fasilitas", href: "/profil#fasilitas" },
         ]
       },
-      { name: "Informasi", href: "/berita" },
+      { name: "Informasi", href: "/informasi" },
       { name: "Galeri", href: "/galeri" },
     ];
     
