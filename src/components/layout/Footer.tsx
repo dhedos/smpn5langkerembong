@@ -59,23 +59,11 @@ export function Footer() {
   ];
 
   const renderFormattedName = (name: string) => {
-    if (name.includes('SMPN 5')) {
-      return (
-        <div className="font-headline font-black text-2xl md:text-3xl tracking-tighter leading-[1.1] uppercase">
-          <span className="text-white">SMPN </span>
-          <span className="text-secondary">5</span>
-          <span className="text-white"> Langke</span>
-          <br />
-          <span className="text-white">Rembong</span>
-        </div>
-      );
-    }
-    const words = name.split(' ');
     return (
-      <div className="font-headline font-black text-2xl md:text-3xl tracking-tighter leading-[1.1] uppercase">
-        {words.slice(0, Math.ceil(words.length / 2)).join(' ')}
-        <br />
-        {words.slice(Math.ceil(words.length / 2)).join(' ')}
+      <div className="font-headline font-black text-2xl md:text-3xl tracking-tighter leading-[0.9] uppercase">
+        <span className="text-white block">SMPN 5</span>
+        <span className="text-white block">LANGKE</span>
+        <span className="text-white block">REMBONG</span>
       </div>
     );
   };
@@ -99,24 +87,24 @@ export function Footer() {
               {renderFormattedName(schoolName)}
             </div>
 
-            {/* Render Multiple Portal Links */}
+            {/* Portal links section right below branding */}
             {officialWebsites.length > 0 && (
-              <div className="mb-6 pt-4 border-t border-white/10 space-y-2">
+              <div className="mb-6 space-y-2">
                 {officialWebsites.map((web: any, i: number) => (
                   <a 
                     key={i}
                     href={web.url} 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="text-secondary hover:text-white transition-all flex items-center gap-2 uppercase text-[9px] font-black tracking-widest"
+                    className="text-secondary hover:text-white transition-all flex items-center gap-2 uppercase text-[10px] font-black tracking-widest bg-white/5 p-2 rounded-xl border border-white/10"
                   >
-                    <Globe className="h-3 w-3" /> {web.title} <ExternalLink className="h-3 w-3" />
+                    <Globe className="h-3 w-3" /> {web.title} <ExternalLink className="h-3 w-3 ml-auto opacity-50" />
                   </a>
                 ))}
               </div>
             )}
             
-            <p className="text-white/60 text-xs leading-relaxed font-medium max-w-xs mb-4">
+            <p className="text-white/60 text-xs leading-relaxed font-medium max-w-xs mb-6">
               Membangun fondasi pendidikan unggul yang menginspirasi kreativitas bagi masa depan bangsa.
             </p>
 
