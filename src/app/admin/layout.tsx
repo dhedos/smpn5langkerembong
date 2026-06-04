@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { 
@@ -19,7 +19,8 @@ import {
   EyeOff,
   School,
   Megaphone,
-  Trophy
+  Trophy,
+  Copyright
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -37,19 +38,26 @@ import {
   SidebarTrigger,
   SidebarInset
 } from "@/components/ui/sidebar";
-import { useUser, useAuth } from "@/firebase";
+import { useUser, useAuth, useFirestore, useDoc } from "@/firebase";
 import { signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { doc } from "firebase/firestore";
 import { toast } from "@/hooks/use-toast";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { user, profile, loading: authLoading } = useUser();
   const auth = useAuth();
+  const db = useFirestore();
   
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
+
+  // Ambil nama sekolah untuk copyright
+  const schoolId = profile?.schoolId || 'smpn5-langke-rembong';
+  const settingsRef = useMemo(() => db ? doc(db, "schools", schoolId) : null, [db, schoolId]);
+  const { data: settings } = useDoc(settingsRef);
 
   const adminMenuItems = [
     { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
@@ -137,9 +145,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </SidebarMenu>
           </SidebarContent>
           <SidebarFooter className="p-4 border-t border-slate-50">
-            <div className="px-4 py-3 mb-4 bg-slate-50 rounded-xl">
-              <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Active School ID</div>
-              <div className="text-xs font-bold text-primary truncate">{profile?.schoolId || 'GN-GLOBAL'}</div>
+            <div className="px-4 py-4 mb-4 bg-slate-50 rounded-2xl border border-slate-100">
+              <div className="flex items-center gap-2 mb-2">
+                <Copyright className="h-3 w-3 text-primary" />
+                <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Copyright Notice</span>
+              </div>
+              <div className="text-[10px] font-bold text-slate-900 leading-tight">
+                © 2024 {settings?.schoolName || 'SMPN 5 Langke Rembong'}
+              </div>
+              <div className="text-[8px] text-slate-400 mt-2 uppercase font-black tracking-tighter opacity-60">
+                Powered by EduVista GN
+              </div>
             </div>
             <Button variant="ghost" className="w-full justify-start gap-3 text-slate-500 hover:text-red-600 hover:bg-red-50 rounded-xl" onClick={() => signOut(auth)}>
               <LogOut className="h-4 w-4" /> Keluar Sesi

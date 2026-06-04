@@ -9,7 +9,7 @@ import { GraduationCap, Facebook, Instagram, Youtube, MapPin, Phone, Mail, LogIn
 import { useFirestore, useDoc } from "@/firebase";
 import { doc } from "firebase/firestore";
 
-// Simple TikTok SVG icon since lucide-react might not have one
+// Simple TikTok SVG icon
 const TikTokIcon = ({ className }: { className?: string }) => (
   <svg 
     viewBox="0 0 24 24" 
