@@ -8,7 +8,8 @@ import {
   School, 
   Loader2,
   Image as ImageIcon,
-  CheckCircle2
+  CheckCircle2,
+  Mail
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -177,6 +178,16 @@ export default function AdminSettings() {
             <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden bg-white">
               <CardHeader className="bg-slate-50/50 border-b p-8"><CardTitle className="text-xl flex items-center gap-3 font-headline text-primary"><Phone className="h-6 w-6 text-secondary" /> Kontak Resmi</CardTitle></CardHeader>
               <CardContent className="space-y-6 p-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-3">
+                    <Label className="text-xs font-bold uppercase text-slate-400">Nomor Telepon Kantor</Label>
+                    <Input value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} className="h-14 bg-slate-50 rounded-2xl" placeholder="(021) 1234-5678" />
+                  </div>
+                  <div className="space-y-3">
+                    <Label className="text-xs font-bold uppercase text-slate-400">Email Resmi Sekolah</Label>
+                    <Input value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} className="h-14 bg-slate-50 rounded-2xl" placeholder="info@sekolah.sch.id" />
+                  </div>
+                </div>
                 <div className="space-y-3">
                   <Label className="text-xs font-bold uppercase text-slate-400">WhatsApp Admin (Format: 628...)</Label>
                   <Input value={formData.whatsappNumber} onChange={(e) => setFormData({...formData, whatsappNumber: e.target.value})} className="h-14 bg-slate-50 rounded-2xl" placeholder="628123456789" />
