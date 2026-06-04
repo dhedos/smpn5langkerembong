@@ -24,7 +24,9 @@ export function Navbar() {
   const isHome = pathname === "/";
 
   const db = useFirestore();
-  const settingsRef = useMemo(() => db ? doc(db, "settings", "general") : null, [db]);
+  // Multi-tenant: Default school ID for current deployment
+  const currentSchoolId = 'smpn5-langke-rembong';
+  const settingsRef = useMemo(() => db ? doc(db, "schools", currentSchoolId) : null, [db]);
   const { data: settings } = useDoc(settingsRef);
 
   useEffect(() => {

@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useMemo } from "react";
@@ -14,7 +13,8 @@ export function Footer() {
   const isAdminPage = pathname.startsWith("/admin");
 
   const db = useFirestore();
-  const settingsRef = useMemo(() => db ? doc(db, "settings", "general") : null, [db]);
+  const currentSchoolId = 'smpn5-langke-rembong';
+  const settingsRef = useMemo(() => db ? doc(db, "schools", currentSchoolId) : null, [db]);
   const { data: settings } = useDoc(settingsRef);
 
   if (isAdminPage) return null;
@@ -33,7 +33,7 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 mb-20">
           {/* Column 1: Info */}
           <div className="space-y-8">
-            <Link href="/" className="flex items-center gap-4">
+            <div className="flex items-center gap-4">
               <div className="bg-white p-2.5 rounded-2xl">
                 {schoolLogo ? (
                   <div className="relative h-8 w-8"><Image src={schoolLogo} alt="Logo" fill className="object-contain" /></div>
@@ -42,11 +42,9 @@ export function Footer() {
                 )}
               </div>
               <span className="font-headline font-bold text-2xl tracking-tighter">
-                {schoolName.split(" ").map((w, i) => (
-                   <span key={i} className={i === 1 || w === "5" ? "text-secondary" : ""}>{w}{" "}</span>
-                ))}
+                {schoolName}
               </span>
-            </Link>
+            </div>
             <p className="text-primary-foreground/70 text-sm leading-relaxed font-medium">
               Membangun fondasi pendidikan unggul yang menginspirasi kreativitas bagi masa depan bangsa.
             </p>
@@ -63,24 +61,24 @@ export function Footer() {
           <div className="lg:pl-8">
             <h4 className="font-headline font-bold mb-10 text-xs tracking-[0.2em] uppercase text-secondary">Tautan Cepat</h4>
             <ul className="space-y-5 text-sm font-bold text-primary-foreground/60">
+              <li key="beranda"><Link href="/" className="hover:text-white transition-colors">Beranda</Link></li>
               <li key="profil"><Link href="/profil" className="hover:text-white transition-colors">Profil Sekolah</Link></li>
               <li key="informasi"><Link href="/informasi" className="hover:text-white transition-colors">Informasi Terbaru</Link></li>
               <li key="spmb"><Link href="/ppdb" className="hover:text-white transition-colors">SPMB Online</Link></li>
-              <li key="galeri"><Link href="/galeri" className="hover:text-white transition-colors">Galeri Kegiatan</Link></li>
             </ul>
           </div>
 
-          {/* Column 3: Academic */}
+          {/* Column 3: Akademik */}
           <div className="lg:pl-4">
             <h4 className="font-headline font-bold mb-10 text-xs tracking-[0.2em] uppercase text-secondary">Akademik</h4>
             <ul className="space-y-5 text-sm font-bold text-primary-foreground/60">
               {["Kurikulum Merdeka", "E-Learning", "Perpustakaan", "Ekstrakurikuler"].map((item) => (
-                <li key={item}><Link href="#" className="hover:text-white transition-colors">{item}</Link></li>
+                <li key={item}><span className="hover:text-white transition-colors cursor-pointer">{item}</span></li>
               ))}
             </ul>
           </div>
 
-          {/* Column 4: Contact */}
+          {/* Column 4: Hubungi Kami */}
           <div>
             <h4 className="font-headline font-bold mb-10 text-xs tracking-[0.2em] uppercase text-secondary">Hubungi Kami</h4>
             <ul className="space-y-6 text-sm text-primary-foreground/90 font-medium">

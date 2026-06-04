@@ -2,11 +2,11 @@
 
 import React, { useState, useMemo } from "react";
 import Link from "next/link";
-import { CheckCircle2, Info, FileText, UserPlus, HelpCircle, AlertCircle } from "lucide-react";
+import { CheckCircle2, Info, FileText, UserPlus, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "@/hooks/use-toast";
 import { useFirestore, useDoc } from "@/firebase";
@@ -14,7 +14,8 @@ import { doc } from "firebase/firestore";
 
 export default function SPMBPage() {
   const db = useFirestore();
-  const settingsRef = useMemo(() => db ? doc(db, "settings", "general") : null, [db]);
+  const currentSchoolId = 'smpn5-langke-rembong';
+  const settingsRef = useMemo(() => db ? doc(db, "schools", currentSchoolId) : null, [db]);
   const { data: settings, loading } = useDoc(settingsRef);
 
   const [submitted, setSubmitted] = useState(false);
@@ -73,7 +74,7 @@ export default function SPMBPage() {
         <div className="absolute inset-0 bg-secondary/5 skew-y-3 translate-y-24" />
         <div className="container mx-auto px-4 relative z-10">
           <h1 className="text-5xl md:text-7xl font-bold font-headline mb-6 tracking-tighter">SPMB Online</h1>
-          <p className="text-white/70 max-w-xl mx-auto text-xl">Sistem Penerimaan Mahasiswa/Siswa Baru GN Nusantara.</p>
+          <p className="text-white/70 max-w-xl mx-auto text-xl">Sistem Penerimaan Peserta Didik Baru ({settings?.schoolName || "GN Nusantara"}).</p>
         </div>
       </section>
 
@@ -85,7 +86,7 @@ export default function SPMBPage() {
                 <div className="flex items-center gap-3 text-secondary font-bold text-sm uppercase tracking-widest mb-3">
                   <UserPlus className="h-5 w-5" /> Formulir Pendaftaran
                 </div>
-                <CardTitle className="text-3xl font-headline text-primary tracking-tight">Data Calon Pendaftar</CardTitle>
+                <CardTitle className="text-3xl font-headline text-primary tracking-tight">Data Calon Pendaftar {spmbYear}</CardTitle>
               </CardHeader>
               <CardContent className="p-10 bg-white">
                 <form onSubmit={handleSubmit} className="space-y-10">

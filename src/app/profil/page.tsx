@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useMemo } from "react";
@@ -10,10 +9,11 @@ import { doc, collection, query, where } from "firebase/firestore";
 
 export default function ProfilPage() {
   const db = useFirestore();
-  const settingsRef = useMemo(() => db ? doc(db, "settings", "general") : null, [db]);
+  const currentSchoolId = 'smpn5-langke-rembong';
+  const settingsRef = useMemo(() => db ? doc(db, "schools", currentSchoolId) : null, [db]);
   const { data: settings } = useDoc(settingsRef);
 
-  const facilitiesRef = useMemo(() => db ? query(collection(db, "facilities"), where("status", "==", "Published")) : null, [db]);
+  const facilitiesRef = useMemo(() => db ? query(collection(db, "facilities"), where("schoolId", "==", currentSchoolId), where("status", "==", "Published")) : null, [db]);
   const { data: facilities } = useCollection(facilitiesRef);
 
   const schoolName = settings?.schoolName || "SMPN 5 Langke Rembong";

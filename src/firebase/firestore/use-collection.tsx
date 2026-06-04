@@ -17,8 +17,8 @@ export function useCollection<T = any>(query: Query | null) {
       return;
     }
 
-    // Hindari re-subscribe jika query secara struktural sama (ID: ca9 fix)
-    const currentQueryKey = JSON.stringify(query);
+    // Use a simpler stability check to avoid ID: ca9 internal errors
+    const currentQueryKey = query.toString();
     if (queryRef.current === currentQueryKey) return;
     queryRef.current = currentQueryKey;
 
