@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
-import Link from "next/navigation";
+import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Menu, X, GraduationCap, ChevronDown } from "lucide-react";
