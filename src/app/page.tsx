@@ -287,13 +287,13 @@ export default function Home() {
                 <p className="text-slate-500 font-medium">{settings.address}</p>
                 <div className="pt-4">
                   <Button className="rounded-full bg-primary h-12 px-8 font-bold gap-2" asChild>
-                    <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(settings.address)}`} target="_blank">
+                    <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(settings.address || schoolName)}`} target="_blank">
                       <MapPin className="h-4 w-4" /> Buka di Google Maps
                     </a>
                   </Button>
                 </div>
               </div>
-              <div className="w-full md:w-1/2 h-[400px] rounded-[3rem] overflow-hidden shadow-lg border-8 border-white bg-slate-100">
+              <div className="w-full md:w-1/2 h-[400px] rounded-[3rem] overflow-hidden shadow-lg border-8 border-white bg-white">
                 <iframe 
                   src={settings.googleMapsEmbedUrl} 
                   width="100%" 
@@ -301,6 +301,7 @@ export default function Home() {
                   style={{ border: 0 }} 
                   allowFullScreen={true} 
                   loading="lazy" 
+                  referrerPolicy="no-referrer-when-downgrade"
                 />
               </div>
             </div>
