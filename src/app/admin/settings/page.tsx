@@ -38,23 +38,27 @@ export default function AdminSettings() {
   const { data: currentSettings, loading } = useDoc(settingsRef);
 
   const [formData, setFormData] = useState<any>({
-    schoolName: "",
+    schoolName: "SMPN 5 Langke Rembong",
     schoolLogoUrl: "",
-    heroTitle: "",
-    heroSubtitle: "",
+    heroTitle: "Membangun Masa Depan",
+    heroSubtitle: "Pendidikan berkualitas untuk generasi emas bangsa.",
     heroImageUrl: "",
-    welcomeTitle: "",
-    welcomeMessage: "",
-    headmasterName: "",
-    headmasterTitle: "",
+    welcomeTitle: "Selamat Datang",
+    welcomeMessage: "Kami berkomitmen untuk memberikan pengalaman belajar terbaik bagi putra-putri Anda melalui kurikulum yang inovatif dan lingkungan yang mendukung.",
+    headmasterName: "Kepala Sekolah",
+    headmasterTitle: "Kepala Sekolah SMPN 5 Langke Rembong",
     headmasterPhotoUrl: "",
-    whatsappNumber: "",
-    address: "",
-    phone: "",
-    email: "",
-    history: "",
-    vision: "",
-    mission: [],
+    whatsappNumber: "628123456789",
+    address: "Jl. Pendidikan No. 5, Langke Rembong",
+    phone: "(0385) 12345",
+    email: "admin@smpn5langkerembong.sch.id",
+    history: "Sekolah kami didirikan pada tahun [tahun] dengan visi untuk mencerdaskan kehidupan bangsa melalui pendidikan yang inklusif dan berkualitas tinggi.",
+    vision: "Menjadi lembaga pendidikan unggulan yang mencetak generasi bertakwa, berkarakter, dan berdaya saing global.",
+    mission: [
+      "Menyelenggarakan proses pembelajaran yang inovatif berbasis teknologi.",
+      "Membangun lingkungan sekolah yang aman, nyaman, dan inspiratif.",
+      "Mengembangkan potensi siswa baik di bidang akademik maupun non-akademik."
+    ],
     facebookUrl: "",
     instagramUrl: "",
     tiktokUrl: "",
@@ -62,8 +66,12 @@ export default function AdminSettings() {
     ppdbYear: "2024/2025",
     ppdbIsActive: true,
     ppdbMenuTitle: "SPMB ONLINE",
-    ppdbRequirements: [],
-    ppdbQuotas: []
+    ppdbRequirements: ["Scan Ijazah Asli", "Scan Akta Kelahiran", "Pas Foto 3x4"],
+    ppdbQuotas: [
+      { label: "Zonasi", value: "50%", description: "Berdasarkan jarak tempat tinggal" },
+      { label: "Prestasi", value: "30%", description: "Akademik & Non-Akademik" },
+      { label: "Afirmasi", value: "20%", description: "Keluarga kurang mampu" }
+    ]
   });
 
   const [isSaving, setIsSaving] = useState(false);
