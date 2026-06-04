@@ -174,7 +174,7 @@ export default function AdminSettings() {
             <h1 className="text-4xl font-bold font-headline text-primary tracking-tight">
               Konfigurasi Website
             </h1>
-            <p className="text-muted-foreground text-sm font-medium">Sinkronisasi data otomatis antara panel admin dan website.</p>
+            <p className="text-muted-foreground text-sm font-medium">Sinkronisasi data otomatis oleh Goetnik Nusantara.</p>
           </div>
         </div>
         <Button 

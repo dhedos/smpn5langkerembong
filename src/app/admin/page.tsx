@@ -57,7 +57,7 @@ export default function AdminDashboard() {
             <div className="space-y-2">
               <h1 className="text-4xl md:text-5xl font-bold text-white font-headline tracking-tighter leading-tight">Selamat Datang di GN Nusantara</h1>
               <p className="text-lg text-white/50 leading-relaxed font-medium">
-                Pusat kendali EduVista SMP. Kelola data sekolah, informasi terbaru, dan registrasi PPDB dalam satu lingkungan cloud yang aman.
+                Pusat kendali operasional digital GN Nusantara secara global. Kelola data sekolah, informasi terbaru, dan registrasi PPDB dalam satu ekosistem cloud yang aman.
               </p>
             </div>
             <div className="flex flex-wrap gap-4 justify-center md:justify-start">
