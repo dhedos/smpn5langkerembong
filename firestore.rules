@@ -1,22 +1,18 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Fungsi pembantu
+    // Fungsi pembantu dasar
     function isSignedIn() {
       return request.auth != null;
     }
-    
-    function isOwner(userId) {
-      return isSignedIn() && request.auth.uid == userId;
-    }
 
-    // Aturan Profil Pengguna
+    // Mengizinkan pengguna mengelola profil mereka sendiri
     match /users/{userId} {
-      allow read, write: if isOwner(userId);
+      allow read, write: if isSignedIn() && request.auth.uid == userId;
     }
 
-    // Aturan Global untuk Data Sekolah (Multi-Tenant)
-    // Mengizinkan admin yang login untuk mengelola data
+    // Mengizinkan admin yang login untuk mengelola data sekolah
+    // Dalam tahap pengembangan, kita izinkan akses penuh bagi user yang login
     match /schools/{schoolId} {
       allow read: if true;
       allow write: if isSignedIn();
@@ -37,13 +33,8 @@ service cloud.firestore {
       allow write: if isSignedIn();
     }
 
-    match /settings/{docId} {
-      allow read: if true;
-      allow write: if isSignedIn();
-    }
-
-    // Koleksi umum lainnya
-    match /{collectionName}/{docId} {
+    // Rule umum untuk koleksi lainnya agar tidak Missing Permissions saat init
+    match /{document=**} {
       allow read: if true;
       allow write: if isSignedIn();
     }

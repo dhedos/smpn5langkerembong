@@ -26,8 +26,8 @@ export default function AdminSettings() {
   const db = useFirestore();
   const { profile } = useUser();
   
-  // Multi-tenant: targets current school's document
-  const targetSchoolId = profile?.schoolId || 'default-school';
+  // Menggunakan schoolId dari profil atau default agar sinkron dengan halaman utama
+  const targetSchoolId = profile?.schoolId || 'smpn5-langke-rembong';
   const settingsRef = useMemo(() => db ? doc(db, "schools", targetSchoolId) : null, [db, targetSchoolId]);
   const { data: currentSettings, loading } = useDoc(settingsRef);
 
@@ -71,8 +71,8 @@ export default function AdminSettings() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, field: string) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 300 * 1024) { 
-        toast({ title: "Gagal Unggah", description: "Ukuran file maksimal 300KB.", variant: "destructive" });
+      if (file.size > 200 * 1024) { 
+        toast({ title: "Gagal Unggah", description: "Ukuran file maksimal 200KB.", variant: "destructive" });
         return;
       }
       const reader = new FileReader();

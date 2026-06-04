@@ -25,8 +25,9 @@ export function useCollection<T = any>(query: Query | null) {
         })) as T[];
         setData(items);
         setLoading(false);
+        setError(null);
       },
-      async (serverError) => {
+      (serverError) => {
         const permissionError = new FirestorePermissionError({
           path: 'collection',
           operation: 'list',
@@ -38,7 +39,7 @@ export function useCollection<T = any>(query: Query | null) {
     );
 
     return () => unsubscribe();
-  }, [query ? 'query' : null]);
+  }, [query]); // Menggunakan query sebagai dependency yang stabil
 
   return { data, loading, error };
 }
