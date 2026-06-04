@@ -156,14 +156,15 @@ export function Footer() {
                 </div>
                 <span>{phone}</span>
               </li>
-              <li className="flex gap-4 items-center">
+              <li className="flex gap-4 items-center pb-5">
                 <div className="bg-white/5 p-2 rounded-lg">
                   <Mail className="h-4 w-4 text-secondary shrink-0" /> 
                 </div>
                 <span>{email}</span>
               </li>
+              
               {officialWebsite && (
-                <li className="flex gap-4 items-center pt-2 border-t border-white/5 mt-4">
+                <li className="flex gap-4 items-center pt-5 border-t border-white/10">
                   <div className="bg-white/5 p-2 rounded-lg">
                     <Globe className="h-4 w-4 text-secondary shrink-0" /> 
                   </div>
