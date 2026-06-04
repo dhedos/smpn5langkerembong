@@ -25,7 +25,8 @@ import {
   Search,
   ExternalLink,
   Map as MapIcon,
-  Copyright
+  Copyright,
+  Calendar
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -52,6 +53,7 @@ export default function AdminSettings() {
   const defaultValues = {
     schoolName: "SMPN 5 Langke Rembong",
     schoolLogoUrl: "",
+    copyrightYear: new Date().getFullYear().toString(),
     heroTitle: "Membangun Masa Depan Bersama Kami",
     heroSubtitle: "Pendidikan berkualitas untuk generasi emas bangsa melalui kurikulum yang inovatif dan lingkungan yang mendukung.",
     heroImageUrl: "",
@@ -105,6 +107,7 @@ export default function AdminSettings() {
       setFormData((prev: any) => ({
         ...prev,
         ...currentSettings,
+        copyrightYear: currentSettings.copyrightYear || prev.copyrightYear,
         stats: (currentSettings.stats && currentSettings.stats.length > 0) ? currentSettings.stats : prev.stats,
         mission: currentSettings.mission || prev.mission,
         ppdbRequirements: currentSettings.ppdbRequirements || prev.ppdbRequirements,
@@ -257,7 +260,7 @@ export default function AdminSettings() {
 
         <TabsContent value="general" className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden bg-white">
-              <CardHeader className="bg-slate-50/50 border-b p-8"><CardTitle className="text-xl flex items-center gap-3 font-headline text-primary"><School className="h-6 w-6 text-secondary" /> Nama & Logo</CardTitle></CardHeader>
+              <CardHeader className="bg-slate-50/50 border-b p-8"><CardTitle className="text-xl flex items-center gap-3 font-headline text-primary"><School className="h-6 w-6 text-secondary" /> Identitas Sekolah</CardTitle></CardHeader>
               <CardContent className="space-y-6 p-8">
                 <div className="space-y-3">
                   <Label className="text-xs font-bold uppercase text-slate-400">Nama Lengkap Sekolah</Label>
@@ -267,10 +270,27 @@ export default function AdminSettings() {
                     className="h-14 bg-slate-50 rounded-2xl font-bold" 
                   />
                   <div className="flex items-center gap-2 text-[10px] font-bold text-blue-500 uppercase tracking-tight">
-                    <Copyright className="h-3 w-3" /> Nama ini akan tampil sebagai Hak Cipta (Copyright) di seluruh website.
+                    <Copyright className="h-3 w-3" /> Nama ini akan tampil di seluruh bagian website.
                   </div>
                 </div>
-                <div className="space-y-3">
+
+                <div className="space-y-3 pt-4 border-t">
+                  <Label className="text-xs font-bold uppercase text-slate-400">Tahun Hak Cipta (Copyright)</Label>
+                  <div className="flex gap-4 items-center">
+                    <div className="relative flex-1">
+                       <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                       <Input 
+                        value={formData.copyrightYear} 
+                        onChange={(e) => setFormData({...formData, copyrightYear: e.target.value})} 
+                        className="h-14 bg-slate-50 rounded-2xl font-bold pl-12" 
+                        placeholder="Contoh: 2024"
+                      />
+                    </div>
+                  </div>
+                  <p className="text-[10px] text-slate-400 italic">Tahun ini akan tampil di bagian kaki (footer) website dan sidebar admin.</p>
+                </div>
+
+                <div className="space-y-3 pt-4 border-t">
                   <Label className="text-xs font-bold uppercase text-slate-400">Logo Sekolah</Label>
                   <div className="flex flex-col gap-4">
                     {formData.schoolLogoUrl && (

@@ -22,7 +22,7 @@ import {
   Trophy,
   Copyright
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -53,16 +53,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
-  const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
 
-  useEffect(() => {
-    setCurrentYear(new Date().getFullYear());
-  }, []);
-
-  // Ambil nama sekolah untuk copyright
+  // Ambil data sekolah untuk sinkronisasi tahun copyright
   const schoolId = profile?.schoolId || 'smpn5-langke-rembong';
   const settingsRef = useMemo(() => db ? doc(db, "schools", schoolId) : null, [db, schoolId]);
   const { data: settings } = useDoc(settingsRef);
+
+  const displayYear = useMemo(() => {
+    return settings?.copyrightYear || new Date().getFullYear().toString();
+  }, [settings?.copyrightYear]);
 
   const adminMenuItems = [
     { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
@@ -86,7 +85,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     }
   };
 
-  if (authLoading) return <div className="h-screen w-full flex items-center justify-center bg-[#1a1a1a]"><div className="h-8 w-8 border-2 border-primary border-t-transparent rounded-full animate-spin" /></div>;
+  if (authLoading) return null;
 
   if (!user) {
     return (
@@ -156,7 +155,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Copyright Notice</span>
               </div>
               <div className="text-[10px] font-bold text-slate-900 leading-tight">
-                © {currentYear} {settings?.schoolName || 'SMPN 5 Langke Rembong'}
+                © {displayYear} {settings?.schoolName || 'SMPN 5 Langke Rembong'}
               </div>
               <div className="text-[8px] text-slate-400 mt-2 uppercase font-black tracking-tighter opacity-60">
                 Powered by EduVista GN

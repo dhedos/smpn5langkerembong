@@ -27,16 +27,15 @@ const TikTokIcon = ({ className }: { className?: string }) => (
 export function Footer() {
   const pathname = usePathname();
   const isAdminPage = pathname.startsWith("/admin");
-  const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
-
-  useEffect(() => {
-    setCurrentYear(new Date().getFullYear());
-  }, []);
 
   const db = useFirestore();
   const currentSchoolId = 'smpn5-langke-rembong';
   const settingsRef = useMemo(() => db ? doc(db, "schools", currentSchoolId) : null, [db]);
   const { data: settings } = useDoc(settingsRef);
+
+  const displayYear = useMemo(() => {
+    return settings?.copyrightYear || new Date().getFullYear().toString();
+  }, [settings?.copyrightYear]);
 
   if (isAdminPage) return null;
 
@@ -138,7 +137,7 @@ export function Footer() {
         </div>
 
         <div className="border-t border-white/10 pt-10 flex flex-col md:flex-row justify-between items-center gap-6 text-[10px] font-bold text-primary-foreground/40 tracking-[0.2em] uppercase">
-          <p>© {currentYear} {schoolName.toUpperCase()}. ALL RIGHTS RESERVED.</p>
+          <p>© {displayYear} {schoolName.toUpperCase()}. ALL RIGHTS RESERVED.</p>
           <div className="flex gap-10 items-center">
             <Link href="/admin" className="opacity-30 hover:opacity-100 transition-all flex items-center gap-2 bg-white/5 px-4 py-2 rounded-full border border-white/10">
               <LogIn className="h-3 w-3" /> ADMIN CONSOLE
