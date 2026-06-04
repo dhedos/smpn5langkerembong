@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useMemo } from "react";
@@ -14,6 +13,8 @@ import { adminContentOptimizer } from "@/ai/flows/admin-content-optimizer-flow";
 import { toast } from "@/hooks/use-toast";
 import { useFirestore, useCollection } from "@/firebase";
 import { collection, addDoc, deleteDoc, doc, serverTimestamp } from "firebase/firestore";
+import { errorEmitter } from '@/firebase/error-emitter';
+import { FirestorePermissionError, type SecurityRuleContext } from '@/firebase/errors';
 
 export default function AdminBerita() {
   const db = useFirestore();
@@ -25,6 +26,7 @@ export default function AdminBerita() {
   const [tags, setTags] = useState<string[]>([]);
   const [newTag, setNewTag] = useState("");
   const [optimizing, setOptimizing] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("Umum");
 
@@ -41,7 +43,6 @@ export default function AdminBerita() {
       setTags(result.seoTags);
       toast({ title: "Optimasi Berhasil", description: "AI telah membuat ringkasan dan tag SEO berdasarkan konten Anda." });
     } catch (error) {
-      console.error("AI Error:", error);
       toast({ title: "Gagal Mengoptimasi", description: "Terjadi kesalahan pada AI Service.", variant: "destructive" });
     } finally {
       setOptimizing(false);
@@ -62,42 +63,59 @@ export default function AdminBerita() {
     setTags(tags.filter(t => t !== tagToRemove));
   };
 
-  const handleSave = async () => {
+  const handleSave = () => {
     if (!db || !title || !content) {
       toast({ title: "Data Belum Lengkap", description: "Judul dan konten utama wajib diisi.", variant: "destructive" });
       return;
     }
 
-    try {
-      await addDoc(collection(db, "news"), {
-        title,
-        content,
-        summary: summary || content.substring(0, 150),
-        category,
-        tags,
-        status: "Published",
-        date: new Date().toLocaleDateString('id-ID'),
-        createdAt: serverTimestamp()
+    setIsSaving(true);
+    const data = {
+      title,
+      content,
+      summary: summary || content.substring(0, 150),
+      category,
+      tags,
+      status: "Published",
+      date: new Date().toLocaleDateString('id-ID'),
+      createdAt: serverTimestamp()
+    };
+
+    addDoc(collection(db, "news"), data)
+      .then(() => {
+        setIsSaving(false);
+        setTitle("");
+        setContent("");
+        setSummary("");
+        setTags([]);
+        toast({ title: "Berhasil", description: "Informasi telah dipublikasikan ke website." });
+      })
+      .catch(async (error) => {
+        setIsSaving(false);
+        const permissionError = new FirestorePermissionError({
+          path: 'news',
+          operation: 'create',
+          requestResourceData: data,
+        } satisfies SecurityRuleContext);
+        errorEmitter.emit('permission-error', permissionError);
       });
-      
-      setTitle("");
-      setContent("");
-      setSummary("");
-      setTags([]);
-      toast({ title: "Berhasil", description: "Informasi telah dipublikasikan ke website." });
-    } catch (error) {
-      toast({ title: "Gagal Menyimpan", description: "Terjadi kesalahan saat menyimpan ke database.", variant: "destructive" });
-    }
   };
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = (id: string) => {
     if (!db) return;
-    try {
-      await deleteDoc(doc(db, "news", id));
-      toast({ title: "Dihapus", description: "Informasi telah dihapus secara permanen." });
-    } catch (error) {
-      toast({ title: "Gagal", description: "Gagal menghapus informasi.", variant: "destructive" });
-    }
+    const docRef = doc(db, "news", id);
+    
+    deleteDoc(docRef)
+      .then(() => {
+        toast({ title: "Dihapus", description: "Informasi telah dihapus secara permanen." });
+      })
+      .catch(async (error) => {
+        const permissionError = new FirestorePermissionError({
+          path: docRef.path,
+          operation: 'delete',
+        } satisfies SecurityRuleContext);
+        errorEmitter.emit('permission-error', permissionError);
+      });
   };
 
   return (
@@ -112,7 +130,6 @@ export default function AdminBerita() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
-        {/* Editor Section */}
         <Card className="lg:col-span-3 border-none shadow-xl rounded-[2.5rem] overflow-hidden">
           <CardHeader className="bg-slate-50/50 border-b p-8">
             <CardTitle className="text-xl flex items-center gap-2">
@@ -128,6 +145,7 @@ export default function AdminBerita() {
                   placeholder="Masukkan judul informasi..." 
                   value={title} 
                   onChange={(e) => setTitle(e.target.value)} 
+                  disabled={isSaving}
                 />
               </div>
               <div className="space-y-2">
@@ -137,6 +155,7 @@ export default function AdminBerita() {
                   placeholder="E.g. Akademik, Pengumuman" 
                   value={category} 
                   onChange={(e) => setCategory(e.target.value)} 
+                  disabled={isSaving}
                 />
               </div>
             </div>
@@ -147,6 +166,7 @@ export default function AdminBerita() {
                 className="min-h-[350px] bg-slate-50 border-slate-100 rounded-[2rem] p-6 leading-relaxed"
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
+                disabled={isSaving}
               />
             </div>
             <div className="flex justify-between items-center gap-4 border-t pt-8">
@@ -154,7 +174,7 @@ export default function AdminBerita() {
                 variant="outline" 
                 className="h-12 px-6 rounded-xl flex gap-2 border-primary/20 text-primary hover:bg-primary/5 font-bold"
                 onClick={handleOptimize}
-                disabled={optimizing}
+                disabled={optimizing || isSaving}
               >
                 {optimizing ? (
                   <Sparkles className="h-5 w-5 animate-spin text-secondary" />
@@ -163,14 +183,17 @@ export default function AdminBerita() {
                 )}
                 {optimizing ? "Menganalisis..." : "AI Optimize"}
               </Button>
-              <Button className="h-12 px-8 rounded-xl bg-primary shadow-lg shadow-primary/20 flex gap-2 font-bold" onClick={handleSave}>
-                <Save className="h-5 w-5" /> Publikasikan Informasi
+              <Button 
+                className="h-12 px-8 rounded-xl bg-primary shadow-lg shadow-primary/20 flex gap-2 font-bold" 
+                onClick={handleSave}
+                disabled={isSaving}
+              >
+                <Save className="h-5 w-5" /> {isSaving ? "Menyimpan..." : "Publikasikan Informasi"}
               </Button>
             </div>
           </CardContent>
         </Card>
 
-        {/* AI Suggestions Section */}
         <Card className="lg:col-span-2 border-none shadow-xl rounded-[2.5rem] bg-white border border-slate-100 flex flex-col">
           <CardHeader className="bg-slate-50/50 border-b p-8">
             <CardTitle className="text-xl flex items-center gap-3 text-primary">
@@ -189,6 +212,7 @@ export default function AdminBerita() {
                 placeholder="Klik 'AI Optimize' untuk membuat ringkasan..."
                 value={summary}
                 onChange={(e) => setSummary(e.target.value)}
+                disabled={isSaving}
               />
             </div>
             <div className="space-y-4">
@@ -214,6 +238,7 @@ export default function AdminBerita() {
                   onChange={(e) => setNewTag(e.target.value)}
                   onKeyDown={handleAddTag}
                   className="bg-slate-50 border-slate-100 rounded-xl h-12"
+                  disabled={isSaving}
                 />
               </div>
             </div>
@@ -221,17 +246,10 @@ export default function AdminBerita() {
         </Card>
       </div>
 
-      {/* List Table */}
       <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden">
-        <CardHeader className="bg-white p-8 flex flex-col md:flex-row justify-between items-center gap-4 border-b">
-          <div>
-            <CardTitle className="text-xl">Arsip Informasi</CardTitle>
-            <CardDescription className="font-medium">Kelola semua konten yang telah Anda publikasikan.</CardDescription>
-          </div>
-          <div className="relative w-full md:w-80">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-            <Input className="pl-12 h-12 bg-slate-50 border-slate-100 rounded-2xl" placeholder="Cari berdasarkan judul..." />
-          </div>
+        <CardHeader className="bg-white p-8 border-b">
+          <CardTitle className="text-xl">Arsip Informasi</CardTitle>
+          <CardDescription className="font-medium">Kelola semua konten yang telah Anda publikasikan.</CardDescription>
         </CardHeader>
         <CardContent className="p-0">
           <Table>
@@ -255,7 +273,7 @@ export default function AdminBerita() {
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">
-                       <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+                       <div className="h-2 w-2 rounded-full bg-green-500" />
                        <span className="text-[10px] font-black text-green-700 uppercase tracking-widest">{item.status}</span>
                     </div>
                   </TableCell>

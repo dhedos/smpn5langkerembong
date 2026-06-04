@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState } from "react";
@@ -75,15 +74,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         description: "Selamat datang di Cloud Console.",
       });
     } catch (error: any) {
-      console.error("Login failed", error);
       let message = "Email atau password salah.";
-      
-      if (error.code === 'auth/api-key-not-valid') {
-        message = "Kunci API tidak valid. Periksa konfigurasi Firebase.";
-      } else if (error.code === 'auth/configuration-not-found') {
-        message = "Metode Login belum diaktifkan di Firebase Console.";
+      if (error.code === 'auth/configuration-not-found') {
+        message = "Metode login email/password belum diaktifkan di Firebase Console.";
       }
-      
       toast({
         title: "Login Gagal",
         description: message,
@@ -148,7 +142,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </div>
             <Button 
               type="submit" 
-              className="w-full bg-white text-black hover:bg-slate-200 h-14 rounded-2xl font-bold gap-2 transition-transform active:scale-95"
+              className="w-full bg-white text-black hover:bg-slate-200 h-14 rounded-2xl font-bold gap-2"
               disabled={isLoggingIn}
             >
               {isLoggingIn ? "Memverifikasi..." : "Masuk Sekarang"} <ArrowRight className="h-4 w-4" />
@@ -169,12 +163,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <Sidebar className="border-r border-slate-200 bg-white">
           <SidebarHeader className="p-6 border-b border-slate-50">
             <div className="flex items-center gap-3">
-              <div className="bg-[#1a73e8] p-2 rounded-xl shadow-lg shadow-blue-500/20">
+              <div className="bg-[#1a73e8] p-2 rounded-xl shadow-lg">
                 <Database className="h-5 w-5 text-white" />
               </div>
               <div className="flex flex-col text-left">
                 <span className="font-bold text-sm tracking-tight text-slate-900 uppercase">Cloud Console</span>
-                <span className="text-[10px] text-blue-500 font-extrabold uppercase tracking-tighter">Admin Portal</span>
+                <span className="text-[10px] text-blue-500 font-extrabold uppercase">Admin Portal</span>
               </div>
             </div>
           </SidebarHeader>

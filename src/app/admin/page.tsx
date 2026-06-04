@@ -4,13 +4,11 @@ import React from "react";
 import { 
   Users, 
   Newspaper, 
-  TrendingUp, 
   Eye, 
   ArrowUpRight, 
   Database,
   ChevronRight,
-  ExternalLink,
-  Sparkles
+  ExternalLink
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -26,7 +24,7 @@ import { cn } from "@/lib/utils";
 const stats = [
   { title: "Kunjungan Situs", value: "12,450", change: "+12.5%", icon: Eye, color: "bg-blue-500" },
   { title: "Registrasi PPDB", value: "482", change: "+5.2%", icon: Users, color: "bg-green-500" },
-  { title: "Artikel Berita", value: "128", change: "+2.4%", icon: Newspaper, color: "bg-purple-500" },
+  { title: "Informasi Publik", value: "128", change: "+2.4%", icon: Newspaper, color: "bg-purple-500" },
   { title: "Total Dokumen", value: "3,200", change: "+8.1%", icon: Database, color: "bg-orange-500" },
 ];
 
@@ -50,7 +48,6 @@ const chartConfig = {
 export default function AdminDashboard() {
   return (
     <div className="p-8 space-y-8 max-w-7xl mx-auto">
-      {/* Cloud Firestore Style Hero Banner */}
       <div className="bg-[#1a1a1a] rounded-[2.5rem] p-10 md:p-14 relative overflow-hidden shadow-2xl border border-white/5">
         <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-gradient-to-l from-primary/20 to-transparent rounded-full translate-x-1/4 -translate-y-1/4 blur-[80px]" />
         
@@ -59,7 +56,7 @@ export default function AdminDashboard() {
             <div className="space-y-2">
               <h1 className="text-4xl md:text-5xl font-bold text-white font-headline tracking-tighter leading-tight">Selamat Datang di Cloud Console</h1>
               <p className="text-lg text-white/50 leading-relaxed font-medium">
-                Pusat kendali EduVista SMP. Kelola data sekolah, berita, dan registrasi PPDB dalam satu lingkungan cloud yang aman.
+                Pusat kendali EduVista SMP. Kelola data sekolah, informasi terbaru, dan registrasi PPDB dalam satu lingkungan cloud yang aman.
               </p>
             </div>
             <div className="flex flex-wrap gap-4 justify-center md:justify-start">
@@ -68,7 +65,7 @@ export default function AdminDashboard() {
                 className="bg-white text-black hover:bg-slate-200 px-8 py-6 rounded-full font-bold shadow-xl"
                 asChild
               >
-                <a href="/admin/berita">Kelola Berita</a>
+                <a href="/admin/berita">Kelola Informasi</a>
               </Button>
             </div>
           </div>
@@ -146,7 +143,7 @@ export default function AdminDashboard() {
           <CardContent className="p-8 pt-0 space-y-8">
             {[
               { time: "2m lalu", event: "Pendaftaran PPDB", user: "Rian K.", status: "Success" },
-              { time: "15m lalu", event: "Update Berita", user: "Admin S.", status: "Warning" },
+              { time: "15m lalu", event: "Update Informasi", user: "Admin S.", status: "Warning" },
               { time: "1j lalu", event: "Upload Galeri", user: "Admin B.", status: "Success" },
               { time: "3j lalu", event: "Update Pengaturan", user: "Anisa P.", status: "Info" },
             ].map((act, i) => (

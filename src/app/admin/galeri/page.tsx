@@ -1,8 +1,7 @@
-
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { Image as ImageIcon, Plus, Trash2, Upload, Camera } from "lucide-react";
+import { Plus, Trash2, Upload, Camera, Loader2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,11 +9,11 @@ import { Label } from "@/components/ui/label";
 import { useFirestore, useCollection } from "@/firebase";
 import { collection, addDoc, deleteDoc, doc, serverTimestamp, query, orderBy } from "firebase/firestore";
 import { toast } from "@/hooks/use-toast";
-import Image from "next/image";
+import { errorEmitter } from '@/firebase/error-emitter';
+import { FirestorePermissionError, type SecurityRuleContext } from '@/firebase/errors';
 
 export default function AdminGaleri() {
   const db = useFirestore();
-  // Gunakan query yang sama untuk konsistensi tampilan di admin
   const galleryRef = useMemo(() => db ? query(collection(db, "gallery"), orderBy("date", "desc")) : null, [db]);
   const { data: photos, loading } = useCollection(galleryRef);
 
@@ -37,38 +36,53 @@ export default function AdminGaleri() {
     }
   };
 
-  const handleSave = async () => {
+  const handleSave = () => {
     if (!db || !title || !imageUrl) {
       toast({ title: "Gagal", description: "Judul dan foto wajib diisi.", variant: "destructive" });
       return;
     }
 
     setIsUploading(true);
-    try {
-      await addDoc(collection(db, "gallery"), {
-        title,
-        imageUrl,
-        date: new Date().toLocaleDateString('id-ID'),
-        createdAt: serverTimestamp()
+    const data = {
+      title,
+      imageUrl,
+      date: new Date().toLocaleDateString('id-ID'),
+      createdAt: serverTimestamp()
+    };
+
+    addDoc(collection(db, "gallery"), data)
+      .then(() => {
+        setIsUploading(false);
+        setTitle("");
+        setImageUrl("");
+        toast({ title: "Berhasil", description: "Foto galeri telah ditambahkan." });
+      })
+      .catch(async (error) => {
+        setIsUploading(false);
+        const permissionError = new FirestorePermissionError({
+          path: 'gallery',
+          operation: 'create',
+          requestResourceData: data,
+        } satisfies SecurityRuleContext);
+        errorEmitter.emit('permission-error', permissionError);
       });
-      setTitle("");
-      setImageUrl("");
-      toast({ title: "Berhasil", description: "Foto galeri telah ditambahkan." });
-    } catch (error) {
-      toast({ title: "Gagal", description: "Terjadi kesalahan saat menyimpan.", variant: "destructive" });
-    } finally {
-      setIsUploading(false);
-    }
   };
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = (id: string) => {
     if (!db) return;
-    try {
-      await deleteDoc(doc(db, "gallery", id));
-      toast({ title: "Dihapus", description: "Foto telah dihapus dari galeri." });
-    } catch (error) {
-      toast({ title: "Gagal", description: "Gagal menghapus data.", variant: "destructive" });
-    }
+    const docRef = doc(db, "gallery", id);
+    
+    deleteDoc(docRef)
+      .then(() => {
+        toast({ title: "Dihapus", description: "Foto telah dihapus dari galeri." });
+      })
+      .catch(async (error) => {
+        const permissionError = new FirestorePermissionError({
+          path: docRef.path,
+          operation: 'delete',
+        } satisfies SecurityRuleContext);
+        errorEmitter.emit('permission-error', permissionError);
+      });
   };
 
   return (
@@ -98,6 +112,7 @@ export default function AdminGaleri() {
                 placeholder="E.g. Praktek Rangkaian Listrik" 
                 value={title} 
                 onChange={(e) => setTitle(e.target.value)} 
+                disabled={isUploading}
               />
             </div>
             <div className="space-y-3">
@@ -113,7 +128,7 @@ export default function AdminGaleri() {
                     </div>
                   )}
                 </div>
-                <Input type="file" accept="image/*" onChange={handleFileChange} className="text-xs cursor-pointer" />
+                <Input type="file" accept="image/*" onChange={handleFileChange} className="text-xs cursor-pointer" disabled={isUploading} />
               </div>
             </div>
             <Button 
@@ -121,7 +136,8 @@ export default function AdminGaleri() {
               onClick={handleSave}
               disabled={isUploading}
             >
-              <Plus className="h-5 w-5" /> {isUploading ? "Memproses..." : "Tambahkan ke Galeri"}
+              {isUploading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Plus className="h-5 w-5" />}
+              {isUploading ? "Memproses..." : "Tambahkan ke Galeri"}
             </Button>
           </CardContent>
         </Card>
