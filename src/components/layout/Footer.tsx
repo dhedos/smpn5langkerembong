@@ -58,55 +58,51 @@ export function Footer() {
     },
   ];
 
-  const renderFormattedName = (name: string) => {
-    return (
-      <div className="font-headline font-black text-2xl md:text-3xl tracking-tighter leading-[0.9] uppercase">
-        <span className="text-white block">SMPN 5</span>
-        <span className="text-white block">LANGKE</span>
-        <span className="text-white block">REMBONG</span>
-      </div>
-    );
-  };
-
   return (
     <footer className="bg-primary text-white pt-20 pb-10 border-t border-white/5">
       <div className="container mx-auto px-6 md:px-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-16 mb-16">
           {/* Brand Column */}
           <div className="flex flex-col">
-            <div className="flex items-center gap-5 mb-6">
-              <div className="bg-white p-3 rounded-[1.5rem] shadow-xl shrink-0 flex items-center justify-center w-20 h-20 md:w-24 md:h-24">
+            <div className="flex items-center gap-4 mb-6">
+              <div className="bg-white p-2 rounded-[1.2rem] shadow-xl shrink-0 flex items-center justify-center w-16 h-16 md:w-20 md:h-20">
                 {schoolLogo ? (
-                  <div className="relative h-14 w-14">
+                  <div className="relative h-12 w-12">
                     <Image src={schoolLogo} alt="Logo" fill className="object-contain" />
                   </div>
                 ) : (
-                  <GraduationCap className="h-12 w-12 text-primary" />
+                  <GraduationCap className="h-10 w-10 text-primary" />
                 )}
               </div>
-              {renderFormattedName(schoolName)}
+              <div className="font-headline font-black text-2xl md:text-3xl tracking-tighter leading-[0.85] uppercase">
+                <span className="block">SMPN <span className="text-secondary">5</span></span>
+                <span className="block">LANGKE</span>
+                <span className="block">REMBONG</span>
+              </div>
             </div>
+
+            <p className="text-white/60 text-xs leading-relaxed font-medium max-w-xs mb-4">
+              Membangun fondasi pendidikan unggul yang menginspirasi kreativitas bagi masa depan bangsa.
+            </p>
 
             {/* Portal links section right below branding */}
             {officialWebsites.length > 0 && (
-              <div className="mb-6 space-y-2">
+              <div className="mb-6 space-y-1.5">
                 {officialWebsites.map((web: any, i: number) => (
                   <a 
                     key={i}
                     href={web.url} 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="text-secondary hover:text-white transition-all flex items-center gap-2 uppercase text-[10px] font-black tracking-widest bg-white/5 p-2 rounded-xl border border-white/10"
+                    className="text-white/80 hover:text-secondary transition-all flex items-center gap-2 uppercase text-[10px] font-black tracking-widest bg-white/5 p-2 rounded-xl border border-white/10 group"
                   >
-                    <Globe className="h-3 w-3" /> {web.title} <ExternalLink className="h-3 w-3 ml-auto opacity-50" />
+                    <Globe className="h-3 w-3 text-secondary" /> 
+                    {web.title} 
+                    <ExternalLink className="h-3 w-3 ml-auto opacity-30 group-hover:opacity-100" />
                   </a>
                 ))}
               </div>
             )}
-            
-            <p className="text-white/60 text-xs leading-relaxed font-medium max-w-xs mb-6">
-              Membangun fondasi pendidikan unggul yang menginspirasi kreativitas bagi masa depan bangsa.
-            </p>
 
             <div className="flex gap-2">
               {socialLinks.map((social) => (
@@ -114,7 +110,7 @@ export function Footer() {
                   key={social.id} 
                   href={social.href} 
                   target="_blank"
-                  className="h-10 w-10 rounded-[0.75rem] bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-all"
+                  className="h-10 w-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-all"
                 >
                   {social.icon}
                 </Link>
@@ -126,10 +122,10 @@ export function Footer() {
           <div>
             <h4 className="font-headline font-black mb-8 text-[10px] tracking-[0.2em] uppercase text-secondary">Tautan Cepat</h4>
             <ul className="space-y-4 text-sm font-medium text-white/70">
-              <li><Link href="/profil" className="hover:text-white transition-colors">Profil Sekolah</Link></li>
-              <li><Link href="/informasi" className="hover:text-white transition-colors">Informasi Terbaru</Link></li>
-              <li><Link href="/ppdb" className="hover:text-white transition-colors">SPMB Online</Link></li>
-              <li><Link href="/galeri" className="hover:text-white transition-colors">Galeri Kegiatan</Link></li>
+              <li><Link href="/profil" className="hover:text-white transition-colors uppercase tracking-wider">Profil Sekolah</Link></li>
+              <li><Link href="/informasi" className="hover:text-white transition-colors uppercase tracking-wider">Informasi Terbaru</Link></li>
+              <li><Link href="/ppdb" className="hover:text-white transition-colors uppercase tracking-wider">SPMB Online</Link></li>
+              <li><Link href="/galeri" className="hover:text-white transition-colors uppercase tracking-wider">Galeri Kegiatan</Link></li>
             </ul>
           </div>
 
@@ -137,10 +133,10 @@ export function Footer() {
           <div>
             <h4 className="font-headline font-black mb-8 text-[10px] tracking-[0.2em] uppercase text-secondary">Akademik</h4>
             <ul className="space-y-4 text-sm font-medium text-white/70">
-              <li><span className="hover:text-white transition-colors cursor-pointer">Kurikulum Merdeka</span></li>
-              <li><span className="hover:text-white transition-colors cursor-pointer">E-Learning</span></li>
-              <li><span className="hover:text-white transition-colors cursor-pointer">Perpustakaan</span></li>
-              <li><Link href="/ekstrakurikuler" className="hover:text-white transition-colors">Ekstrakurikuler</Link></li>
+              <li className="hover:text-white transition-colors cursor-pointer uppercase tracking-wider">Kurikulum Merdeka</li>
+              <li className="hover:text-white transition-colors cursor-pointer uppercase tracking-wider">E-Learning</li>
+              <li className="hover:text-white transition-colors cursor-pointer uppercase tracking-wider">Perpustakaan</li>
+              <li><Link href="/ekstrakurikuler" className="hover:text-white transition-colors uppercase tracking-wider">Ekstrakurikuler</Link></li>
             </ul>
           </div>
 
@@ -152,7 +148,7 @@ export function Footer() {
                 <div className="bg-white/5 p-2 rounded-lg">
                   <MapPin className="h-4 w-4 text-secondary shrink-0" /> 
                 </div>
-                <span className="leading-relaxed pt-1">{address}</span>
+                <span className="leading-relaxed">{address}</span>
               </li>
               <li className="flex gap-4 items-center">
                 <div className="bg-white/5 p-2 rounded-lg">

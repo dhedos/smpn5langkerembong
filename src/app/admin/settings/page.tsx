@@ -26,7 +26,8 @@ import {
   Calendar,
   Globe,
   Tag,
-  Link as LinkIcon
+  Link as LinkIcon,
+  ExternalLink
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -113,12 +114,6 @@ export default function AdminSettings() {
       setFormData((prev: any) => ({
         ...prev,
         ...currentSettings,
-        copyrightYear: currentSettings.copyrightYear || prev.copyrightYear,
-        stats: (currentSettings.stats && currentSettings.stats.length > 0) ? currentSettings.stats : prev.stats,
-        mission: currentSettings.mission || prev.mission,
-        ppdbRequirements: currentSettings.ppdbRequirements || prev.ppdbRequirements,
-        ppdbQuotas: currentSettings.ppdbQuotas || prev.ppdbQuotas,
-        ppdbSubtitle: currentSettings.ppdbSubtitle || prev.ppdbSubtitle,
         officialWebsites: currentSettings.officialWebsites || prev.officialWebsites || [],
       }));
     }
