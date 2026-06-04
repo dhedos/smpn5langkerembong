@@ -27,7 +27,16 @@ export default function AdminBerita() {
     return query(collection(db, "news"), where("schoolId", "==", schoolId));
   }, [db, schoolId]);
 
-  const { data: newsItems, loading } = useCollection(newsRef);
+  const { data: rawNews, loading } = useCollection(newsRef);
+
+  const newsItems = useMemo(() => {
+    if (!rawNews) return [];
+    return [...rawNews].sort((a: any, b: any) => {
+      const dateA = a.createdAt?.seconds || 0;
+      const dateB = b.createdAt?.seconds || 0;
+      return dateB - dateA;
+    });
+  }, [rawNews]);
 
   const [editingId, setEditingId] = useState<string | null>(null);
   const [title, setTitle] = useState("");
@@ -62,10 +71,19 @@ export default function AdminBerita() {
     setGeneratingImg(true);
     try {
       const result = await generateNewsImage({ title });
-      setImageUrl(result.imageUrl);
-      toast({ title: "Gambar Dibuat", description: "AI telah menghasilkan gambar berdasarkan judul." });
-    } catch (error) {
-      toast({ title: "Gagal Membuat Gambar", variant: "destructive" });
+      if (result && result.imageUrl) {
+        setImageUrl(result.imageUrl);
+        toast({ title: "Gambar Dibuat", description: "AI telah menghasilkan gambar berdasarkan judul." });
+      } else {
+        throw new Error("Empty image result");
+      }
+    } catch (error: any) {
+      console.error("AI Image Generation Error:", error);
+      toast({ 
+        title: "Gagal Membuat Gambar", 
+        description: "Terjadi gangguan pada layanan AI. Silakan coba beberapa saat lagi.", 
+        variant: "destructive" 
+      });
     } finally {
       setGeneratingImg(false);
     }
@@ -310,7 +328,7 @@ export default function AdminBerita() {
                  <TableBody>
                    {loading ? (
                      <TableRow><TableCell className="text-center py-10">Memuat...</TableCell></TableRow>
-                   ) : newsItems && newsItems.length > 0 ? [...newsItems].sort((a,b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0)).map((item: any) => (
+                   ) : newsItems.length > 0 ? newsItems.map((item: any) => (
                      <TableRow key={item.id} className="group">
                        <TableCell className="p-6 font-bold truncate max-w-[150px]">{item.title}</TableCell>
                        <TableCell className="text-center">
