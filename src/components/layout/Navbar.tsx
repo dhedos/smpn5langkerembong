@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
-import Link from "next/link";
+import Link from "next/navigation";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Menu, X, GraduationCap, ChevronDown } from "lucide-react";
@@ -58,7 +58,7 @@ export function Navbar() {
           { name: "Fasilitas", href: "/profil#fasilitas" },
         ]
       },
-      { name: "Informasi", href: "/informasi" },
+      { name: "Informasi", href: "/berita" },
       { name: "Galeri", href: "/galeri" },
     ];
     
@@ -179,7 +179,7 @@ export function Navbar() {
         />
       )}
 
-      {/* Mobile Menu Drawer - SOLID WHITESIDE DRAWER */}
+      {/* Mobile Menu Drawer - SOLID WHITE SIDE DRAWER */}
       <div 
         className={cn(
           "lg:hidden fixed top-0 right-0 h-screen w-[80%] z-[110] bg-white shadow-2xl transition-transform duration-500 ease-in-out transform flex flex-col",

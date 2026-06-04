@@ -40,7 +40,7 @@ import { toast } from "@/hooks/use-toast";
 
 const adminMenuItems = [
   { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
-  { name: "Informasi Sekolah", href: "/admin/informasi", icon: Newspaper },
+  { name: "Informasi Sekolah", href: "/admin/berita", icon: Newspaper },
   { name: "Manajemen Fasilitas", href: "/admin/fasilitas", icon: Building2 },
   { name: "Manajemen Galeri", href: "/admin/galeri", icon: Camera },
   { name: "Pengaturan Situs", href: "/admin/settings", icon: Settings },

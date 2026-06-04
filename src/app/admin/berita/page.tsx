@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { Newspaper, Search, Sparkles, Wand2, Trash2, Edit, Save, X } from "lucide-react";
+import { Newspaper, Sparkles, Wand2, Trash2, Edit, Save, X } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
