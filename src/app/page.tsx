@@ -1,15 +1,23 @@
 
 "use client";
 
+import React, { useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, GraduationCap, Users, UserCircle, Briefcase, Newspaper, Calendar } from "lucide-react";
+import { 
+  ArrowRight, 
+  GraduationCap, 
+  Users, 
+  UserCircle, 
+  Briefcase, 
+  Newspaper, 
+  Calendar,
+  Loader2
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useDoc, useCollection, useFirestore } from "@/firebase";
 import { doc, collection, query, limit, orderBy, where } from "firebase/firestore";
-import { useMemo } from "react";
-import { cn } from "@/lib/utils";
 
 const IconMap: Record<string, any> = {
   GraduationCap: GraduationCap,
@@ -23,7 +31,7 @@ export default function Home() {
   
   const currentSchoolId = 'smpn5-langke-rembong';
   const settingsRef = useMemo(() => db ? doc(db, "schools", currentSchoolId) : null, [db]);
-  const { data: settings } = useDoc(settingsRef);
+  const { data: settings, loading: settingsLoading } = useDoc(settingsRef);
 
   const newsQuery = useMemo(() => {
     if (!db) return null;
@@ -36,6 +44,15 @@ export default function Home() {
     );
   }, [db]);
   const { data: newsItems, loading: newsLoading } = useCollection(newsQuery);
+
+  if (settingsLoading) {
+    return (
+      <div className="h-screen w-full flex flex-col items-center justify-center bg-slate-50">
+        <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
+        <p className="text-slate-400 font-bold uppercase tracking-widest animate-pulse">Menghubungkan ke GN Nusantara...</p>
+      </div>
+    );
+  }
 
   const heroImageUrl = settings?.heroImageUrl || "https://picsum.photos/seed/school1/1920/1080";
   const schoolName = settings?.schoolName || "SMPN 5 Langke Rembong";
