@@ -5,7 +5,6 @@ import React, { useState, useEffect, useMemo } from "react";
 import { 
   Settings, 
   Save, 
-  Phone, 
   School, 
   Loader2,
   Image as ImageIcon,
@@ -20,10 +19,8 @@ import {
   BarChart3,
   Users,
   UserPlus,
-  MapPin,
   User,
   Search,
-  ExternalLink,
   Map as MapIcon,
   Copyright,
   Calendar
@@ -87,6 +84,7 @@ export default function AdminSettings() {
     ppdbYear: "2024/2025",
     ppdbIsActive: true,
     ppdbMenuTitle: "SPMB ONLINE",
+    ppdbSubtitle: "Sistem Penerimaan Peserta Didik Baru (SMPN 5 LANGKE REMBONG).",
     ppdbRequirements: ["Scan Ijazah Asli", "Scan Akta Kelahiran", "Pas Foto 3x4"],
     ppdbQuotas: [
       { label: "Zonasi", value: "50%", description: "Berdasarkan jarak tempat tinggal" },
@@ -112,6 +110,7 @@ export default function AdminSettings() {
         mission: currentSettings.mission || prev.mission,
         ppdbRequirements: currentSettings.ppdbRequirements || prev.ppdbRequirements,
         ppdbQuotas: currentSettings.ppdbQuotas || prev.ppdbQuotas,
+        ppdbSubtitle: currentSettings.ppdbSubtitle || prev.ppdbSubtitle,
       }));
     }
   }, [currentSettings]);
@@ -340,7 +339,7 @@ export default function AdminSettings() {
                       className="h-12 bg-slate-50 rounded-xl font-mono text-[10px]" 
                     />
                     <div className="flex justify-between items-center">
-                       <p className="text-[10px] text-slate-400 italic">Sistem akan otomatis mengambil URL dari kode iframe.</p>
+                       <p className="text-[10px] text-slate-400 italic">Dapatkan URL dari 'Share' &gt; 'Embed a map' &gt; ambil nilai atribut 'src'.</p>
                        <Button variant="link" size="sm" className="h-auto p-0 text-[10px] font-bold" onClick={() => setShowMapPreview(!showMapPreview)}>
                          {showMapPreview ? "Sembunyikan" : "Lihat Pratinjau"}
                        </Button>
@@ -553,6 +552,15 @@ export default function AdminSettings() {
                       value={formData.ppdbMenuTitle} 
                       onChange={(e) => setFormData({...formData, ppdbMenuTitle: e.target.value})} 
                       className="h-12 bg-slate-50 rounded-xl"
+                    />
+                  </div>
+                  <div className="space-y-3">
+                    <Label className="text-xs font-bold uppercase text-slate-400">Sub-judul Halaman SPMB</Label>
+                    <Input 
+                      value={formData.ppdbSubtitle} 
+                      onChange={(e) => setFormData({...formData, ppdbSubtitle: e.target.value})} 
+                      className="h-12 bg-slate-50 rounded-xl"
+                      placeholder="Contoh: Sistem Penerimaan Peserta Didik Baru..."
                     />
                   </div>
                   <div className="space-y-3">

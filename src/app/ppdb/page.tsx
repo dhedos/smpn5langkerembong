@@ -1,8 +1,9 @@
+
 "use client";
 
 import React, { useState, useMemo } from "react";
 import Link from "next/link";
-import { CheckCircle2, Info, FileText, UserPlus, AlertCircle, Loader2 } from "lucide-react";
+import { CheckCircle2, FileText, UserPlus, AlertCircle, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -39,6 +40,7 @@ export default function SPMBPage() {
 
   const spmbYear = settings?.ppdbYear || "2024/2025";
   const isActive = settings?.ppdbIsActive !== false;
+  const spmbSubtitle = settings?.ppdbSubtitle || `Sistem Penerimaan Peserta Didik Baru (${settings?.schoolName || "GN Nusantara"}).`;
 
   if (submitted) {
     return (
@@ -80,7 +82,7 @@ export default function SPMBPage() {
         <div className="absolute inset-0 bg-secondary/5 skew-y-3 translate-y-24" />
         <div className="container mx-auto px-4 relative z-10">
           <h1 className="text-5xl md:text-7xl font-bold font-headline mb-6 tracking-tighter">SPMB Online</h1>
-          <p className="text-white/70 max-w-xl mx-auto text-xl">Sistem Penerimaan Peserta Didik Baru ({settings?.schoolName || "GN Nusantara"}).</p>
+          <p className="text-white/70 max-w-2xl mx-auto text-xl">{spmbSubtitle}</p>
         </div>
       </section>
 
@@ -126,7 +128,7 @@ export default function SPMBPage() {
             <Card className="border-none shadow-xl rounded-[2.5rem] bg-white overflow-hidden">
               <CardHeader className="p-8 bg-slate-50/50 border-b">
                 <CardTitle className="text-xl flex items-center gap-3 text-primary">
-                  <Info className="h-6 w-6 text-secondary" /> Jalur SPMB
+                  <UserPlus className="h-6 w-6 text-secondary" /> Jalur SPMB
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-8 space-y-6">

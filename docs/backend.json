@@ -44,6 +44,7 @@
         "ppdbYear": { "type": "string" },
         "ppdbIsActive": { "type": "boolean" },
         "ppdbMenuTitle": { "type": "string", "description": "Judul tombol menu SPMB" },
+        "ppdbSubtitle": { "type": "string", "description": "Sub-judul yang ditampilkan di halaman SPMB" },
         "ppdbRequirements": { "type": "array", "items": { "type": "string" } },
         "ppdbQuotas": {
           "type": "array",
