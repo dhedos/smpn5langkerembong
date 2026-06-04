@@ -13,14 +13,18 @@ export function WhatsAppButton() {
   const isAdminPage = pathname.startsWith("/admin");
 
   const db = useFirestore();
-  const settingsRef = useMemo(() => db ? doc(db, "settings", "general") : null, [db]);
+  // Menggunakan schoolId yang sama dengan Navbar/Footer untuk konsistensi multi-tenant
+  const currentSchoolId = 'smpn5-langke-rembong';
+  const settingsRef = useMemo(() => db ? doc(db, "schools", currentSchoolId) : null, [db]);
   const { data: settings } = useDoc(settingsRef);
 
-  // Hide on admin pages
+  // Sembunyikan tombol saat berada di halaman admin
   if (isAdminPage) return null;
 
-  const whatsappNumber = settings?.whatsappNumber || "628123456789"; // Default fallback
-  const message = "Halo EduVista SMP, saya ingin bertanya mengenai...";
+  // Mengambil nomor WhatsApp dari database, fallback ke nomor default jika kosong
+  const whatsappNumber = settings?.whatsappNumber || "628123456789"; 
+  const schoolName = settings?.schoolName || "Sekolah";
+  const message = `Halo ${schoolName}, saya ingin bertanya mengenai...`;
   const waUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
 
   return (
