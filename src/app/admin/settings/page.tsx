@@ -17,16 +17,12 @@ import {
   Layout,
   UserCircle,
   BarChart3,
-  Users,
   UserPlus,
   User,
   Search,
   Map as MapIcon,
-  Copyright,
-  Calendar,
   Globe,
-  Link as LinkIcon,
-  ExternalLink
+  Link as LinkIcon
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -34,8 +30,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { Badge } from "@/components/ui/badge";
-import { useFirestore, useDoc, useUser } from "@/firebase";
+import { useFirestore, useDoc } from "@/firebase";
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { toast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -44,7 +39,6 @@ import { FirestorePermissionError, type SecurityRuleContext } from '@/firebase/e
 
 export default function AdminSettings() {
   const db = useFirestore();
-  const { profile } = useUser();
   
   const targetSchoolId = 'smpn5-langke-rembong';
   const settingsRef = useMemo(() => db ? doc(db, "schools", targetSchoolId) : null, [db, targetSchoolId]);

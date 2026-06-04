@@ -134,9 +134,9 @@
     "providers": ["google.com"]
   },
   "firestore": {
-    "/settings/general": {
+    "/schools/smpn5-langke-rembong": {
       "schema": "SiteSettings",
-      "description": "Singleton untuk pengaturan umum situs"
+      "description": "Pengaturan utama sekolah SMPN 5 Langke Rembong"
     },
     "/news/{newsId}": {
       "schema": "News",
