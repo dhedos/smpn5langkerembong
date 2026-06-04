@@ -5,7 +5,7 @@ import React, { useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { GraduationCap, Facebook, Instagram, Youtube, MapPin, Phone, Mail, ExternalLink, Globe, Twitter } from "lucide-react";
+import { GraduationCap, Facebook, Instagram, Youtube, MapPin, Phone, Mail, ExternalLink, Globe } from "lucide-react";
 import { useFirestore, useDoc } from "@/firebase";
 import { doc } from "firebase/firestore";
 
@@ -38,42 +38,52 @@ export function Footer() {
     { icon: Youtube, href: settings?.youtubeUrl || "#" },
   ];
 
+  const renderFormattedName = (name: string) => {
+    if (name.includes('SMPN 5')) {
+      return (
+        <div className="font-headline font-black text-2xl md:text-3xl tracking-tighter leading-[1.1] uppercase">
+          <span className="text-white">SMPN </span>
+          <span className="text-secondary">5</span>
+          <span className="text-white"> Langke</span>
+          <br />
+          <span className="text-white">Rembong</span>
+        </div>
+      );
+    }
+    // Fallback standard split if name is different
+    const words = name.split(' ');
+    return (
+      <div className="font-headline font-black text-2xl md:text-3xl tracking-tighter leading-[1.1] uppercase">
+        {words.slice(0, Math.ceil(words.length / 2)).join(' ')}
+        <br />
+        {words.slice(Math.ceil(words.length / 2)).join(' ')}
+      </div>
+    );
+  };
+
   return (
     <footer className="bg-primary text-white pt-20 pb-10 border-t border-white/5">
       <div className="container mx-auto px-6 md:px-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
           {/* Brand Column */}
           <div className="flex flex-col">
-            {/* Bagian Tulisan "SMPN" Terpisah di Atas */}
-            <h3 className="font-headline font-black text-5xl tracking-tighter uppercase mb-6">
-              SMPN
-            </h3>
-            
-            {/* Baris Logo dan Nama Sekolah Samping-Sampingan */}
-            <div className="flex items-center gap-6 mb-6">
-              <div className="bg-white p-4 rounded-[2rem] shadow-xl shrink-0 flex items-center justify-center w-32 h-32">
+            <div className="flex items-center gap-5 mb-6">
+              <div className="bg-white p-3 rounded-[1.5rem] shadow-xl shrink-0 flex items-center justify-center w-20 h-20 md:w-24 md:h-24">
                 {schoolLogo ? (
-                  <div className="relative h-20 w-20">
+                  <div className="relative h-14 w-14">
                     <Image src={schoolLogo} alt="Logo" fill className="object-contain" />
                   </div>
                 ) : (
-                  <GraduationCap className="h-16 w-16 text-primary" />
+                  <GraduationCap className="h-12 w-12 text-primary" />
                 )}
               </div>
-              <div className="font-headline font-black text-3xl tracking-tighter leading-[0.9] uppercase">
-                {schoolName.replace('SMPN ', '').split(' ').map((word, i) => (
-                  <React.Fragment key={i}>
-                    {word}<br />
-                  </React.Fragment>
-                ))}
-              </div>
+              {renderFormattedName(schoolName)}
             </div>
             
-            <p className="text-white/60 text-xs leading-relaxed font-medium max-w-xs mb-3">
+            <p className="text-white/60 text-xs leading-relaxed font-medium max-w-xs mb-6">
               Membangun fondasi pendidikan unggul yang menginspirasi kreativitas bagi masa depan bangsa.
             </p>
 
-            {/* Ikon Sosmed - Dirapatkan ke arah deskripsi (mb-3 di atas) */}
             <div className="flex gap-2">
               {socialLinks.map((social, i) => (
                 <Link 
