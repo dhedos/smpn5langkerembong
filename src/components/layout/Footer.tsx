@@ -43,40 +43,44 @@ export function Footer() {
     <footer className="bg-primary text-white pt-20 pb-10 border-t border-white/5">
       <div className="container mx-auto px-6 md:px-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
-          {/* Brand Column */}
-          <div className="space-y-8">
-            <div className="flex items-center gap-4">
-              <div className="bg-white p-3 rounded-[1.5rem] shadow-xl shrink-0">
+          {/* Brand Column - Match with Image Reference */}
+          <div className="flex flex-col">
+            <h3 className="font-headline font-black text-4xl tracking-tighter uppercase mb-4">
+              SMPN
+            </h3>
+            
+            <div className="flex items-center gap-5 mb-8">
+              <div className="bg-white p-4 rounded-[1.5rem] shadow-xl shrink-0 flex items-center justify-center w-24 h-24">
                 {schoolLogo ? (
-                  <div className="relative h-12 w-12">
+                  <div className="relative h-16 w-16">
                     <Image src={schoolLogo} alt="Logo" fill className="object-contain" />
                   </div>
                 ) : (
-                  <GraduationCap className="h-12 w-12 text-primary" />
+                  <GraduationCap className="h-16 w-16 text-primary" />
                 )}
               </div>
-              <h3 className="font-headline font-bold text-2xl md:text-3xl tracking-tight leading-none uppercase">
-                {schoolName.split(' ').map((word, i) => (
+              <div className="font-headline font-black text-3xl tracking-tighter leading-tight uppercase">
+                {schoolName.replace('SMPN ', '').split(' ').map((word, i) => (
                   <React.Fragment key={i}>
                     {word}<br />
                   </React.Fragment>
                 ))}
-              </h3>
+              </div>
             </div>
             
-            <p className="text-white/60 text-sm leading-relaxed font-medium max-w-xs">
+            <p className="text-white/60 text-sm leading-relaxed font-medium max-w-xs mb-4">
               Membangun fondasi pendidikan unggul yang menginspirasi kreativitas bagi masa depan bangsa.
             </p>
 
-            <div className="flex gap-2 pt-2">
+            <div className="flex gap-2">
               {socialLinks.map((social, i) => (
                 <Link 
                   key={i} 
                   href={social.href} 
                   target="_blank"
-                  className="h-10 w-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-all"
+                  className="h-12 w-12 rounded-[1rem] bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-all"
                 >
-                  <social.icon className="h-4 w-4" />
+                  <social.icon className="h-5 w-5" />
                 </Link>
               ))}
             </div>
