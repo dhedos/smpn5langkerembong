@@ -42,6 +42,7 @@ export function Footer() {
   const schoolName = settings?.schoolName || "SMPN 5 Langke Rembong";
   const schoolLogo = settings?.schoolLogoUrl;
   const officialWebsite = settings?.officialWebsiteUrl;
+  const officialWebsiteTitle = settings?.officialWebsiteTitle || "PORTAL RESMI INSTANSI";
   const address = settings?.address || "Jl. Pendidikan No. 45, Jakarta Selatan";
   const phone = settings?.phone || "(021) 1234-5678";
   const email = settings?.email || "info@sekolah.sch.id";
@@ -89,9 +90,9 @@ export function Footer() {
                 href={officialWebsite} 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 px-4 py-2 rounded-xl text-xs font-bold transition-all border border-white/10"
+                className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 px-4 py-2 rounded-xl text-[10px] font-black transition-all border border-white/10 uppercase tracking-widest"
               >
-                <Globe className="h-3 w-3 text-secondary" /> PORTAL RESMI INSTANSI <ExternalLink className="h-3 w-3 opacity-50" />
+                <Globe className="h-3 w-3 text-secondary" /> {officialWebsiteTitle} <ExternalLink className="h-3 w-3 opacity-50" />
               </a>
             )}
 

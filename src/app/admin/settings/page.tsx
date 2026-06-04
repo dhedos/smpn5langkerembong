@@ -24,7 +24,8 @@ import {
   Map as MapIcon,
   Copyright,
   Calendar,
-  Globe
+  Globe,
+  Tag
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -52,6 +53,7 @@ export default function AdminSettings() {
     schoolName: "SMPN 5 Langke Rembong",
     schoolLogoUrl: "",
     officialWebsiteUrl: "",
+    officialWebsiteTitle: "Portal Resmi Instansi",
     copyrightYear: new Date().getFullYear().toString(),
     heroTitle: "Membangun Masa Depan Bersama Kami",
     heroSubtitle: "Pendidikan berkualitas untuk generasi emas bangsa melalui kurikulum yang inovatif dan lingkungan yang mendukung.",
@@ -113,6 +115,7 @@ export default function AdminSettings() {
         ppdbRequirements: currentSettings.ppdbRequirements || prev.ppdbRequirements,
         ppdbQuotas: currentSettings.ppdbQuotas || prev.ppdbQuotas,
         ppdbSubtitle: currentSettings.ppdbSubtitle || prev.ppdbSubtitle,
+        officialWebsiteTitle: currentSettings.officialWebsiteTitle || prev.officialWebsiteTitle,
       }));
     }
   }, [currentSettings]);
@@ -275,18 +278,35 @@ export default function AdminSettings() {
                   </div>
                 </div>
 
-                <div className="space-y-3 pt-4 border-t">
-                  <Label className="text-xs font-bold uppercase text-slate-400">Tautan Website Resmi Instansi</Label>
-                  <div className="relative">
-                    <Globe className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-                    <Input 
-                      value={formData.officialWebsiteUrl} 
-                      onChange={(e) => setFormData({...formData, officialWebsiteUrl: e.target.value})} 
-                      className="h-14 bg-slate-50 rounded-2xl font-bold pl-12" 
-                      placeholder="https://www.instansi.go.id"
-                    />
+                <div className="space-y-4 pt-4 border-t">
+                  <Label className="text-xs font-bold uppercase text-slate-400">Website Instansi (Portal Resmi)</Label>
+                  <div className="grid grid-cols-1 gap-4">
+                    <div className="space-y-2">
+                      <Label className="text-[10px] font-bold text-slate-400 uppercase">Judul Instansi (Label Tombol)</Label>
+                      <div className="relative">
+                        <Tag className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                        <Input 
+                          value={formData.officialWebsiteTitle} 
+                          onChange={(e) => setFormData({...formData, officialWebsiteTitle: e.target.value})} 
+                          className="h-12 bg-slate-50 rounded-xl font-bold pl-12" 
+                          placeholder="Contoh: DINAS PENDIDIKAN"
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-[10px] font-bold text-slate-400 uppercase">URL Portal Resmi</Label>
+                      <div className="relative">
+                        <Globe className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                        <Input 
+                          value={formData.officialWebsiteUrl} 
+                          onChange={(e) => setFormData({...formData, officialWebsiteUrl: e.target.value})} 
+                          className="h-12 bg-slate-50 rounded-xl pl-12" 
+                          placeholder="https://www.instansi.go.id"
+                        />
+                      </div>
+                    </div>
                   </div>
-                  <p className="text-[10px] text-slate-400 italic">Link ini akan ditampilkan di footer sebagai portal resmi instansi.</p>
+                  <p className="text-[10px] text-slate-400 italic">Informasi ini akan ditampilkan di footer sebagai portal resmi instansi/induk sekolah.</p>
                 </div>
 
                 <div className="space-y-3 pt-4 border-t">
