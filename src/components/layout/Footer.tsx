@@ -64,7 +64,7 @@ export function Footer() {
             <h4 className="font-headline font-bold mb-10 text-xs tracking-[0.2em] uppercase text-secondary">Tautan Cepat</h4>
             <ul className="space-y-5 text-sm font-bold text-primary-foreground/60">
               <li key="profil"><Link href="/profil" className="hover:text-white transition-colors">Profil Sekolah</Link></li>
-              <li key="informasi"><Link href="/informasi" className="hover:text-white transition-colors">Informasi Terbaru</Link></li>
+              <li key="informasi"><Link href="/berita" className="hover:text-white transition-colors">Informasi Terbaru</Link></li>
               <li key="spmb"><Link href="/ppdb" className="hover:text-white transition-colors">SPMB Online</Link></li>
               <li key="galeri"><Link href="/galeri" className="hover:text-white transition-colors">Galeri Kegiatan</Link></li>
             </ul>
