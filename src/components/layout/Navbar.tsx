@@ -179,7 +179,7 @@ export function Navbar() {
         />
       )}
 
-      {/* Mobile Menu Drawer - SOLID WHITE SIDE DRAWER */}
+      {/* Mobile Menu Drawer - SOLID WHITE */}
       <div 
         className={cn(
           "lg:hidden fixed top-0 right-0 h-screen w-[85%] z-[110] bg-white shadow-2xl transition-transform duration-500 ease-in-out transform flex flex-col",
