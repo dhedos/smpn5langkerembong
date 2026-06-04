@@ -143,47 +143,77 @@ export function Navbar() {
             "rounded-full px-8 font-bold shadow-xl transition-all hover:scale-105 active:scale-95 uppercase tracking-widest text-xs",
             isSolid ? "bg-primary text-white" : "bg-secondary text-primary hover:bg-secondary/90 shadow-secondary/20"
           )} asChild>
-            <Link href="/ppdb">Pendaftaran Online</Link>
+            <Link href="/ppdb">SPMB Online</Link>
           </Button>
         </div>
 
         {/* Mobile Toggle */}
         <button
           className={cn("lg:hidden p-2.5 rounded-xl transition-colors", isSolid ? "bg-slate-100 text-primary" : "bg-white/10 text-white backdrop-blur-md")}
-          onClick={() => setIsOpen(!isOpen)}
+          onClick={() => setIsOpen(true)}
         >
-          {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          <Menu className="h-6 w-6" />
         </button>
       </div>
 
-      {/* Mobile Menu */}
-      {isOpen && (
-        <div className="lg:hidden fixed inset-0 z-40 bg-white animate-in fade-in slide-in-from-bottom duration-500">
-          <div className="flex justify-end p-8">
-             <button onClick={() => setIsOpen(false)} className="p-2.5 bg-slate-100 rounded-full text-slate-600"><X className="h-6 w-6" /></button>
-          </div>
-          <nav className="flex flex-col px-8 gap-6 pt-10">
-            {navItems.map((item) => (
-              <Link
-                key={item.name}
-                href={item.href}
-                onClick={() => setIsOpen(false)}
-                className={cn(
-                  "text-3xl font-bold p-4 rounded-2xl transition-all",
-                  pathname === item.href ? "text-primary translate-x-4" : "text-slate-400 hover:text-slate-900"
-                )}
-              >
-                {item.name}
-              </Link>
-            ))}
-            <div className="pt-12 border-t border-slate-100 mt-auto pb-20">
-              <Button size="lg" className="w-full bg-primary h-16 text-white rounded-[2rem] font-bold text-lg" asChild onClick={() => setIsOpen(false)}>
-                <Link href="/ppdb">Daftar SPMB Online</Link>
-              </Button>
+      {/* Mobile Drawer Overlay */}
+      <div 
+        className={cn(
+          "fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm transition-opacity duration-300 lg:hidden",
+          isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+        )}
+        onClick={() => setIsOpen(false)}
+      />
+
+      {/* Mobile Menu Drawer */}
+      <div 
+        className={cn(
+          "lg:hidden fixed top-0 right-0 h-full w-[80%] max-w-sm z-[70] bg-white shadow-2xl transition-transform duration-500 ease-in-out transform",
+          isOpen ? "translate-x-0" : "translate-x-full"
+        )}
+      >
+        <div className="flex justify-between items-center p-8 border-b border-slate-50">
+          <div className="flex items-center gap-2">
+            <div className="bg-primary p-2 rounded-xl">
+              <GraduationCap className="h-5 w-5 text-white" />
             </div>
-          </nav>
+            <span className="font-headline font-bold text-primary tracking-tighter">NAVIGASI</span>
+          </div>
+          <button 
+            onClick={() => setIsOpen(false)} 
+            className="p-2.5 bg-slate-50 rounded-full text-slate-500 hover:text-primary transition-colors"
+          >
+            <X className="h-6 w-6" />
+          </button>
         </div>
-      )}
+        
+        <nav className="flex flex-col p-8 gap-1">
+          {navItems.map((item) => (
+            <Link
+              key={item.name}
+              href={item.href}
+              onClick={() => setIsOpen(false)}
+              className={cn(
+                "text-2xl font-bold p-4 rounded-2xl transition-all duration-300",
+                pathname === item.href 
+                  ? "text-primary bg-primary/5" 
+                  : "text-slate-400 hover:text-primary hover:bg-slate-50 hover:translate-x-2"
+              )}
+            >
+              {item.name}
+            </Link>
+          ))}
+          
+          <div className="mt-12 pt-8 border-t border-slate-100">
+            <Button size="lg" className="w-full bg-primary h-16 text-white rounded-[2rem] font-bold text-lg shadow-xl shadow-primary/20" asChild onClick={() => setIsOpen(false)}>
+              <Link href="/ppdb">DAFTAR SPMB</Link>
+            </Button>
+            <p className="text-center text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-6">
+              Modern Excellence in Education
+            </p>
+          </div>
+        </nav>
+      </div>
     </header>
   );
 }
