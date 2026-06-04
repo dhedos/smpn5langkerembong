@@ -81,7 +81,7 @@ export default function AdminBerita() {
       console.error("AI Image Generation Error:", error);
       toast({ 
         title: "Gagal Membuat Gambar", 
-        description: "Terjadi gangguan pada layanan AI. Silakan coba beberapa saat lagi.", 
+        description: error.message || "Pastikan API Gemini sudah diaktifkan di Google Cloud Console.", 
         variant: "destructive" 
       });
     } finally {
@@ -100,8 +100,12 @@ export default function AdminBerita() {
       setSummary(result.summary);
       setTags(result.seoTags);
       toast({ title: "Optimasi Berhasil", description: "AI telah membuat ringkasan dan tag SEO." });
-    } catch (error) {
-      toast({ title: "Gagal Mengoptimasi", variant: "destructive" });
+    } catch (error: any) {
+      toast({ 
+        title: "Gagal Mengoptimasi", 
+        description: "Pastikan API Gemini sudah diaktifkan.",
+        variant: "destructive" 
+      });
     } finally {
       setOptimizing(false);
     }

@@ -23,36 +23,42 @@ const generateNewsImageFlow = ai.defineFlow(
     }),
   },
   async (input) => {
-    const { media } = await ai.generate({
-      model: 'googleai/imagen-3',
-      prompt: `A professional, high-quality, and modern illustration for a school news article with the title: "${input.title}". The style should be clean, educational, and suitable for a school website. No text in image.`,
-      config: {
-        safetySettings: [
-          {
-            category: 'HARM_CATEGORY_HATE_SPEECH',
-            threshold: 'BLOCK_ONLY_HIGH',
-          },
-          {
-            category: 'HARM_CATEGORY_DANGEROUS_CONTENT',
-            threshold: 'BLOCK_ONLY_HIGH',
-          },
-          {
-            category: 'HARM_CATEGORY_HARASSMENT',
-            threshold: 'BLOCK_ONLY_HIGH',
-          },
-          {
-            category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT',
-            threshold: 'BLOCK_ONLY_HIGH',
-          },
-        ],
-      },
-    });
+    try {
+      const { media } = await ai.generate({
+        model: 'googleai/imagen-4.0-fast-generate-001',
+        prompt: `A professional, high-quality, and modern illustration for a school news article with the title: "${input.title}". The style should be clean, educational, and suitable for a school website. No text in image.`,
+        config: {
+          safetySettings: [
+            {
+              category: 'HARM_CATEGORY_HATE_SPEECH',
+              threshold: 'BLOCK_ONLY_HIGH',
+            },
+            {
+              category: 'HARM_CATEGORY_DANGEROUS_CONTENT',
+              threshold: 'BLOCK_ONLY_HIGH',
+            },
+            {
+              category: 'HARM_CATEGORY_HARASSMENT',
+              threshold: 'BLOCK_ONLY_HIGH',
+            },
+            {
+              category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT',
+              threshold: 'BLOCK_ONLY_HIGH',
+            },
+          ],
+        },
+      });
 
-    if (!media) {
-      throw new Error('Failed to generate image from AI model');
+      if (!media) {
+        throw new Error('Failed to generate image from AI model');
+      }
+
+      return { imageUrl: media.url };
+    } catch (error: any) {
+      console.error('Error generating image:', error);
+      // Re-throw with more context or a friendly message
+      throw new Error(error.message || 'Layanan AI Imagen belum diaktifkan atau sedang bermasalah.');
     }
-
-    return { imageUrl: media.url };
   }
 );
 
