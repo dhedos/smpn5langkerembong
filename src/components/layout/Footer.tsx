@@ -35,7 +35,6 @@ export function Footer() {
   const socialLinks = [
     { icon: Facebook, href: settings?.facebookUrl || "#" },
     { icon: Instagram, href: settings?.instagramUrl || "#" },
-    { icon: Twitter, href: "#" }, 
     { icon: Youtube, href: settings?.youtubeUrl || "#" },
   ];
 
@@ -43,23 +42,25 @@ export function Footer() {
     <footer className="bg-primary text-white pt-20 pb-10 border-t border-white/5">
       <div className="container mx-auto px-6 md:px-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
-          {/* Brand Column - Match with Image Reference */}
+          {/* Brand Column */}
           <div className="flex flex-col">
-            <h3 className="font-headline font-black text-4xl tracking-tighter uppercase mb-4">
+            {/* Bagian Tulisan "SMPN" Terpisah di Atas */}
+            <h3 className="font-headline font-black text-5xl tracking-tighter uppercase mb-6">
               SMPN
             </h3>
             
-            <div className="flex items-center gap-5 mb-8">
-              <div className="bg-white p-4 rounded-[1.5rem] shadow-xl shrink-0 flex items-center justify-center w-24 h-24">
+            {/* Baris Logo dan Nama Sekolah Samping-Sampingan */}
+            <div className="flex items-center gap-6 mb-6">
+              <div className="bg-white p-4 rounded-[2rem] shadow-xl shrink-0 flex items-center justify-center w-32 h-32">
                 {schoolLogo ? (
-                  <div className="relative h-16 w-16">
+                  <div className="relative h-20 w-20">
                     <Image src={schoolLogo} alt="Logo" fill className="object-contain" />
                   </div>
                 ) : (
                   <GraduationCap className="h-16 w-16 text-primary" />
                 )}
               </div>
-              <div className="font-headline font-black text-3xl tracking-tighter leading-tight uppercase">
+              <div className="font-headline font-black text-3xl tracking-tighter leading-[0.9] uppercase">
                 {schoolName.replace('SMPN ', '').split(' ').map((word, i) => (
                   <React.Fragment key={i}>
                     {word}<br />
@@ -68,19 +69,20 @@ export function Footer() {
               </div>
             </div>
             
-            <p className="text-white/60 text-sm leading-relaxed font-medium max-w-xs mb-4">
+            <p className="text-white/60 text-xs leading-relaxed font-medium max-w-xs mb-3">
               Membangun fondasi pendidikan unggul yang menginspirasi kreativitas bagi masa depan bangsa.
             </p>
 
+            {/* Ikon Sosmed - Dirapatkan ke arah deskripsi (mb-3 di atas) */}
             <div className="flex gap-2">
               {socialLinks.map((social, i) => (
                 <Link 
                   key={i} 
                   href={social.href} 
                   target="_blank"
-                  className="h-12 w-12 rounded-[1rem] bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-all"
+                  className="h-10 w-10 rounded-[0.75rem] bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-all"
                 >
-                  <social.icon className="h-5 w-5" />
+                  <social.icon className="h-4 w-4" />
                 </Link>
               ))}
             </div>
@@ -88,7 +90,7 @@ export function Footer() {
 
           {/* Quick Links Column */}
           <div>
-            <h4 className="font-headline font-black mb-10 text-[10px] tracking-[0.2em] uppercase text-secondary">Tautan Cepat</h4>
+            <h4 className="font-headline font-black mb-8 text-[10px] tracking-[0.2em] uppercase text-secondary">Tautan Cepat</h4>
             <ul className="space-y-4 text-sm font-medium text-white/70">
               <li><Link href="/profil" className="hover:text-white transition-colors">Profil Sekolah</Link></li>
               <li><Link href="/informasi" className="hover:text-white transition-colors">Informasi Terbaru</Link></li>
@@ -99,7 +101,7 @@ export function Footer() {
 
           {/* Academic Column */}
           <div>
-            <h4 className="font-headline font-black mb-10 text-[10px] tracking-[0.2em] uppercase text-secondary">Akademik</h4>
+            <h4 className="font-headline font-black mb-8 text-[10px] tracking-[0.2em] uppercase text-secondary">Akademik</h4>
             <ul className="space-y-4 text-sm font-medium text-white/70">
               <li><span className="hover:text-white transition-colors cursor-pointer">Kurikulum Merdeka</span></li>
               <li><span className="hover:text-white transition-colors cursor-pointer">E-Learning</span></li>
@@ -110,8 +112,8 @@ export function Footer() {
 
           {/* Contact Column */}
           <div>
-            <h4 className="font-headline font-black mb-10 text-[10px] tracking-[0.2em] uppercase text-secondary">Hubungi Kami</h4>
-            <ul className="space-y-6 text-sm text-white/80 font-medium">
+            <h4 className="font-headline font-black mb-8 text-[10px] tracking-[0.2em] uppercase text-secondary">Hubungi Kami</h4>
+            <ul className="space-y-5 text-sm text-white/80 font-medium">
               <li className="flex gap-4 items-start">
                 <div className="bg-white/5 p-2 rounded-lg">
                   <MapPin className="h-4 w-4 text-secondary shrink-0" /> 
