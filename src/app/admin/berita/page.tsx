@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { Newspaper, Sparkles, Wand2, Trash2, Edit, Save, Loader2, Image as ImageIcon, RotateCcw, Eye, EyeOff } from "lucide-react";
+import { Newspaper, Sparkles, Wand2, Trash2, Edit, Save, Loader2, Image as ImageIcon, RotateCcw, Eye, EyeOff, ExternalLink, AlertCircle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { adminContentOptimizer } from "@/ai/flows/admin-content-optimizer-flow";
 import { generateNewsImage } from "@/ai/flows/generate-news-image-flow";
 import { toast } from "@/hooks/use-toast";
@@ -49,6 +50,7 @@ export default function AdminBerita() {
   const [optimizing, setOptimizing] = useState(false);
   const [generatingImg, setGeneratingImg] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [aiError, setAiError] = useState<{message: string, link: string} | null>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -58,7 +60,10 @@ export default function AdminBerita() {
         return;
       }
       const reader = new FileReader();
-      reader.onloadend = () => setImageUrl(reader.result as string);
+      reader.onloadend = () => {
+        setImageUrl(reader.result as string);
+        setAiError(null);
+      };
       reader.readAsDataURL(file);
     }
   };
@@ -69,9 +74,13 @@ export default function AdminBerita() {
       return;
     }
     setGeneratingImg(true);
+    setAiError(null);
     try {
       const result = await generateNewsImage({ title });
       if (result.error) {
+        if (result.helpLink) {
+          setAiError({ message: result.error, link: result.helpLink });
+        }
         toast({ title: "Gagal Membuat Gambar", description: result.error, variant: "destructive" });
       } else if (result.imageUrl) {
         setImageUrl(result.imageUrl);
@@ -110,6 +119,7 @@ export default function AdminBerita() {
     setSummary("");
     setTags([]);
     setImageUrl("");
+    setAiError(null);
   };
 
   const handleEdit = (item: any) => {
@@ -120,6 +130,7 @@ export default function AdminBerita() {
     setSummary(item.summary || "");
     setTags(item.tags || []);
     setImageUrl(item.imageUrl || "");
+    setAiError(null);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -199,6 +210,23 @@ export default function AdminBerita() {
           </Button>
         )}
       </div>
+
+      {aiError && (
+        <Alert variant="destructive" className="rounded-2xl border-destructive/50 bg-destructive/5">
+          <AlertCircle className="h-5 w-5" />
+          <AlertTitle className="font-bold">Aksi Diperlukan: Aktifkan Layanan AI</AlertTitle>
+          <AlertDescription className="space-y-3">
+            <p>{aiError.message}</p>
+            <Button 
+              size="sm" 
+              className="bg-destructive text-white hover:bg-destructive/90 rounded-lg gap-2"
+              onClick={() => window.open(aiError.link, '_blank')}
+            >
+              Klik Disini Untuk Aktifkan <ExternalLink className="h-4 w-4" />
+            </Button>
+          </AlertDescription>
+        </Alert>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
         <Card className="lg:col-span-3 border-none shadow-xl rounded-[2.5rem] overflow-hidden bg-white">

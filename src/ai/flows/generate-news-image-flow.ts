@@ -21,11 +21,12 @@ const generateNewsImageFlow = ai.defineFlow(
     outputSchema: z.object({
       imageUrl: z.string().optional(),
       error: z.string().optional(),
+      helpLink: z.string().optional(),
     }),
   },
   async (input) => {
     try {
-      // Menggunakan imagen-3 yang memiliki kompatibilitas luas
+      // Menggunakan model imagen terbaru
       const { media } = await ai.generate({
         model: 'googleai/imagen-3',
         prompt: `A professional, high-quality, and modern illustration for a school news article with the title: "${input.title}". The style should be clean, educational, and suitable for a school website. No text in image.`,
@@ -46,10 +47,14 @@ const generateNewsImageFlow = ai.defineFlow(
       return { imageUrl: media.url };
     } catch (error: any) {
       console.error('AI Image Generation Error:', error);
-      // Memberikan pesan spesifik jika 403 (belum diaktifkan)
-      if (error.message?.includes('403')) {
-        return { error: 'Akses AI Diblokir (403). Silakan aktifkan "Generative Language API" di Google Cloud Console.' };
+      
+      if (error.message?.includes('403') || error.message?.includes('blocked')) {
+        return { 
+          error: 'Akses AI Diblokir (403). Layanan "Generative Language API" belum diaktifkan di project Google Cloud Anda.',
+          helpLink: 'https://console.cloud.google.com/apis/library/generativelanguage.googleapis.com'
+        };
       }
+      
       return { error: 'Layanan AI sedang sibuk atau belum dikonfigurasi. Silakan unggah gambar manual.' };
     }
   }
