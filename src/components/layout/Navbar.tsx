@@ -53,6 +53,11 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Tutup menu saat pindah halaman
+  useEffect(() => {
+    setIsOpen(false);
+  }, [pathname]);
+
   const schoolName = settings?.schoolName || "SMPN 5 Langke Rembong";
   const schoolLogo = settings?.schoolLogoUrl;
 
@@ -157,24 +162,23 @@ export function Navbar() {
       </div>
 
       {/* Mobile Drawer Overlay */}
-      <div 
-        className={cn(
-          "fixed inset-0 z-[100] bg-black/60 transition-opacity duration-300 lg:hidden",
-          isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
-        )}
-        onClick={() => setIsOpen(false)}
-      />
+      {isOpen && (
+        <div 
+          className="fixed inset-0 z-[100] bg-black/60 transition-opacity duration-300 lg:hidden"
+          onClick={() => setIsOpen(false)}
+        />
+      )}
 
-      {/* Mobile Menu Drawer (Solid Background, Half Width) */}
+      {/* Mobile Menu Drawer (Solid Background, Fully Non-Transparent) */}
       <div 
         className={cn(
-          "lg:hidden fixed top-0 right-0 h-full w-[280px] z-[110] bg-white shadow-2xl transition-transform duration-500 ease-in-out transform flex flex-col",
+          "lg:hidden fixed top-0 right-0 h-screen w-[300px] z-[110] bg-white shadow-2xl transition-transform duration-500 ease-in-out transform flex flex-col",
           isOpen ? "translate-x-0" : "translate-x-full"
         )}
       >
-        <div className="flex justify-between items-center p-6 border-b border-slate-100 bg-white">
+        <div className="flex justify-between items-center p-6 border-b border-slate-100 bg-white shrink-0">
           <div className="flex items-center gap-3">
-            <div className="bg-primary p-2 rounded-xl">
+            <div className="bg-primary p-2 rounded-xl shadow-md">
               <GraduationCap className="h-5 w-5 text-white" />
             </div>
             <span className="font-headline font-bold text-primary tracking-tighter uppercase text-sm">NAVIGASI</span>
@@ -187,25 +191,38 @@ export function Navbar() {
           </button>
         </div>
         
-        <nav className="flex flex-col p-6 gap-2 bg-white flex-1 overflow-y-auto">
+        <nav className="flex flex-col p-6 gap-2 bg-white flex-1 overflow-y-auto min-h-0">
           {navItems.map((item) => (
-            <Link
-              key={item.name}
-              href={item.href}
-              onClick={() => setIsOpen(false)}
-              className={cn(
-                "text-lg font-bold p-4 rounded-2xl transition-all duration-300",
-                pathname === item.href 
-                  ? "text-primary bg-primary/5" 
-                  : "text-slate-600 hover:text-primary hover:bg-slate-50"
+            <div key={item.name} className="flex flex-col gap-1">
+              <Link
+                href={item.href}
+                className={cn(
+                  "text-lg font-bold p-4 rounded-2xl transition-all duration-300",
+                  pathname === item.href 
+                    ? "text-primary bg-primary/5" 
+                    : "text-slate-600 hover:text-primary hover:bg-slate-50"
+                )}
+              >
+                {item.name}
+              </Link>
+              {item.submenu && (
+                <div className="ml-8 flex flex-col gap-1 border-l-2 border-slate-100 pl-4 mb-4">
+                  {item.submenu.map((sub) => (
+                    <Link 
+                      key={sub.name} 
+                      href={sub.href}
+                      className="p-3 text-sm font-bold text-slate-500 hover:text-primary transition-colors"
+                    >
+                      {sub.name}
+                    </Link>
+                  ))}
+                </div>
               )}
-            >
-              {item.name}
-            </Link>
+            </div>
           ))}
           
-          <div className="mt-8 pt-8 border-t border-slate-100 bg-white">
-            <Button size="lg" className="w-full bg-primary h-14 text-white rounded-2xl font-bold text-base shadow-lg shadow-primary/20" asChild onClick={() => setIsOpen(false)}>
+          <div className="mt-8 pt-8 border-t border-slate-100 bg-white pb-8">
+            <Button size="lg" className="w-full bg-primary h-14 text-white rounded-2xl font-bold text-base shadow-lg shadow-primary/20" asChild>
               <Link href="/ppdb">DAFTAR SPMB</Link>
             </Button>
             <p className="text-center text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-6 leading-relaxed">
