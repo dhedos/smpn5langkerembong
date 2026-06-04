@@ -21,7 +21,8 @@ import {
   Users,
   UserPlus,
   CheckCircle2,
-  FileText
+  FileText,
+  User
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -391,9 +392,9 @@ export default function AdminSettings() {
                       {formData.headmasterPhotoUrl ? (
                         <img src={formData.headmasterPhotoUrl} alt="Kepala Sekolah" className="w-full h-full object-cover" />
                       ) : (
-                        <div className="text-center text-slate-400">
-                          <ImageIcon className="h-10 w-10 mx-auto mb-2 opacity-20" />
-                          <span className="text-[10px] font-bold">Unggah Foto</span>
+                        <div className="text-center text-slate-300">
+                          <User className="h-12 w-12 mx-auto mb-2 opacity-50" />
+                          <span className="text-[10px] font-bold uppercase tracking-widest">Unggah Foto</span>
                         </div>
                       )}
                       <input type="file" accept="image/*" onChange={(e) => handleFileChange(e, "headmasterPhotoUrl")} className="absolute inset-0 opacity-0 cursor-pointer" />

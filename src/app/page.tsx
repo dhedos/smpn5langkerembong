@@ -12,7 +12,8 @@ import {
   Briefcase, 
   Newspaper, 
   Calendar,
-  Loader2
+  Loader2,
+  User
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -127,37 +128,48 @@ export default function Home() {
       {/* Sambutan Section */}
       <section className="py-40 bg-white overflow-hidden">
         <div className="container mx-auto px-6 md:px-12">
-          <div className="flex flex-col lg:flex-row items-center gap-20">
-            <div className="w-full lg:w-1/2 relative">
-              <div className="relative aspect-[2/3] w-full max-w-md mx-auto rounded-[4rem] overflow-hidden shadow-2xl border-[15px] border-slate-50 group">
-                <img 
-                  src={settings?.headmasterPhotoUrl || "https://picsum.photos/seed/headmaster/600/900"} 
-                  alt="Kepala Sekolah" 
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
-                  data-ai-hint="headmaster portrait"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-primary/60 to-transparent" />
-                <div className="absolute bottom-10 left-10 text-white">
-                  <div className="font-bold text-2xl font-headline tracking-tight">{settings?.headmasterName || "Kepala Sekolah"}</div>
-                  <div className="text-secondary font-bold uppercase text-[10px] tracking-widest mt-1">{settings?.headmasterTitle || "Pimpinan Sekolah"}</div>
+          <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-24">
+            <div className="w-full lg:w-[40%] flex justify-center lg:justify-end">
+              <div className="relative aspect-[2/3] w-full max-w-[320px] rounded-[3rem] overflow-hidden shadow-2xl border-[10px] border-slate-50 group bg-slate-100">
+                {settings?.headmasterPhotoUrl ? (
+                  <img 
+                    src={settings.headmasterPhotoUrl} 
+                    alt="Kepala Sekolah" 
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
+                  />
+                ) : (
+                  <div className="w-full h-full flex flex-col items-center justify-center text-slate-300">
+                    <User className="h-32 w-32 mb-4 opacity-50" />
+                    <span className="text-[10px] font-black uppercase tracking-widest">Foto belum tersedia</span>
+                  </div>
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/20 to-transparent" />
+                <div className="absolute bottom-8 left-8 right-8 text-white">
+                  <div className="font-bold text-xl font-headline tracking-tight truncate">{settings?.headmasterName || "Kepala Sekolah"}</div>
+                  <div className="text-secondary font-bold uppercase text-[9px] tracking-widest mt-1 opacity-90">{settings?.headmasterTitle || "Pimpinan Sekolah"}</div>
                 </div>
               </div>
             </div>
             
-            <div className="w-full lg:w-1/2 space-y-10 text-center lg:text-left">
-              <div className="inline-block bg-slate-100 text-slate-500 font-bold tracking-widest uppercase text-[9px] px-6 py-3 rounded-full">
+            <div className="w-full lg:w-[60%] space-y-8 text-center lg:text-left">
+              <div className="inline-block bg-slate-50 text-slate-400 font-bold tracking-widest uppercase text-[9px] px-6 py-3 rounded-full border border-slate-100">
                 {welcomeSectionLabel}
               </div>
-              <h2 className="text-5xl md:text-[4.5rem] font-bold text-primary leading-[1] font-headline tracking-tighter whitespace-pre-line">
+              <h2 className="text-4xl md:text-6xl font-bold text-primary leading-[1.1] font-headline tracking-tighter whitespace-pre-line">
                 {welcomeTitle}
               </h2>
-              <div className="text-slate-600 text-xl leading-relaxed font-medium italic relative">
-                <span className="absolute -top-10 -left-6 text-slate-100 text-[12rem] font-serif leading-none select-none z-[-1]">“</span>
+              <div className="text-slate-500 text-lg leading-relaxed font-medium relative">
+                <span className="hidden md:block absolute -top-8 -left-6 text-slate-100 text-[10rem] font-serif leading-none select-none z-[-1]">“</span>
                 {welcomeMessage}
               </div>
-              <Button variant="link" className="text-primary font-bold text-lg p-0 h-auto flex items-center gap-2" asChild>
-                <Link href="/profil">Selengkapnya tentang visi kami <ArrowRight className="h-5 w-5" /></Link>
-              </Button>
+              <div className="pt-4">
+                <Button variant="link" className="text-primary font-bold text-lg p-0 h-auto flex items-center gap-2 group" asChild>
+                  <Link href="/profil">
+                    Selengkapnya tentang visi kami 
+                    <ArrowRight className="h-5 w-5 group-hover:translate-x-2 transition-transform" />
+                  </Link>
+                </Button>
+              </div>
             </div>
           </div>
         </div>
