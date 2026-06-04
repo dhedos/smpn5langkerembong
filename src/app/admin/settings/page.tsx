@@ -135,7 +135,7 @@ export default function AdminSettings() {
         } else {
           toast({ 
             title: "Gagal Menyimpan", 
-            description: "Ukuran data mungkin terlalu besar atau koneksi terputus.", 
+            description: error.message || "Gagal menyimpan data.", 
             variant: "destructive" 
           });
         }

@@ -46,11 +46,11 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative min-h-[90vh] flex items-center overflow-hidden bg-slate-950">
         <div 
-          className="absolute inset-0 z-0 bg-cover bg-center transition-transform opacity-60"
+          className="absolute inset-0 z-0 bg-cover bg-center opacity-60"
           style={{ 
             backgroundImage: `url('${heroImageUrl}')`, 
             backgroundAttachment: 'fixed',
-            transitionDuration: '4000ms'
+            transition: 'transform 4000ms ease-out'
           }}
         />
         <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/70 to-transparent z-[1]" />
@@ -192,8 +192,8 @@ export default function Home() {
                   src={f.imageUrl || `https://picsum.photos/seed/${f.id}/800/600`} 
                   alt={f.name} 
                   fill 
-                  className="object-cover group-hover:scale-110 transition-transform" 
-                  style={{ transitionDuration: '2000ms' }}
+                  className="object-cover group-hover:scale-110" 
+                  style={{ transition: 'transform 2000ms ease-out' }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900/95 via-slate-900/30 to-transparent p-12 flex flex-col justify-end">
                   <h3 className="text-white text-3xl md:text-4xl font-bold font-headline tracking-tight leading-none">{f.name}</h3>
