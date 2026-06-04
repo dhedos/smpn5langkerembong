@@ -37,7 +37,7 @@ export default function AdminSettings() {
   const settingsRef = useMemo(() => db ? doc(db, "schools", targetSchoolId) : null, [db, targetSchoolId]);
   const { data: currentSettings, loading } = useDoc(settingsRef);
 
-  const [formData, setFormData] = useState<any>({
+  const defaultValues = {
     schoolName: "SMPN 5 Langke Rembong",
     schoolLogoUrl: "",
     heroTitle: "Membangun Masa Depan",
@@ -72,8 +72,9 @@ export default function AdminSettings() {
       { label: "Prestasi", value: "30%", description: "Akademik & Non-Akademik" },
       { label: "Afirmasi", value: "20%", description: "Keluarga kurang mampu" }
     ]
-  });
+  };
 
+  const [formData, setFormData] = useState<any>(defaultValues);
   const [isSaving, setIsSaving] = useState(false);
   const [newMission, setNewMission] = useState("");
 
@@ -82,6 +83,10 @@ export default function AdminSettings() {
       setFormData((prev: any) => ({
         ...prev,
         ...currentSettings,
+        // Pastikan field yang kosong di DB tetap menggunakan default teks jika diinginkan
+        history: currentSettings.history || prev.history,
+        vision: currentSettings.vision || prev.vision,
+        mission: (currentSettings.mission && currentSettings.mission.length > 0) ? currentSettings.mission : prev.mission,
       }));
     }
   }, [currentSettings]);
