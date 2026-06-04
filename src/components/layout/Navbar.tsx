@@ -48,7 +48,7 @@ export function Navbar() {
 
   const navItems = useMemo(() => {
     const items = [
-      { name: "Home", href: "/" },
+      { name: "Beranda", href: "/" },
       { 
         name: "Profil", 
         href: "/profil",
@@ -182,7 +182,7 @@ export function Navbar() {
       {/* Mobile Menu Drawer */}
       <div 
         className={cn(
-          "lg:hidden fixed top-0 right-0 h-screen w-[300px] z-[110] bg-white shadow-2xl transition-transform duration-500 ease-in-out transform flex flex-col",
+          "lg:hidden fixed top-0 right-0 h-screen w-[80%] z-[110] bg-white shadow-2xl transition-transform duration-500 ease-in-out transform flex flex-col",
           isOpen ? "translate-x-0" : "translate-x-full"
         )}
       >
@@ -238,7 +238,7 @@ export function Navbar() {
               </Button>
             )}
             <p className="text-center text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-6 leading-relaxed">
-              Modern Excellence <br /> in Education
+              SMPN 5 Langke Rembong <br /> Excellence in Education
             </p>
           </div>
         </nav>

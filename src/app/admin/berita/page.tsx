@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useMemo } from "react";
@@ -28,7 +29,7 @@ export default function AdminBerita() {
   const [optimizing, setOptimizing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [title, setTitle] = useState("");
-  const [category, setCategory] = useState("Umum");
+  const [category, setCategory] = useState("Akademik");
 
   const handleOptimize = async () => {
     if (!content.trim()) {
@@ -123,9 +124,9 @@ export default function AdminBerita() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-3xl font-bold font-headline text-primary flex items-center gap-2">
-            <Newspaper className="h-8 w-8 text-secondary" /> Publikasi Informasi
+            <Newspaper className="h-8 w-8 text-secondary" /> Manajemen Informasi
           </h1>
-          <p className="text-muted-foreground text-sm font-medium">Tulis artikel dan gunakan AI untuk mengoptimalkan konten informasi.</p>
+          <p className="text-muted-foreground text-sm font-medium">Tulis pengumuman dan gunakan AI untuk mengoptimalkan konten informasi sekolah.</p>
         </div>
       </div>
 
@@ -152,7 +153,7 @@ export default function AdminBerita() {
                 <Label className="text-xs uppercase font-extrabold text-slate-400 tracking-widest">Kategori</Label>
                 <Input 
                   className="h-12 bg-slate-50 border-slate-100 rounded-xl"
-                  placeholder="E.g. Akademik, Pengumuman" 
+                  placeholder="E.g. Akademik, Kesiswaan" 
                   value={category} 
                   onChange={(e) => setCategory(e.target.value)} 
                   disabled={isSaving}
@@ -188,7 +189,7 @@ export default function AdminBerita() {
                 onClick={handleSave}
                 disabled={isSaving}
               >
-                <Save className="h-5 w-5" /> {isSaving ? "Menyimpan..." : "Publikasikan Informasi"}
+                <Save className="h-5 w-5" /> {isSaving ? "Menyimpan..." : "Publikasikan Sekarang"}
               </Button>
             </div>
           </CardContent>
@@ -202,7 +203,7 @@ export default function AdminBerita() {
               </div>
               AI Suggestions
             </CardTitle>
-            <CardDescription className="font-medium">Hasil optimasi kecerdasan buatan untuk informasi.</CardDescription>
+            <CardDescription className="font-medium">Hasil ringkasan otomatis kecerdasan buatan.</CardDescription>
           </CardHeader>
           <CardContent className="p-8 space-y-8 flex-1">
             <div className="space-y-3">
@@ -216,7 +217,7 @@ export default function AdminBerita() {
               />
             </div>
             <div className="space-y-4">
-              <Label className="text-xs font-extrabold uppercase text-slate-400 tracking-widest">Tag Terkait</Label>
+              <Label className="text-xs font-extrabold uppercase text-slate-400 tracking-widest">Tag Terkait (SEO)</Label>
               <div className="flex flex-wrap gap-2 mb-4">
                 {tags.length > 0 ? (
                   tags.map((tag) => (
@@ -228,7 +229,7 @@ export default function AdminBerita() {
                     </Badge>
                   ))
                 ) : (
-                  <span className="text-sm text-muted-foreground italic">Belum ada tag yang dihasilkan.</span>
+                  <span className="text-sm text-muted-foreground italic">Gunakan AI untuk menghasilkan tag secara otomatis.</span>
                 )}
               </div>
               <div className="relative">
@@ -249,7 +250,7 @@ export default function AdminBerita() {
       <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden">
         <CardHeader className="bg-white p-8 border-b">
           <CardTitle className="text-xl">Arsip Informasi</CardTitle>
-          <CardDescription className="font-medium">Kelola semua konten yang telah Anda publikasikan.</CardDescription>
+          <CardDescription className="font-medium">Kelola seluruh konten pengumuman yang telah Anda publikasikan.</CardDescription>
         </CardHeader>
         <CardContent className="p-0">
           <Table>
@@ -274,7 +275,7 @@ export default function AdminBerita() {
                   <TableCell>
                     <div className="flex items-center gap-2">
                        <div className="h-2 w-2 rounded-full bg-green-500" />
-                       <span className="text-[10px] font-black text-green-700 uppercase tracking-widest">{item.status}</span>
+                       <span className="text-[10px] font-black text-green-700 uppercase tracking-widest">Published</span>
                     </div>
                   </TableCell>
                   <TableCell className="text-xs font-bold text-slate-400">{item.date}</TableCell>

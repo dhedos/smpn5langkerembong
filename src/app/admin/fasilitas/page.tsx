@@ -2,20 +2,20 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { Building2, Plus, Trash2, Save, Image as ImageIcon, Upload, CheckCircle2, Eye, EyeOff, Loader2 } from "lucide-react";
+import { Building2, Trash2, ImageIcon, Upload, CheckCircle2, Eye, EyeOff, Loader2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
 import { useFirestore, useCollection } from "@/firebase";
 import { collection, addDoc, deleteDoc, doc, updateDoc, serverTimestamp } from "firebase/firestore";
 import { toast } from "@/hooks/use-toast";
 import Image from "next/image";
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError, type SecurityRuleContext } from '@/firebase/errors';
+import { cn } from "@/lib/utils";
 
 export default function AdminFasilitas() {
   const db = useFirestore();
@@ -31,7 +31,7 @@ export default function AdminFasilitas() {
     const file = e.target.files?.[0];
     if (file) {
       if (file.size > 800 * 1024) {
-        toast({ title: "File Terlalu Besar", description: "Maksimal 800KB untuk menjaga efisiensi database gratis.", variant: "destructive" });
+        toast({ title: "File Terlalu Besar", description: "Maksimal 800KB untuk menjaga efisiensi database.", variant: "destructive" });
         return;
       }
       const reader = new FileReader();
@@ -65,7 +65,7 @@ export default function AdminFasilitas() {
         setImageUrl("");
         toast({ 
           title: status === "Published" ? "Berhasil Publikasi" : "Draft Tersimpan", 
-          description: `Fasilitas "${name}" telah ditambahkan ke daftar.` 
+          description: `Fasilitas "${name}" telah ditambahkan.` 
         });
       })
       .catch(async (serverError) => {
@@ -76,11 +76,6 @@ export default function AdminFasilitas() {
           requestResourceData: data,
         } satisfies SecurityRuleContext);
         errorEmitter.emit('permission-error', permissionError);
-        toast({
-          title: "Gagal Menyimpan",
-          description: "Periksa koneksi internet atau izin database Anda.",
-          variant: "destructive"
-        });
       });
   };
 
@@ -145,7 +140,7 @@ export default function AdminFasilitas() {
               <Label className="text-xs font-bold uppercase text-slate-400 tracking-widest">Nama Fasilitas</Label>
               <Input 
                 className="h-12 bg-slate-50 border-slate-100 rounded-xl font-bold"
-                placeholder="E.g. Ruang OSIS" 
+                placeholder="E.g. Laboratorium IPA" 
                 value={name} 
                 onChange={(e) => setName(e.target.value)} 
                 disabled={isSaving}
@@ -161,7 +156,7 @@ export default function AdminFasilitas() {
                   ) : (
                     <div className="text-center p-6">
                       <Upload className="mx-auto h-10 w-10 text-slate-300 mb-2 group-hover:scale-110 transition-transform" />
-                      <span className="text-[10px] text-slate-400 font-bold uppercase">Unggah</span>
+                      <span className="text-[10px] text-slate-400 font-bold uppercase">Pilih File</span>
                     </div>
                   )}
                 </div>
@@ -172,7 +167,7 @@ export default function AdminFasilitas() {
             <div className="space-y-3">
               <Label className="text-xs font-bold uppercase text-slate-400 tracking-widest">Deskripsi</Label>
               <Textarea 
-                placeholder="Keterangan singkat..." 
+                placeholder="Keterangan singkat mengenai fasilitas ini..." 
                 className="min-h-[100px] bg-slate-50 border-slate-100 rounded-2xl"
                 value={description} 
                 onChange={(e) => setDescription(e.target.value)} 
@@ -196,7 +191,7 @@ export default function AdminFasilitas() {
                   disabled={isSaving}
                 >
                   {isSaving ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCircle2 className="h-4 w-4" />}
-                  {isSaving ? "Menyimpan..." : "Publish Sekarang"}
+                  {isSaving ? "Memproses..." : "Publish Sekarang"}
                 </Button>
               </div>
             </div>
@@ -206,7 +201,7 @@ export default function AdminFasilitas() {
         <Card className="lg:col-span-2 border-none shadow-xl rounded-[2.5rem] overflow-hidden bg-white">
           <CardHeader className="bg-slate-50/50 border-b p-8">
             <CardTitle className="text-xl">Daftar Inventaris</CardTitle>
-            <CardDescription>Klik ikon mata untuk mempublikasikan data ke website.</CardDescription>
+            <CardDescription>Aktifkan toggle mata untuk menampilkan ke pengunjung.</CardDescription>
           </CardHeader>
           <CardContent className="p-0">
             <Table>
@@ -220,12 +215,12 @@ export default function AdminFasilitas() {
               </TableHeader>
               <TableBody>
                 {loading ? (
-                  <TableRow><TableCell colSpan={4} className="text-center py-20 text-slate-400 animate-pulse italic">Memuat...</TableCell></TableRow>
+                  <TableRow><TableCell colSpan={4} className="text-center py-20 text-slate-400 animate-pulse italic font-medium">Memuat data fasilitas...</TableCell></TableRow>
                 ) : facilities && facilities.length > 0 ? facilities.map((f: any) => (
                   <TableRow key={f.id} className="hover:bg-slate-50/50 transition-colors">
                     <TableCell className="px-8 py-4">
                       <div className="relative h-14 w-20 rounded-xl overflow-hidden border border-slate-100 shadow-sm">
-                        <Image src={f.imageUrl} alt={f.name} fill className="object-cover" />
+                        <Image src={f.imageUrl || "https://picsum.photos/seed/facility/800/600"} alt={f.name} fill className="object-cover" />
                       </div>
                     </TableCell>
                     <TableCell className="font-bold text-slate-800">{f.name}</TableCell>
@@ -251,7 +246,7 @@ export default function AdminFasilitas() {
                     </TableCell>
                   </TableRow>
                 )) : (
-                  <TableRow><TableCell colSpan={4} className="text-center py-20 text-slate-400 italic">Belum ada data.</TableCell></TableRow>
+                  <TableRow><TableCell colSpan={4} className="text-center py-20 text-slate-400 italic">Belum ada data fasilitas yang ditambahkan.</TableCell></TableRow>
                 )}
               </TableBody>
             </Table>

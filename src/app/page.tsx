@@ -39,6 +39,7 @@ export default function Home() {
 
   const displayStats = settings?.stats?.length > 0 ? settings.stats : defaultStats;
   const heroImageUrl = settings?.heroImageUrl || "https://picsum.photos/seed/school1/1920/1080";
+  const isSpmbActive = settings?.ppdbIsActive !== false;
 
   return (
     <div className="flex flex-col gap-0">
@@ -62,11 +63,13 @@ export default function Home() {
             </p>
             
             <div className="flex flex-wrap gap-6 pt-6">
-              <Button size="lg" className="bg-secondary text-primary font-bold hover:bg-secondary/90 px-12 py-8 text-xl rounded-full shadow-2xl group border-none" asChild>
-                <Link href="/ppdb" className="flex items-center gap-3">
-                  {settings?.ppdbMenuTitle || "SPMB ONLINE"} <ArrowRight className="h-6 w-6 group-hover:translate-x-3 transition-transform" />
-                </Link>
-              </Button>
+              {isSpmbActive && (
+                <Button size="lg" className="bg-secondary text-primary font-bold hover:bg-secondary/90 px-12 py-8 text-xl rounded-full shadow-2xl group border-none" asChild>
+                  <Link href="/ppdb" className="flex items-center gap-3">
+                    {settings?.ppdbMenuTitle || "SPMB ONLINE"} <ArrowRight className="h-6 w-6 group-hover:translate-x-3 transition-transform" />
+                  </Link>
+                </Button>
+              )}
               <Button size="lg" className="bg-white text-primary hover:bg-slate-100 px-12 py-8 text-xl rounded-full font-bold transition-all shadow-xl border-none" asChild>
                 <Link href="/profil" className="flex items-center gap-3">
                   <Play className="h-5 w-5 fill-current text-secondary" /> Lihat Profil
@@ -174,7 +177,7 @@ export default function Home() {
       <section className="py-40 bg-white">
         <div className="container mx-auto px-6 md:px-12">
           <div className="text-center max-w-4xl mx-auto mb-32 space-y-8">
-            <div className="bg-secondary/10 text-secondary font-bold tracking-widest uppercase text-[9px] px-6 py-3 rounded-full inline-block">Fasilitas Kampus</div>
+            <div className="bg-secondary/10 text-secondary font-bold tracking-widest uppercase text-[9px] px-6 py-3 rounded-full inline-block">Fasilitas Sekolah</div>
             <h2 className="text-5xl md:text-[5.5rem] font-bold text-primary font-headline tracking-tighter leading-none">Sarana Unggulan</h2>
           </div>
 
