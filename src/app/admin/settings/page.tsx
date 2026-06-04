@@ -26,8 +26,7 @@ export default function AdminSettings() {
   const db = useFirestore();
   const { profile } = useUser();
   
-  // Menggunakan schoolId dari profil atau default agar sinkron dengan halaman utama
-  const targetSchoolId = profile?.schoolId || 'smpn5-langke-rembong';
+  const targetSchoolId = profile?.schoolId || 'default-school';
   const settingsRef = useMemo(() => db ? doc(db, "schools", targetSchoolId) : null, [db, targetSchoolId]);
   const { data: currentSettings, loading } = useDoc(settingsRef);
 

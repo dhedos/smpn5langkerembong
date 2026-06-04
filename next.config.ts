@@ -19,8 +19,7 @@ const nextConfig: NextConfig = {
     allowedDevOrigins: [
       'localhost:9002',
       '*.cloudworkstations.dev',
-      '6000-firebase-studio-1779520840203.cluster-edb2jv34dnhjisxuq5m7l37ccy.cloudworkstations.dev',
-      'https://6000-firebase-studio-1779520840203.cluster-edb2jv34dnhjisxuq5m7l37ccy.cloudworkstations.dev'
+      '*.cluster-edb2jv34dnhjisxuq5m7l37ccy.cloudworkstations.dev'
     ],
   },
 };

@@ -11,14 +11,18 @@ export function useCollection<T = any>(query: Query | null) {
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
+    // Jika query null atau undefined, hentikan loading
     if (!query) {
       setLoading(false);
       return;
     }
 
+    let isMounted = true;
+
     const unsubscribe = onSnapshot(
       query,
       (snapshot) => {
+        if (!isMounted) return;
         const items = snapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
@@ -28,18 +32,25 @@ export function useCollection<T = any>(query: Query | null) {
         setError(null);
       },
       (serverError) => {
+        if (!isMounted) return;
         const permissionError = new FirestorePermissionError({
           path: 'collection',
           operation: 'list',
         });
-        errorEmitter.emit('permission-error', permissionError);
-        setError(permissionError);
+        // Jangan emit error jika ini hanya karena unmount saat development
+        if (serverError.code !== 'cancelled') {
+          errorEmitter.emit('permission-error', permissionError);
+          setError(permissionError);
+        }
         setLoading(false);
       }
     );
 
-    return () => unsubscribe();
-  }, [query]); // Menggunakan query sebagai dependency yang stabil
+    return () => {
+      isMounted = false;
+      unsubscribe();
+    };
+  }, [query]); 
 
   return { data, loading, error };
 }
