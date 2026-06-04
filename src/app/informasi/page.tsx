@@ -4,17 +4,17 @@
 import React, { useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Newspaper, Calendar, ArrowRight, Search } from "lucide-react";
+import { Newspaper, Calendar, ArrowRight, Search, Info } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useFirestore, useCollection } from "@/firebase";
-import { collection, query, where, orderBy } from "firebase/firestore";
+import { collection, query, where } from "firebase/firestore";
 
 export default function VisitorInformasi() {
   const db = useFirestore();
   const currentSchoolId = 'smpn5-langke-rembong';
 
-  // Menyederhanakan kueri agar tidak memerlukan composite index manual
+  // Menggunakan kueri sederhana agar tidak memerlukan Composite Index manual
   const newsQuery = useMemo(() => {
     if (!db) return null;
     return query(
@@ -25,7 +25,7 @@ export default function VisitorInformasi() {
 
   const { data: rawNews, loading } = useCollection(newsQuery);
 
-  // Filtrasi dan pengurutan dilakukan di sisi klien
+  // Filtrasi dan pengurutan dilakukan di sisi klien untuk kemudahan penggunaan
   const newsItems = useMemo(() => {
     if (!rawNews) return [];
     return rawNews
@@ -42,8 +42,8 @@ export default function VisitorInformasi() {
       <section className="bg-primary py-24 text-white relative overflow-hidden">
         <div className="absolute inset-0 bg-secondary/5 skew-y-3 translate-y-20" />
         <div className="container mx-auto px-4 relative z-10 text-center">
-          <h1 className="text-5xl md:text-7xl font-bold font-headline mb-6 tracking-tighter">Informasi & Pengumuman</h1>
-          <p className="text-xl text-white/70 max-w-2xl mx-auto font-medium">Informasi terkini mengenai kegiatan, prestasi, dan agenda sekolah kami.</p>
+          <h1 className="text-5xl md:text-7xl font-bold font-headline mb-6 tracking-tighter uppercase">Informasi & Pengumuman</h1>
+          <p className="text-xl text-white/70 max-w-2xl mx-auto font-medium">Temukan berita terkini, agenda sekolah, dan informasi penting lainnya.</p>
         </div>
       </section>
 
@@ -101,9 +101,10 @@ export default function VisitorInformasi() {
               ))}
             </div>
           ) : (
-            <div className="text-center py-24 space-y-4">
+            <div className="text-center py-24 space-y-4 bg-slate-50 rounded-[3rem] border-2 border-dashed border-slate-200">
               <Newspaper className="h-16 w-16 text-slate-200 mx-auto" />
-              <p className="text-slate-400 italic text-lg">Belum ada informasi yang diterbitkan saat ini.</p>
+              <p className="text-slate-400 italic text-lg font-medium">Belum ada informasi yang diterbitkan saat ini.</p>
+              <p className="text-slate-300 text-sm">Pastikan Admin telah mempublikasikan berita dengan status <span className="text-green-600 font-bold uppercase">Published</span>.</p>
             </div>
           )}
         </div>
