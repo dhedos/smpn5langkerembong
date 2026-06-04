@@ -95,7 +95,6 @@ export default function AdminSettings() {
   const [newRequirement, setNewRequirement] = useState("");
   const [addressSearch, setAddressSearch] = useState("");
 
-  // States for multiple official websites
   const [newOfficialTitle, setNewOfficialTitle] = useState("");
   const [newOfficialUrl, setNewOfficialUrl] = useState("");
 
@@ -285,7 +284,7 @@ export default function AdminSettings() {
                 </div>
 
                 <div className="space-y-4 pt-4 border-t">
-                  <Label className="text-xs font-bold uppercase text-slate-400">Portal Resmi Instansi (Daftar Website)</Label>
+                  <Label className="text-xs font-bold uppercase text-slate-400">Portal Resmi Instansi (Website Terkait)</Label>
                   <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100 space-y-4">
                     <div className="grid grid-cols-1 gap-3">
                       <div className="space-y-1">

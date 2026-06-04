@@ -65,9 +65,9 @@ export function Footer() {
           {/* Brand Column */}
           <div className="flex flex-col">
             <div className="flex items-center gap-4 mb-6">
-              <div className="bg-white p-2 rounded-[1.2rem] shadow-xl shrink-0 flex items-center justify-center w-16 h-16 md:w-20 md:h-20">
+              <div className="bg-white p-2 rounded-[1.2rem] shadow-xl shrink-0 flex items-center justify-center w-20 h-20">
                 {schoolLogo ? (
-                  <div className="relative h-12 w-12">
+                  <div className="relative h-14 w-14">
                     <Image src={schoolLogo} alt="Logo" fill className="object-contain" />
                   </div>
                 ) : (
