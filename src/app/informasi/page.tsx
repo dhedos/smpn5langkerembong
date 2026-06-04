@@ -12,9 +12,10 @@ import { collection, query, where } from "firebase/firestore";
 
 export default function VisitorInformasi() {
   const db = useFirestore();
+  // Gunakan ID sekolah yang sama dengan panel Admin
   const currentSchoolId = 'smpn5-langke-rembong';
 
-  // Menggunakan kueri sederhana agar tidak memerlukan Composite Index manual
+  // Kueri sederhana untuk menghindari keharusan membuat Composite Index manual
   const newsQuery = useMemo(() => {
     if (!db) return null;
     return query(
@@ -25,7 +26,7 @@ export default function VisitorInformasi() {
 
   const { data: rawNews, loading } = useCollection(newsQuery);
 
-  // Filtrasi dan pengurutan dilakukan di sisi klien untuk kemudahan penggunaan
+  // Filtrasi dan pengurutan dilakukan di sisi klien untuk kemudahan penggunaan tanpa Index manual
   const newsItems = useMemo(() => {
     if (!rawNews) return [];
     return rawNews

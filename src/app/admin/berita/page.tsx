@@ -21,9 +21,9 @@ import { cn } from "@/lib/utils";
 export default function AdminBerita() {
   const db = useFirestore();
   const { profile } = useUser();
-  const schoolId = profile?.schoolId || 'smpn5-langke-rembong';
+  // Gunakan ID sekolah yang konsisten dengan website publik
+  const schoolId = 'smpn5-langke-rembong';
 
-  // Kueri sederhana untuk menghindari keharusan membuat Composite Index manual
   const newsRef = useMemo(() => {
     if (!db) return null;
     return query(collection(db, "news"), where("schoolId", "==", schoolId));
@@ -238,7 +238,7 @@ export default function AdminBerita() {
             <CardHeader className="bg-slate-50/50 border-b p-8">
               <CardTitle className="text-xl flex items-center gap-3 text-primary">
                 <Sparkles className="h-5 w-5 text-secondary" />
-                AI Sugestions
+                AI Suggestions
               </CardTitle>
             </CardHeader>
             <CardContent className="p-8 space-y-6">
@@ -285,7 +285,7 @@ export default function AdminBerita() {
                 <TableBody>
                   {loading ? (
                     <TableRow><TableCell className="text-center py-10 text-slate-400 animate-pulse italic">Memuat data...</TableCell></TableRow>
-                  ) : newsItems && newsItems.length > 0 ? newsItems.slice(0, 5).map((item: any) => (
+                  ) : newsItems && newsItems.length > 0 ? newsItems.sort((a,b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0)).slice(0, 5).map((item: any) => (
                     <TableRow key={item.id}>
                       <TableCell className="p-6">
                         <div className="font-bold text-slate-900 truncate max-w-[200px]">{item.title}</div>
