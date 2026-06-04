@@ -1,8 +1,9 @@
+
 "use client";
 
 import React, { useMemo } from "react";
 import Image from "next/image";
-import { CheckCircle2, Target, History, Users2, Building2, AlertTriangle, Info, Loader2 } from "lucide-react";
+import { CheckCircle2, Target, History, Users2, Building2, AlertTriangle, Info, Loader2, MapPin } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useFirestore, useDoc, useCollection } from "@/firebase";
 import { doc, collection, query, where } from "firebase/firestore";
@@ -161,6 +162,32 @@ export default function ProfilPage() {
           )}
         </div>
       </section>
+
+      {/* Lokasi Section */}
+      {settings?.googleMapsEmbedUrl && (
+        <section id="lokasi" className="py-32 bg-slate-50">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-16 space-y-4">
+              <div className="text-secondary font-bold tracking-widest uppercase text-xs px-4 py-2 bg-secondary/10 rounded-full inline-flex items-center gap-2">
+                <MapPin className="h-4 w-4" /> Lokasi Sekolah
+              </div>
+              <h2 className="text-5xl font-bold text-primary font-headline tracking-tighter">Temukan Kami</h2>
+              <p className="text-slate-500 max-w-xl mx-auto font-medium">{settings.address}</p>
+            </div>
+            <div className="w-full h-[500px] rounded-[3rem] overflow-hidden shadow-2xl border-[12px] border-white bg-white">
+              <iframe 
+                src={settings.googleMapsEmbedUrl} 
+                width="100%" 
+                height="100%" 
+                style={{ border: 0 }} 
+                allowFullScreen={true} 
+                loading="lazy" 
+                referrerPolicy="no-referrer-when-downgrade"
+              />
+            </div>
+          </div>
+        </section>
+      )}
     </div>
   );
 }

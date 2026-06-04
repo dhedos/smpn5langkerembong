@@ -20,8 +20,7 @@ import {
   BarChart3,
   Users,
   UserPlus,
-  CheckCircle2,
-  FileText,
+  MapPin,
   User
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -62,6 +61,7 @@ export default function AdminSettings() {
     address: "Jl. Pendidikan No. 5, Langke Rembong",
     phone: "(0385) 12345",
     email: "admin@smpn5langkerembong.sch.id",
+    googleMapsEmbedUrl: "",
     history: "SMPN 5 Langke Rembong didirikan dengan komitmen untuk mencerdaskan kehidupan bangsa melalui pendidikan yang inklusif dan berstandar nasional.",
     vision: "Menjadi lembaga pendidikan unggulan yang mencetak generasi bertakwa, berkarakter, dan berdaya saing global.",
     mission: [
@@ -259,7 +259,7 @@ export default function AdminSettings() {
             </Card>
 
             <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden bg-white">
-              <CardHeader className="bg-slate-50/50 border-b p-8"><CardTitle className="text-xl flex items-center gap-3 font-headline text-primary"><Phone className="h-6 w-6 text-secondary" /> Kontak Sekolah</CardTitle></CardHeader>
+              <CardHeader className="bg-slate-50/50 border-b p-8"><CardTitle className="text-xl flex items-center gap-3 font-headline text-primary"><Phone className="h-6 w-6 text-secondary" /> Kontak & Lokasi</CardTitle></CardHeader>
               <CardContent className="space-y-6 p-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-3">
@@ -278,6 +278,16 @@ export default function AdminSettings() {
                 <div className="space-y-3">
                   <Label className="text-xs font-bold uppercase text-slate-400">Alamat Sekolah</Label>
                   <Textarea value={formData.address} onChange={(e) => setFormData({...formData, address: e.target.value})} className="min-h-[100px] bg-slate-50 rounded-xl" />
+                </div>
+                <div className="space-y-3">
+                  <Label className="text-xs font-bold uppercase text-slate-400">Google Maps Embed URL</Label>
+                  <Input 
+                    value={formData.googleMapsEmbedUrl} 
+                    onChange={(e) => setFormData({...formData, googleMapsEmbedUrl: e.target.value})} 
+                    placeholder="https://www.google.com/maps/embed?..."
+                    className="h-12 bg-slate-50 rounded-xl" 
+                  />
+                  <p className="text-[10px] text-slate-400 italic">Dapatkan URL dari 'Share' > 'Embed a map' > ambil nilai atribut 'src'.</p>
                 </div>
               </CardContent>
             </Card>
@@ -394,7 +404,7 @@ export default function AdminSettings() {
                       ) : (
                         <div className="text-center text-slate-300">
                           <User className="h-12 w-12 mx-auto mb-2 opacity-50" />
-                          <span className="text-[10px] font-bold uppercase tracking-widest">Unggah Foto</span>
+                          <span className="text-[10px] font-black uppercase tracking-widest">Unggah Foto</span>
                         </div>
                       )}
                       <input type="file" accept="image/*" onChange={(e) => handleFileChange(e, "headmasterPhotoUrl")} className="absolute inset-0 opacity-0 cursor-pointer" />

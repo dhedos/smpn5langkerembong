@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useMemo } from "react";
@@ -13,7 +14,8 @@ import {
   Calendar,
   Loader2,
   User,
-  ExternalLink
+  ExternalLink,
+  MapPin
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -273,6 +275,38 @@ export default function Home() {
           )}
         </div>
       </section>
+
+      {/* Map Preview Section on Home */}
+      {settings?.googleMapsEmbedUrl && (
+        <section className="py-20 bg-white">
+          <div className="container mx-auto px-6 md:px-12">
+            <div className="flex flex-col md:flex-row items-center gap-12 bg-slate-50 rounded-[4rem] p-10 md:p-20 shadow-xl">
+              <div className="w-full md:w-1/2 space-y-6">
+                <div className="bg-secondary/10 text-secondary font-bold uppercase text-[10px] tracking-widest px-4 py-2 rounded-full inline-block">Lokasi Kami</div>
+                <h2 className="text-4xl font-bold text-primary font-headline tracking-tighter">Kunjungi Kami Langsung</h2>
+                <p className="text-slate-500 font-medium">{settings.address}</p>
+                <div className="pt-4">
+                  <Button className="rounded-full bg-primary h-12 px-8 font-bold gap-2" asChild>
+                    <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(settings.address)}`} target="_blank">
+                      <MapPin className="h-4 w-4" /> Buka di Google Maps
+                    </a>
+                  </Button>
+                </div>
+              </div>
+              <div className="w-full md:w-1/2 h-[400px] rounded-[3rem] overflow-hidden shadow-lg border-8 border-white bg-slate-100">
+                <iframe 
+                  src={settings.googleMapsEmbedUrl} 
+                  width="100%" 
+                  height="100%" 
+                  style={{ border: 0 }} 
+                  allowFullScreen={true} 
+                  loading="lazy" 
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
     </div>
   );
 }

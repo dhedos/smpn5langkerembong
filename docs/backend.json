@@ -21,6 +21,7 @@
         "address": { "type": "string", "description": "Alamat lengkap sekolah" },
         "phone": { "type": "string", "description": "Nomor telepon kantor" },
         "email": { "type": "string", "description": "Email resmi sekolah" },
+        "googleMapsEmbedUrl": { "type": "string", "description": "URL dari atribut src pada iframe Google Maps Embed" },
         "history": { "type": "string", "description": "Teks sejarah sekolah" },
         "vision": { "type": "string", "description": "Teks visi sekolah" },
         "mission": { "type": "array", "items": { "type": "string" }, "description": "Daftar poin-poin misi" },
