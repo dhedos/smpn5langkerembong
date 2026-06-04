@@ -78,7 +78,7 @@ export function Navbar() {
       className={cn(
         "fixed top-0 left-0 right-0 z-[60] transition-all duration-500",
         isSolid 
-          ? "bg-white/95 backdrop-blur-xl border-b border-slate-200 py-3 shadow-[0_4px_30px_rgba(0,0,0,0.03)]" 
+          ? "bg-white border-b border-slate-200 py-3 shadow-md" 
           : "bg-transparent py-5"
       )}
     >
