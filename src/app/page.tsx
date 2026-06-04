@@ -51,8 +51,6 @@ export default function Home() {
         
         <div className="container relative z-10 px-6 md:px-12 mx-auto">
           <div className="max-w-4xl space-y-12 animate-in fade-in slide-in-from-left duration-1000">
-            {/* Lencana status dihapus sesuai permintaan user */}
-            
             <h1 className="text-6xl md:text-[8rem] font-bold text-white font-headline leading-[0.9] tracking-tighter">
               {settings?.heroTitle || "Wujudkan Masa Depan"} <br/>
               <span className="text-secondary italic font-light">{settings?.schoolName || "SMPN 5 LR"}</span>
@@ -78,22 +76,22 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="relative -mt-32 z-20 px-6">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-10">
+      {/* Stats Section - Precise Design from Reference */}
+      <section className="relative -mt-40 z-20 px-6">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
           {displayStats.map((stat: any, i: number) => {
             const Icon = iconMap[stat.icon] || Users;
             return (
-              <Card key={i} className="bg-white border-none shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] hover:translate-y-[-10px] transition-all duration-500 rounded-[3rem] group overflow-hidden">
-                <CardContent className="p-12 md:p-14 flex flex-col items-center text-center">
-                  <div className="p-6 bg-slate-50 rounded-3xl group-hover:bg-primary/5 transition-colors duration-500 mb-10">
-                    <Icon className="h-10 w-10 text-primary group-hover:scale-110 transition-transform duration-500" />
+              <Card key={i} className="bg-white border-none shadow-[0_30px_60px_-15px_rgba(0,0,0,0.08)] hover:translate-y-[-10px] transition-all duration-500 rounded-[4rem] group overflow-hidden">
+                <CardContent className="p-10 md:p-14 flex flex-col items-center text-center space-y-8">
+                  <div className="p-5 bg-slate-50 rounded-[1.8rem] transition-colors duration-500">
+                    <Icon className="h-8 w-8 text-primary/80" />
                   </div>
-                  <div className="space-y-2">
-                    <div className="text-5xl md:text-6xl font-bold text-slate-900 font-headline tracking-tighter">
+                  <div className="space-y-1">
+                    <div className="text-6xl md:text-7xl font-bold text-slate-900 font-headline tracking-tighter">
                       {stat.value}
                     </div>
-                    <div className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em]">
+                    <div className="text-[10px] text-slate-400 font-extrabold uppercase tracking-[0.25em] pt-2">
                       {stat.label}
                     </div>
                   </div>
