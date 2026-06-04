@@ -59,12 +59,12 @@ export function Footer() {
   ];
 
   return (
-    <footer className="bg-primary text-white pt-20 pb-10 border-t border-white/5">
+    <footer className="bg-primary text-white pt-20 pb-10 border-t border-white/5 overflow-hidden">
       <div className="container mx-auto px-6 md:px-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-16 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-16 mb-16">
           {/* Brand Column */}
-          <div className="flex flex-col">
-            <div className="flex items-center gap-4 mb-6">
+          <div className="flex flex-col space-y-6">
+            <div className="flex items-center gap-4">
               <div className="bg-white p-2 rounded-[1.2rem] shadow-xl shrink-0 flex items-center justify-center w-20 h-20">
                 {schoolLogo ? (
                   <div className="relative h-14 w-14">
@@ -81,13 +81,13 @@ export function Footer() {
               </div>
             </div>
 
-            <p className="text-white/60 text-xs leading-relaxed font-medium max-w-xs mb-6">
+            <p className="text-white/60 text-xs leading-relaxed font-medium max-w-xs">
               Membangun fondasi pendidikan unggul yang menginspirasi kreativitas bagi masa depan bangsa.
             </p>
 
-            {/* Portal links section right below branding */}
+            {/* Portal Resmi Instansi */}
             {officialWebsites.length > 0 && (
-              <div className="mb-8 space-y-2">
+              <div className="space-y-2 pt-2">
                 <h5 className="text-[10px] font-black text-secondary tracking-widest uppercase mb-3">Portal Resmi Instansi</h5>
                 {officialWebsites.map((web: any, i: number) => (
                   <a 
@@ -95,17 +95,17 @@ export function Footer() {
                     href={web.url} 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="text-white/80 hover:text-secondary transition-all flex items-center gap-2 uppercase text-[9px] font-black tracking-widest bg-white/5 p-2.5 rounded-xl border border-white/10 group"
+                    className="text-white/80 hover:text-secondary transition-all flex items-center gap-2 uppercase text-[9px] font-black tracking-widest bg-white/5 p-3 rounded-xl border border-white/10 group w-full"
                   >
                     <Globe className="h-3 w-3 text-secondary" /> 
-                    {web.title} 
-                    <ExternalLink className="h-3 w-3 ml-auto opacity-30 group-hover:opacity-100" />
+                    <span className="truncate">{web.title}</span> 
+                    <ExternalLink className="h-3 w-3 ml-auto opacity-30 group-hover:opacity-100 shrink-0" />
                   </a>
                 ))}
               </div>
             )}
 
-            <div className="flex gap-2">
+            <div className="flex gap-2 pt-2">
               {socialLinks.map((social) => (
                 <Link 
                   key={social.id} 
@@ -123,10 +123,10 @@ export function Footer() {
           <div>
             <h4 className="font-headline font-black mb-8 text-[10px] tracking-[0.2em] uppercase text-secondary">Tautan Cepat</h4>
             <ul className="space-y-4 text-sm font-medium text-white/70">
-              <li><Link href="/profil" className="hover:text-white transition-colors uppercase tracking-wider">Profil Sekolah</Link></li>
-              <li><Link href="/informasi" className="hover:text-white transition-colors uppercase tracking-wider">Informasi Terbaru</Link></li>
-              <li><Link href="/ppdb" className="hover:text-white transition-colors uppercase tracking-wider">SPMB Online</Link></li>
-              <li><Link href="/galeri" className="hover:text-white transition-colors uppercase tracking-wider">Galeri Kegiatan</Link></li>
+              <li><Link href="/profil" className="hover:text-white transition-colors uppercase tracking-wider block">Profil Sekolah</Link></li>
+              <li><Link href="/informasi" className="hover:text-white transition-colors uppercase tracking-wider block">Informasi Terbaru</Link></li>
+              <li><Link href="/ppdb" className="hover:text-white transition-colors uppercase tracking-wider block">SPMB Online</Link></li>
+              <li><Link href="/galeri" className="hover:text-white transition-colors uppercase tracking-wider block">Galeri Kegiatan</Link></li>
             </ul>
           </div>
 
@@ -134,40 +134,40 @@ export function Footer() {
           <div>
             <h4 className="font-headline font-black mb-8 text-[10px] tracking-[0.2em] uppercase text-secondary">Akademik</h4>
             <ul className="space-y-4 text-sm font-medium text-white/70">
-              <li className="hover:text-white transition-colors cursor-pointer uppercase tracking-wider">Kurikulum Merdeka</li>
-              <li className="hover:text-white transition-colors cursor-pointer uppercase tracking-wider">E-Learning</li>
-              <li className="hover:text-white transition-colors cursor-pointer uppercase tracking-wider">Perpustakaan</li>
-              <li><Link href="/ekstrakurikuler" className="hover:text-white transition-colors uppercase tracking-wider">Ekstrakurikuler</Link></li>
+              <li className="hover:text-white transition-colors cursor-pointer uppercase tracking-wider block">Kurikulum Merdeka</li>
+              <li className="hover:text-white transition-colors cursor-pointer uppercase tracking-wider block">E-Learning</li>
+              <li className="hover:text-white transition-colors cursor-pointer uppercase tracking-wider block">Perpustakaan</li>
+              <li><Link href="/ekstrakurikuler" className="hover:text-white transition-colors uppercase tracking-wider block">Ekstrakurikuler</Link></li>
             </ul>
           </div>
 
           {/* Contact Column */}
           <div>
             <h4 className="font-headline font-black mb-8 text-[10px] tracking-[0.2em] uppercase text-secondary">Hubungi Kami</h4>
-            <ul className="space-y-5 text-sm text-white/80 font-medium">
+            <ul className="space-y-6 text-sm text-white/80 font-medium">
               <li className="flex gap-4 items-start">
-                <div className="bg-white/5 p-2 rounded-lg">
-                  <MapPin className="h-4 w-4 text-secondary shrink-0" /> 
+                <div className="bg-white/5 p-2 rounded-lg shrink-0 mt-0.5">
+                  <MapPin className="h-4 w-4 text-secondary" /> 
                 </div>
                 <span className="leading-relaxed">{address}</span>
               </li>
               <li className="flex gap-4 items-center">
-                <div className="bg-white/5 p-2 rounded-lg">
-                  <Phone className="h-4 w-4 text-secondary shrink-0" /> 
+                <div className="bg-white/5 p-2 rounded-lg shrink-0">
+                  <Phone className="h-4 w-4 text-secondary" /> 
                 </div>
                 <span>{phone}</span>
               </li>
               <li className="flex gap-4 items-center">
-                <div className="bg-white/5 p-2 rounded-lg">
-                  <Mail className="h-4 w-4 text-secondary shrink-0" /> 
+                <div className="bg-white/5 p-2 rounded-lg shrink-0">
+                  <Mail className="h-4 w-4 text-secondary" /> 
                 </div>
-                <span>{email}</span>
+                <span className="truncate">{email}</span>
               </li>
             </ul>
           </div>
         </div>
 
-        <div className="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] font-bold text-white/30 tracking-[0.2em] uppercase">
+        <div className="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-6 text-[10px] font-bold text-white/30 tracking-[0.2em] uppercase text-center md:text-left">
           <p>© {displayYear} {schoolName}. ALL RIGHTS RESERVED.</p>
           <div className="flex gap-6 items-center">
             <Link href="/admin" className="opacity-30 hover:opacity-100 transition-all flex items-center gap-2">
