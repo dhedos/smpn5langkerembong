@@ -81,20 +81,21 @@ export function Footer() {
               </div>
             </div>
 
-            <p className="text-white/60 text-xs leading-relaxed font-medium max-w-xs mb-4">
+            <p className="text-white/60 text-xs leading-relaxed font-medium max-w-xs mb-6">
               Membangun fondasi pendidikan unggul yang menginspirasi kreativitas bagi masa depan bangsa.
             </p>
 
             {/* Portal links section right below branding */}
             {officialWebsites.length > 0 && (
-              <div className="mb-6 space-y-1.5">
+              <div className="mb-8 space-y-2">
+                <h5 className="text-[10px] font-black text-secondary tracking-widest uppercase mb-3">Portal Resmi Instansi</h5>
                 {officialWebsites.map((web: any, i: number) => (
                   <a 
                     key={i}
                     href={web.url} 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="text-white/80 hover:text-secondary transition-all flex items-center gap-2 uppercase text-[10px] font-black tracking-widest bg-white/5 p-2 rounded-xl border border-white/10 group"
+                    className="text-white/80 hover:text-secondary transition-all flex items-center gap-2 uppercase text-[9px] font-black tracking-widest bg-white/5 p-2.5 rounded-xl border border-white/10 group"
                   >
                     <Globe className="h-3 w-3 text-secondary" /> 
                     {web.title} 
