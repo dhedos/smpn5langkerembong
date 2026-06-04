@@ -8,6 +8,7 @@ import { Firestore } from 'firebase/firestore';
 import { Auth } from 'firebase/auth';
 
 export function FirebaseClientProvider({ children }: { children: React.ReactNode }) {
+  const [mounted, setMounted] = useState(false);
   const [services, setServices] = useState<{
     app: FirebaseApp;
     firestore: Firestore;
@@ -17,11 +18,12 @@ export function FirebaseClientProvider({ children }: { children: React.ReactNode
   useEffect(() => {
     // Inisialisasi dilakukan hanya sekali di sisi client
     setServices(initializeFirebase());
+    setMounted(true);
   }, []);
 
-  // Jika servis belum siap, kita kembalikan null untuk menghindari flash konten default
-  // Ini menghilangkan loading screen pertama yang "wagu"
-  if (!services) {
+  // Mencegah pendobelan/flicker saat hydration dengan memastikan
+  // konten hanya dirender setelah komponen benar-benar terpasang di client.
+  if (!mounted || !services) {
     return null;
   }
 

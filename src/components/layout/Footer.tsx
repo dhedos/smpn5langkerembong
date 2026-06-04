@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useMemo } from "react";
@@ -24,18 +23,25 @@ export function Footer() {
 
   if (isAdminPage) return null;
 
-  const schoolName = settings?.schoolName || "SMPN 5 Langke Rembong";
+  const schoolName = settings?.schoolName || "SMPN 5 LANGKE REMBONG";
   const schoolLogo = settings?.schoolLogoUrl;
   const officialWebsites = settings?.officialWebsites || [];
-  const address = settings?.address || "Jl. Pendidikan No. 5, Langke Rembong";
+  const address = settings?.address || "JL. PENDIDIKAN NO. 5, LANGKE REMBONG";
   const phone = settings?.phone || "6285281814006";
   const email = settings?.email || "smpn5lr@gmail.com";
 
-  // Memecah nama sekolah untuk styling presisi
-  const nameParts = schoolName.split(" ");
-  const smpnPart = nameParts[0]; // SMPN
-  const fivePart = nameParts[1]; // 5
-  const restPart = nameParts.slice(2).join(" "); // Langke Rembong
+  // Memproses nama sekolah agar sesuai dengan gambar referensi
+  // Baris 1: SMPN 5 (5 kuning)
+  // Baris 2: LANGKE
+  // Baris 3: REMBONG
+  const nameParts = schoolName.toUpperCase().split(" ");
+  const smpnLabel = nameParts.includes("SMPN") ? "SMPN" : nameParts[0];
+  const fiveLabel = nameParts.includes("5") ? "5" : nameParts[1];
+  
+  // Sisa nama (misal: LANGKE REMBONG)
+  const restName = nameParts.filter(p => p !== "SMPN" && p !== "5");
+  const row2 = restName[0] || "";
+  const row3 = restName[1] || "";
 
   const socialLinks = [
     { 
@@ -69,8 +75,8 @@ export function Footer() {
       <div className="container mx-auto px-6 md:px-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-16 mb-16">
           {/* Brand Column */}
-          <div className="flex flex-col space-y-4">
-            <div className="flex items-center gap-4">
+          <div className="flex flex-col space-y-6">
+            <div className="flex items-start gap-4">
               <div className="bg-white p-2 rounded-[1.2rem] shadow-xl shrink-0 flex items-center justify-center w-20 h-20">
                 {schoolLogo ? (
                   <div className="relative h-14 w-14">
@@ -81,47 +87,51 @@ export function Footer() {
                 )}
               </div>
               <div className="font-headline font-black text-2xl md:text-3xl tracking-tighter leading-[0.85] uppercase">
-                <span className="block">{smpnPart} <span className="text-secondary">{fivePart}</span></span>
-                <span className="block">{restPart.split(" ")[0]}</span>
-                <span className="block">{restPart.split(" ")[1]}</span>
+                <span className="block">{smpnLabel} <span className="text-secondary">{fiveLabel}</span></span>
+                <span className="block">{row2}</span>
+                <span className="block">{row3}</span>
               </div>
             </div>
 
-            <p className="text-white/60 text-[10px] leading-relaxed font-bold uppercase tracking-widest max-w-xs">
-              Membangun fondasi pendidikan unggul yang menginspirasi kreativitas bagi masa depan bangsa.
-            </p>
+            <div className="space-y-4">
+              <p className="text-white/60 text-[10px] leading-relaxed font-bold uppercase tracking-widest max-w-xs">
+                Membangun fondasi pendidikan unggul yang menginspirasi kreativitas bagi masa depan bangsa.
+              </p>
 
-            {/* Portal Resmi Instansi - Berada dibawah logo/branding */}
-            {officialWebsites.length > 0 && (
-              <div className="space-y-2 pt-2">
-                <h5 className="text-[9px] font-black text-secondary tracking-widest uppercase mb-3">Portal Resmi Instansi</h5>
-                {officialWebsites.map((web: any, i: number) => (
-                  <a 
-                    key={i}
-                    href={web.url} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="text-white/80 hover:text-secondary transition-all flex items-center gap-2 uppercase text-[9px] font-black tracking-widest bg-white/5 p-3 rounded-xl border border-white/10 group w-full"
+              <div className="flex gap-2">
+                {socialLinks.map((social) => (
+                  <Link 
+                    key={social.id} 
+                    href={social.href} 
+                    target="_blank"
+                    className="h-10 w-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-all"
                   >
-                    <Globe className="h-3 w-3 text-secondary" /> 
-                    <span className="truncate">{web.title}</span> 
-                    <ExternalLink className="h-3 w-3 ml-auto opacity-30 group-hover:opacity-100 shrink-0" />
-                  </a>
+                    {social.icon}
+                  </Link>
                 ))}
               </div>
-            )}
 
-            <div className="flex gap-2 pt-2">
-              {socialLinks.map((social) => (
-                <Link 
-                  key={social.id} 
-                  href={social.href} 
-                  target="_blank"
-                  className="h-10 w-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-all"
-                >
-                  {social.icon}
-                </Link>
-              ))}
+              {/* Portal Resmi Instansi - Tampil di bawah Branding & Socmed */}
+              {officialWebsites.length > 0 && (
+                <div className="space-y-2 pt-4 border-t border-white/5">
+                  <h5 className="text-[9px] font-black text-secondary tracking-widest uppercase mb-3">Portal Resmi Instansi</h5>
+                  <div className="grid grid-cols-1 gap-2">
+                    {officialWebsites.map((web: any, i: number) => (
+                      <a 
+                        key={i}
+                        href={web.url} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="text-white/80 hover:text-secondary transition-all flex items-center gap-2 uppercase text-[9px] font-black tracking-widest bg-white/5 p-3 rounded-xl border border-white/10 group w-full"
+                      >
+                        <Globe className="h-3 w-3 text-secondary" /> 
+                        <span className="truncate">{web.title}</span> 
+                        <ExternalLink className="h-3 w-3 ml-auto opacity-30 group-hover:opacity-100 shrink-0" />
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
@@ -174,7 +184,7 @@ export function Footer() {
         </div>
 
         <div className="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-6 text-[10px] font-black text-white/30 tracking-[0.2em] uppercase text-center md:text-left">
-          <p>© {displayYear} {schoolName}. ALL RIGHTS RESERVED.</p>
+          <p>© {displayYear} {schoolName.toUpperCase()}. ALL RIGHTS RESERVED.</p>
           <div className="flex gap-6 items-center">
             <Link href="/admin" className="opacity-30 hover:opacity-100 transition-all flex items-center gap-2">
               ADMIN CONSOLE
