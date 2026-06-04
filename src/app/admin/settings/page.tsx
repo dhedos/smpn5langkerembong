@@ -57,7 +57,7 @@ export default function AdminSettings() {
     mission: [],
     facebookUrl: "",
     instagramUrl: "",
-    twitterUrl: "",
+    tiktokUrl: "",
     youtubeUrl: "",
     ppdbYear: "2024/2025",
     ppdbIsActive: true,
@@ -312,11 +312,11 @@ export default function AdminSettings() {
                   />
                 </div>
                 <div className="space-y-3">
-                  <Label className="text-xs font-bold uppercase text-slate-400">Twitter / X URL</Label>
+                  <Label className="text-xs font-bold uppercase text-slate-400">TikTok URL</Label>
                   <Input 
-                    value={formData.twitterUrl} 
-                    onChange={(e) => setFormData({...formData, twitterUrl: e.target.value})} 
-                    placeholder="https://twitter.com/..."
+                    value={formData.tiktokUrl} 
+                    onChange={(e) => setFormData({...formData, tiktokUrl: e.target.value})} 
+                    placeholder="https://tiktok.com/@..."
                     className="h-14 bg-slate-50 rounded-2xl"
                   />
                 </div>

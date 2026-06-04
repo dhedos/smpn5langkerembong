@@ -5,9 +5,24 @@ import React, { useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { GraduationCap, Facebook, Instagram, Twitter, Youtube, MapPin, Phone, Mail, LogIn } from "lucide-react";
+import { GraduationCap, Facebook, Instagram, Youtube, MapPin, Phone, Mail, LogIn } from "lucide-react";
 import { useFirestore, useDoc } from "@/firebase";
 import { doc } from "firebase/firestore";
+
+// Simple TikTok SVG icon since lucide-react might not have one
+const TikTokIcon = ({ className }: { className?: string }) => (
+  <svg 
+    viewBox="0 0 24 24" 
+    fill="none" 
+    stroke="currentColor" 
+    strokeWidth="2" 
+    strokeLinecap="round" 
+    strokeLinejoin="round" 
+    className={className}
+  >
+    <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5" />
+  </svg>
+);
 
 export function Footer() {
   const pathname = usePathname();
@@ -29,7 +44,7 @@ export function Footer() {
   const socialLinks = [
     { icon: Facebook, href: settings?.facebookUrl || "#" },
     { icon: Instagram, href: settings?.instagramUrl || "#" },
-    { icon: Twitter, href: settings?.twitterUrl || "#" },
+    { icon: TikTokIcon, href: settings?.tiktokUrl || "#" },
     { icon: Youtube, href: settings?.youtubeUrl || "#" },
   ];
 
