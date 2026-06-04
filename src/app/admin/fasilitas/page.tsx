@@ -1,7 +1,8 @@
+
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { Building2, Plus, Trash2, Save, Image as ImageIcon, Upload, CheckCircle2, Eye, EyeOff } from "lucide-react";
+import { Building2, Plus, Trash2, Save, Image as ImageIcon, Upload, CheckCircle2, Eye, EyeOff, Loader2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -29,9 +30,8 @@ export default function AdminFasilitas() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      // Batasi ukuran file di bawah 800KB untuk keamanan dokumen Firestore (limit 1MB)
       if (file.size > 800 * 1024) {
-        toast({ title: "File Terlalu Besar", description: "Gunakan gambar di bawah 800KB agar database tetap optimal.", variant: "destructive" });
+        toast({ title: "File Terlalu Besar", description: "Maksimal 800KB untuk menjaga efisiensi database gratis.", variant: "destructive" });
         return;
       }
       const reader = new FileReader();
@@ -57,7 +57,6 @@ export default function AdminFasilitas() {
       createdAt: serverTimestamp()
     };
 
-    // Mengikuti panduan: Jangan gunakan await pada mutasi untuk responsivitas UI
     addDoc(collection(db, "facilities"), data)
       .then(() => {
         setIsSaving(false);
@@ -65,8 +64,8 @@ export default function AdminFasilitas() {
         setDescription("");
         setImageUrl("");
         toast({ 
-          title: status === "Published" ? "Fasilitas Dipublikasikan" : "Draft Disimpan", 
-          description: `Fasilitas ${name} telah berhasil disimpan.` 
+          title: status === "Published" ? "Berhasil Publikasi" : "Draft Tersimpan", 
+          description: `Fasilitas "${name}" telah ditambahkan ke daftar.` 
         });
       })
       .catch(async (serverError) => {
@@ -77,6 +76,11 @@ export default function AdminFasilitas() {
           requestResourceData: data,
         } satisfies SecurityRuleContext);
         errorEmitter.emit('permission-error', permissionError);
+        toast({
+          title: "Gagal Menyimpan",
+          description: "Periksa koneksi internet atau izin database Anda.",
+          variant: "destructive"
+        });
       });
   };
 
@@ -87,7 +91,7 @@ export default function AdminFasilitas() {
 
     updateDoc(docRef, { status: newStatus })
       .then(() => {
-        toast({ title: "Status Diperbarui", description: `Fasilitas kini berstatus ${newStatus}.` });
+        toast({ title: "Status Diperbarui", description: `Kini berstatus ${newStatus}.` });
       })
       .catch(async (error) => {
         const permissionError = new FirestorePermissionError({
@@ -105,7 +109,7 @@ export default function AdminFasilitas() {
 
     deleteDoc(docRef)
       .then(() => {
-        toast({ title: "Dihapus", description: "Fasilitas telah dihapus secara permanen." });
+        toast({ title: "Dihapus", description: "Data fasilitas telah dihapus." });
       })
       .catch(async (error) => {
         const permissionError = new FirestorePermissionError({
@@ -118,35 +122,38 @@ export default function AdminFasilitas() {
 
   return (
     <div className="p-8 space-y-8 max-w-7xl mx-auto">
-      <div>
-        <h1 className="text-4xl font-bold font-headline text-primary flex items-center gap-3">
-          <div className="bg-secondary p-2 rounded-xl">
-            <Building2 className="h-6 w-6 text-primary" />
-          </div>
-          Manajemen Fasilitas
-        </h1>
-        <p className="text-muted-foreground text-sm font-medium">Kelola sarana prasarana sekolah yang ditampilkan di website.</p>
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <h1 className="text-4xl font-bold font-headline text-primary flex items-center gap-3">
+            <div className="bg-secondary p-2 rounded-xl">
+              <Building2 className="h-6 w-6 text-primary" />
+            </div>
+            Manajemen Fasilitas
+          </h1>
+          <p className="text-muted-foreground text-sm font-medium">Kelola sarana prasarana sekolah secara fleksibel.</p>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-        <Card className="lg:col-span-1 border-none shadow-xl rounded-[2.5rem] overflow-hidden bg-white">
+        <Card className="lg:col-span-1 border-none shadow-xl rounded-[2.5rem] overflow-hidden bg-white h-fit">
           <CardHeader className="bg-slate-50/50 border-b p-8">
             <CardTitle className="text-xl">Tambah Fasilitas</CardTitle>
-            <CardDescription>Masukkan detail fasilitas baru.</CardDescription>
+            <CardDescription>Tambah satu per satu untuk dokumentasi yang rapi.</CardDescription>
           </CardHeader>
           <CardContent className="p-8 space-y-6">
             <div className="space-y-3">
               <Label className="text-xs font-bold uppercase text-slate-400 tracking-widest">Nama Fasilitas</Label>
               <Input 
                 className="h-12 bg-slate-50 border-slate-100 rounded-xl font-bold"
-                placeholder="E.g. Laboratorium Komputer" 
+                placeholder="E.g. Ruang OSIS" 
                 value={name} 
                 onChange={(e) => setName(e.target.value)} 
+                disabled={isSaving}
               />
             </div>
             
             <div className="space-y-3">
-              <Label className="text-xs font-bold uppercase text-slate-400 tracking-widest">Foto Fasilitas</Label>
+              <Label className="text-xs font-bold uppercase text-slate-400 tracking-widest">Foto (Lokal)</Label>
               <div className="space-y-4">
                 <div className="relative aspect-video w-full border-2 border-dashed border-slate-200 rounded-[2rem] overflow-hidden bg-slate-50 flex items-center justify-center group">
                   {imageUrl ? (
@@ -154,62 +161,66 @@ export default function AdminFasilitas() {
                   ) : (
                     <div className="text-center p-6">
                       <Upload className="mx-auto h-10 w-10 text-slate-300 mb-2 group-hover:scale-110 transition-transform" />
-                      <span className="text-[10px] text-slate-400 font-bold uppercase">Unggah Foto</span>
+                      <span className="text-[10px] text-slate-400 font-bold uppercase">Unggah</span>
                     </div>
                   )}
                 </div>
-                <Input type="file" accept="image/*" onChange={handleFileChange} className="text-xs cursor-pointer bg-slate-50 rounded-xl" />
+                <Input type="file" accept="image/*" onChange={handleFileChange} className="text-xs cursor-pointer" disabled={isSaving} />
               </div>
             </div>
 
             <div className="space-y-3">
-              <Label className="text-xs font-bold uppercase text-slate-400 tracking-widest">Deskripsi Fasilitas</Label>
+              <Label className="text-xs font-bold uppercase text-slate-400 tracking-widest">Deskripsi</Label>
               <Textarea 
-                placeholder="Jelaskan kegunaan fasilitas ini secara singkat..." 
-                className="min-h-[120px] bg-slate-50 border-slate-100 rounded-2xl"
+                placeholder="Keterangan singkat..." 
+                className="min-h-[100px] bg-slate-50 border-slate-100 rounded-2xl"
                 value={description} 
                 onChange={(e) => setDescription(e.target.value)} 
+                disabled={isSaving}
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4 pt-4">
-              <Button 
-                variant="outline" 
-                className="h-12 rounded-xl font-bold border-slate-200 text-slate-500" 
-                onClick={() => handleSave("Draft")}
-                disabled={isSaving}
-              >
-                Simpan Draft
-              </Button>
-              <Button 
-                className="h-12 rounded-xl font-bold bg-primary shadow-lg shadow-primary/20 gap-2" 
-                onClick={() => handleSave("Published")}
-                disabled={isSaving}
-              >
-                <CheckCircle2 className="h-4 w-4" /> {isSaving ? "Memproses..." : "Publish Sekarang"}
-              </Button>
+            <div className="grid grid-cols-1 gap-4 pt-4">
+              <div className="flex gap-2">
+                <Button 
+                  variant="outline" 
+                  className="flex-1 h-12 rounded-xl font-bold" 
+                  onClick={() => handleSave("Draft")}
+                  disabled={isSaving}
+                >
+                  Draft
+                </Button>
+                <Button 
+                  className="flex-[2] h-12 rounded-xl font-bold bg-primary shadow-lg shadow-primary/20 gap-2" 
+                  onClick={() => handleSave("Published")}
+                  disabled={isSaving}
+                >
+                  {isSaving ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCircle2 className="h-4 w-4" />}
+                  {isSaving ? "Menyimpan..." : "Publish Sekarang"}
+                </Button>
+              </div>
             </div>
           </CardContent>
         </Card>
 
         <Card className="lg:col-span-2 border-none shadow-xl rounded-[2.5rem] overflow-hidden bg-white">
           <CardHeader className="bg-slate-50/50 border-b p-8">
-            <CardTitle className="text-xl">Daftar Fasilitas</CardTitle>
-            <CardDescription>Semua sarana prasarana yang terdaftar di database.</CardDescription>
+            <CardTitle className="text-xl">Daftar Inventaris</CardTitle>
+            <CardDescription>Klik ikon mata untuk mempublikasikan data ke website.</CardDescription>
           </CardHeader>
           <CardContent className="p-0">
             <Table>
               <TableHeader className="bg-slate-50/50">
                 <TableRow>
                   <TableHead className="px-8 font-bold">Foto</TableHead>
-                  <TableHead className="font-bold">Fasilitas</TableHead>
-                  <TableHead className="font-bold">Status</TableHead>
+                  <TableHead className="font-bold">Nama</TableHead>
+                  <TableHead className="font-bold text-center">Tampil</TableHead>
                   <TableHead className="text-right px-8 font-bold">Aksi</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {loading ? (
-                  <TableRow><TableCell colSpan={4} className="text-center py-20 text-slate-400 animate-pulse italic">Menghubungkan ke database...</TableCell></TableRow>
+                  <TableRow><TableCell colSpan={4} className="text-center py-20 text-slate-400 animate-pulse italic">Memuat...</TableCell></TableRow>
                 ) : facilities && facilities.length > 0 ? facilities.map((f: any) => (
                   <TableRow key={f.id} className="hover:bg-slate-50/50 transition-colors">
                     <TableCell className="px-8 py-4">
@@ -217,42 +228,30 @@ export default function AdminFasilitas() {
                         <Image src={f.imageUrl} alt={f.name} fill className="object-cover" />
                       </div>
                     </TableCell>
-                    <TableCell>
-                      <div className="font-bold text-slate-800">{f.name}</div>
-                      <div className="text-xs text-muted-foreground line-clamp-1">{f.description}</div>
-                    </TableCell>
-                    <TableCell>
-                      <Badge 
-                        variant={f.status === "Published" ? "default" : "outline"}
-                        className={f.status === "Published" ? "bg-green-500" : "text-slate-400"}
+                    <TableCell className="font-bold text-slate-800">{f.name}</TableCell>
+                    <TableCell className="text-center">
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className={cn("rounded-full h-10 w-10", f.status === "Published" ? "text-green-600 bg-green-50" : "text-slate-300")}
+                        onClick={() => toggleStatus(f.id, f.status || "Draft")}
                       >
-                        {f.status || "Draft"}
-                      </Badge>
+                        {f.status === "Published" ? <Eye className="h-5 w-5" /> : <EyeOff className="h-5 w-5" />}
+                      </Button>
                     </TableCell>
                     <TableCell className="text-right px-8">
-                      <div className="flex justify-end gap-2">
-                        <Button 
-                          variant="ghost" 
-                          size="icon" 
-                          className="h-10 w-10 text-primary hover:bg-primary/5 rounded-xl"
-                          onClick={() => toggleStatus(f.id, f.status || "Draft")}
-                          title={f.status === "Published" ? "Ubah ke Draft" : "Publikasikan"}
-                        >
-                          {f.status === "Published" ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-                        </Button>
-                        <Button 
-                          variant="ghost" 
-                          size="icon" 
-                          className="h-10 w-10 text-destructive hover:bg-destructive/10 rounded-xl" 
-                          onClick={() => handleDelete(f.id)}
-                        >
-                          <Trash2 className="h-5 w-5" />
-                        </Button>
-                      </div>
+                      <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        className="h-10 w-10 text-destructive hover:bg-destructive/10 rounded-xl" 
+                        onClick={() => handleDelete(f.id)}
+                      >
+                        <Trash2 className="h-5 w-5" />
+                      </Button>
                     </TableCell>
                   </TableRow>
                 )) : (
-                  <TableRow><TableCell colSpan={4} className="text-center py-20 text-slate-400 italic font-medium">Belum ada fasilitas yang ditambahkan.</TableCell></TableRow>
+                  <TableRow><TableCell colSpan={4} className="text-center py-20 text-slate-400 italic">Belum ada data.</TableCell></TableRow>
                 )}
               </TableBody>
             </Table>

@@ -23,7 +23,8 @@ import {
   Clock,
   CheckCircle2,
   Info,
-  MousePointer2
+  MousePointer2,
+  Loader2
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -38,6 +39,7 @@ import { toast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError, type SecurityRuleContext } from '@/firebase/errors';
+import { cn } from "@/lib/utils";
 
 export default function AdminSettings() {
   const db = useFirestore();
@@ -89,7 +91,7 @@ export default function AdminSettings() {
     const file = e.target.files?.[0];
     if (file) {
       if (file.size > 800 * 1024) { 
-        toast({ title: "File Terlalu Besar", description: "Gunakan gambar di bawah 800KB agar database tetap optimal.", variant: "destructive" });
+        toast({ title: "File Terlalu Besar", description: "Maksimal 800KB untuk menjaga efisiensi database gratis.", variant: "destructive" });
         return;
       }
       const reader = new FileReader();
@@ -102,7 +104,7 @@ export default function AdminSettings() {
 
   const handleSave = () => {
     if (!db) {
-      toast({ title: "Koneksi Bermasalah", description: "Database belum siap.", variant: "destructive" });
+      toast({ title: "Gagal", description: "Database belum terhubung.", variant: "destructive" });
       return;
     }
 
@@ -113,8 +115,8 @@ export default function AdminSettings() {
       .then(() => {
         setIsSaving(false);
         toast({ 
-          title: "Perubahan Disimpan", 
-          description: "Seluruh pengaturan telah diperbarui secara permanen.",
+          title: "Berhasil Disimpan", 
+          description: "Pengaturan website telah diperbarui secara otomatis.",
         });
       })
       .catch(async (error) => {
@@ -125,6 +127,7 @@ export default function AdminSettings() {
           requestResourceData: formData,
         } satisfies SecurityRuleContext);
         errorEmitter.emit('permission-error', permissionError);
+        toast({ title: "Gagal Simpan", description: "Terjadi kesalahan pada izin database.", variant: "destructive" });
       });
   };
 
@@ -160,7 +163,7 @@ export default function AdminSettings() {
             <h1 className="text-4xl font-bold font-headline text-primary tracking-tight">
               Konfigurasi Website
             </h1>
-            <p className="text-muted-foreground text-sm font-medium">Sesuaikan identitas dan statistik sekolah secara real-time.</p>
+            <p className="text-muted-foreground text-sm font-medium">Sinkronisasi data otomatis antara panel admin dan website.</p>
           </div>
         </div>
         <Button 
@@ -169,7 +172,8 @@ export default function AdminSettings() {
           onClick={handleSave}
           disabled={isSaving}
         >
-          {isSaving ? "Menyimpan..." : "Simpan Perubahan"} <Save className="h-5 w-5" />
+          {isSaving ? <Loader2 className="h-5 w-5 animate-spin" /> : <Save className="h-5 w-5" />}
+          {isSaving ? "Menyimpan..." : "Simpan Perubahan"}
         </Button>
       </div>
 
