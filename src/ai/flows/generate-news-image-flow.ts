@@ -25,7 +25,7 @@ const generateNewsImageFlow = ai.defineFlow(
   },
   async (input) => {
     try {
-      // Menggunakan imagen-3 yang biasanya memiliki ketersediaan lebih luas
+      // Menggunakan imagen-3 yang memiliki kompatibilitas luas
       const { media } = await ai.generate({
         model: 'googleai/imagen-3',
         prompt: `A professional, high-quality, and modern illustration for a school news article with the title: "${input.title}". The style should be clean, educational, and suitable for a school website. No text in image.`,
@@ -40,18 +40,17 @@ const generateNewsImageFlow = ai.defineFlow(
       });
 
       if (!media || !media.url) {
-        return { error: 'Model AI tidak mengembalikan gambar. Coba lagi nanti.' };
+        return { error: 'Model AI tidak mengembalikan gambar. Pastikan kuota tersedia.' };
       }
 
       return { imageUrl: media.url };
     } catch (error: any) {
       console.error('AI Image Generation Error:', error);
-      // Mengembalikan error sebagai data, bukan melempar exception agar UI tidak crash
-      return { 
-        error: error.message?.includes('403') 
-          ? 'Akses AI Diblokir (403). Silakan aktifkan "Generative Language API" di Google Cloud Console.' 
-          : 'Layanan AI sedang sibuk. Silakan coba unggah gambar secara manual.' 
-      };
+      // Memberikan pesan spesifik jika 403 (belum diaktifkan)
+      if (error.message?.includes('403')) {
+        return { error: 'Akses AI Diblokir (403). Silakan aktifkan "Generative Language API" di Google Cloud Console.' };
+      }
+      return { error: 'Layanan AI sedang sibuk atau belum dikonfigurasi. Silakan unggah gambar manual.' };
     }
   }
 );
