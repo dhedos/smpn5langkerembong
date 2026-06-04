@@ -22,9 +22,14 @@ export function FirebaseClientProvider({ children }: { children: React.ReactNode
     setMounted(true);
   }, []);
 
+  // Untuk mencegah hydration mismatch, kita merender fallback yang sama di server dan client awal.
+  // suppressHydrationWarning digunakan pada kontainer loading untuk mengabaikan perbedaan atribut kecil selama inisialisasi.
   if (!mounted || !services) {
     return (
-      <div className="fixed inset-0 flex items-center justify-center bg-transparent z-[9999]">
+      <div 
+        className="fixed inset-0 flex items-center justify-center bg-transparent z-[9999]"
+        suppressHydrationWarning
+      >
         <Loader2 className="h-12 w-12 animate-spin text-primary/30" strokeWidth={1.5} />
       </div>
     );

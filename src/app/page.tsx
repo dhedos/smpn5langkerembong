@@ -112,8 +112,8 @@ export default function Home() {
                   </Link>
                 </Button>
               )}
-              <Button size="lg" className="bg-white/10 backdrop-blur-md text-white border border-white/20 font-bold hover:bg-white/20 px-10 py-7 text-lg rounded-full shadow-xl transition-all" asChild>
-                <Link href="/profil">Pelajari Profil</Link>
+              <Button size="lg" className="bg-white backdrop-blur-md text-primary font-bold hover:bg-white/90 px-10 py-7 text-lg rounded-full shadow-xl transition-all" asChild>
+                <Link href="/profil">Pelajari Profil Kami</Link>
               </Button>
             </div>
           </div>
