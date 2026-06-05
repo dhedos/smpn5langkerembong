@@ -115,7 +115,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Stats Section - Dibuat lebih ringkas (Kotak Balok) */}
+      {/* Stats Section - Kotak Balok Horizontal di Mobile */}
       <section className="relative z-20 -mt-12 md:-mt-24 px-6 md:px-12 container mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8">
           {stats.map((stat: any, idx: number) => {
@@ -123,7 +123,7 @@ export default function Home() {
             return (
               <div key={idx} className="bg-white p-5 md:p-10 rounded-2xl md:rounded-[3rem] shadow-xl border border-slate-100 flex flex-row md:flex-col items-center md:justify-center md:text-center gap-5 md:space-y-4 hover:translate-y-[-5px] transition-all duration-500">
                 <div className="bg-secondary/10 p-3 md:p-5 rounded-xl md:rounded-3xl shrink-0">
-                  <Icon className="h-6 w-6 md:h-10 md:h-10 text-secondary" />
+                  <Icon className="h-6 w-6 md:h-10 md:w-10 text-secondary" />
                 </div>
                 <div className="space-y-0 md:space-y-1 text-left md:text-center">
                   <div className="text-2xl md:text-5xl font-bold text-primary font-headline tracking-tighter leading-none">{stat.value}</div>
@@ -135,12 +135,12 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Sambutan Section */}
+      {/* Sambutan Section - Ukuran Foto Seperti Logo */}
       <section className="py-24 md:py-40 bg-white overflow-hidden">
         <div className="container mx-auto px-6 md:px-12">
           <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-24">
             <div className="w-full lg:w-[40%] flex justify-center lg:justify-end">
-              <div className="relative aspect-[2/3] w-full max-w-[280px] md:max-w-[320px] rounded-[2.5rem] md:rounded-[3rem] overflow-hidden shadow-2xl border-[8px] md:border-[10px] border-slate-50 group bg-slate-50">
+              <div className="relative aspect-square w-40 h-40 md:w-64 md:h-64 rounded-[2rem] md:rounded-[3rem] overflow-hidden shadow-2xl border-4 md:border-[8px] border-white group bg-slate-50">
                 {settings?.headmasterPhotoUrl ? (
                   <img 
                     src={settings.headmasterPhotoUrl} 
@@ -149,14 +149,13 @@ export default function Home() {
                   />
                 ) : (
                   <div className="w-full h-full flex flex-col items-center justify-center text-slate-300">
-                    <User className="h-24 w-24 md:h-32 md:h-32 mb-4 opacity-50" />
-                    <span className="text-[10px] font-black uppercase tracking-widest">Foto belum tersedia</span>
+                    <User className="h-16 w-16 md:h-24 md:w-24 mb-2 opacity-50" />
+                    <span className="text-[8px] md:text-[10px] font-black uppercase tracking-widest">Foto Belum Tersedia</span>
                   </div>
                 )}
-                <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/20 to-transparent" />
-                <div className="absolute bottom-6 md:bottom-8 left-6 md:left-8 right-6 md:right-8 text-white">
-                  <div className="font-bold text-lg md:text-xl font-headline tracking-tight truncate">{settings?.headmasterName || "Kepala Sekolah"}</div>
-                  <div className="text-secondary font-bold uppercase text-[8px] md:text-[9px] tracking-widest mt-1 opacity-90">{settings?.headmasterTitle || "Pimpinan Sekolah"}</div>
+                <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-transparent to-transparent opacity-60" />
+                <div className="absolute bottom-3 md:bottom-6 left-3 md:left-6 right-3 md:right-6 text-white text-center">
+                  <div className="font-bold text-xs md:text-base font-headline tracking-tight truncate">{settings?.headmasterName || "Kepala Sekolah"}</div>
                 </div>
               </div>
             </div>
@@ -176,7 +175,7 @@ export default function Home() {
                 <Button variant="link" className="text-primary font-bold text-base md:text-lg p-0 h-auto flex items-center gap-2 group" asChild>
                   <Link href="/profil">
                     Selengkapnya tentang visi kami 
-                    <ArrowRight className="h-4 w-4 md:h-5 md:h-5 group-hover:translate-x-2 transition-transform" />
+                    <ArrowRight className="h-4 w-4 md:h-5 md:w-5 group-hover:translate-x-2 transition-transform" />
                   </Link>
                 </Button>
               </div>
