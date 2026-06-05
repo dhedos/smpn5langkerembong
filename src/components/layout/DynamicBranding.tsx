@@ -20,7 +20,7 @@ export function DynamicBranding() {
       document.title = schoolName;
     }
 
-    // 2. Update Favicon tanpa manipulasi DOM yang merusak hydration
+    // 2. Update Favicon (Ganti hanya jika ada logo yang diunggah)
     const logoUrl = settings.schoolLogoUrl;
     if (logoUrl) {
       const links = document.querySelectorAll("link[rel*='icon']");
@@ -30,11 +30,6 @@ export function DynamicBranding() {
             (link as HTMLLinkElement).href = logoUrl;
           }
         });
-      } else {
-        const link = document.createElement('link');
-        link.rel = 'icon';
-        link.href = logoUrl;
-        document.head.appendChild(link);
       }
     }
   }, [settings]);
