@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import { CheckCircle2, FileText, UserPlus, AlertCircle, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -20,6 +20,14 @@ export default function SPMBPage() {
   const { data: settings, loading: settingsLoading } = useDoc(settingsRef);
 
   const [submitted, setSubmitted] = useState(false);
+  const [registrationNumber, setRegistrationNumber] = useState<string | null>(null);
+
+  // Handle random value generation only on client to avoid hydration mismatch
+  useEffect(() => {
+    if (submitted && !registrationNumber) {
+      setRegistrationNumber(`SPMB-${Math.floor(Math.random() * 9000) + 1000}`);
+    }
+  }, [submitted, registrationNumber]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,7 +50,6 @@ export default function SPMBPage() {
   const isActive = settings?.ppdbIsActive !== false;
   const spmbSubtitle = settings?.ppdbSubtitle || `Sistem Penerimaan Peserta Didik Baru (${settings?.schoolName || "GN Nusantara"}).`;
   
-  // Fix flicker: show no image (just dark bg) while loading settings
   const heroImageUrl = settings?.heroImageUrl || (settingsLoading ? "" : "https://picsum.photos/seed/school1/1920/1080");
 
   if (submitted) {
@@ -58,9 +65,11 @@ export default function SPMBPage() {
           </p>
           <div className="bg-primary/5 p-6 rounded-2xl mb-8">
             <div className="text-sm text-muted-foreground uppercase tracking-widest font-bold mb-2">Nomor Registrasi</div>
-            <div className="text-4xl font-bold text-primary tracking-tighter">SPMB-{Math.floor(Math.random() * 9000) + 1000}</div>
+            <div className="text-4xl font-bold text-primary tracking-tighter">
+              {registrationNumber || "MEMPROSES..."}
+            </div>
           </div>
-          <Button variant="outline" className="w-full rounded-2xl" onClick={() => setSubmitted(false)}>Daftar Lagi</Button>
+          <Button variant="outline" className="w-full rounded-2xl" onClick={() => { setSubmitted(false); setRegistrationNumber(null); }}>Daftar Lagi</Button>
         </div>
       </div>
     );
@@ -81,7 +90,6 @@ export default function SPMBPage() {
 
   return (
     <div className="pt-0 pb-24 bg-background">
-      {/* Dynamic Hero Header */}
       <section className="relative h-[50vh] flex items-center justify-center overflow-hidden bg-slate-950">
         <div 
           className="absolute inset-0 z-0 bg-cover bg-center transition-opacity duration-1000"
