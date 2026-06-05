@@ -42,7 +42,8 @@ export function Navbar() {
     setIsOpen(false);
   }, [pathname]);
 
-  const schoolName = settings?.schoolName || "GN Nusantara";
+  // Only show name if it exists in settings, no more GN Nusantara default
+  const schoolName = settings?.schoolName || "";
   const schoolLogo = settings?.schoolLogoUrl;
   const isSpmbActive = settings?.ppdbIsActive === true;
   const spmbLabel = settings?.ppdbMenuTitle || "SPMB ONLINE";
@@ -98,12 +99,14 @@ export function Navbar() {
               <GraduationCap className={cn("h-6 w-6 md:h-7 md:w-7 text-white")} />
             )}
           </div>
-          <span className={cn(
-            "font-headline font-bold text-sm sm:text-base md:text-xl tracking-tighter uppercase transition-colors duration-500 line-clamp-2 leading-tight md:leading-none",
-            isSolid ? "text-slate-900" : "text-white drop-shadow-md"
-          )}>
-            {schoolName}
-          </span>
+          {schoolName && (
+            <span className={cn(
+              "font-headline font-bold text-sm sm:text-base md:text-xl tracking-tighter uppercase transition-colors duration-500 line-clamp-2 leading-tight md:leading-none",
+              isSolid ? "text-slate-900" : "text-white drop-shadow-md"
+            )}>
+              {schoolName}
+            </span>
+          )}
         </Link>
 
         <nav className="hidden lg:flex items-center gap-10">
@@ -183,7 +186,7 @@ export function Navbar() {
             <div className="bg-primary p-2.5 rounded-2xl">
               <GraduationCap className="h-6 w-6 text-white" />
             </div>
-            <span className="font-headline font-bold text-primary text-sm">GN NUSANTARA</span>
+            {schoolName && <span className="font-headline font-bold text-primary text-sm uppercase">{schoolName}</span>}
           </div>
           <button 
             onClick={() => setIsOpen(false)} 
@@ -229,9 +232,11 @@ export function Navbar() {
                 <Link href="/ppdb">{spmbLabel}</Link>
               </Button>
             )}
-            <p className="text-center text-[10px] text-slate-400 font-bold uppercase tracking-widest pt-6">
-              GN NUSANTARA GLOBAL
-            </p>
+            {schoolName && (
+              <p className="text-center text-[10px] text-slate-400 font-bold uppercase tracking-widest pt-6">
+                {schoolName} OFFICIAL PORTAL
+              </p>
+            )}
           </div>
         </nav>
       </div>

@@ -54,7 +54,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [showPassword, setShowPassword] = useState(false);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
-  // Ambil data sekolah untuk sinkronisasi tahun copyright
+  // Ambil data sekolah untuk sinkronisasi branding admin
   const schoolId = profile?.schoolId || 'smpn5-langke-rembong';
   const settingsRef = useMemo(() => db ? doc(db, "schools", schoolId) : null, [db, schoolId]);
   const { data: settings } = useDoc(settingsRef);
@@ -62,6 +62,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const displayYear = useMemo(() => {
     return settings?.copyrightYear || new Date().getFullYear().toString();
   }, [settings?.copyrightYear]);
+
+  const schoolName = settings?.schoolName || "Portal Sekolah";
 
   const adminMenuItems = [
     { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
@@ -76,8 +78,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     e.preventDefault();
     setIsLoggingIn(true);
     try {
+      if (!auth) throw new Error("Auth not initialized");
       await signInWithEmailAndPassword(auth, email, password);
-      toast({ title: "Login Berhasil", description: "Selamat datang di GN Nusantara Global Console." });
+      toast({ title: "Login Berhasil", description: `Selamat datang di Panel Kendali ${schoolName}.` });
     } catch (error: any) {
       toast({ title: "Login Gagal", description: "Email atau password salah.", variant: "destructive" });
     } finally {
@@ -95,8 +98,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <div className="bg-primary p-4 rounded-2xl shadow-lg">
               <Lock className="h-8 w-8 text-white" />
             </div>
-            <h1 className="text-3xl font-bold text-white tracking-tighter uppercase">GN Nusantara</h1>
-            <p className="text-white/50 text-sm font-medium uppercase tracking-widest">Global Admin Console</p>
+            <h1 className="text-2xl font-bold text-white tracking-tighter uppercase">{schoolName}</h1>
+            <p className="text-white/50 text-xs font-medium uppercase tracking-widest">Admin Console Access</p>
           </div>
           <form onSubmit={handleLogin} className="space-y-6">
             <div className="space-y-2">
@@ -111,7 +114,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               </button>
             </div>
             <Button type="submit" className="w-full bg-white text-black hover:bg-slate-200 h-14 rounded-2xl font-bold gap-2" disabled={isLoggingIn}>
-              {isLoggingIn ? "Memproses..." : "Masuk Global Console"} <ArrowRight className="h-4 w-4" />
+              {isLoggingIn ? "Memproses..." : "Masuk Panel Kendali"} <ArrowRight className="h-4 w-4" />
             </Button>
           </form>
         </div>
@@ -129,8 +132,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 <Database className="h-5 w-5 text-white" />
               </div>
               <div className="flex flex-col text-left">
-                <span className="font-bold text-sm tracking-tight text-slate-900 uppercase leading-none">GN Nusantara</span>
-                <span className="text-[10px] text-blue-500 font-extrabold uppercase mt-1">Global Console</span>
+                <span className="font-bold text-sm tracking-tight text-slate-900 uppercase leading-none truncate max-w-[150px]">{schoolName}</span>
+                <span className="text-[10px] text-blue-500 font-extrabold uppercase mt-1">Admin Console</span>
               </div>
             </div>
           </SidebarHeader>
@@ -155,13 +158,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Copyright Notice</span>
               </div>
               <div className="text-[10px] font-bold text-slate-900 leading-tight">
-                © {displayYear} {settings?.schoolName || 'SMPN 5 Langke Rembong'}
-              </div>
-              <div className="text-[8px] text-slate-400 mt-2 uppercase font-black tracking-tighter opacity-60">
-                Powered by EduVista GN
+                © {displayYear} {schoolName}
               </div>
             </div>
-            <Button variant="ghost" className="w-full justify-start gap-3 text-slate-500 hover:text-red-600 hover:bg-red-50 rounded-xl" onClick={() => signOut(auth)}>
+            <Button variant="ghost" className="w-full justify-start gap-3 text-slate-500 hover:text-red-600 hover:bg-red-50 rounded-xl" onClick={() => auth && signOut(auth)}>
               <LogOut className="h-4 w-4" /> Keluar Sesi
             </Button>
           </SidebarFooter>
@@ -172,7 +172,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <SidebarTrigger />
               <div className="h-4 w-px bg-slate-200" />
               <div className="text-xs font-bold text-slate-400 uppercase tracking-widest">
-                GN Global <ChevronRight className="h-3 w-3 inline" /> {pathname.split('/').pop()?.replace('-', ' ')}
+                Dashboard <ChevronRight className="h-3 w-3 inline" /> {pathname.split('/').pop()?.replace('-', ' ')}
               </div>
             </div>
           </header>

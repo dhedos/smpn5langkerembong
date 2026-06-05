@@ -9,8 +9,7 @@ import { FirebaseClientProvider } from '@/firebase';
 
 /**
  * Metadata global dioptimalkan untuk multi-tenancy.
- * Judul dan deskripsi akan diperbarui secara dinamis oleh halaman client,
- * namun crawler akan melihat nilai default yang profesional ini.
+ * Judul dan deskripsi akan diperbarui secara dinamis oleh halaman client.
  */
 export const metadata: Metadata = {
   title: {
@@ -19,23 +18,15 @@ export const metadata: Metadata = {
   },
   description: 'Wadah pendidikan modern yang menginspirasi kreativitas dan prestasi bagi masa depan bangsa. Informasi sekolah, prestasi, dan pendaftaran siswa baru.',
   keywords: ['Pendidikan Modern', 'Sekolah Unggulan', 'Education Excellence', 'Digital School', 'PPDB Online'],
-  authors: [{ name: 'EduVista School System' }],
-  creator: 'EduVista GN',
-  publisher: 'EduVista Global Network',
+  authors: [{ name: 'School System' }],
   robots: 'index, follow',
   viewport: 'width=device-width, initial-scale=1',
   openGraph: {
     type: 'website',
     locale: 'id_ID',
-    title: 'Portal Sekolah Modern - Mewujudkan Generasi Cerdas & Berkarakter',
+    title: 'Portal Sekolah Modern',
     description: 'Menemukan masa depan cerah melalui sistem pendidikan terintegrasi dan fasilitas unggulan.',
-    siteName: 'Official School Portal',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Official School Portal',
-    description: 'Pusat informasi pendidikan modern dan prestasi siswa.',
-  },
+  }
 };
 
 export default function RootLayout({

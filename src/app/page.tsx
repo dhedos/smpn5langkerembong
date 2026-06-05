@@ -67,7 +67,7 @@ export default function Home() {
   }, [settings?.schoolName]);
 
   const heroImageUrl = settings?.heroImageUrl || (settingsLoading ? "" : "https://picsum.photos/seed/school1/1920/1080");
-  const schoolName = settings?.schoolName || "Portal Sekolah";
+  const schoolName = settings?.schoolName || "";
   const heroTitle = settings?.heroTitle || "Membangun Masa Depan Bersama Kami";
   const heroSubtitle = settings?.heroSubtitle || "Pendidikan berkualitas untuk generasi emas bangsa melalui kurikulum inovatif.";
   
@@ -100,13 +100,15 @@ export default function Home() {
         <div className="container relative z-10 px-6 md:px-12 mx-auto pb-32 pt-40 md:pt-48">
           <div className="max-w-5xl space-y-8 animate-in fade-in slide-in-from-left duration-1000">
             <div className="space-y-4">
-              <h1 className="sr-only">{schoolName} - {heroTitle}</h1>
+              <h1 className="sr-only">{schoolName || "Website Sekolah"} - {heroTitle}</h1>
               <div className="text-4xl sm:text-6xl md:text-7xl lg:text-[7.5rem] font-black text-white font-headline leading-[0.9] md:leading-[0.85] tracking-tighter uppercase drop-shadow-2xl">
                 {heroTitle}
               </div>
-              <div className="text-2xl sm:text-3xl md:text-5xl font-bold text-secondary italic tracking-tight drop-shadow-lg lowercase mt-2 md:mt-4 opacity-90">
-                {schoolName}
-              </div>
+              {schoolName && (
+                <div className="text-2xl sm:text-3xl md:text-5xl font-bold text-secondary italic tracking-tight drop-shadow-lg lowercase mt-2 md:mt-4 opacity-90">
+                  {schoolName}
+                </div>
+              )}
             </div>
             
             <p className="text-base md:text-xl text-white/90 max-w-2xl leading-relaxed font-medium drop-shadow-md border-l-4 border-secondary pl-6">
