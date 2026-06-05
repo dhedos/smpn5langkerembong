@@ -21,31 +21,35 @@ export function DynamicBranding() {
     }
 
     // 2. Aggressive Favicon Update
-    // Mendapatkan URL logo dari database (jika ada)
-    const logoUrl = settings.schoolLogoUrl;
+    // Menggunakan logo sekolah dari DB jika ada, jika tidak gunakan logo perisai default
+    const defaultShield = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj4KICA8cGF0aCBkPSJNNTAgNSBMMTAgMjUgVjU1IEMxMCA3NSA1MCA5NSA1MCA5NSBDNTAgOTUgOTAgNzUgOTAgNTUgVjI1IEw1MCA1IFoiIGZpbGw9IiMxYTM2NWQiIC8+CiAgPHBhdGggZD0iTTUwIDIwIEw1NSAzNSBINzAgTDU4IDQ1IEw2MiA2MCBMNTAgNTAgTDM4IDYwIEw0MiA0NSBMMzAgMzUgSDQ1IEw1MCAyMCBaIiBmaWxsPSIjZmJiZjI0IiAvPgo8L3N2Zz4=';
+    const logoUrl = settings.schoolLogoUrl || defaultShield;
     
-    if (logoUrl) {
-      const updateIcons = () => {
-        // Cari semua link icon yang ada
-        const links = document.querySelectorAll("link[rel*='icon']");
-        
-        if (links.length > 0) {
-          links.forEach(link => {
-            (link as HTMLLinkElement).href = logoUrl;
-          });
-        } else {
-          // Jika tidak ada sama sekali, buat baru
-          const newLink = document.createElement('link');
-          newLink.rel = 'icon';
-          newLink.href = logoUrl;
-          document.head.appendChild(newLink);
-        }
-      };
+    const updateIcons = () => {
+      // Hapus semua link icon yang mungkin merujuk ke favicon.ico bawaan
+      const existingIcons = document.querySelectorAll("link[rel*='icon']");
+      existingIcons.forEach(el => el.remove());
 
-      updateIcons();
-      // Jalankan sekali lagi setelah jeda singkat untuk memastikan sistem framework tidak menimpanya kembali
-      setTimeout(updateIcons, 1000);
-    }
+      // Buat link icon baru yang bersih
+      const newLink = document.createElement('link');
+      newLink.rel = 'icon';
+      newLink.type = logoUrl.startsWith('data:image/svg') ? 'image/svg+xml' : 'image/x-icon';
+      newLink.href = logoUrl;
+      document.head.appendChild(newLink);
+
+      // Tambahkan juga untuk apple-touch-icon
+      const appleLink = document.createElement('link');
+      appleLink.rel = 'apple-touch-icon';
+      appleLink.href = logoUrl;
+      document.head.appendChild(appleLink);
+    };
+
+    updateIcons();
+    
+    // Jalankan beberapa kali untuk memastikan sistem framework tidak menimpanya kembali
+    const intervals = [100, 500, 1000, 2000];
+    intervals.forEach(ms => setTimeout(updateIcons, ms));
+
   }, [settings]);
 
   return null;
