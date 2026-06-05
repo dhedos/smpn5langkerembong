@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useMemo } from "react";
@@ -41,28 +42,34 @@ export default function VisitorEkstrakurikuler() {
           ) : extras.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
               {extras.map((item: any) => (
-                <Card key={item.id} className="group overflow-hidden border-none shadow-xl hover:shadow-2xl transition-all duration-500 rounded-[3rem] bg-white flex flex-col">
-                  <div className="relative h-64 overflow-hidden">
+                <Card key={item.id} className="group border-none shadow-xl hover:shadow-2xl transition-all duration-500 rounded-[3rem] bg-white flex flex-col p-6">
+                  <div className="relative aspect-video w-full rounded-[2rem] overflow-hidden bg-slate-100">
                     <img 
                       src={item.imageUrl} 
                       alt={item.name} 
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
                     />
-                    <div className="absolute bottom-6 left-6 bg-secondary text-primary text-[10px] font-black px-4 py-2 rounded-full uppercase tracking-widest shadow-xl">
+                    <div className="absolute bottom-4 left-4 bg-secondary text-primary text-[10px] font-black px-4 py-2 rounded-full uppercase tracking-widest shadow-xl">
                       EKSTRAKURIKULER
                     </div>
                   </div>
-                  <CardContent className="p-10 space-y-6 flex-1 flex flex-col">
-                    <div className="space-y-2">
-                      <h3 className="text-3xl font-bold text-primary font-headline tracking-tight group-hover:text-secondary transition-colors">{item.name}</h3>
+                  <CardContent className="px-2 pt-8 pb-4 space-y-6 flex-1 flex flex-col">
+                    <div className="space-y-3">
+                      <h3 className="text-4xl font-bold text-primary font-headline tracking-tight leading-none group-hover:text-secondary transition-colors">
+                        {item.name}
+                      </h3>
                       {item.schedule && (
-                        <div className="flex items-center gap-2 text-slate-400 font-bold text-xs uppercase tracking-widest">
+                        <div className="flex items-center gap-2 text-slate-400 font-bold text-[10px] md:text-xs uppercase tracking-[0.2em]">
                           <Calendar className="h-4 w-4 text-secondary" /> {item.schedule}
                         </div>
                       )}
                     </div>
-                    <p className="text-slate-500 font-medium leading-relaxed flex-1">{item.description}</p>
-                    <div className="pt-6 border-t border-slate-50">
+                    
+                    <div className="text-slate-500 font-medium leading-relaxed flex-1 text-sm md:text-base uppercase tracking-wider">
+                      {item.description}
+                    </div>
+
+                    <div className="pt-6 border-t border-slate-50 mt-auto">
                       <div className="flex items-center gap-2 text-primary font-black text-[10px] uppercase tracking-widest">
                         <CheckCircle2 className="h-4 w-4 text-green-500" /> Terbuka Untuk Seluruh Siswa
                       </div>
