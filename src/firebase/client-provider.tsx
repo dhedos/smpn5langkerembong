@@ -16,13 +16,13 @@ export function FirebaseClientProvider({ children }: { children: React.ReactNode
   } | null>(null);
 
   useEffect(() => {
-    // Inisialisasi hanya terjadi di sisi client setelah hidrasi
+    // Inisialisasi hanya terjadi di sisi client setelah hidrasi selesai
     const initialized = initializeFirebase();
     setServices(initialized);
   }, []);
 
-  // Selalu render children dengan provider. 
-  // Hooks di dalamnya (useFirestore, dll) sudah didesain menangani status null.
+  // Selalu render children dengan provider tanpa div pembungkus tambahan yang berbeda antara server/client.
+  // Hooks di dalamnya (useFirestore, dll) sudah didesain menangani status null selama proses inisialisasi.
   return (
     <FirebaseProvider 
       app={services?.app || null} 

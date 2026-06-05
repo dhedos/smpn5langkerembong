@@ -43,7 +43,11 @@ export function FirebaseProvider({
  */
 export const useFirebase = () => {
   const context = useContext(FirebaseContext);
-  return context || { app: null, firestore: null, auth: null };
+  // Mengembalikan objek null-safe jika context belum tersedia
+  if (!context) {
+    return { app: null, firestore: null, auth: null };
+  }
+  return context;
 };
 
 export const useFirebaseApp = () => useFirebase().app;

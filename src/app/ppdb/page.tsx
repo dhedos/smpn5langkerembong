@@ -21,7 +21,7 @@ export default function SPMBPage() {
   const [submitted, setSubmitted] = useState(false);
   const [registrationNumber, setRegistrationNumber] = useState<string | null>(null);
 
-  // Perbaikan Hydration: Generate nomor acak hanya di client setelah interaksi
+  // Perbaikan Hydration: Generate nomor acak hanya di client setelah interaksi formulir selesai
   useEffect(() => {
     if (submitted && !registrationNumber) {
       setRegistrationNumber(`SPMB-${Math.floor(Math.random() * 9000) + 1000}`);
@@ -39,8 +39,8 @@ export default function SPMBPage() {
 
   if (settingsLoading) {
     return (
-      <div className="min-h-[80vh] w-full flex items-center justify-center bg-transparent">
-        <Loader2 className="h-10 w-10 animate-spin text-primary/20" />
+      <div className="min-h-screen w-full flex items-center justify-center bg-slate-950">
+        <Loader2 className="h-10 w-10 animate-spin text-secondary" />
       </div>
     );
   }
@@ -49,7 +49,7 @@ export default function SPMBPage() {
   const isActive = settings?.ppdbIsActive !== false;
   const spmbSubtitle = settings?.ppdbSubtitle || `Sistem Penerimaan Peserta Didik Baru (${settings?.schoolName || "GN Nusantara"}).`;
   
-  const heroImageUrl = settings?.heroImageUrl || (settingsLoading ? "" : "https://picsum.photos/seed/school1/1920/1080");
+  const heroImageUrl = settings?.heroImageUrl || "https://picsum.photos/seed/school1/1920/1080";
 
   if (submitted) {
     return (
@@ -94,8 +94,7 @@ export default function SPMBPage() {
         <div 
           className="absolute inset-0 z-0 bg-cover bg-center transition-opacity duration-1000"
           style={{ 
-            backgroundImage: heroImageUrl ? `url('${heroImageUrl}')` : 'none',
-            opacity: heroImageUrl ? 1 : 0
+            backgroundImage: `url('${heroImageUrl}')`,
           }}
         />
         <div className="absolute inset-0 bg-slate-950/70 z-[1]" />
