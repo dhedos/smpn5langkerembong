@@ -4,7 +4,6 @@ import './globals.css';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { WhatsAppButton } from '@/components/contact/WhatsAppButton';
-import { ChatAssistant } from '@/components/chat/ChatAssistant';
 import { Toaster } from '@/components/ui/toaster';
 import { FirebaseClientProvider } from '@/firebase';
 
@@ -60,7 +59,6 @@ export default function RootLayout({
             <Footer />
           </div>
           <WhatsAppButton />
-          <ChatAssistant />
           <Toaster />
         </FirebaseClientProvider>
       </body>
