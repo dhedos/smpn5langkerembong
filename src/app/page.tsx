@@ -115,19 +115,19 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="relative z-20 -mt-16 md:-mt-24 px-6 md:px-12 container mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+      {/* Stats Section - Dibuat lebih ringkas (Kotak Balok) */}
+      <section className="relative z-20 -mt-12 md:-mt-24 px-6 md:px-12 container mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8">
           {stats.map((stat: any, idx: number) => {
             const Icon = IconMap[stat.icon] || Users;
             return (
-              <div key={idx} className="bg-white p-8 md:p-10 rounded-[2.5rem] md:rounded-[3rem] shadow-2xl border border-slate-100 flex flex-col items-center text-center space-y-4 hover:translate-y-[-10px] transition-all duration-500">
-                <div className="bg-secondary/10 p-4 md:p-5 rounded-2xl md:rounded-3xl">
-                  <Icon className="h-8 w-8 md:h-10 md:h-10 text-secondary" />
+              <div key={idx} className="bg-white p-5 md:p-10 rounded-2xl md:rounded-[3rem] shadow-xl border border-slate-100 flex flex-row md:flex-col items-center md:justify-center md:text-center gap-5 md:space-y-4 hover:translate-y-[-5px] transition-all duration-500">
+                <div className="bg-secondary/10 p-3 md:p-5 rounded-xl md:rounded-3xl shrink-0">
+                  <Icon className="h-6 w-6 md:h-10 md:h-10 text-secondary" />
                 </div>
-                <div className="space-y-1">
-                  <div className="text-4xl md:text-5xl font-bold text-primary font-headline tracking-tighter">{stat.value}</div>
-                  <div className="text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-widest">{stat.label}</div>
+                <div className="space-y-0 md:space-y-1 text-left md:text-center">
+                  <div className="text-2xl md:text-5xl font-bold text-primary font-headline tracking-tighter leading-none">{stat.value}</div>
+                  <div className="text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-widest leading-none mt-1">{stat.label}</div>
                 </div>
               </div>
             );
