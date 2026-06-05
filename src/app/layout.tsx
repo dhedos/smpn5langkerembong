@@ -8,14 +8,8 @@ import { FirebaseClientProvider } from '@/firebase';
 import { DynamicBranding } from '@/components/layout/DynamicBranding';
 
 export const metadata: Metadata = {
-  title: {
-    default: ' ', // Mengosongkan judul default agar tidak muncul "Website Resmi" saat loading
-    template: '%s'
-  },
+  title: 'Website Resmi Sekolah',
   description: 'Portal Informasi Sekolah Resmi',
-  icons: {
-    icon: [], // Menghapus referensi ikon default
-  },
 };
 
 export default function RootLayout({

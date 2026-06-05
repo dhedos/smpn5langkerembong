@@ -94,26 +94,16 @@ export function Navbar() {
                 <Image src={schoolLogo} alt="Logo" fill className="object-contain" />
               </div>
             </div>
-          ) : (
-            <div className={cn(
-              "p-1.5 md:p-2 rounded-xl md:rounded-2xl transition-all duration-500 shrink-0",
-              isSolid ? "bg-primary/5" : "bg-white/5 backdrop-blur-sm"
-            )} />
-          )}
+          ) : null}
           
           <div className="flex flex-col justify-center min-w-[100px]">
-            {schoolName ? (
+            {schoolName && (
               <span className={cn(
                 "font-headline font-bold text-sm sm:text-base md:text-xl tracking-tighter uppercase transition-colors duration-500 line-clamp-2 leading-tight md:leading-none",
                 isSolid ? "text-slate-900" : "text-white drop-shadow-md"
               )}>
                 {schoolName}
               </span>
-            ) : (
-              <div className={cn(
-                "h-4 w-32 rounded animate-pulse",
-                isSolid ? "bg-slate-100" : "bg-white/10"
-              )} />
             )}
           </div>
         </Link>

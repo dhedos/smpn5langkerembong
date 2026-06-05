@@ -14,37 +14,30 @@ export function DynamicBranding() {
   useEffect(() => {
     if (!settings) return;
 
-    // 1. Update Judul Tab Segera
+    // 1. Update Judul Tab Browser
     if (settings.schoolName) {
       document.title = settings.schoolName;
     }
 
-    // 2. Timpa Ikon (Favicon) Framework/Default
+    // 2. Update Favicon Tanpa Menghapus Node (Menghindari Error removeChild)
     const logoUrl = settings.schoolLogoUrl;
     if (logoUrl) {
-      // Cari dan hapus semua ikon bawaan (rel="icon", rel="shortcut icon", dll)
-      const existingIcons = document.querySelectorAll("link[rel*='icon']");
-      existingIcons.forEach(icon => icon.remove());
-
-      // Buat ikon baru dari logo sekolah yang diunggah
-      const link = document.createElement('link');
-      link.rel = 'icon';
-      link.type = 'image/png';
+      let link: HTMLLinkElement | null = document.querySelector("link[rel*='icon']");
+      
+      if (!link) {
+        link = document.createElement('link');
+        link.rel = 'icon';
+        document.head.appendChild(link);
+      }
+      
       link.href = logoUrl;
-      document.getElementsByTagName('head')[0].appendChild(link);
-
-      // Tambahkan rel shortcut icon untuk kompatibilitas luas
-      const shortcutLink = document.createElement('link');
-      shortcutLink.rel = 'shortcut icon';
-      shortcutLink.href = logoUrl;
-      document.getElementsByTagName('head')[0].appendChild(shortcutLink);
     }
   }, [settings]);
 
-  // Efek pembersihan awal untuk memaksa penghapusan teks default jika metadata Next.js belum berubah
+  // Efek pembersihan awal untuk memastikan judul tidak menampilkan teks default framework
   useEffect(() => {
-    if (document.title === 'Website Resmi') {
-      document.title = ' ';
+    if (document.title.includes('Next.js') || document.title === '') {
+      document.title = 'Memuat Website...';
     }
   }, []);
 
