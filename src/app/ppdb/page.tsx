@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useMemo, useEffect } from "react";
@@ -22,7 +21,7 @@ export default function SPMBPage() {
   const [submitted, setSubmitted] = useState(false);
   const [registrationNumber, setRegistrationNumber] = useState<string | null>(null);
 
-  // Handle random value generation only on client to avoid hydration mismatch
+  // Perbaikan Hydration: Generate nomor acak hanya di client setelah interaksi
   useEffect(() => {
     if (submitted && !registrationNumber) {
       setRegistrationNumber(`SPMB-${Math.floor(Math.random() * 9000) + 1000}`);
@@ -90,6 +89,7 @@ export default function SPMBPage() {
 
   return (
     <div className="pt-0 pb-24 bg-background">
+      {/* Header Dinamis dengan Overlay Gelap */}
       <section className="relative h-[50vh] flex items-center justify-center overflow-hidden bg-slate-950">
         <div 
           className="absolute inset-0 z-0 bg-cover bg-center transition-opacity duration-1000"

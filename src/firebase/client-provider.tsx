@@ -5,9 +5,8 @@ import { initializeFirebase } from './index';
 import { FirebaseProvider } from './provider';
 
 /**
- * FirebaseClientProvider ensures Firebase is initialized correctly on the client side.
- * To avoid hydration mismatches, it renders the exact same children on server and client,
- * only providing the initialized services after the component has mounted.
+ * FirebaseClientProvider yang aman untuk hidrasi.
+ * Menghindari render kondisional di tingkat root yang dapat memicu ketidakcocokan DOM.
  */
 export function FirebaseClientProvider({ children }: { children: React.ReactNode }) {
   const [services, setServices] = useState<{
@@ -17,13 +16,13 @@ export function FirebaseClientProvider({ children }: { children: React.ReactNode
   } | null>(null);
 
   useEffect(() => {
-    // Initialize services only after hydration is complete
+    // Inisialisasi hanya terjadi di sisi client setelah hidrasi
     const initialized = initializeFirebase();
     setServices(initialized);
   }, []);
 
-  // We render the children immediately with null services to match SSR.
-  // The FirebaseProvider and its hooks are designed to handle null services gracefully.
+  // Selalu render children dengan provider. 
+  // Hooks di dalamnya (useFirestore, dll) sudah didesain menangani status null.
   return (
     <FirebaseProvider 
       app={services?.app || null} 

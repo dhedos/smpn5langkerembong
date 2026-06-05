@@ -38,8 +38,8 @@ export function FirebaseProvider({
 }
 
 /**
- * Safe hooks that return null if the provider is not ready,
- * avoiding hydration errors and crashes during initial load.
+ * Hooks aman yang tidak melempar error jika provider belum siap,
+ * mencegah crash pada render pertama (SSR/Hydration).
  */
 export const useFirebase = () => {
   const context = useContext(FirebaseContext);
