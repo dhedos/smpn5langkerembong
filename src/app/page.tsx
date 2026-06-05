@@ -76,23 +76,22 @@ export default function Home() {
 
   return (
     <div className="flex flex-col gap-0 overflow-x-hidden">
-      {/* Hero Section */}
+      {/* Hero Section with Dynamic Background & Dark Overlay */}
       <section className="relative min-h-[100vh] flex items-center overflow-hidden bg-slate-950">
         <div 
           className="absolute inset-0 z-0 bg-cover bg-center transition-opacity duration-1000"
           style={{ 
             backgroundImage: `url('${heroImageUrl}')`, 
-            backgroundAttachment: 'fixed',
-            opacity: settings?.heroImageUrl ? 0.4 : 0.7 
+            backgroundAttachment: 'fixed'
           }}
         />
-        {/* Darker Overlay for better contrast */}
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/80 to-slate-950/20 z-[1]" />
+        {/* Anti-Clash Dark Overlay */}
+        <div className="absolute inset-0 bg-slate-950/60 md:bg-gradient-to-r md:from-slate-950 md:via-slate-950/70 md:to-transparent z-[1]" />
         
         <div className="container relative z-10 px-6 md:px-12 mx-auto pb-32 pt-40 md:pt-48">
           <div className="max-w-5xl space-y-8 animate-in fade-in slide-in-from-left duration-1000">
             <div className="space-y-4">
-              <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-[8rem] font-black text-white font-headline leading-[0.9] md:leading-[0.85] tracking-tighter uppercase drop-shadow-2xl">
+              <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-[7.5rem] font-black text-white font-headline leading-[0.9] md:leading-[0.85] tracking-tighter uppercase drop-shadow-2xl">
                 {heroTitle}
               </h1>
               <div className="text-2xl sm:text-3xl md:text-5xl font-bold text-secondary italic tracking-tight drop-shadow-lg lowercase mt-2 md:mt-4 opacity-90">

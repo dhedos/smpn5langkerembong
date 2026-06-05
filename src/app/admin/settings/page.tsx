@@ -407,12 +407,12 @@ export default function AdminSettings() {
                     {formData.heroImageUrl ? (
                       <img src={formData.heroImageUrl} className="w-full h-full object-cover" />
                     ) : (
-                      <ImageIcon className="h-12 w-12 text-slate-300" />
+                      <div className="text-center p-6">
+                        <ImageIcon className="h-12 w-12 text-slate-300 mx-auto mb-2" />
+                        <span className="text-xs font-bold text-slate-400 uppercase">Klik Untuk Unggah</span>
+                      </div>
                     )}
                     <input type="file" accept="image/*" onChange={(e) => handleFileChange(e, "heroImageUrl")} className="absolute inset-0 opacity-0 cursor-pointer" />
-                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                      <span className="text-white text-xs font-bold uppercase">Klik Untuk Ganti Foto</span>
-                    </div>
                   </div>
                   <p className="text-[10px] text-slate-500 italic mt-2">
                     <span className="font-bold text-primary">Tips:</span> Gunakan foto berkualitas tinggi dengan ukuran minimal 1920x1080 px agar tampilan halaman depan terlihat tajam dan profesional di semua layar.
