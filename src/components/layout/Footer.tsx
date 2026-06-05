@@ -27,7 +27,7 @@ export function Footer() {
   const schoolName = settings?.schoolName || "SMPN 5 LANGKE REMBONG";
   const schoolLogo = settings?.schoolLogoUrl;
   const officialWebsites = settings?.officialWebsites || [];
-  const address = settings?.address || "JL. PENDIDIKAN NO. 5, LANGKE REMBONG";
+  const address = settings?.address || "MANDO, KELURAHAN COMPANG CAREP, KEC. LANGKE REMBONG";
   const phone = settings?.phone || "6285281814006";
   const email = settings?.email || "smpn5lr@gmail.com";
 
@@ -82,7 +82,7 @@ export function Footer() {
                   <GraduationCap className="h-10 w-10 md:h-14 md:w-14 text-primary" />
                 )}
               </div>
-              <div className="font-headline font-black text-2xl md:text-5xl tracking-tighter leading-[0.8] uppercase">
+              <div className="font-headline font-black text-2xl md:text-5xl tracking-tighter leading-[0.7] uppercase">
                 <span className="block">{smpnLabel} <span className="text-secondary">{fiveLabel}</span></span>
                 <span className="block">{row2}</span>
                 <span className="block">{row3}</span>
