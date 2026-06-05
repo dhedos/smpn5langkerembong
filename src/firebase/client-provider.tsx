@@ -4,25 +4,21 @@ import React, { useState, useEffect } from 'react';
 import { initializeFirebase } from './index';
 import { FirebaseProvider } from './provider';
 
+// Inisialisasi layanan secara statis untuk ketersediaan instan di sisi client
+let initializedServices: any = null;
+if (typeof window !== 'undefined') {
+  initializedServices = initializeFirebase();
+}
+
 /**
- * FirebaseClientProvider yang dioptimalkan untuk performa.
- * Langsung merender children agar Next.js bisa menampilkan shell statis dengan cepat.
+ * FirebaseClientProvider yang dioptimalkan untuk kecepatan akses data.
+ * Menyediakan layanan Firebase secara instan ke seluruh aplikasi.
  */
 export function FirebaseClientProvider({ children }: { children: React.ReactNode }) {
-  const [services, setServices] = useState<{
-    app: any;
-    firestore: any;
-    auth: any;
-  } | null>(null);
+  // Gunakan state hanya untuk memicu pembaruan jika diperlukan, 
+  // tapi gunakan variabel statis untuk render pertama yang cepat.
+  const [services] = useState(initializedServices);
 
-  useEffect(() => {
-    // Inisialisasi Firebase segera setelah hidrasi selesai
-    const initialized = initializeFirebase();
-    setServices(initialized);
-  }, []);
-
-  // Selalu render children. Context akan bernilai null sejenak, 
-  // namun komponen anak sudah didesain untuk menangani status null dengan anggun.
   return (
     <FirebaseProvider 
       app={services?.app || null} 

@@ -84,7 +84,7 @@ export function Navbar() {
       )}
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between px-4 md:px-12">
-        <Link href="/" className="flex items-center gap-2 md:gap-3 group max-w-[75%] md:max-w-none">
+        <Link href="/" className="flex items-center gap-2 md:gap-3 group max-w-[75%] md:max-w-none min-h-[40px]">
           {schoolLogo ? (
             <div className={cn(
               "p-1.5 md:p-2 rounded-xl md:rounded-2xl transition-all duration-500 shadow-md transform group-hover:scale-105 shrink-0",
@@ -94,11 +94,9 @@ export function Navbar() {
                 <Image src={schoolLogo} alt="Logo" fill className="object-contain" />
               </div>
             </div>
-          ) : loading ? (
-             <div className="h-10 w-10 bg-slate-200 animate-pulse rounded-full" />
           ) : null}
           
-          <div className="flex flex-col">
+          <div className="flex flex-col justify-center">
             {schoolName ? (
               <span className={cn(
                 "font-headline font-bold text-sm sm:text-base md:text-xl tracking-tighter uppercase transition-colors duration-500 line-clamp-2 leading-tight md:leading-none",
