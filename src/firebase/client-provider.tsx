@@ -5,12 +5,10 @@ import { initializeFirebase } from './index';
 import { FirebaseProvider } from './provider';
 
 /**
- * FirebaseClientProvider ensures Firebase is initialized on the client.
- * It provides the Firebase context to the rest of the application in a 
- * hydration-safe manner.
+ * FirebaseClientProvider memastikan Firebase diinisialisasi di sisi client.
+ * Menyediakan konteks Firebase dengan cara yang aman terhadap hidrasi Next.js.
  */
 export function FirebaseClientProvider({ children }: { children: React.ReactNode }) {
-  // Use state to hold services. Initial state is null to match server-side rendering.
   const [services, setServices] = useState<{
     app: any;
     firestore: any;
@@ -18,15 +16,14 @@ export function FirebaseClientProvider({ children }: { children: React.ReactNode
   } | null>(null);
 
   useEffect(() => {
-    // Initialize services only after the component has mounted on the client.
-    // This prevents hydration mismatches because the first render will match the server.
+    // Inisialisasi hanya setelah komponen terpasang di browser.
+    // Hal ini memastikan render pertama di client cocok dengan render server.
     const initialized = initializeFirebase();
     setServices(initialized);
   }, []);
 
-  // We always render the provider and children. 
-  // Components inside handle the 'null' state of services gracefully 
-  // (e.g., showing loading states or default content).
+  // Selalu render provider dan children. Komponen di dalamnya menangani 
+  // status 'null' layanan Firebase dengan aman (misal: menunjukkan status loading lokal).
   return (
     <FirebaseProvider 
       app={services?.app || null} 

@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -55,7 +54,7 @@ export function useCollection<T = any>(query: Query | null) {
       isMounted = false;
       unsubscribe();
     };
-  }, [query?.toString()]); // Re-run if query definition changes
+  }, [query]); 
 
   return { data, loading, error };
 }

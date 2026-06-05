@@ -95,7 +95,7 @@ export function Footer() {
               </p>
 
               {/* Portal Resmi Instansi - Integrated under brand */}
-              {officialWebsites.length > 0 && (
+              {officialWebsites && officialWebsites.length > 0 && (
                 <div className="flex flex-col gap-2">
                   {officialWebsites.map((web: any, i: number) => (
                     <a 
@@ -106,7 +106,7 @@ export function Footer() {
                       className="text-white/80 hover:text-secondary transition-all flex items-center gap-2 uppercase text-[9px] font-black tracking-widest bg-white/5 p-3 rounded-xl border border-white/10 group w-fit min-w-[180px] md:min-w-[200px]"
                     >
                       <Globe className="h-3.5 w-3.5 text-secondary" /> 
-                      <span className="truncate">{web.title}</span> 
+                      <span className="truncate">{web.title || "Portal Resmi"}</span> 
                       <ExternalLink className="h-3 w-3 ml-auto opacity-30 group-hover:opacity-100 shrink-0" />
                     </a>
                   ))}
