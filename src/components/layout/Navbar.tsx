@@ -1,11 +1,10 @@
-
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Menu, X, GraduationCap, ChevronDown } from "lucide-react";
+import { Menu, X, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -42,7 +41,6 @@ export function Navbar() {
     setIsOpen(false);
   }, [pathname]);
 
-  // Only show name if it exists in settings, no more GN Nusantara default
   const schoolName = settings?.schoolName || "";
   const schoolLogo = settings?.schoolLogoUrl;
   const isSpmbActive = settings?.ppdbIsActive === true;
@@ -87,18 +85,16 @@ export function Navbar() {
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between px-4 md:px-12">
         <Link href="/" className="flex items-center gap-2 md:gap-3 group max-w-[75%] md:max-w-none">
-          <div className={cn(
-            "p-1.5 md:p-2 rounded-xl md:rounded-2xl transition-all duration-500 shadow-md transform group-hover:scale-105 shrink-0",
-            isSolid ? "bg-primary" : "bg-white/20 backdrop-blur-md"
-          )}>
-            {schoolLogo ? (
+          {schoolLogo && (
+            <div className={cn(
+              "p-1.5 md:p-2 rounded-xl md:rounded-2xl transition-all duration-500 shadow-md transform group-hover:scale-105 shrink-0",
+              isSolid ? "bg-primary" : "bg-white/20 backdrop-blur-md"
+            )}>
               <div className="relative h-6 w-6 md:h-7 md:w-7">
                 <Image src={schoolLogo} alt="Logo" fill className="object-contain" />
               </div>
-            ) : (
-              <GraduationCap className={cn("h-6 w-6 md:h-7 md:w-7 text-white")} />
-            )}
-          </div>
+            </div>
+          )}
           {schoolName && (
             <span className={cn(
               "font-headline font-bold text-sm sm:text-base md:text-xl tracking-tighter uppercase transition-colors duration-500 line-clamp-2 leading-tight md:leading-none",
@@ -183,9 +179,13 @@ export function Navbar() {
       >
         <div className="flex justify-between items-center p-6 border-b border-slate-100 shrink-0">
           <div className="flex items-center gap-3">
-            <div className="bg-primary p-2.5 rounded-2xl">
-              <GraduationCap className="h-6 w-6 text-white" />
-            </div>
+            {schoolLogo && (
+              <div className="bg-primary p-2.5 rounded-2xl shrink-0">
+                <div className="relative h-6 w-6">
+                  <Image src={schoolLogo} alt="Logo" fill className="object-contain" />
+                </div>
+              </div>
+            )}
             {schoolName && <span className="font-headline font-bold text-primary text-sm uppercase">{schoolName}</span>}
           </div>
           <button 

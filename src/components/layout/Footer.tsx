@@ -1,11 +1,10 @@
-
 "use client";
 
 import React, { useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { GraduationCap, Facebook, Instagram, Youtube, MapPin, Phone, Mail, ExternalLink, Globe } from "lucide-react";
+import { Facebook, Instagram, Youtube, MapPin, Phone, Mail, ExternalLink, Globe } from "lucide-react";
 import { useFirestore, useDoc } from "@/firebase";
 import { doc } from "firebase/firestore";
 
@@ -59,15 +58,13 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 md:gap-12 lg:gap-8 mb-16">
           <div className="flex flex-col space-y-6 lg:col-span-2">
             <div className="flex items-center gap-4 md:gap-5">
-              <div className="bg-white p-2 md:p-3 rounded-[1.5rem] md:rounded-[1.8rem] shadow-2xl shrink-0 flex items-center justify-center w-20 h-20 md:w-28 md:h-28">
-                {schoolLogo ? (
+              {schoolLogo ? (
+                <div className="bg-white p-2 md:p-3 rounded-[1.5rem] md:rounded-[1.8rem] shadow-2xl shrink-0 flex items-center justify-center w-20 h-20 md:w-28 md:h-28">
                   <div className="relative h-14 w-14 md:h-20 md:w-20">
                     <Image src={schoolLogo} alt={`Logo ${schoolName}`} fill className="object-contain" />
                   </div>
-                ) : (
-                  <GraduationCap className="h-10 w-10 md:h-14 md:w-14 text-primary" />
-                )}
-              </div>
+                </div>
+              ) : null}
               {schoolName && (
                 <div className="font-headline font-black text-2xl md:text-5xl tracking-tighter leading-[0.7] uppercase">
                   <span className="block">{row1}</span>

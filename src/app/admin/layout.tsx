@@ -1,7 +1,6 @@
-
 "use client";
 
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { 
@@ -17,8 +16,6 @@ import {
   ArrowRight,
   Eye,
   EyeOff,
-  School,
-  Megaphone,
   Trophy,
   Copyright
 } from "lucide-react";
@@ -42,6 +39,7 @@ import { useUser, useAuth, useFirestore, useDoc } from "@/firebase";
 import { signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { doc } from "firebase/firestore";
 import { toast } from "@/hooks/use-toast";
+import Image from "next/image";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -64,6 +62,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }, [settings?.copyrightYear]);
 
   const schoolName = settings?.schoolName || "Portal Sekolah";
+  const schoolLogo = settings?.schoolLogoUrl;
 
   const adminMenuItems = [
     { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
@@ -96,7 +95,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <div className="max-w-md w-full bg-[#252525] p-10 rounded-[2.5rem] border border-white/5 space-y-8 shadow-2xl">
           <div className="flex flex-col items-center text-center space-y-4">
             <div className="bg-primary p-4 rounded-2xl shadow-lg">
-              <Lock className="h-8 w-8 text-white" />
+              {schoolLogo ? (
+                <div className="relative h-8 w-8">
+                  <Image src={schoolLogo} alt="Logo" fill className="object-contain" />
+                </div>
+              ) : (
+                <Lock className="h-8 w-8 text-white" />
+              )}
             </div>
             <h1 className="text-2xl font-bold text-white tracking-tighter uppercase">{schoolName}</h1>
             <p className="text-white/50 text-xs font-medium uppercase tracking-widest">Admin Console Access</p>
@@ -128,8 +133,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <Sidebar className="border-r border-slate-200 bg-white">
           <SidebarHeader className="p-6 border-b border-slate-50">
             <div className="flex items-center gap-3">
-              <div className="bg-primary p-2 rounded-xl shadow-lg">
-                <Database className="h-5 w-5 text-white" />
+              <div className="bg-primary p-2 rounded-xl shadow-lg shrink-0">
+                {schoolLogo ? (
+                  <div className="relative h-5 w-5">
+                    <Image src={schoolLogo} alt="Logo" fill className="object-contain" />
+                  </div>
+                ) : (
+                  <Database className="h-5 w-5 text-white" />
+                )}
               </div>
               <div className="flex flex-col text-left">
                 <span className="font-bold text-sm tracking-tight text-slate-900 uppercase leading-none truncate max-w-[150px]">{schoolName}</span>
