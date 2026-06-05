@@ -9,13 +9,13 @@ import { DynamicBranding } from '@/components/layout/DynamicBranding';
 
 export const metadata: Metadata = {
   title: {
-    default: 'Official Portal',
-    template: '%s | Official Portal'
+    default: 'Website Resmi',
+    template: '%s'
   },
   description: 'Portal informasi resmi sekolah dengan layanan pendidikan modern dan prestasi unggulan.',
-  keywords: ['Pendidikan', 'Sekolah', 'PPDB Online', 'Profil Sekolah'],
-  robots: 'index, follow',
-  viewport: 'width=device-width, initial-scale=1',
+  icons: {
+    icon: [], // Menghapus referensi ikon default untuk mencegah flicker logo lama
+  },
 };
 
 export default function RootLayout({
