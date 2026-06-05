@@ -11,24 +11,28 @@ export default function VisitorGaleri() {
   const currentSchoolId = 'smpn5-langke-rembong';
 
   const settingsRef = useMemo(() => db ? doc(db, "schools", currentSchoolId) : null, [db]);
-  const { data: settings } = useDoc(settingsRef);
+  const { data: settings, loading: settingsLoading } = useDoc(settingsRef);
   
   const galleryQuery = useMemo(() => {
     if (!db) return null;
     return query(collection(db, "gallery"), orderBy("date", "desc"));
   }, [db]);
 
-  const { data: photos, loading } = useCollection(galleryQuery);
+  const { data: photos, loading: galleryLoading } = useCollection(galleryQuery);
 
-  const heroImageUrl = settings?.heroImageUrl || "https://picsum.photos/seed/school1/1920/1080";
+  // Fix flicker: show no image (just dark bg) while loading settings
+  const heroImageUrl = settings?.heroImageUrl || (settingsLoading ? "" : "https://picsum.photos/seed/school1/1920/1080");
 
   return (
     <div className="pt-0 bg-white min-h-screen">
       {/* Dynamic Hero Header */}
       <section className="relative h-[50vh] flex items-center justify-center overflow-hidden bg-slate-950">
         <div 
-          className="absolute inset-0 z-0 bg-cover bg-center"
-          style={{ backgroundImage: `url('${heroImageUrl}')` }}
+          className="absolute inset-0 z-0 bg-cover bg-center transition-opacity duration-1000"
+          style={{ 
+            backgroundImage: heroImageUrl ? `url('${heroImageUrl}')` : 'none',
+            opacity: heroImageUrl ? 1 : 0
+          }}
         />
         <div className="absolute inset-0 bg-slate-950/70 z-[1]" />
         
@@ -45,7 +49,7 @@ export default function VisitorGaleri() {
       {/* Gallery Grid */}
       <section className="py-24">
         <div className="container mx-auto px-4">
-          {loading ? (
+          {galleryLoading ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-12">
               {[1, 2, 3, 4, 5, 6, 7, 8].map(i => (
                 <div key={i} className="space-y-6 animate-pulse">

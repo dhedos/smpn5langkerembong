@@ -12,29 +12,33 @@ export default function VisitorEkstrakurikuler() {
   const currentSchoolId = 'smpn5-langke-rembong';
 
   const settingsRef = useMemo(() => db ? doc(db, "schools", currentSchoolId) : null, [db]);
-  const { data: settings } = useDoc(settingsRef);
+  const { data: settings, loading: settingsLoading } = useDoc(settingsRef);
 
   const extraQuery = useMemo(() => {
     if (!db) return null;
     return query(collection(db, "extracurriculars"), where("schoolId", "==", currentSchoolId));
   }, [db]);
 
-  const { data: rawExtras, loading } = useCollection(extraQuery);
+  const { data: rawExtras, loading: extrasLoading } = useCollection(extraQuery);
 
   const extras = useMemo(() => {
     if (!rawExtras) return [];
     return rawExtras.filter((item: any) => item.status === "Published");
   }, [rawExtras]);
 
-  const heroImageUrl = settings?.heroImageUrl || "https://picsum.photos/seed/school1/1920/1080";
+  // Fix flicker: show no image (just dark bg) while loading settings
+  const heroImageUrl = settings?.heroImageUrl || (settingsLoading ? "" : "https://picsum.photos/seed/school1/1920/1080");
 
   return (
     <div className="pt-0 bg-white min-h-screen">
       {/* Dynamic Hero Header */}
       <section className="relative h-[50vh] flex items-center justify-center overflow-hidden bg-slate-950">
         <div 
-          className="absolute inset-0 z-0 bg-cover bg-center"
-          style={{ backgroundImage: `url('${heroImageUrl}')` }}
+          className="absolute inset-0 z-0 bg-cover bg-center transition-opacity duration-1000"
+          style={{ 
+            backgroundImage: heroImageUrl ? `url('${heroImageUrl}')` : 'none',
+            opacity: heroImageUrl ? 1 : 0
+          }}
         />
         <div className="absolute inset-0 bg-slate-950/70 z-[1]" />
         
@@ -50,7 +54,7 @@ export default function VisitorEkstrakurikuler() {
 
       <section className="py-24">
         <div className="container mx-auto px-4">
-          {loading ? (
+          {extrasLoading ? (
             <div className="flex justify-center items-center py-20">
               <Loader2 className="h-10 w-10 animate-spin text-primary/20" />
             </div>

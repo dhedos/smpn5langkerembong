@@ -34,7 +34,7 @@ export default function Home() {
   
   const currentSchoolId = 'smpn5-langke-rembong';
   const settingsRef = useMemo(() => db ? doc(db, "schools", currentSchoolId) : null, [db]);
-  const { data: settings } = useDoc(settingsRef);
+  const { data: settings, loading: settingsLoading } = useDoc(settingsRef);
 
   const newsQuery = useMemo(() => {
     if (!db) return null;
@@ -58,7 +58,8 @@ export default function Home() {
       .slice(0, 3);
   }, [rawNews]);
 
-  const heroImageUrl = settings?.heroImageUrl || "https://picsum.photos/seed/school1/1920/1080";
+  // Fix flicker: show no image (just dark bg) while loading settings
+  const heroImageUrl = settings?.heroImageUrl || (settingsLoading ? "" : "https://picsum.photos/seed/school1/1920/1080");
   const schoolName = settings?.schoolName || "SMPN 5 Langke Rembong";
   const heroTitle = settings?.heroTitle || "Membangun Masa Depan Bersama Kami";
   const heroSubtitle = settings?.heroSubtitle || "Pendidikan berkualitas untuk generasi emas bangsa melalui kurikulum inovatif.";
@@ -81,8 +82,9 @@ export default function Home() {
         <div 
           className="absolute inset-0 z-0 bg-cover bg-center transition-opacity duration-1000"
           style={{ 
-            backgroundImage: `url('${heroImageUrl}')`, 
-            backgroundAttachment: 'fixed'
+            backgroundImage: heroImageUrl ? `url('${heroImageUrl}')` : 'none', 
+            backgroundAttachment: 'fixed',
+            opacity: heroImageUrl ? 1 : 0
           }}
         />
         {/* Anti-Clash Dark Overlay */}

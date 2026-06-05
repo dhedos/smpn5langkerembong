@@ -17,7 +17,7 @@ export default function SPMBPage() {
   const db = useFirestore();
   const currentSchoolId = 'smpn5-langke-rembong';
   const settingsRef = useMemo(() => db ? doc(db, "schools", currentSchoolId) : null, [db]);
-  const { data: settings, loading } = useDoc(settingsRef);
+  const { data: settings, loading: settingsLoading } = useDoc(settingsRef);
 
   const [submitted, setSubmitted] = useState(false);
 
@@ -30,7 +30,7 @@ export default function SPMBPage() {
     });
   };
 
-  if (loading) {
+  if (settingsLoading) {
     return (
       <div className="min-h-[80vh] w-full flex items-center justify-center bg-transparent">
         <Loader2 className="h-10 w-10 animate-spin text-primary/20" />
@@ -41,7 +41,9 @@ export default function SPMBPage() {
   const spmbYear = settings?.ppdbYear || "2024/2025";
   const isActive = settings?.ppdbIsActive !== false;
   const spmbSubtitle = settings?.ppdbSubtitle || `Sistem Penerimaan Peserta Didik Baru (${settings?.schoolName || "GN Nusantara"}).`;
-  const heroImageUrl = settings?.heroImageUrl || "https://picsum.photos/seed/school1/1920/1080";
+  
+  // Fix flicker: show no image (just dark bg) while loading settings
+  const heroImageUrl = settings?.heroImageUrl || (settingsLoading ? "" : "https://picsum.photos/seed/school1/1920/1080");
 
   if (submitted) {
     return (
@@ -82,8 +84,11 @@ export default function SPMBPage() {
       {/* Dynamic Hero Header */}
       <section className="relative h-[50vh] flex items-center justify-center overflow-hidden bg-slate-950">
         <div 
-          className="absolute inset-0 z-0 bg-cover bg-center"
-          style={{ backgroundImage: `url('${heroImageUrl}')` }}
+          className="absolute inset-0 z-0 bg-cover bg-center transition-opacity duration-1000"
+          style={{ 
+            backgroundImage: heroImageUrl ? `url('${heroImageUrl}')` : 'none',
+            opacity: heroImageUrl ? 1 : 0
+          }}
         />
         <div className="absolute inset-0 bg-slate-950/70 z-[1]" />
         

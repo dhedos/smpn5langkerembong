@@ -39,15 +39,19 @@ export default function ProfilPage() {
 
   const schoolName = settings?.schoolName || "SMPN 5 Langke Rembong";
   const historyPhoto = settings?.historyPhotoUrl || "https://picsum.photos/seed/history/800/800";
-  const heroImageUrl = settings?.heroImageUrl || "https://picsum.photos/seed/school1/1920/1080";
+  // Fix flicker: show no image (just dark bg) while loading settings
+  const heroImageUrl = settings?.heroImageUrl || (settingsLoading ? "" : "https://picsum.photos/seed/school1/1920/1080");
   
   return (
     <div className="pt-0 bg-white animate-in fade-in duration-500">
       {/* Dynamic Hero Header */}
       <section className="relative h-[50vh] md:h-[60vh] flex items-center justify-center overflow-hidden bg-slate-950">
         <div 
-          className="absolute inset-0 z-0 bg-cover bg-center"
-          style={{ backgroundImage: `url('${heroImageUrl}')` }}
+          className="absolute inset-0 z-0 bg-cover bg-center transition-opacity duration-1000"
+          style={{ 
+            backgroundImage: heroImageUrl ? `url('${heroImageUrl}')` : 'none',
+            opacity: heroImageUrl ? 1 : 0
+          }}
         />
         <div className="absolute inset-0 bg-slate-950/70 z-[1]" />
         
