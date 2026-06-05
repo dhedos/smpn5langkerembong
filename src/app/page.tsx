@@ -115,7 +115,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Stats Section - Kotak Balok Horizontal di Mobile */}
+      {/* Stats Section */}
       <section className="relative z-20 -mt-12 md:-mt-24 px-6 md:px-12 container mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8">
           {stats.map((stat: any, idx: number) => {
@@ -135,7 +135,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Sambutan Section - Ukuran Foto Seperti Logo */}
+      {/* Sambutan Section */}
       <section className="py-24 md:py-40 bg-white overflow-hidden">
         <div className="container mx-auto px-6 md:px-12">
           <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-24">
@@ -268,22 +268,22 @@ export default function Home() {
 
       {/* Map Preview Section on Home */}
       {settings?.googleMapsEmbedUrl && (
-        <section className="py-20 bg-white">
+        <section className="py-24 bg-white">
           <div className="container mx-auto px-6 md:px-12">
-            <div className="flex flex-col lg:flex-row items-center gap-12 bg-slate-50 rounded-[3rem] md:rounded-[4rem] p-8 md:p-20 shadow-xl">
-              <div className="w-full lg:w-1/2 space-y-6 text-center lg:text-left">
+            <div className="bg-slate-50 rounded-[3rem] md:rounded-[4rem] p-8 md:p-16 shadow-xl space-y-12">
+              <div className="space-y-6 text-center">
                 <div className="bg-secondary/10 text-secondary font-bold uppercase text-[9px] md:text-[10px] tracking-widest px-4 py-2 rounded-full inline-block">Lokasi Kami</div>
-                <h2 className="text-3xl md:text-4xl font-bold text-primary font-headline tracking-tighter">Kunjungi Kami Langsung</h2>
-                <p className="text-slate-500 font-medium text-sm md:text-base">{settings.address}</p>
-                <div className="pt-4">
-                  <Button className="rounded-full bg-primary h-12 px-8 font-bold gap-2" asChild>
+                <h2 className="text-3xl md:text-5xl font-bold text-primary font-headline tracking-tighter">Kunjungi Kami Langsung</h2>
+                <p className="text-slate-500 font-medium text-sm md:text-lg max-w-2xl mx-auto">{settings.address}</p>
+                <div className="pt-2">
+                  <Button className="rounded-full bg-primary h-14 px-10 font-bold gap-2 shadow-lg" asChild>
                     <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(settings.address || schoolName)}`} target="_blank">
-                      <MapPin className="h-4 w-4" /> Buka di Google Maps
+                      <MapPin className="h-5 w-5" /> Buka di Google Maps
                     </a>
                   </Button>
                 </div>
               </div>
-              <div className="w-full lg:w-1/2 h-[300px] md:h-[400px] rounded-[2.5rem] md:rounded-[3rem] overflow-hidden shadow-lg border-4 md:border-8 border-white bg-white">
+              <div className="w-full h-[400px] md:h-[600px] rounded-[2.5rem] md:rounded-[3.5rem] overflow-hidden shadow-2xl border-4 md:border-[12px] border-white bg-white">
                 <iframe 
                   src={settings.googleMapsEmbedUrl} 
                   width="100%" 
