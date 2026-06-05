@@ -15,7 +15,8 @@ import {
   Loader2,
   User,
   ExternalLink,
-  MapPin
+  MapPin,
+  Sparkles
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -58,7 +59,6 @@ export default function Home() {
       .slice(0, 3);
   }, [rawNews]);
 
-  // Fix flicker: show no image (just dark bg) while loading settings
   const heroImageUrl = settings?.heroImageUrl || (settingsLoading ? "" : "https://picsum.photos/seed/school1/1920/1080");
   const schoolName = settings?.schoolName || "SMPN 5 Langke Rembong";
   const heroTitle = settings?.heroTitle || "Membangun Masa Depan Bersama Kami";
@@ -77,7 +77,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-col gap-0 overflow-x-hidden">
-      {/* Hero Section with Dynamic Background & Dark Overlay */}
+      {/* Hero Section - Optimized for SEO with H1 including School Name */}
       <section className="relative min-h-[100vh] flex items-center overflow-hidden bg-slate-950">
         <div 
           className="absolute inset-0 z-0 bg-cover bg-center transition-opacity duration-1000"
@@ -87,15 +87,16 @@ export default function Home() {
             opacity: heroImageUrl ? 1 : 0
           }}
         />
-        {/* Anti-Clash Dark Overlay */}
         <div className="absolute inset-0 bg-slate-950/60 md:bg-gradient-to-r md:from-slate-950 md:via-slate-950/70 md:to-transparent z-[1]" />
         
         <div className="container relative z-10 px-6 md:px-12 mx-auto pb-32 pt-40 md:pt-48">
           <div className="max-w-5xl space-y-8 animate-in fade-in slide-in-from-left duration-1000">
             <div className="space-y-4">
-              <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-[7.5rem] font-black text-white font-headline leading-[0.9] md:leading-[0.85] tracking-tighter uppercase drop-shadow-2xl">
+              {/* Main SEO Header */}
+              <h1 className="sr-only">{schoolName} - {heroTitle}</h1>
+              <div className="text-4xl sm:text-6xl md:text-7xl lg:text-[7.5rem] font-black text-white font-headline leading-[0.9] md:leading-[0.85] tracking-tighter uppercase drop-shadow-2xl">
                 {heroTitle}
-              </h1>
+              </div>
               <div className="text-2xl sm:text-3xl md:text-5xl font-bold text-secondary italic tracking-tight drop-shadow-lg lowercase mt-2 md:mt-4 opacity-90">
                 {schoolName}
               </div>
@@ -121,7 +122,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Stats Section - Horizontal Balok on Mobile */}
+      {/* Stats Section */}
       <section className="relative z-20 -mt-12 md:-mt-24 px-6 md:px-12 container mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8">
           {stats.map((stat: any, idx: number) => {
@@ -141,7 +142,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Sambutan Section - Portrait Badge Headmaster */}
+      {/* Welcome Section */}
       <section className="py-24 md:py-40 bg-white overflow-hidden">
         <div className="container mx-auto px-6 md:px-12">
           <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-24">
@@ -150,7 +151,7 @@ export default function Home() {
                 {settings?.headmasterPhotoUrl ? (
                   <img 
                     src={settings.headmasterPhotoUrl} 
-                    alt="Kepala Sekolah" 
+                    alt={`Kepala Sekolah ${schoolName}`} 
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
                   />
                 ) : (
@@ -180,7 +181,7 @@ export default function Home() {
               <div className="pt-4">
                 <Button variant="link" className="text-primary font-bold text-base md:text-lg p-0 h-auto flex items-center gap-2 group" asChild>
                   <Link href="/profil">
-                    Selengkapnya tentang visi kami 
+                    Visi & Misi {schoolName} 
                     <ArrowRight className="h-4 w-4 md:h-5 md:w-5 group-hover:translate-x-2 transition-transform" />
                   </Link>
                 </Button>
@@ -190,18 +191,18 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Informasi Terbaru Section */}
+      {/* Latest News Section */}
       <section className="py-24 md:py-40 bg-slate-50">
         <div className="container mx-auto px-6 md:px-12">
           <div className="flex flex-col md:flex-row justify-between items-center md:items-end mb-12 md:mb-20 gap-8">
             <div className="space-y-4 text-center md:text-left">
               <div className="text-secondary font-bold tracking-widest uppercase text-[10px] md:text-xs px-4 py-2 bg-secondary/10 rounded-full inline-flex items-center gap-2">
-                <Newspaper className="h-4 w-4" /> Informasi & Agenda
+                <Newspaper className="h-4 w-4" /> Informasi & Agenda Sekolah
               </div>
-              <h2 className="text-4xl md:text-5xl font-bold text-primary font-headline tracking-tighter">Informasi Terbaru</h2>
+              <h2 className="text-4xl md:text-5xl font-bold text-primary font-headline tracking-tighter">Berita & Informasi Terbaru</h2>
             </div>
             <Button variant="outline" className="rounded-full px-10 border-slate-200" asChild>
-              <Link href="/informasi">Lihat Semua Informasi</Link>
+              <Link href="/informasi">Lihat Semua Berita</Link>
             </Button>
           </div>
 
@@ -272,14 +273,14 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Map Preview Section on Home - Full Width Bottom */}
+      {/* Map Section */}
       {settings?.googleMapsEmbedUrl && (
         <section className="py-24 bg-white">
           <div className="container mx-auto px-6 md:px-12">
             <div className="bg-slate-50 rounded-[3rem] md:rounded-[4rem] p-8 md:p-16 shadow-xl space-y-12">
               <div className="space-y-6 text-center">
-                <div className="bg-secondary/10 text-secondary font-bold uppercase text-[9px] md:text-[10px] tracking-widest px-4 py-2 rounded-full inline-block">Lokasi Kami</div>
-                <h2 className="text-3xl md:text-5xl font-bold text-primary font-headline tracking-tighter">Kunjungi Kami Langsung</h2>
+                <div className="bg-secondary/10 text-secondary font-bold uppercase text-[9px] md:text-[10px] tracking-widest px-4 py-2 rounded-full inline-block">Lokasi Sekolah</div>
+                <h2 className="text-3xl md:text-5xl font-bold text-primary font-headline tracking-tighter">Kunjungi {schoolName}</h2>
                 <p className="text-slate-500 font-medium text-sm md:text-lg max-w-2xl mx-auto">{settings.address}</p>
                 <div className="pt-2">
                   <Button className="rounded-full bg-primary h-14 px-10 font-bold gap-2 shadow-lg" asChild>
@@ -297,6 +298,7 @@ export default function Home() {
                   style={{ border: 0 }} 
                   allowFullScreen 
                   loading="lazy" 
+                  title={`Peta Lokasi ${schoolName}`}
                   referrerPolicy="no-referrer-when-downgrade"
                 />
               </div>
