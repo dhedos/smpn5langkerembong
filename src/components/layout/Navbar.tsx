@@ -26,7 +26,7 @@ export function Navbar() {
   const db = useFirestore();
   const currentSchoolId = 'smpn5-langke-rembong';
   const settingsRef = useMemo(() => db ? doc(db, "schools", currentSchoolId) : null, [db]);
-  const { data: settings } = useDoc(settingsRef);
+  const { data: settings, loading } = useDoc(settingsRef);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -41,7 +41,7 @@ export function Navbar() {
     setIsOpen(false);
   }, [pathname]);
 
-  const schoolName = settings?.schoolName || "";
+  const schoolName = settings?.schoolName;
   const schoolLogo = settings?.schoolLogoUrl;
   const isSpmbActive = settings?.ppdbIsActive === true;
   const spmbLabel = settings?.ppdbMenuTitle || "SPMB ONLINE";
@@ -85,7 +85,7 @@ export function Navbar() {
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between px-4 md:px-12">
         <Link href="/" className="flex items-center gap-2 md:gap-3 group max-w-[75%] md:max-w-none">
-          {schoolLogo && (
+          {schoolLogo ? (
             <div className={cn(
               "p-1.5 md:p-2 rounded-xl md:rounded-2xl transition-all duration-500 shadow-md transform group-hover:scale-105 shrink-0",
               isSolid ? "bg-primary" : "bg-white/20 backdrop-blur-md"
@@ -94,15 +94,22 @@ export function Navbar() {
                 <Image src={schoolLogo} alt="Logo" fill className="object-contain" />
               </div>
             </div>
-          )}
-          {schoolName && (
-            <span className={cn(
-              "font-headline font-bold text-sm sm:text-base md:text-xl tracking-tighter uppercase transition-colors duration-500 line-clamp-2 leading-tight md:leading-none",
-              isSolid ? "text-slate-900" : "text-white drop-shadow-md"
-            )}>
-              {schoolName}
-            </span>
-          )}
+          ) : loading ? (
+             <div className="h-10 w-10 bg-slate-200 animate-pulse rounded-full" />
+          ) : null}
+          
+          <div className="flex flex-col">
+            {schoolName ? (
+              <span className={cn(
+                "font-headline font-bold text-sm sm:text-base md:text-xl tracking-tighter uppercase transition-colors duration-500 line-clamp-2 leading-tight md:leading-none",
+                isSolid ? "text-slate-900" : "text-white drop-shadow-md"
+              )}>
+                {schoolName}
+              </span>
+            ) : loading ? (
+              <div className="h-5 w-32 bg-slate-200/50 animate-pulse rounded" />
+            ) : null}
+          </div>
         </Link>
 
         <nav className="hidden lg:flex items-center gap-10">

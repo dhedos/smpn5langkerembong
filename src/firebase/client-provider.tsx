@@ -5,8 +5,8 @@ import { initializeFirebase } from './index';
 import { FirebaseProvider } from './provider';
 
 /**
- * FirebaseClientProvider yang aman untuk hidrasi.
- * Menghindari render kondisional di tingkat root yang dapat memicu ketidakcocokan DOM.
+ * FirebaseClientProvider yang dioptimalkan untuk performa.
+ * Langsung merender children agar Next.js bisa menampilkan shell statis dengan cepat.
  */
 export function FirebaseClientProvider({ children }: { children: React.ReactNode }) {
   const [services, setServices] = useState<{
@@ -16,13 +16,13 @@ export function FirebaseClientProvider({ children }: { children: React.ReactNode
   } | null>(null);
 
   useEffect(() => {
-    // Inisialisasi hanya terjadi di sisi client setelah hidrasi selesai
+    // Inisialisasi Firebase segera setelah hidrasi selesai
     const initialized = initializeFirebase();
     setServices(initialized);
   }, []);
 
-  // Selalu render children dengan provider tanpa div pembungkus tambahan yang berbeda antara server/client.
-  // Hooks di dalamnya (useFirestore, dll) sudah didesain menangani status null selama proses inisialisasi.
+  // Selalu render children. Context akan bernilai null sejenak, 
+  // namun komponen anak sudah didesain untuk menangani status null dengan anggun.
   return (
     <FirebaseProvider 
       app={services?.app || null} 

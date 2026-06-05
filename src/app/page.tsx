@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useMemo, useEffect } from "react";
@@ -59,16 +58,16 @@ export default function Home() {
       .slice(0, 3);
   }, [rawNews]);
 
-  // SEO Update: Dynamically change document title based on admin input
+  // SEO Update
   useEffect(() => {
     if (settings?.schoolName) {
-      document.title = `${settings.schoolName} - Website Resmi Sekolah`;
+      document.title = `${settings.schoolName} - Official Website`;
     }
   }, [settings?.schoolName]);
 
-  const heroImageUrl = settings?.heroImageUrl || (settingsLoading ? "" : "https://picsum.photos/seed/school1/1920/1080");
-  const schoolName = settings?.schoolName || "";
-  const heroTitle = settings?.heroTitle || "Membangun Masa Depan Bersama Kami";
+  const heroImageUrl = settings?.heroImageUrl;
+  const schoolName = settings?.schoolName;
+  const heroTitle = settings?.heroTitle || "MEMBANGUN MASA DEPAN BERSAMA KAMI";
   const heroSubtitle = settings?.heroSubtitle || "Pendidikan berkualitas untuk generasi emas bangsa melalui kurikulum inovatif.";
   
   const welcomeSectionLabel = settings?.welcomeSectionLabel || "Sambutan Kepala Sekolah";
@@ -100,15 +99,16 @@ export default function Home() {
         <div className="container relative z-10 px-6 md:px-12 mx-auto pb-32 pt-40 md:pt-48">
           <div className="max-w-5xl space-y-8 animate-in fade-in slide-in-from-left duration-1000">
             <div className="space-y-4">
-              <h1 className="sr-only">{schoolName || "Website Sekolah"} - {heroTitle}</h1>
-              <div className="text-4xl sm:text-6xl md:text-7xl lg:text-[7.5rem] font-black text-white font-headline leading-[0.9] md:leading-[0.85] tracking-tighter uppercase drop-shadow-2xl">
+              <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-[7.5rem] font-black text-white font-headline leading-[0.9] md:leading-[0.85] tracking-tighter uppercase drop-shadow-2xl">
                 {heroTitle}
-              </div>
-              {schoolName && (
+              </h1>
+              {schoolName ? (
                 <div className="text-2xl sm:text-3xl md:text-5xl font-bold text-secondary italic tracking-tight drop-shadow-lg lowercase mt-2 md:mt-4 opacity-90">
                   {schoolName}
                 </div>
-              )}
+              ) : settingsLoading ? (
+                <div className="h-10 w-64 bg-white/10 animate-pulse rounded-xl mt-4" />
+              ) : null}
             </div>
             
             <p className="text-base md:text-xl text-white/90 max-w-2xl leading-relaxed font-medium drop-shadow-md border-l-4 border-secondary pl-6">
@@ -131,7 +131,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Stats Section */}
+      {/* Stats Section - Berbentuk Bar Horizontal di Mobile */}
       <section className="relative z-20 -mt-12 md:-mt-24 px-6 md:px-12 container mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8">
           {stats.map((stat: any, idx: number) => {
@@ -156,11 +156,12 @@ export default function Home() {
         <div className="container mx-auto px-6 md:px-12">
           <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-24">
             <div className="w-full lg:w-[40%] flex justify-center lg:justify-end">
+              {/* Lencana Foto Kepala Sekolah */}
               <div className="relative aspect-square w-40 h-40 md:w-64 md:h-64 rounded-[2rem] md:rounded-[3rem] overflow-hidden shadow-2xl border-4 md:border-[8px] border-white group bg-slate-50">
                 {settings?.headmasterPhotoUrl ? (
                   <img 
                     src={settings.headmasterPhotoUrl} 
-                    alt={`Kepala Sekolah ${schoolName}`} 
+                    alt="Kepala Sekolah" 
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
                   />
                 ) : (
@@ -190,7 +191,7 @@ export default function Home() {
               <div className="pt-4">
                 <Button variant="link" className="text-primary font-bold text-base md:text-lg p-0 h-auto flex items-center gap-2 group" asChild>
                   <Link href="/profil">
-                    Visi & Misi {schoolName} 
+                    Visi & Misi Kami
                     <ArrowRight className="h-4 w-4 md:h-5 md:w-5 group-hover:translate-x-2 transition-transform" />
                   </Link>
                 </Button>
@@ -283,7 +284,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Map Section */}
+      {/* Map Section - Full Width di Bawah */}
       {settings?.googleMapsEmbedUrl && (
         <section className="py-24 bg-white">
           <div className="container mx-auto px-6 md:px-12">
@@ -294,7 +295,7 @@ export default function Home() {
                 <p className="text-slate-500 font-medium text-sm md:text-lg max-w-2xl mx-auto">{settings.address}</p>
                 <div className="pt-2">
                   <Button className="rounded-full bg-primary h-14 px-10 font-bold gap-2 shadow-lg" asChild>
-                    <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(settings.address || schoolName)}`} target="_blank">
+                    <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(settings.address || schoolName || 'sekolah')}`} target="_blank">
                       <MapPin className="h-5 w-5" /> Buka di Google Maps
                     </a>
                   </Button>
@@ -308,7 +309,7 @@ export default function Home() {
                   style={{ border: 0 }} 
                   allowFullScreen 
                   loading="lazy" 
-                  title={`Peta Lokasi ${schoolName}`}
+                  title="Peta Lokasi"
                   referrerPolicy="no-referrer-when-downgrade"
                 />
               </div>
