@@ -19,24 +19,28 @@ export function DynamicBranding() {
       document.title = settings.schoolName;
     }
 
-    // 2. Update Favicon Tanpa Menghapus Node (Menghindari Error removeChild)
+    // 2. Update Favicon dengan cara yang aman terhadap DOM
     const logoUrl = settings.schoolLogoUrl;
     if (logoUrl) {
-      let link: HTMLLinkElement | null = document.querySelector("link[rel*='icon']");
+      // Cari semua elemen link yang berhubungan dengan icon
+      const links = document.querySelectorAll("link[rel*='icon']");
       
-      if (!link) {
-        link = document.createElement('link');
+      if (links.length > 0) {
+        links.forEach(link => {
+          (link as HTMLLinkElement).href = logoUrl;
+        });
+      } else {
+        const link = document.createElement('link');
         link.rel = 'icon';
+        link.href = logoUrl;
         document.head.appendChild(link);
       }
-      
-      link.href = logoUrl;
     }
   }, [settings]);
 
   // Efek pembersihan awal untuk memastikan judul tidak menampilkan teks default framework
   useEffect(() => {
-    if (document.title.includes('Next.js') || document.title === '') {
+    if (document.title.includes('Next.js') || document.title === '' || document.title === 'Website Resmi Sekolah') {
       document.title = 'Memuat Website...';
     }
   }, []);
