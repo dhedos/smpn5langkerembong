@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useMemo } from "react";
@@ -15,6 +14,8 @@ export function Footer() {
 
   const db = useFirestore();
   const currentSchoolId = 'smpn5-langke-rembong';
+  
+  // Memoize reference untuk mencegah re-render tak terbatas
   const settingsRef = useMemo(() => db ? doc(db, "schools", currentSchoolId) : null, [db]);
   const { data: settings } = useDoc(settingsRef);
 
@@ -26,7 +27,9 @@ export function Footer() {
 
   const schoolName = settings?.schoolName || "SMPN 5 LANGKE REMBONG";
   const schoolLogo = settings?.schoolLogoUrl;
-  const officialWebsites = settings?.officialWebsites || [];
+  // Pastikan officialWebsites selalu berupa array
+  const officialWebsites = Array.isArray(settings?.officialWebsites) ? settings.officialWebsites : [];
+  
   const address = settings?.address || "MANDO, KELURAHAN COMPANG CAREP, KEC. LANGKE REMBONG";
   const phone = settings?.phone || "6285281814006";
   const email = settings?.email || "smpn5lr@gmail.com";
@@ -94,16 +97,16 @@ export function Footer() {
                 Membangun fondasi pendidikan unggul yang menginspirasi kreativitas bagi masa depan bangsa.
               </p>
 
-              {/* Portal Resmi Instansi - Integrated under brand */}
-              {officialWebsites && officialWebsites.length > 0 && (
-                <div className="flex flex-col gap-2">
+              {/* Portal Resmi Instansi - Tampil Dinamis */}
+              {officialWebsites.length > 0 && (
+                <div className="flex flex-col gap-2 pt-2">
                   {officialWebsites.map((web: any, i: number) => (
                     <a 
                       key={i}
                       href={web.url} 
                       target="_blank" 
                       rel="noopener noreferrer"
-                      className="text-white/80 hover:text-secondary transition-all flex items-center gap-2 uppercase text-[9px] font-black tracking-widest bg-white/5 p-3 rounded-xl border border-white/10 group w-fit min-w-[180px] md:min-w-[200px]"
+                      className="text-white/80 hover:text-secondary transition-all flex items-center gap-2 uppercase text-[9px] font-black tracking-widest bg-white/5 p-3 rounded-xl border border-white/10 group w-fit min-w-[200px]"
                     >
                       <Globe className="h-3.5 w-3.5 text-secondary" /> 
                       <span className="truncate">{web.title || "Portal Resmi"}</span> 
