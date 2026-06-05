@@ -9,12 +9,12 @@ import { DynamicBranding } from '@/components/layout/DynamicBranding';
 
 export const metadata: Metadata = {
   title: {
-    default: 'Website Resmi',
+    default: ' ', // Mengosongkan judul default agar tidak muncul "Website Resmi" saat loading
     template: '%s'
   },
-  description: 'Portal informasi resmi sekolah dengan layanan pendidikan modern dan prestasi unggulan.',
+  description: 'Portal Informasi Sekolah Resmi',
   icons: {
-    icon: [], // Menghapus referensi ikon default untuk mencegah flicker logo lama
+    icon: [], // Menghapus referensi ikon default
   },
 };
 
