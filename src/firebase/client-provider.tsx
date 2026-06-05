@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useEffect, useState } from 'react';
@@ -25,7 +26,11 @@ export function FirebaseClientProvider({ children }: { children: React.ReactNode
   // Mencegah pendobelan/flicker saat hydration dengan memastikan
   // konten hanya dirender setelah komponen benar-benar terpasang di client.
   if (!mounted || !services) {
-    return null;
+    return (
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+        <div className="w-10 h-10 border-4 border-slate-800 border-t-secondary rounded-full animate-spin" />
+      </div>
+    );
   }
 
   return (

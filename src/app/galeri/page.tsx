@@ -62,7 +62,7 @@ export default function VisitorGaleri() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-y-16 gap-x-12">
               {photos.map((photo: any) => (
                 <div key={photo.id} className="group flex flex-col items-center text-center space-y-6">
-                  {/* Image Container with Squircle Corners */}
+                  {/* Image Container with Squircle Corners & White Border */}
                   <div className="relative aspect-square w-full rounded-[3.5rem] overflow-hidden shadow-2xl border-[12px] border-slate-50 bg-slate-100 transition-all duration-500 group-hover:-translate-y-2 group-hover:shadow-primary/10">
                     <img
                       src={photo.imageUrl}

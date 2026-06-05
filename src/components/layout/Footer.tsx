@@ -150,7 +150,7 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Contact Column */}
+          {/* Hubungi Kami Column */}
           <div className="pt-2">
             <h4 className="font-headline font-black mb-6 md:mb-8 text-[11px] tracking-[0.2em] uppercase text-secondary">Hubungi Kami</h4>
             <ul className="space-y-5 md:space-y-6 text-[12px] text-white/80 font-black tracking-wide">

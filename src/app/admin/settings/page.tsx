@@ -415,7 +415,7 @@ export default function AdminSettings() {
                     <input type="file" accept="image/*" onChange={(e) => handleFileChange(e, "heroImageUrl")} className="absolute inset-0 opacity-0 cursor-pointer" />
                   </div>
                   <p className="text-[10px] text-slate-500 italic mt-2">
-                    <span className="font-bold text-primary">Tips:</span> Gunakan foto berkualitas tinggi dengan ukuran minimal 1920x1080 px agar tampilan halaman depan terlihat tajam dan profesional di semua layar.
+                    <span className="font-bold text-primary">Tips:</span> Rekomendasi ukuran: 1920x1080 piksel (Rasio 16:9) agar tampil penuh dan tajam di semua layar. Sistem akan otomatis menggelapkan foto agar judul tetap terbaca kontras.
                   </p>
                 </div>
               </div>
@@ -438,10 +438,11 @@ export default function AdminSettings() {
                     <Input value={formData.headmasterName} onChange={(e) => setFormData({...formData, headmasterName: e.target.value})} placeholder="Nama Kepala Sekolah" className="h-12" />
                     <Input value={formData.headmasterTitle} onChange={(e) => setFormData({...formData, headmasterTitle: e.target.value})} placeholder="Gelar" className="h-12" />
                   </div>
-                  <div className="relative aspect-[2/3] w-48 rounded-[2rem] overflow-hidden border-2 border-dashed bg-slate-50 flex items-center justify-center">
+                  <div className="relative aspect-square w-48 rounded-[2rem] overflow-hidden border-2 border-dashed bg-slate-50 flex items-center justify-center">
                     {formData.headmasterPhotoUrl ? <img src={formData.headmasterPhotoUrl} className="w-full h-full object-cover" /> : <User className="h-12 w-12 text-slate-300" />}
                     <input type="file" accept="image/*" onChange={(e) => handleFileChange(e, "headmasterPhotoUrl")} className="absolute inset-0 opacity-0 cursor-pointer" />
                   </div>
+                  <p className="text-[10px] text-slate-400 italic">Foto akan tampil dalam bentuk lencana profil (persegi) yang modern.</p>
                 </div>
               </div>
             </CardContent>

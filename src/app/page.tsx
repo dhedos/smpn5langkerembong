@@ -121,7 +121,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Stats Section */}
+      {/* Stats Section - Horizontal Balok on Mobile */}
       <section className="relative z-20 -mt-12 md:-mt-24 px-6 md:px-12 container mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8">
           {stats.map((stat: any, idx: number) => {
@@ -141,7 +141,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Sambutan Section */}
+      {/* Sambutan Section - Portrait Badge Headmaster */}
       <section className="py-24 md:py-40 bg-white overflow-hidden">
         <div className="container mx-auto px-6 md:px-12">
           <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-24">
@@ -272,7 +272,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Map Preview Section on Home */}
+      {/* Map Preview Section on Home - Full Width Bottom */}
       {settings?.googleMapsEmbedUrl && (
         <section className="py-24 bg-white">
           <div className="container mx-auto px-6 md:px-12">
