@@ -15,7 +15,6 @@ export function Footer() {
   const db = useFirestore();
   const currentSchoolId = 'smpn5-langke-rembong';
   
-  // Memoize reference untuk mencegah re-render tak terbatas
   const settingsRef = useMemo(() => db ? doc(db, "schools", currentSchoolId) : null, [db]);
   const { data: settings } = useDoc(settingsRef);
 
@@ -27,17 +26,15 @@ export function Footer() {
 
   const schoolName = settings?.schoolName || "SMPN 5 LANGKE REMBONG";
   const schoolLogo = settings?.schoolLogoUrl;
-  // Pastikan officialWebsites selalu berupa array
   const officialWebsites = Array.isArray(settings?.officialWebsites) ? settings.officialWebsites : [];
   
   const address = settings?.address || "MANDO, KELURAHAN COMPANG CAREP, KEC. LANGKE REMBONG";
   const phone = settings?.phone || "6285281814006";
   const email = settings?.email || "smpn5lr@gmail.com";
 
-  // Memproses nama sekolah agar sesuai dengan gambar referensi (Stacked 3 lines)
   const nameParts = schoolName.toUpperCase().split(" ");
-  const smpnLabel = nameParts.includes("SMPN") ? "SMPN" : nameParts[0];
-  const fiveLabel = nameParts.includes("5") ? "5" : nameParts[1];
+  const smpnLabel = nameParts.includes("SMPN") ? "SMPN" : nameParts[0] || "SMPN";
+  const fiveLabel = nameParts.includes("5") ? "5" : nameParts[1] || "5";
   const restName = nameParts.filter(p => p !== "SMPN" && p !== "5");
   const row2 = restName[0] || "";
   const row3 = restName.slice(1).join(" ") || "";
@@ -73,7 +70,6 @@ export function Footer() {
     <footer className="bg-primary text-white pt-16 md:pt-20 pb-10 border-t border-white/5 overflow-hidden">
       <div className="container mx-auto px-6 md:px-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 md:gap-12 lg:gap-8 mb-16">
-          {/* Brand Column - Logo & Stacked Name */}
           <div className="flex flex-col space-y-6 lg:col-span-2">
             <div className="flex items-center gap-4 md:gap-5">
               <div className="bg-white p-2 md:p-3 rounded-[1.5rem] md:rounded-[1.8rem] shadow-2xl shrink-0 flex items-center justify-center w-20 h-20 md:w-28 md:h-28">
@@ -97,7 +93,6 @@ export function Footer() {
                 Membangun fondasi pendidikan unggul yang menginspirasi kreativitas bagi masa depan bangsa.
               </p>
 
-              {/* Portal Resmi Instansi - Tampil Dinamis */}
               {officialWebsites.length > 0 && (
                 <div className="flex flex-col gap-2 pt-2">
                   {officialWebsites.map((web: any, i: number) => (
@@ -131,7 +126,6 @@ export function Footer() {
             </div>
           </div>
 
-          {/* Quick Links Column */}
           <div className="pt-2">
             <h4 className="font-headline font-black mb-6 md:mb-8 text-[11px] tracking-[0.2em] uppercase text-secondary">Tautan Cepat</h4>
             <ul className="space-y-4 md:space-y-5 text-[12px] font-black text-white/70">
@@ -142,7 +136,6 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Academic Column */}
           <div className="pt-2">
             <h4 className="font-headline font-black mb-6 md:mb-8 text-[11px] tracking-[0.2em] uppercase text-secondary">Akademik</h4>
             <ul className="space-y-4 md:space-y-5 text-[12px] font-black text-white/70">
@@ -153,7 +146,6 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Hubungi Kami Column */}
           <div className="pt-2">
             <h4 className="font-headline font-black mb-6 md:mb-8 text-[11px] tracking-[0.2em] uppercase text-secondary">Hubungi Kami</h4>
             <ul className="space-y-5 md:space-y-6 text-[12px] text-white/80 font-black tracking-wide">

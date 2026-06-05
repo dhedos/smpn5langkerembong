@@ -24,7 +24,6 @@ export function FirebaseProvider({
   firestore?: Firestore | null;
   auth?: Auth | null;
 }) {
-  // Memoize value untuk stabilitas referensi, krusial untuk mencegah re-render masif
   const value = useMemo(() => ({
     app: app || null,
     firestore: firestore || null,
@@ -39,8 +38,8 @@ export function FirebaseProvider({
 }
 
 /**
- * Hook dasar untuk mengakses konteks Firebase secara aman.
- * Tidak melempar error agar SSR tidak beralih ke mode error secara mendadak.
+ * Safe hooks that return null if the provider is not ready,
+ * avoiding hydration errors and crashes during initial load.
  */
 export const useFirebase = () => {
   const context = useContext(FirebaseContext);
