@@ -106,8 +106,8 @@ export default function AdminSettings() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, field: string) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 800 * 1024) { 
-        toast({ title: "File Terlalu Besar", description: "Maksimal 800KB.", variant: "destructive" });
+      if (file.size > 1024 * 1024) { 
+        toast({ title: "File Terlalu Besar", description: "Maksimal 1MB.", variant: "destructive" });
         return;
       }
       const reader = new FileReader();
@@ -403,10 +403,20 @@ export default function AdminSettings() {
                 </div>
                 <div className="space-y-3">
                   <Label className="text-xs font-bold uppercase text-slate-400">Foto Hero Utama</Label>
-                  <div className="relative aspect-video w-full rounded-[2rem] overflow-hidden border-2 border-dashed bg-slate-50 flex items-center justify-center">
-                    {formData.heroImageUrl ? <img src={formData.heroImageUrl} className="w-full h-full object-cover" /> : <ImageIcon className="h-12 w-12 text-slate-300" />}
+                  <div className="relative aspect-video w-full rounded-[2rem] overflow-hidden border-2 border-dashed bg-slate-50 flex items-center justify-center group">
+                    {formData.heroImageUrl ? (
+                      <img src={formData.heroImageUrl} className="w-full h-full object-cover" />
+                    ) : (
+                      <ImageIcon className="h-12 w-12 text-slate-300" />
+                    )}
                     <input type="file" accept="image/*" onChange={(e) => handleFileChange(e, "heroImageUrl")} className="absolute inset-0 opacity-0 cursor-pointer" />
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      <span className="text-white text-xs font-bold uppercase">Klik Untuk Ganti Foto</span>
+                    </div>
                   </div>
+                  <p className="text-[10px] text-slate-500 italic mt-2">
+                    <span className="font-bold text-primary">Tips:</span> Gunakan foto berkualitas tinggi dengan ukuran minimal 1920x1080 px agar tampilan halaman depan terlihat tajam dan profesional di semua layar.
+                  </p>
                 </div>
               </div>
             </CardContent>

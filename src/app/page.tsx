@@ -79,10 +79,15 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative min-h-[100vh] flex items-center overflow-hidden bg-slate-950">
         <div 
-          className="absolute inset-0 z-0 bg-cover bg-center opacity-70"
-          style={{ backgroundImage: `url('${heroImageUrl}')`, backgroundAttachment: 'fixed' }}
+          className="absolute inset-0 z-0 bg-cover bg-center transition-opacity duration-1000"
+          style={{ 
+            backgroundImage: `url('${heroImageUrl}')`, 
+            backgroundAttachment: 'fixed',
+            opacity: settings?.heroImageUrl ? 0.4 : 0.7 
+          }}
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/40 to-transparent z-[1]" />
+        {/* Darker Overlay for better contrast */}
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/80 to-slate-950/20 z-[1]" />
         
         <div className="container relative z-10 px-6 md:px-12 mx-auto pb-32 pt-40 md:pt-48">
           <div className="max-w-5xl space-y-8 animate-in fade-in slide-in-from-left duration-1000">
@@ -95,7 +100,7 @@ export default function Home() {
               </div>
             </div>
             
-            <p className="text-base md:text-xl text-white/80 max-w-2xl leading-relaxed font-medium drop-shadow-md border-l-4 border-secondary pl-6">
+            <p className="text-base md:text-xl text-white/90 max-w-2xl leading-relaxed font-medium drop-shadow-md border-l-4 border-secondary pl-6">
               {heroSubtitle}
             </p>
             
