@@ -42,6 +42,8 @@
         "instagramUrl": { "type": "string", "description": "Link profil Instagram" },
         "tiktokUrl": { "type": "string", "description": "Link profil TikTok" },
         "youtubeUrl": { "type": "string", "description": "Link channel YouTube" },
+        "seoDescription": { "type": "string", "description": "Deskripsi singkat sekolah untuk pencarian Google" },
+        "seoKeywords": { "type": "string", "description": "Kata kunci pencarian (pisahkan dengan koma)" },
         "stats": {
           "type": "array",
           "items": {

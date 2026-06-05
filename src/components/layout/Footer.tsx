@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useMemo } from "react";
@@ -24,21 +25,18 @@ export function Footer() {
 
   if (isAdminPage) return null;
 
-  const schoolName = settings?.schoolName || "SMPN 5 LANGKE REMBONG";
+  const schoolName = settings?.schoolName || "Portal Sekolah";
   const schoolLogo = settings?.schoolLogoUrl;
   const officialWebsites = Array.isArray(settings?.officialWebsites) ? settings.officialWebsites : [];
   
-  const address = settings?.address || "MANDO, KELURAHAN COMPANG CAREP, KEC. LANGKE REMBONG";
-  const phone = settings?.phone || "6285281814006";
-  const email = settings?.email || "smpn5lr@gmail.com";
+  const address = settings?.address || "Alamat belum diatur di Panel Admin.";
+  const phone = settings?.phone || "-";
+  const email = settings?.email || "-";
 
-  // Logika pemisahan nama sekolah untuk branding bertumpuk rapat
+  // Dynamic Name Splitting for Adaptive Branding
   const nameParts = schoolName.toUpperCase().split(" ");
-  const smpnLabel = nameParts.includes("SMPN") ? "SMPN" : nameParts[0] || "SMPN";
-  const fiveLabel = nameParts.includes("5") ? "5" : nameParts[1] || "5";
-  const restName = nameParts.filter(p => p !== "SMPN" && p !== "5");
-  const row2 = restName[0] || "";
-  const row3 = restName.slice(1).join(" ") || "";
+  const row1 = nameParts.slice(0, 2).join(" ");
+  const row2 = nameParts.length > 2 ? nameParts.slice(2).join(" ") : "";
 
   const socialLinks = [
     { id: "facebook", icon: <Facebook className="h-4 w-4" />, href: settings?.facebookUrl || "#" },
@@ -64,16 +62,15 @@ export function Footer() {
               <div className="bg-white p-2 md:p-3 rounded-[1.5rem] md:rounded-[1.8rem] shadow-2xl shrink-0 flex items-center justify-center w-20 h-20 md:w-28 md:h-28">
                 {schoolLogo ? (
                   <div className="relative h-14 w-14 md:h-20 md:w-20">
-                    <Image src={schoolLogo} alt="Logo" fill className="object-contain" />
+                    <Image src={schoolLogo} alt={`Logo ${schoolName}`} fill className="object-contain" />
                   </div>
                 ) : (
                   <GraduationCap className="h-10 w-10 md:h-14 md:w-14 text-primary" />
                 )}
               </div>
               <div className="font-headline font-black text-2xl md:text-5xl tracking-tighter leading-[0.7] uppercase">
-                <span className="block">{smpnLabel} <span className="text-secondary">{fiveLabel}</span></span>
-                <span className="block">{row2}</span>
-                <span className="block">{row3}</span>
+                <span className="block">{row1}</span>
+                <span className="block text-secondary">{row2}</span>
               </div>
             </div>
 
@@ -120,7 +117,7 @@ export function Footer() {
             <ul className="space-y-4 md:space-y-5 text-[12px] font-black text-white/70">
               <li><Link href="/profil" className="hover:text-white transition-colors uppercase tracking-[0.1em] block">Profil Sekolah</Link></li>
               <li><Link href="/informasi" className="hover:text-white transition-colors uppercase tracking-[0.1em] block">Informasi Terbaru</Link></li>
-              <li><Link href="/ppdb" className="hover:text-white transition-colors uppercase tracking-[0.1em] block">SPMB Online</Link></li>
+              <li><Link href="/ppdb" className="hover:text-white transition-colors uppercase tracking-[0.1em] block">PPDB Online</Link></li>
               <li><Link href="/galeri" className="hover:text-white transition-colors uppercase tracking-[0.1em] block">Galeri Kegiatan</Link></li>
             </ul>
           </div>

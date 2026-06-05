@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useMemo } from "react";
+import React, { useMemo, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { 
@@ -59,8 +59,15 @@ export default function Home() {
       .slice(0, 3);
   }, [rawNews]);
 
+  // SEO Update: Dynamically change document title based on admin input
+  useEffect(() => {
+    if (settings?.schoolName) {
+      document.title = `${settings.schoolName} - Website Resmi Sekolah`;
+    }
+  }, [settings?.schoolName]);
+
   const heroImageUrl = settings?.heroImageUrl || (settingsLoading ? "" : "https://picsum.photos/seed/school1/1920/1080");
-  const schoolName = settings?.schoolName || "SMPN 5 Langke Rembong";
+  const schoolName = settings?.schoolName || "Portal Sekolah";
   const heroTitle = settings?.heroTitle || "Membangun Masa Depan Bersama Kami";
   const heroSubtitle = settings?.heroSubtitle || "Pendidikan berkualitas untuk generasi emas bangsa melalui kurikulum inovatif.";
   
@@ -77,7 +84,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-col gap-0 overflow-x-hidden">
-      {/* Hero Section - Optimized for SEO with H1 including School Name */}
+      {/* Hero Section */}
       <section className="relative min-h-[100vh] flex items-center overflow-hidden bg-slate-950">
         <div 
           className="absolute inset-0 z-0 bg-cover bg-center transition-opacity duration-1000"
@@ -86,13 +93,13 @@ export default function Home() {
             backgroundAttachment: 'fixed',
             opacity: heroImageUrl ? 1 : 0
           }}
+          data-ai-hint="modern school"
         />
         <div className="absolute inset-0 bg-slate-950/60 md:bg-gradient-to-r md:from-slate-950 md:via-slate-950/70 md:to-transparent z-[1]" />
         
         <div className="container relative z-10 px-6 md:px-12 mx-auto pb-32 pt-40 md:pt-48">
           <div className="max-w-5xl space-y-8 animate-in fade-in slide-in-from-left duration-1000">
             <div className="space-y-4">
-              {/* Main SEO Header */}
               <h1 className="sr-only">{schoolName} - {heroTitle}</h1>
               <div className="text-4xl sm:text-6xl md:text-7xl lg:text-[7.5rem] font-black text-white font-headline leading-[0.9] md:leading-[0.85] tracking-tighter uppercase drop-shadow-2xl">
                 {heroTitle}
@@ -225,6 +232,7 @@ export default function Home() {
                         src={item.imageUrl || `https://picsum.photos/seed/${item.id}/600/400`}
                         alt={item.title}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                        data-ai-hint="school news"
                       />
                       <div className="absolute top-6 left-6 bg-white/90 backdrop-blur-md text-primary text-[10px] font-bold px-4 py-1.5 rounded-full uppercase tracking-widest">
                         {item.category}
@@ -280,7 +288,7 @@ export default function Home() {
             <div className="bg-slate-50 rounded-[3rem] md:rounded-[4rem] p-8 md:p-16 shadow-xl space-y-12">
               <div className="space-y-6 text-center">
                 <div className="bg-secondary/10 text-secondary font-bold uppercase text-[9px] md:text-[10px] tracking-widest px-4 py-2 rounded-full inline-block">Lokasi Sekolah</div>
-                <h2 className="text-3xl md:text-5xl font-bold text-primary font-headline tracking-tighter">Kunjungi {schoolName}</h2>
+                <h2 className="text-3xl md:text-5xl font-bold text-primary font-headline tracking-tighter">Kunjungi Kami</h2>
                 <p className="text-slate-500 font-medium text-sm md:text-lg max-w-2xl mx-auto">{settings.address}</p>
                 <div className="pt-2">
                   <Button className="rounded-full bg-primary h-14 px-10 font-bold gap-2 shadow-lg" asChild>
