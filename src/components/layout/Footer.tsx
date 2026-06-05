@@ -70,7 +70,7 @@ export function Footer() {
     <footer className="bg-primary text-white pt-16 md:pt-20 pb-10 border-t border-white/5 overflow-hidden">
       <div className="container mx-auto px-6 md:px-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 md:gap-12 lg:gap-8 mb-16">
-          {/* Brand Column - Logo & Stacked Name (Expanded Span) */}
+          {/* Brand Column - Logo & Stacked Name */}
           <div className="flex flex-col space-y-6 lg:col-span-2">
             <div className="flex items-center gap-4 md:gap-5">
               <div className="bg-white p-2 md:p-3 rounded-[1.5rem] md:rounded-[1.8rem] shadow-2xl shrink-0 flex items-center justify-center w-20 h-20 md:w-28 md:h-28">
@@ -170,7 +170,7 @@ export function Footer() {
                 <div className="bg-white/5 p-2 md:p-2.5 rounded-xl shrink-0">
                   <Mail className="h-4 w-4 text-secondary" /> 
                 </div>
-                <span className="truncate lowercase">{email}</span>
+                <span className="break-all lowercase">{email}</span>
               </li>
             </ul>
           </div>
