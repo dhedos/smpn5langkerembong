@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useMemo } from "react";
@@ -25,7 +24,7 @@ export function WhatsAppButton() {
   const waUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
 
   return (
-    <div className="fixed bottom-6 right-6 z-[100]">
+    <div className="fixed bottom-8 right-8 z-[100]">
       <Button
         size="lg"
         className="h-16 w-16 rounded-full shadow-2xl transition-all hover:scale-110 flex items-center justify-center p-0 bg-[#25D366] text-white hover:bg-[#128C7E] border-none"

@@ -14,20 +14,21 @@ export function DynamicBranding() {
   useEffect(() => {
     if (!settings) return;
 
-    // 1. Update Judul Tab Browser
-    if (settings.schoolName) {
-      document.title = settings.schoolName;
+    // 1. Update Judul Tab Browser secara instan
+    const schoolName = settings.schoolName;
+    if (schoolName && document.title !== schoolName) {
+      document.title = schoolName;
     }
 
-    // 2. Update Favicon dengan cara yang aman terhadap DOM
+    // 2. Update Favicon tanpa manipulasi DOM yang merusak hydration
     const logoUrl = settings.schoolLogoUrl;
     if (logoUrl) {
-      // Cari semua elemen link yang berhubungan dengan icon
       const links = document.querySelectorAll("link[rel*='icon']");
-      
       if (links.length > 0) {
         links.forEach(link => {
-          (link as HTMLLinkElement).href = logoUrl;
+          if ((link as HTMLLinkElement).href !== logoUrl) {
+            (link as HTMLLinkElement).href = logoUrl;
+          }
         });
       } else {
         const link = document.createElement('link');
@@ -37,13 +38,6 @@ export function DynamicBranding() {
       }
     }
   }, [settings]);
-
-  // Efek pembersihan awal untuk memastikan judul tidak menampilkan teks default framework
-  useEffect(() => {
-    if (document.title.includes('Next.js') || document.title === '' || document.title === 'Website Resmi Sekolah') {
-      document.title = 'Memuat Website...';
-    }
-  }, []);
 
   return null;
 }
