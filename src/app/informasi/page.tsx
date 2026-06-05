@@ -1,18 +1,22 @@
+
 "use client";
 
 import React, { useMemo, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Newspaper, Calendar, ArrowRight, Search, ExternalLink } from "lucide-react";
+import { Newspaper, Calendar, ArrowRight, Search, ExternalLink, Loader2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { useFirestore, useCollection } from "@/firebase";
-import { collection, query, where } from "firebase/firestore";
+import { useFirestore, useCollection, useDoc } from "@/firebase";
+import { collection, query, where, doc } from "firebase/firestore";
 
 export default function VisitorInformasi() {
   const db = useFirestore();
   const currentSchoolId = 'smpn5-langke-rembong';
   const [searchTerm, setSearchTerm] = useState("");
+
+  const settingsRef = useMemo(() => db ? doc(db, "schools", currentSchoolId) : null, [db]);
+  const { data: settings } = useDoc(settingsRef);
 
   const newsQuery = useMemo(() => {
     if (!db) return null;
@@ -40,13 +44,25 @@ export default function VisitorInformasi() {
       });
   }, [rawNews, searchTerm]);
 
+  const heroImageUrl = settings?.heroImageUrl || "https://picsum.photos/seed/school1/1920/1080";
+
   return (
-    <div className="pt-24 bg-white min-h-screen">
-      <section className="bg-primary py-24 text-white relative overflow-hidden">
-        <div className="absolute inset-0 bg-secondary/5 skew-y-3 translate-y-20" />
-        <div className="container mx-auto px-4 relative z-10 text-center">
-          <h1 className="text-5xl md:text-7xl font-bold font-headline mb-6 tracking-tighter uppercase">Informasi & Pengumuman</h1>
-          <p className="text-xl text-white/70 max-w-2xl mx-auto font-medium">Temukan berita terkini, agenda sekolah, dan informasi penting lainnya.</p>
+    <div className="pt-0 bg-white min-h-screen">
+      {/* Dynamic Hero Header */}
+      <section className="relative h-[50vh] flex items-center justify-center overflow-hidden bg-slate-950">
+        <div 
+          className="absolute inset-0 z-0 bg-cover bg-center"
+          style={{ backgroundImage: `url('${heroImageUrl}')` }}
+        />
+        <div className="absolute inset-0 bg-slate-950/70 z-[1]" />
+        
+        <div className="container mx-auto px-4 relative z-10 text-center space-y-4">
+          <h1 className="text-5xl md:text-7xl font-bold font-headline text-white tracking-tighter uppercase drop-shadow-2xl">
+            Informasi & Pengumuman
+          </h1>
+          <p className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto font-medium drop-shadow-lg">
+            Temukan berita terkini, agenda sekolah, dan informasi penting lainnya.
+          </p>
         </div>
       </section>
 
