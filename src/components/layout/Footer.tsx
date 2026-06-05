@@ -28,7 +28,7 @@ export function Footer() {
   const schoolLogo = settings?.schoolLogoUrl;
   const officialWebsites = Array.isArray(settings?.officialWebsites) ? settings.officialWebsites : [];
   
-  const address = settings?.address || "Alamat belum diatur di Panel Admin.";
+  const address = settings?.address || "";
   const phone = settings?.phone || "-";
   const email = settings?.email || "-";
 
@@ -134,12 +134,14 @@ export function Footer() {
           <div className="pt-2">
             <h4 className="font-headline font-black mb-6 md:mb-8 text-[11px] tracking-[0.2em] uppercase text-secondary">Hubungi Kami</h4>
             <ul className="space-y-5 md:space-y-6 text-[12px] text-white/80 font-black tracking-wide">
-              <li className="flex gap-4 items-start">
-                <div className="bg-white/5 p-2 md:p-2.5 rounded-xl shrink-0 mt-0.5">
-                  <MapPin className="h-4 w-4 text-secondary" /> 
-                </div>
-                <span className="leading-relaxed uppercase tracking-tighter">{address}</span>
-              </li>
+              {address && (
+                <li className="flex gap-4 items-start">
+                  <div className="bg-white/5 p-2 md:p-2.5 rounded-xl shrink-0 mt-0.5">
+                    <MapPin className="h-4 w-4 text-secondary" /> 
+                  </div>
+                  <span className="leading-relaxed uppercase tracking-tighter break-words">{address}</span>
+                </li>
+              )}
               <li className="flex gap-4 items-center">
                 <div className="bg-white/5 p-2 md:p-2.5 rounded-xl shrink-0">
                   <Phone className="h-4 w-4 text-secondary" /> 
@@ -157,7 +159,7 @@ export function Footer() {
         </div>
 
         <div className="border-t border-white/5 pt-10 flex flex-col md:flex-row justify-between items-center gap-6 text-[10px] font-black text-white/30 tracking-[0.2em] uppercase text-center md:text-left">
-          <p>© {displayYear} {schoolName.toUpperCase() || "OFFICIAL SCHOOL PORTAL"}. ALL RIGHTS RESERVED.</p>
+          <p>© {displayYear} {schoolName ? schoolName.toUpperCase() : "OFFICIAL PORTAL"}. ALL RIGHTS RESERVED.</p>
           <div className="flex gap-6 items-center">
             <Link href="/admin" className="opacity-30 hover:opacity-100 transition-all flex items-center gap-2">
               ADMIN CONSOLE

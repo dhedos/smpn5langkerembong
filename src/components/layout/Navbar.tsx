@@ -26,7 +26,7 @@ export function Navbar() {
   const db = useFirestore();
   const currentSchoolId = 'smpn5-langke-rembong';
   const settingsRef = useMemo(() => db ? doc(db, "schools", currentSchoolId) : null, [db]);
-  const { data: settings, loading } = useDoc(settingsRef);
+  const { data: settings } = useDoc(settingsRef);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -94,9 +94,14 @@ export function Navbar() {
                 <Image src={schoolLogo} alt="Logo" fill className="object-contain" />
               </div>
             </div>
-          ) : null}
+          ) : (
+            <div className={cn(
+              "p-1.5 md:p-2 rounded-xl md:rounded-2xl transition-all duration-500 shrink-0",
+              isSolid ? "bg-primary/5" : "bg-white/5 backdrop-blur-sm"
+            )} />
+          )}
           
-          <div className="flex flex-col justify-center">
+          <div className="flex flex-col justify-center min-w-[100px]">
             {schoolName ? (
               <span className={cn(
                 "font-headline font-bold text-sm sm:text-base md:text-xl tracking-tighter uppercase transition-colors duration-500 line-clamp-2 leading-tight md:leading-none",
@@ -104,9 +109,12 @@ export function Navbar() {
               )}>
                 {schoolName}
               </span>
-            ) : loading ? (
-              <div className="h-5 w-32 bg-slate-200/50 animate-pulse rounded" />
-            ) : null}
+            ) : (
+              <div className={cn(
+                "h-4 w-32 rounded animate-pulse",
+                isSolid ? "bg-slate-100" : "bg-white/10"
+              )} />
+            )}
           </div>
         </Link>
 
@@ -236,11 +244,6 @@ export function Navbar() {
               <Button size="lg" className="w-full bg-primary h-14 text-white rounded-2xl font-bold" asChild>
                 <Link href="/ppdb">{spmbLabel}</Link>
               </Button>
-            )}
-            {schoolName && (
-              <p className="text-center text-[10px] text-slate-400 font-bold uppercase tracking-widest pt-6">
-                {schoolName} OFFICIAL PORTAL
-              </p>
             )}
           </div>
         </nav>
