@@ -67,22 +67,22 @@ export function Footer() {
   ];
 
   return (
-    <footer className="bg-primary text-white pt-20 pb-10 border-t border-white/5 overflow-hidden">
+    <footer className="bg-primary text-white pt-16 md:pt-20 pb-10 border-t border-white/5 overflow-hidden">
       <div className="container mx-auto px-6 md:px-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 lg:gap-8 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 md:gap-12 lg:gap-8 mb-16">
           {/* Brand Column - Logo & Stacked Name (Expanded Span) */}
           <div className="flex flex-col space-y-6 lg:col-span-2">
-            <div className="flex items-center gap-5">
-              <div className="bg-white p-3 rounded-[1.8rem] shadow-2xl shrink-0 flex items-center justify-center w-28 h-28">
+            <div className="flex items-center gap-4 md:gap-5">
+              <div className="bg-white p-2 md:p-3 rounded-[1.5rem] md:rounded-[1.8rem] shadow-2xl shrink-0 flex items-center justify-center w-20 h-20 md:w-28 md:h-28">
                 {schoolLogo ? (
-                  <div className="relative h-20 w-20">
+                  <div className="relative h-14 w-14 md:h-20 md:w-20">
                     <Image src={schoolLogo} alt="Logo" fill className="object-contain" />
                   </div>
                 ) : (
-                  <GraduationCap className="h-14 w-14 text-primary" />
+                  <GraduationCap className="h-10 w-10 md:h-14 md:w-14 text-primary" />
                 )}
               </div>
-              <div className="font-headline font-black text-3xl md:text-5xl tracking-tighter leading-[0.8] uppercase">
+              <div className="font-headline font-black text-2xl md:text-5xl tracking-tighter leading-[0.8] uppercase">
                 <span className="block">{smpnLabel} <span className="text-secondary">{fiveLabel}</span></span>
                 <span className="block">{row2}</span>
                 <span className="block">{row3}</span>
@@ -103,7 +103,7 @@ export function Footer() {
                       href={web.url} 
                       target="_blank" 
                       rel="noopener noreferrer"
-                      className="text-white/80 hover:text-secondary transition-all flex items-center gap-2 uppercase text-[9px] font-black tracking-widest bg-white/5 p-3 rounded-xl border border-white/10 group w-fit min-w-[200px]"
+                      className="text-white/80 hover:text-secondary transition-all flex items-center gap-2 uppercase text-[9px] font-black tracking-widest bg-white/5 p-3 rounded-xl border border-white/10 group w-fit min-w-[180px] md:min-w-[200px]"
                     >
                       <Globe className="h-3.5 w-3.5 text-secondary" /> 
                       <span className="truncate">{web.title}</span> 
@@ -130,8 +130,8 @@ export function Footer() {
 
           {/* Quick Links Column */}
           <div className="pt-2">
-            <h4 className="font-headline font-black mb-8 text-[11px] tracking-[0.2em] uppercase text-secondary">Tautan Cepat</h4>
-            <ul className="space-y-5 text-[12px] font-black text-white/70">
+            <h4 className="font-headline font-black mb-6 md:mb-8 text-[11px] tracking-[0.2em] uppercase text-secondary">Tautan Cepat</h4>
+            <ul className="space-y-4 md:space-y-5 text-[12px] font-black text-white/70">
               <li><Link href="/profil" className="hover:text-white transition-colors uppercase tracking-[0.1em] block">Profil Sekolah</Link></li>
               <li><Link href="/informasi" className="hover:text-white transition-colors uppercase tracking-[0.1em] block">Informasi Terbaru</Link></li>
               <li><Link href="/ppdb" className="hover:text-white transition-colors uppercase tracking-[0.1em] block">SPMB Online</Link></li>
@@ -141,8 +141,8 @@ export function Footer() {
 
           {/* Academic Column */}
           <div className="pt-2">
-            <h4 className="font-headline font-black mb-8 text-[11px] tracking-[0.2em] uppercase text-secondary">Akademik</h4>
-            <ul className="space-y-5 text-[12px] font-black text-white/70">
+            <h4 className="font-headline font-black mb-6 md:mb-8 text-[11px] tracking-[0.2em] uppercase text-secondary">Akademik</h4>
+            <ul className="space-y-4 md:space-y-5 text-[12px] font-black text-white/70">
               <li className="hover:text-white transition-colors cursor-pointer uppercase tracking-[0.1em] block">Kurikulum Merdeka</li>
               <li className="hover:text-white transition-colors cursor-pointer uppercase tracking-[0.1em] block">E-Learning</li>
               <li className="hover:text-white transition-colors cursor-pointer uppercase tracking-[0.1em] block">Perpustakaan</li>
@@ -152,22 +152,22 @@ export function Footer() {
 
           {/* Contact Column */}
           <div className="pt-2">
-            <h4 className="font-headline font-black mb-8 text-[11px] tracking-[0.2em] uppercase text-secondary">Hubungi Kami</h4>
-            <ul className="space-y-6 text-[12px] text-white/80 font-black tracking-wide">
+            <h4 className="font-headline font-black mb-6 md:mb-8 text-[11px] tracking-[0.2em] uppercase text-secondary">Hubungi Kami</h4>
+            <ul className="space-y-5 md:space-y-6 text-[12px] text-white/80 font-black tracking-wide">
               <li className="flex gap-4 items-start">
-                <div className="bg-white/5 p-2.5 rounded-xl shrink-0 mt-0.5">
+                <div className="bg-white/5 p-2 md:p-2.5 rounded-xl shrink-0 mt-0.5">
                   <MapPin className="h-4 w-4 text-secondary" /> 
                 </div>
                 <span className="leading-relaxed uppercase tracking-tighter">{address}</span>
               </li>
               <li className="flex gap-4 items-center">
-                <div className="bg-white/5 p-2.5 rounded-xl shrink-0">
+                <div className="bg-white/5 p-2 md:p-2.5 rounded-xl shrink-0">
                   <Phone className="h-4 w-4 text-secondary" /> 
                 </div>
                 <span>{phone}</span>
               </li>
               <li className="flex gap-4 items-center">
-                <div className="bg-white/5 p-2.5 rounded-xl shrink-0">
+                <div className="bg-white/5 p-2 md:p-2.5 rounded-xl shrink-0">
                   <Mail className="h-4 w-4 text-secondary" /> 
                 </div>
                 <span className="truncate lowercase">{email}</span>

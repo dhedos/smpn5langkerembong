@@ -80,26 +80,26 @@ export function Navbar() {
       className={cn(
         "fixed top-0 left-0 right-0 z-[60] transition-all duration-500",
         isSolid 
-          ? "bg-white border-b border-slate-200 py-3 shadow-md" 
-          : "bg-transparent py-5"
+          ? "bg-white border-b border-slate-200 py-2.5 md:py-3 shadow-md" 
+          : "bg-transparent py-4 md:py-5"
       )}
     >
-      <div className="max-w-7xl mx-auto flex items-center justify-between px-6 md:px-12">
-        <Link href="/" className="flex items-center gap-3 group">
+      <div className="max-w-7xl mx-auto flex items-center justify-between px-4 md:px-12">
+        <Link href="/" className="flex items-center gap-2 md:gap-3 group max-w-[75%] md:max-w-none">
           <div className={cn(
-            "p-2 rounded-2xl transition-all duration-500 shadow-md transform group-hover:scale-110",
+            "p-1.5 md:p-2 rounded-xl md:rounded-2xl transition-all duration-500 shadow-md transform group-hover:scale-105 shrink-0",
             isSolid ? "bg-primary" : "bg-white/20 backdrop-blur-md"
           )}>
             {schoolLogo ? (
-              <div className="relative h-7 w-7">
+              <div className="relative h-6 w-6 md:h-7 md:w-7">
                 <Image src={schoolLogo} alt="Logo" fill className="object-contain" />
               </div>
             ) : (
-              <GraduationCap className={cn("h-7 w-7 text-white")} />
+              <GraduationCap className={cn("h-6 w-6 md:h-7 md:w-7 text-white")} />
             )}
           </div>
           <span className={cn(
-            "font-headline font-bold text-lg md:text-xl tracking-tighter uppercase transition-colors duration-500",
+            "font-headline font-bold text-sm sm:text-base md:text-xl tracking-tighter uppercase transition-colors duration-500 line-clamp-2 leading-tight md:leading-none",
             isSolid ? "text-slate-900" : "text-white drop-shadow-md"
           )}>
             {schoolName}
@@ -158,10 +158,10 @@ export function Navbar() {
         </div>
 
         <button
-          className={cn("lg:hidden p-2.5 rounded-xl transition-colors shadow-md", isSolid ? "bg-slate-100 text-primary" : "bg-white text-primary")}
+          className={cn("lg:hidden p-2 rounded-lg transition-colors shadow-md shrink-0", isSolid ? "bg-slate-100 text-primary" : "bg-white text-primary")}
           onClick={() => setIsOpen(true)}
         >
-          <Menu className="h-6 w-6" />
+          <Menu className="h-5 w-5" />
         </button>
       </div>
 
