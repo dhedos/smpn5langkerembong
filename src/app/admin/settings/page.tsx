@@ -64,6 +64,7 @@ export default function AdminSettings() {
     email: "admin@smpn5langkerembong.sch.id",
     googleMapsEmbedUrl: "",
     history: "",
+    historyPhotoUrl: "",
     vision: "",
     mission: [],
     stats: [
@@ -468,11 +469,25 @@ export default function AdminSettings() {
 
         <TabsContent value="profile" className="space-y-8">
           <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden bg-white">
-            <CardHeader className="bg-slate-50/50 border-b p-8"><CardTitle className="text-xl flex items-center gap-3 font-headline text-primary"><History className="h-6 w-6 text-secondary" /> Sejarah</CardTitle></CardHeader>
-            <CardContent className="p-8">
-              <Textarea value={formData.history} onChange={(e) => setFormData({...formData, history: e.target.value})} className="min-h-[200px] bg-slate-50" />
+            <CardHeader className="bg-slate-50/50 border-b p-8"><CardTitle className="text-xl flex items-center gap-3 font-headline text-primary"><History className="h-6 w-6 text-secondary" /> Sejarah Sekolah</CardTitle></CardHeader>
+            <CardContent className="p-8 space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="space-y-3">
+                  <Label className="text-xs font-bold uppercase text-slate-400">Teks Sejarah</Label>
+                  <Textarea value={formData.history} onChange={(e) => setFormData({...formData, history: e.target.value})} className="min-h-[250px] bg-slate-50" placeholder="Tuliskan sejarah sekolah di sini..." />
+                </div>
+                <div className="space-y-3">
+                  <Label className="text-xs font-bold uppercase text-slate-400">Foto Sejarah</Label>
+                  <div className="relative aspect-video w-full rounded-[2rem] overflow-hidden border-2 border-dashed bg-slate-50 flex items-center justify-center group">
+                    {formData.historyPhotoUrl ? <img src={formData.historyPhotoUrl} className="w-full h-full object-cover" /> : <ImageIcon className="h-12 w-12 text-slate-300" />}
+                    <input type="file" accept="image/*" onChange={(e) => handleFileChange(e, "historyPhotoUrl")} className="absolute inset-0 opacity-0 cursor-pointer" />
+                  </div>
+                  <p className="text-[10px] text-slate-400 italic">Foto ini akan tampil di samping teks sejarah pada halaman profil.</p>
+                </div>
+              </div>
             </CardContent>
           </Card>
+          
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden bg-white">
               <CardHeader className="bg-slate-50/50 border-b p-8"><CardTitle className="text-xl flex items-center gap-3 font-headline text-primary"><Target className="h-6 w-6 text-secondary" /> Visi</CardTitle></CardHeader>

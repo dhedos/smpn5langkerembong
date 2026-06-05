@@ -38,6 +38,7 @@ export default function ProfilPage() {
   }
 
   const schoolName = settings?.schoolName || "SMPN 5 Langke Rembong";
+  const historyPhoto = settings?.historyPhotoUrl || "https://picsum.photos/seed/history/800/800";
   
   return (
     <div className="pt-24 bg-white animate-in fade-in duration-500">
@@ -62,9 +63,9 @@ export default function ProfilPage() {
               </div>
             </div>
             <div className="w-full md:w-1/2 relative">
-              <div className="rounded-[3rem] overflow-hidden shadow-2xl border-[12px] border-slate-50">
+              <div className="rounded-[3rem] overflow-hidden shadow-2xl border-[12px] border-slate-50 bg-slate-50">
                  <img 
-                  src="https://picsum.photos/seed/history/800/800" 
+                  src={historyPhoto} 
                   alt="Sejarah Sekolah" 
                   className="w-full h-auto object-cover"
                 />
