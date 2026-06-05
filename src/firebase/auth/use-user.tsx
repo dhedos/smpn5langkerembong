@@ -21,27 +21,30 @@ export function useUser() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    return onAuthStateChanged(auth, async (firebaseUser) => {
+    if (!auth || !db) {
+      // Tunggu hingga Firebase siap
+      return;
+    }
+
+    const unsubscribeAuth = onAuthStateChanged(auth, async (firebaseUser) => {
       setUser(firebaseUser);
       
       if (firebaseUser) {
         const userDocRef = doc(db, 'users', firebaseUser.uid);
         
-        const unsubscribe = onSnapshot(userDocRef, (docSnap) => {
+        const unsubscribeProfile = onSnapshot(userDocRef, (docSnap) => {
           if (docSnap.exists()) {
             setProfile(docSnap.data() as UserProfile);
             setLoading(false);
           } else {
-            // Inisialisasi profil jika belum ada
             const defaultProfile: UserProfile = {
               uid: firebaseUser.uid,
               name: firebaseUser.displayName || 'GN Admin',
               email: firebaseUser.email || '',
               role: 'admin',
-              schoolId: 'smpn5-langke-rembong' // Default tenant ID
+              schoolId: 'smpn5-langke-rembong'
             };
             
-            // Mencoba membuat profil secara otomatis (Rules mengizinkan ini untuk pemilik UID)
             setDoc(userDocRef, defaultProfile, { merge: true })
               .catch(err => console.warn("Auto-profile sync delayed:", err));
               
@@ -53,12 +56,14 @@ export function useUser() {
           setLoading(false);
         });
 
-        return () => unsubscribe();
+        return () => unsubscribeProfile();
       } else {
         setProfile(null);
         setLoading(false);
       }
     });
+
+    return () => unsubscribeAuth();
   }, [auth, db]);
 
   return { user, profile, loading };

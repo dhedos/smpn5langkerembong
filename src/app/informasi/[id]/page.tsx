@@ -1,7 +1,7 @@
 
-"use client";
+'use client';
 
-import React, { useMemo } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import { 
@@ -27,18 +27,27 @@ export default function VisitorInformasiDetail() {
   const newsRef = useMemo(() => db && id ? doc(db, "news", id as string) : null, [db, id]);
   const { data: item, loading } = useDoc(newsRef);
 
-  const shareUrl = typeof window !== 'undefined' ? window.location.href : '';
+  const [shareUrl, setShareUrl] = useState('');
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setShareUrl(window.location.href);
+    }
+  }, []);
 
   const handleShareFB = () => {
+    if (!shareUrl) return;
     window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`, '_blank');
   };
 
   const handleShareWA = () => {
+    if (!shareUrl) return;
     const text = `${item?.title}\n\nBaca selengkapnya di: ${shareUrl}`;
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
   };
 
   const handleCopyLink = () => {
+    if (!shareUrl) return;
     navigator.clipboard.writeText(shareUrl);
     toast({
       title: "Tautan Disalin",
