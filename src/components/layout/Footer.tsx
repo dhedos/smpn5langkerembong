@@ -66,7 +66,7 @@ export function Footer() {
                 </div>
               ) : null}
               {schoolName && (
-                <div className="font-headline font-black text-2xl md:text-5xl tracking-tighter leading-[0.7] uppercase">
+                <div className="font-headline font-black text-2xl md:text-5xl tracking-tight leading-[0.95] md:leading-[0.85] uppercase">
                   <span className="block">{row1}</span>
                   <span className="block text-secondary">{row2}</span>
                 </div>

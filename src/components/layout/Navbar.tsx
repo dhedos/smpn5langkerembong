@@ -99,7 +99,7 @@ export function Navbar() {
           <div className="flex flex-col justify-center overflow-hidden">
             {schoolName ? (
               <span className={cn(
-                "font-headline font-bold text-sm sm:text-lg md:text-2xl tracking-tighter uppercase transition-colors duration-500 line-clamp-2 leading-none",
+                "font-headline font-bold text-sm sm:text-lg md:text-2xl tracking-tight uppercase transition-colors duration-500 line-clamp-2 leading-tight md:leading-none",
                 isSolid ? "text-slate-900" : "text-white drop-shadow-lg"
               )}>
                 {schoolName}
@@ -191,7 +191,7 @@ export function Navbar() {
                 </div>
               </div>
             )}
-            {schoolName && <span className="font-headline font-bold text-primary text-sm uppercase">{schoolName}</span>}
+            {schoolName && <span className="font-headline font-bold text-primary text-sm uppercase leading-tight">{schoolName}</span>}
           </div>
           <button 
             onClick={() => setIsOpen(false)} 
