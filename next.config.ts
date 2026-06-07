@@ -15,14 +15,6 @@ const nextConfig: NextConfig = {
       { protocol: 'https', hostname: 'firebasestorage.googleapis.com' }
     ],
   },
-  experimental: {
-    allowedDevOrigins: [
-      'localhost:9002',
-      '*.cloudworkstations.dev',
-      '*.cluster-edb2jv34dnhjisxuq5m7l37ccy.cloudworkstations.dev',
-      'https://*.cloudworkstations.dev'
-    ],
-  },
 };
 
 export default nextConfig;
