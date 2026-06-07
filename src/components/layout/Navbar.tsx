@@ -88,7 +88,7 @@ export function Navbar() {
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between px-4 md:px-8 lg:px-12">
         <Link href="/" className="flex items-center gap-2 md:gap-3 group max-w-[70%] md:max-w-[85%] lg:max-w-none">
-          {schoolLogo ? (
+          {mounted && schoolLogo ? (
             <div className={cn(
               "p-2 rounded-2xl transition-all duration-500 shadow-lg transform group-hover:scale-105 shrink-0",
               isSolid ? "bg-primary" : "bg-white/20 backdrop-blur-md"
@@ -154,7 +154,7 @@ export function Navbar() {
         </nav>
 
         <div className="hidden lg:flex items-center gap-4">
-          {isSpmbActive && (
+          {isSpmbActive && mounted && (
             <Button size="lg" className={cn(
               "rounded-full px-6 xl:px-8 font-bold shadow-xl transition-all hover:scale-105 active:scale-95 uppercase tracking-widest text-[10px] xl:text-xs h-10 xl:h-12",
               isSolid ? "bg-primary text-white" : "bg-secondary text-primary hover:bg-secondary/90 shadow-secondary/20"
@@ -194,7 +194,7 @@ export function Navbar() {
                 </div>
               </div>
             )}
-            {schoolName && <span className="font-headline font-bold text-primary text-xs uppercase leading-tight truncate max-w-[150px]">{schoolName}</span>}
+            {mounted && schoolName && <span className="font-headline font-bold text-primary text-xs uppercase leading-tight truncate max-w-[150px]">{schoolName}</span>}
           </div>
           <button 
             onClick={() => setIsOpen(false)} 
