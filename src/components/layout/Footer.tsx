@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useMemo, useState, useEffect } from "react";
@@ -23,26 +22,30 @@ export function Footer() {
 
   useEffect(() => {
     setMounted(true);
-    setDisplayYear(settings?.copyrightYear || new Date().getFullYear().toString());
+    if (settings?.copyrightYear) {
+      setDisplayYear(settings.copyrightYear);
+    } else {
+      setDisplayYear(new Date().getFullYear().toString());
+    }
   }, [settings?.copyrightYear]);
 
   if (isAdminPage) return null;
 
-  const schoolName = settings?.schoolName || "SEKOLAH";
-  const schoolLogo = settings?.schoolLogoUrl;
-  const officialWebsites = Array.isArray(settings?.officialWebsites) ? settings.officialWebsites : [];
+  const schoolName = mounted && settings?.schoolName ? settings.schoolName : "SEKOLAH";
+  const schoolLogo = mounted ? settings?.schoolLogoUrl : null;
+  const officialWebsites = mounted && Array.isArray(settings?.officialWebsites) ? settings.officialWebsites : [];
   
-  const address = settings?.address || "";
-  const phone = settings?.phone || "-";
-  const email = settings?.email || "-";
+  const address = mounted ? settings?.address : "";
+  const phone = mounted ? settings?.phone : "-";
+  const email = mounted ? settings?.email : "-";
 
   const nameParts = schoolName.toUpperCase().split(" ");
   const row1 = nameParts.slice(0, 2).join(" ");
   const row2 = nameParts.length > 2 ? nameParts.slice(2).join(" ") : "";
 
   const socialLinks = [
-    { id: "facebook", icon: <Facebook className="h-4 w-4" />, href: settings?.facebookUrl || "#" },
-    { id: "instagram", icon: <Instagram className="h-4 w-4" />, href: settings?.instagramUrl || "#" },
+    { id: "facebook", icon: <Facebook className="h-4 w-4" />, href: mounted ? (settings?.facebookUrl || "#") : "#" },
+    { id: "instagram", icon: <Instagram className="h-4 w-4" />, href: mounted ? (settings?.instagramUrl || "#") : "#" },
     { 
       id: "tiktok", 
       icon: (
@@ -50,9 +53,9 @@ export function Footer() {
           <path d="M12.525.02c1.31-.032 2.612-.012 3.914-.022.072 1.51.523 2.973 1.353 4.24 1.096 1.597 2.647 2.766 4.445 3.32v4.015c-1.352-.142-2.65-.584-3.793-1.32-.977-.63-1.808-1.46-2.44-2.435v7.26c-.035 1.513-.423 2.99-1.127 4.305-.71 1.32-1.742 2.44-2.99 3.253-1.25.815-2.7 1.255-4.204 1.277-1.25.815-2.7 1.255-4.204 1.277-1.503.023-3.003-.393-4.305-1.112-1.3-.72-2.42-1.75-3.235-2.997-.813-1.25-1.252-2.7-1.272-4.204-.02-1.503.402-3.002 1.123-4.305.72-1.3 1.75-2.41 2.997-3.226 1.25-.814 2.7-1.253 4.204-1.273a7.435 7.435 0 0 1 3.013.385v4.067c-.822-.267-1.696-.328-2.54-.18-.843.147-1.637.525-2.296 1.09-.658.566-1.162 1.305-1.457 2.13-.295.827-.373 1.714-.226 2.585.147.872.536 1.688 1.123 2.356.586.67 1.34 1.154 2.176 1.398.835.244 1.725.26 2.57.043.844-.217 1.615-.658 2.228-1.272.613-.614 1.04-1.39 1.233-2.238.192-.85.158-1.734-.1-2.57V.02h.001z"/>
         </svg>
       ), 
-      href: settings?.tiktokUrl || "#" 
+      href: mounted ? (settings?.tiktokUrl || "#") : "#"
     },
-    { id: "youtube", icon: <Youtube className="h-4 w-4" />, href: settings?.youtubeUrl || "#" },
+    { id: "youtube", icon: <Youtube className="h-4 w-4" />, href: mounted ? (settings?.youtubeUrl || "#") : "#" },
   ];
 
   return (
@@ -68,17 +71,10 @@ export function Footer() {
                   </div>
                 </div>
               ) : null}
-              {mounted ? (
-                <div className="font-headline font-black text-2xl md:text-3xl lg:text-5xl tracking-tight leading-[1.1] md:leading-[1] lg:leading-[0.85] uppercase">
-                  <span className="block">{row1}</span>
-                  <span className="block text-secondary">{row2}</span>
-                </div>
-              ) : (
-                <div className="font-headline font-black text-2xl md:text-3xl lg:text-5xl tracking-tight leading-none uppercase opacity-50">
-                  <span className="block">PORTAL</span>
-                  <span className="block text-secondary">SEKOLAH</span>
-                </div>
-              )}
+              <div className="font-headline font-black text-2xl md:text-3xl lg:text-5xl tracking-tight leading-[1.1] md:leading-[1] lg:leading-[0.85] uppercase">
+                <span className="block">{row1 || "PORTAL"}</span>
+                <span className="block text-secondary">{row2 || "SEKOLAH"}</span>
+              </div>
             </div>
 
             <div className="space-y-4">
@@ -154,13 +150,13 @@ export function Footer() {
                 <div className="bg-white/5 p-2 md:p-2.5 rounded-xl shrink-0">
                   <Phone className="h-4 w-4 text-secondary" /> 
                 </div>
-                <span>{mounted ? phone : "-"}</span>
+                <span>{phone}</span>
               </li>
               <li className="flex gap-4 items-center">
                 <div className="bg-white/5 p-2 md:p-2.5 rounded-xl shrink-0">
                   <Mail className="h-4 w-4 text-secondary" /> 
                 </div>
-                <span className="break-all lowercase">{mounted ? email : "-"}</span>
+                <span className="break-all lowercase">{email}</span>
               </li>
             </ul>
           </div>

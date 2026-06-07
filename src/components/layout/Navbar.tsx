@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
@@ -82,12 +81,12 @@ export function Navbar() {
       className={cn(
         "fixed top-0 left-0 right-0 z-[60] transition-all duration-500",
         isSolid 
-          ? "bg-white border-b border-slate-200 py-2.5 md:py-3 shadow-md" 
-          : "bg-transparent py-4 md:py-5"
+          ? "bg-white border-b border-slate-200 py-3 shadow-md" 
+          : "bg-transparent py-5"
       )}
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between px-4 md:px-8 lg:px-12">
-        <Link href="/" className="flex items-center gap-2 md:gap-3 group max-w-[70%] md:max-w-[85%] lg:max-w-none">
+        <Link href="/" className="flex items-center gap-3 group max-w-[70%] md:max-w-[85%] lg:max-w-none">
           {mounted && schoolLogo ? (
             <div className={cn(
               "p-2 rounded-2xl transition-all duration-500 shadow-lg transform group-hover:scale-105 shrink-0",
@@ -102,7 +101,7 @@ export function Navbar() {
           <div className="flex flex-col justify-center overflow-hidden">
             {mounted && schoolName ? (
               <span className={cn(
-                "font-headline font-bold text-xs sm:text-sm md:text-base lg:text-2xl tracking-tight uppercase transition-colors duration-500 line-clamp-2 leading-tight md:leading-snug",
+                "font-headline font-bold text-xs sm:text-sm md:text-base lg:text-2xl tracking-tight uppercase transition-colors duration-500 line-clamp-2 leading-tight",
                 isSolid ? "text-slate-900" : "text-white drop-shadow-lg"
               )}>
                 {schoolName}
@@ -187,7 +186,7 @@ export function Navbar() {
       >
         <div className="flex justify-between items-center p-6 border-b border-slate-100 shrink-0">
           <div className="flex items-center gap-3">
-            {schoolLogo && (
+            {mounted && schoolLogo && (
               <div className="bg-primary p-2.5 rounded-2xl shrink-0">
                 <div className="relative h-6 w-6">
                   <Image src={schoolLogo} alt="Logo" fill className="object-contain" />
