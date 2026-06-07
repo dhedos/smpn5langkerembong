@@ -58,8 +58,8 @@ export function Footer() {
   return (
     <footer className="bg-primary text-white pt-16 md:pt-20 pb-10 border-t border-white/5 overflow-hidden">
       <div className="container mx-auto px-6 md:px-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 md:gap-16 lg:gap-8 mb-16">
-          <div className="flex flex-col space-y-6 md:col-span-2 lg:col-span-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 md:gap-12 lg:gap-8 mb-16">
+          <div className="flex flex-col space-y-6 lg:col-span-2">
             <div className="flex items-center gap-4 md:gap-5">
               {mounted && schoolLogo ? (
                 <div className="bg-white p-2 md:p-3 rounded-[1.5rem] md:rounded-[1.8rem] shadow-2xl shrink-0 flex items-center justify-center w-20 h-20 md:w-24 md:h-24 lg:w-28 lg:h-28">
@@ -162,7 +162,7 @@ export function Footer() {
         </div>
 
         <div className="border-t border-white/5 pt-10 flex flex-col md:flex-row justify-between items-center gap-6 text-[10px] font-black text-white/30 tracking-[0.2em] uppercase text-center md:text-left">
-          <p>© {mounted ? displayYear : "...."} {mounted && schoolName ? schoolName.toUpperCase() : "SEKOLAH"}. ALL RIGHTS RESERVED.</p>
+          <p>© {displayYear || "...."} {mounted && schoolName ? schoolName.toUpperCase() : "SEKOLAH"}. ALL RIGHTS RESERVED.</p>
           <div className="flex gap-6 items-center">
             <Link href="/admin" className="opacity-30 hover:opacity-100 transition-all flex items-center gap-2">
               ADMIN CONSOLE
