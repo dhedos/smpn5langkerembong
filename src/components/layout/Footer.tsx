@@ -1,6 +1,7 @@
+
 "use client";
 
-import React, { useMemo } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -10,7 +11,8 @@ import { doc } from "firebase/firestore";
 
 export function Footer() {
   const pathname = usePathname();
-  const isAdminPage = pathname.startsWith("/admin");
+  const isAdminPage = pathname?.startsWith("/admin");
+  const [mounted, setMounted] = useState(false);
 
   const db = useFirestore();
   const currentSchoolId = 'smpn5-langke-rembong';
@@ -18,11 +20,15 @@ export function Footer() {
   const settingsRef = useMemo(() => db ? doc(db, "schools", currentSchoolId) : null, [db]);
   const { data: settings } = useDoc(settingsRef);
 
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const displayYear = useMemo(() => {
     return settings?.copyrightYear || new Date().getFullYear().toString();
   }, [settings?.copyrightYear]);
 
-  if (isAdminPage) return null;
+  if (isAdminPage || !mounted) return null;
 
   const schoolName = settings?.schoolName || "";
   const schoolLogo = settings?.schoolLogoUrl;
@@ -32,7 +38,7 @@ export function Footer() {
   const phone = settings?.phone || "-";
   const email = settings?.email || "-";
 
-  // Split name for adaptive branding with better logic
+  // Split name for adaptive branding
   const nameParts = schoolName.toUpperCase().split(" ");
   const row1 = nameParts.slice(0, 2).join(" ");
   const row2 = nameParts.length > 2 ? nameParts.slice(2).join(" ") : "";

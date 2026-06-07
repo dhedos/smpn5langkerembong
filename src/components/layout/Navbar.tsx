@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
@@ -19,8 +20,9 @@ import { doc } from "firebase/firestore";
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
-  const isAdminPage = pathname.startsWith("/admin");
+  const isAdminPage = pathname?.startsWith("/admin");
   const isHome = pathname === "/";
 
   const db = useFirestore();
@@ -29,6 +31,7 @@ export function Navbar() {
   const { data: settings } = useDoc(settingsRef);
 
   useEffect(() => {
+    setMounted(true);
     const handleScroll = () => {
       setScrolled(window.scrollY > 40);
     };
@@ -70,7 +73,7 @@ export function Navbar() {
     return items;
   }, [isSpmbActive]);
 
-  if (isAdminPage) return null;
+  if (isAdminPage || !mounted) return null;
 
   const isSolid = scrolled || !isHome;
 
@@ -118,7 +121,7 @@ export function Navbar() {
                   <DropdownMenuTrigger className={cn(
                     "flex items-center gap-1.5 text-xs xl:text-sm font-bold transition-all outline-none uppercase tracking-wider",
                     isSolid 
-                      ? (pathname.startsWith(item.href) && item.href !== "/" ? "text-secondary" : "text-slate-700 hover:text-secondary")
+                      ? (pathname?.startsWith(item.href) && item.href !== "/" ? "text-secondary" : "text-slate-700 hover:text-secondary")
                       : "text-white hover:text-secondary drop-shadow-sm"
                   )}>
                     {item.name} <ChevronDown className="h-4 w-4 opacity-50 group-hover:rotate-180 transition-transform" />
