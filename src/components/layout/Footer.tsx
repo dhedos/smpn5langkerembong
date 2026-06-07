@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useMemo, useState, useEffect } from "react";
@@ -28,6 +27,7 @@ export function Footer() {
     return settings?.copyrightYear || new Date().getFullYear().toString();
   }, [settings?.copyrightYear]);
 
+  // Anti-Hydration Mismatch
   if (isAdminPage || !mounted) return null;
 
   const schoolName = settings?.schoolName || "";
@@ -38,7 +38,6 @@ export function Footer() {
   const phone = settings?.phone || "-";
   const email = settings?.email || "-";
 
-  // Split name for adaptive branding
   const nameParts = schoolName.toUpperCase().split(" ");
   const row1 = nameParts.slice(0, 2).join(" ");
   const row2 = nameParts.length > 2 ? nameParts.slice(2).join(" ") : "";
@@ -67,7 +66,7 @@ export function Footer() {
               {schoolLogo ? (
                 <div className="bg-white p-2 md:p-3 rounded-[1.5rem] md:rounded-[1.8rem] shadow-2xl shrink-0 flex items-center justify-center w-20 h-20 md:w-24 md:h-24 lg:w-28 lg:h-28">
                   <div className="relative h-14 w-14 md:h-16 md:w-16 lg:h-20 lg:w-20">
-                    <Image src={schoolLogo} alt={`Logo ${schoolName}`} fill className="object-contain" />
+                    <Image src={schoolLogo} alt="Logo" fill className="object-contain" />
                   </div>
                 </div>
               ) : null}

@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
@@ -73,6 +72,7 @@ export function Navbar() {
     return items;
   }, [isSpmbActive]);
 
+  // Anti-Hydration Mismatch
   if (isAdminPage || !mounted) return null;
 
   const isSolid = scrolled || !isHome;
@@ -87,14 +87,14 @@ export function Navbar() {
       )}
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between px-4 md:px-8 lg:px-12">
-        <Link href="/" className="flex items-center gap-2 md:gap-3 group max-w-[70%] md:max-w-[85%] lg:max-w-none">
+        <Link href="/" className="flex items-center gap-2 md:gap-3 group max-w-[75%] md:max-w-[85%] lg:max-w-none">
           {schoolLogo ? (
             <div className={cn(
               "p-2 rounded-2xl transition-all duration-500 shadow-lg transform group-hover:scale-105 shrink-0",
               isSolid ? "bg-primary" : "bg-white/20 backdrop-blur-md"
             )}>
               <div className="relative h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8">
-                <Image src={schoolLogo} alt="Logo Sekolah" fill className="object-contain" />
+                <Image src={schoolLogo} alt="Logo" fill className="object-contain" />
               </div>
             </div>
           ) : null}

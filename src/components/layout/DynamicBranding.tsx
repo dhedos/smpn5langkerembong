@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useEffect, useMemo } from 'react';
@@ -8,6 +7,7 @@ import { doc } from 'firebase/firestore';
 /**
  * Komponen ini bertanggung jawab untuk mensinkronisasi judul tab browser 
  * dan favicon secara real-time dengan data dari database sekolah.
+ * Diperbarui untuk mencegah error removeChild pada Next.js.
  */
 export function DynamicBranding() {
   const db = useFirestore();
@@ -25,12 +25,12 @@ export function DynamicBranding() {
       document.title = schoolName;
     }
 
-    // 2. Sinkronisasi Favicon
+    // 2. Sinkronisasi Favicon secara aman
     const defaultShield = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj4KICA8cGF0aCBkPSJNNTAgNSBMMTAgMjUgVjU1IEMxMCA3NSA1MCA5NSA1MCA5NSBDNTAgOTUgOTAgNzUgOTAgNTUgVjI1IEw1MCA1IFoiIGZpbGw9IiMxYTM2NWQiIC8+CiAgPHBhdGggZD0iTTUwIDIwIEw1NSAzNSBINzAgTDU4IDQ1IEw2MiA2MCBMNTAgNTAgTDM4IDYwIEw0MiA0NSBMMzAgMzUgSDQ1IEw1MCAyMCBaIiBmaWxsPSIjZmJiZjI0IiAvPgo8L3N2Zz4=';
     const logoUrl = settings.schoolLogoUrl || defaultShield;
     
     const updateIcons = () => {
-      // Kita menggunakan ID khusus agar tidak berbenturan dengan elemen yang dikelola Next.js
+      // Menggunakan ID khusus untuk menghindari konflik dengan sistem internal React/Next.js
       const favId = 'dynamic-favicon';
       let favLink = document.getElementById(favId) as HTMLLinkElement;
       
@@ -45,7 +45,7 @@ export function DynamicBranding() {
         favLink.href = logoUrl;
       }
 
-      // Update apple-touch-icon juga dengan cara yang aman
+      // Update apple-touch-icon
       const appleId = 'dynamic-apple-icon';
       let appleLink = document.getElementById(appleId) as HTMLLinkElement;
       if (!appleLink) {
@@ -61,7 +61,7 @@ export function DynamicBranding() {
 
     updateIcons();
     
-    // Gunakan timeout singkat untuk memastikan kita menimpa metadata default framework
+    // Gunakan interval singkat untuk memastikan sinkronisasi logo instan
     const timeoutId = setTimeout(updateIcons, 100);
     return () => clearTimeout(timeoutId);
 
