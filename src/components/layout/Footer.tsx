@@ -32,7 +32,7 @@ export function Footer() {
   const phone = settings?.phone || "-";
   const email = settings?.email || "-";
 
-  // Dynamic Name Splitting for Adaptive Branding
+  // Split name for adaptive branding with better logic
   const nameParts = schoolName.toUpperCase().split(" ");
   const row1 = nameParts.slice(0, 2).join(" ");
   const row2 = nameParts.length > 2 ? nameParts.slice(2).join(" ") : "";
@@ -55,18 +55,18 @@ export function Footer() {
   return (
     <footer className="bg-primary text-white pt-16 md:pt-20 pb-10 border-t border-white/5 overflow-hidden">
       <div className="container mx-auto px-6 md:px-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 md:gap-12 lg:gap-8 mb-16">
-          <div className="flex flex-col space-y-6 lg:col-span-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 md:gap-16 lg:gap-8 mb-16">
+          <div className="flex flex-col space-y-6 md:col-span-2 lg:col-span-2">
             <div className="flex items-center gap-4 md:gap-5">
               {schoolLogo ? (
-                <div className="bg-white p-2 md:p-3 rounded-[1.5rem] md:rounded-[1.8rem] shadow-2xl shrink-0 flex items-center justify-center w-20 h-20 md:w-28 md:h-28">
-                  <div className="relative h-14 w-14 md:h-20 md:w-20">
+                <div className="bg-white p-2 md:p-3 rounded-[1.5rem] md:rounded-[1.8rem] shadow-2xl shrink-0 flex items-center justify-center w-20 h-20 md:w-24 md:h-24 lg:w-28 lg:h-28">
+                  <div className="relative h-14 w-14 md:h-16 md:w-16 lg:h-20 lg:w-20">
                     <Image src={schoolLogo} alt={`Logo ${schoolName}`} fill className="object-contain" />
                   </div>
                 </div>
               ) : null}
               {schoolName && (
-                <div className="font-headline font-black text-2xl md:text-5xl tracking-tight leading-[0.95] md:leading-[0.85] uppercase">
+                <div className="font-headline font-black text-2xl md:text-3xl lg:text-5xl tracking-tight leading-[1.1] md:leading-[1] lg:leading-[0.85] uppercase">
                   <span className="block">{row1}</span>
                   <span className="block text-secondary">{row2}</span>
                 </div>

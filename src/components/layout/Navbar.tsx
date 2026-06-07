@@ -83,14 +83,14 @@ export function Navbar() {
           : "bg-transparent py-4 md:py-5"
       )}
     >
-      <div className="max-w-7xl mx-auto flex items-center justify-between px-4 md:px-12">
-        <Link href="/" className="flex items-center gap-3 group max-w-[85%] md:max-w-none">
+      <div className="max-w-7xl mx-auto flex items-center justify-between px-4 md:px-8 lg:px-12">
+        <Link href="/" className="flex items-center gap-2 md:gap-3 group max-w-[70%] md:max-w-[85%] lg:max-w-none">
           {schoolLogo ? (
             <div className={cn(
               "p-2 rounded-2xl transition-all duration-500 shadow-lg transform group-hover:scale-105 shrink-0",
               isSolid ? "bg-primary" : "bg-white/20 backdrop-blur-md"
             )}>
-              <div className="relative h-7 w-7 md:h-8 md:w-8">
+              <div className="relative h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8">
                 <Image src={schoolLogo} alt="Logo Sekolah" fill className="object-contain" />
               </div>
             </div>
@@ -99,24 +99,24 @@ export function Navbar() {
           <div className="flex flex-col justify-center overflow-hidden">
             {schoolName ? (
               <span className={cn(
-                "font-headline font-bold text-sm sm:text-lg md:text-2xl tracking-tight uppercase transition-colors duration-500 line-clamp-2 leading-tight md:leading-none",
+                "font-headline font-bold text-xs sm:text-sm md:text-base lg:text-2xl tracking-tight uppercase transition-colors duration-500 line-clamp-2 leading-tight md:leading-snug",
                 isSolid ? "text-slate-900" : "text-white drop-shadow-lg"
               )}>
                 {schoolName}
               </span>
             ) : (
-              <div className={cn("h-6 w-32 animate-pulse rounded-lg", isSolid ? "bg-slate-100" : "bg-white/20")} />
+              <div className={cn("h-6 w-24 md:w-32 animate-pulse rounded-lg", isSolid ? "bg-slate-100" : "bg-white/20")} />
             )}
           </div>
         </Link>
 
-        <nav className="hidden lg:flex items-center gap-10">
+        <nav className="hidden lg:flex items-center gap-6 xl:gap-10">
           {navItems.map((item) => (
             <div key={item.name} className="relative group">
               {item.submenu ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger className={cn(
-                    "flex items-center gap-1.5 text-sm font-bold transition-all outline-none uppercase tracking-wider",
+                    "flex items-center gap-1.5 text-xs xl:text-sm font-bold transition-all outline-none uppercase tracking-wider",
                     isSolid 
                       ? (pathname.startsWith(item.href) && item.href !== "/" ? "text-secondary" : "text-slate-700 hover:text-secondary")
                       : "text-white hover:text-secondary drop-shadow-sm"
@@ -137,7 +137,7 @@ export function Navbar() {
                 <Link
                   href={item.href}
                   className={cn(
-                    "text-sm font-bold transition-all uppercase tracking-wider relative after:absolute after:bottom-[-4px] after:left-0 after:h-0.5 after:bg-secondary after:transition-all after:duration-300",
+                    "text-xs xl:text-sm font-bold transition-all uppercase tracking-wider relative after:absolute after:bottom-[-4px] after:left-0 after:h-0.5 after:bg-secondary after:transition-all after:duration-300",
                     isSolid 
                       ? (pathname === item.href ? "text-secondary after:w-full" : "text-slate-700 hover:text-secondary after:w-0 hover:after:w-full")
                       : "text-white hover:text-secondary drop-shadow-sm after:w-0 hover:after:w-full"
@@ -153,7 +153,7 @@ export function Navbar() {
         <div className="hidden lg:flex items-center gap-4">
           {isSpmbActive && (
             <Button size="lg" className={cn(
-              "rounded-full px-8 font-bold shadow-xl transition-all hover:scale-105 active:scale-95 uppercase tracking-widest text-xs",
+              "rounded-full px-6 xl:px-8 font-bold shadow-xl transition-all hover:scale-105 active:scale-95 uppercase tracking-widest text-[10px] xl:text-xs h-10 xl:h-12",
               isSolid ? "bg-primary text-white" : "bg-secondary text-primary hover:bg-secondary/90 shadow-secondary/20"
             )} asChild>
               <Link href="/ppdb">{spmbLabel}</Link>
@@ -162,7 +162,7 @@ export function Navbar() {
         </div>
 
         <button
-          className={cn("lg:hidden p-2 rounded-lg transition-colors shadow-md shrink-0", isSolid ? "bg-slate-100 text-primary" : "bg-white text-primary")}
+          className={cn("lg:hidden p-2 rounded-lg transition-colors shadow-md shrink-0 ml-2", isSolid ? "bg-slate-100 text-primary" : "bg-white text-primary")}
           onClick={() => setIsOpen(true)}
         >
           <Menu className="h-5 w-5" />
@@ -191,7 +191,7 @@ export function Navbar() {
                 </div>
               </div>
             )}
-            {schoolName && <span className="font-headline font-bold text-primary text-sm uppercase leading-tight">{schoolName}</span>}
+            {schoolName && <span className="font-headline font-bold text-primary text-xs uppercase leading-tight truncate max-w-[150px]">{schoolName}</span>}
           </div>
           <button 
             onClick={() => setIsOpen(false)} 
