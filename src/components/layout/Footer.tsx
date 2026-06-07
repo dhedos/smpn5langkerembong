@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useMemo, useState, useEffect } from "react";
@@ -16,7 +17,7 @@ export function Footer() {
   const db = useFirestore();
   const currentSchoolId = 'smpn5-langke-rembong';
   
-  const settingsRef = useMemo(() => db ? doc(db, "schools", currentSchoolId) : null, [db]);
+  const settingsRef = useMemo(() => db ? doc(db, "schools", currentSchoolId) : null, [db, currentSchoolId]);
   const { data: settings } = useDoc(settingsRef);
 
   useEffect(() => {
@@ -28,7 +29,7 @@ export function Footer() {
   }, [settings?.copyrightYear]);
 
   // Anti-Hydration Mismatch
-  if (isAdminPage || !mounted) return null;
+  if (!mounted || isAdminPage) return null;
 
   const schoolName = settings?.schoolName || "";
   const schoolLogo = settings?.schoolLogoUrl;

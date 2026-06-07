@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useEffect, useMemo } from 'react';
@@ -13,7 +14,7 @@ export function DynamicBranding() {
   const db = useFirestore();
   const currentSchoolId = 'smpn5-langke-rembong';
   
-  const settingsRef = useMemo(() => db ? doc(db, "schools", currentSchoolId) : null, [db]);
+  const settingsRef = useMemo(() => db ? doc(db, "schools", currentSchoolId) : null, [db, currentSchoolId]);
   const { data: settings } = useDoc(settingsRef);
 
   useEffect(() => {
@@ -26,15 +27,17 @@ export function DynamicBranding() {
     }
 
     // 2. Sinkronisasi Favicon secara aman dengan memperbarui elemen ber-ID
+    // Default shield jika logo belum diatur
     const defaultShield = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj4KICA8cGF0aCBkPSJNNTAgNSBMMTAgMjUgVjU1IEMxMCA3NSA1MCA5NSA1MCA5NSBDNTAgOTUgOTAgNzUgOTAgNTUgVjI1IEw1MCA1IFoiIGZpbGw9IiMxYTM2NWQiIC8+CiAgPHBhdGggZD0iTTUwIDIwIEw1NSAzNSBINzAgTDU4IDQ1IEw2MiA2MCBMNTAgNTAgTDM4IDYwIEw0MiA0NSBMMzAgMzUgSDQ1IEw1MCAyMCBaIiBmaWxsPSIjZmJiZjI0IiAvPgo8L3N2Zz4=';
     const logoUrl = settings.schoolLogoUrl || defaultShield;
     
+    // Update elemen favicon yang dideklarasikan di layout.tsx
     const favLink = document.getElementById('dynamic-favicon') as HTMLLinkElement;
     if (favLink && favLink.href !== logoUrl) {
       favLink.href = logoUrl;
     }
 
-    // Juga perbarui apple-touch-icon jika ada
+    // Juga perbarui apple-touch-icon jika ada di DOM
     const appleLink = document.querySelector('link[rel="apple-touch-icon"]') as HTMLLinkElement;
     if (appleLink && appleLink.href !== logoUrl) {
       appleLink.href = logoUrl;

@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
@@ -26,7 +27,7 @@ export function Navbar() {
 
   const db = useFirestore();
   const currentSchoolId = 'smpn5-langke-rembong';
-  const settingsRef = useMemo(() => db ? doc(db, "schools", currentSchoolId) : null, [db]);
+  const settingsRef = useMemo(() => db ? doc(db, "schools", currentSchoolId) : null, [db, currentSchoolId]);
   const { data: settings } = useDoc(settingsRef);
 
   useEffect(() => {
@@ -72,7 +73,7 @@ export function Navbar() {
     return items;
   }, [isSpmbActive]);
 
-  // Anti-Hydration Mismatch Guard
+  // Anti-Hydration Mismatch: Gunakan return null secara konsisten pada SSR dan render pertama client
   if (!mounted || isAdminPage) return null;
 
   const isSolid = scrolled || !isHome;
