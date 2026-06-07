@@ -212,6 +212,7 @@ export function Navbar() {
                     ? "text-primary bg-primary/5" 
                     : "text-slate-600"
                 )}
+                onClick={() => setIsOpen(false)}
               >
                 {item.name}
               </Link>
@@ -222,6 +223,7 @@ export function Navbar() {
                       key={sub.name} 
                       href={sub.href}
                       className="p-3 text-sm font-bold text-slate-500"
+                      onClick={() => setIsOpen(false)}
                     >
                       {sub.name}
                     </Link>
@@ -234,7 +236,7 @@ export function Navbar() {
           <div className="mt-auto pt-8 border-t border-slate-100 pb-10">
             {isSpmbActive && (
               <Button size="lg" className="w-full bg-primary h-14 text-white rounded-2xl font-bold" asChild>
-                <Link href="/ppdb">{spmbLabel}</Link>
+                <Link href="/ppdb" onClick={() => setIsOpen(false)}>{spmbLabel}</Link>
               </Button>
             )}
           </div>
