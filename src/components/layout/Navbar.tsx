@@ -72,8 +72,8 @@ export function Navbar() {
     return items;
   }, [isSpmbActive]);
 
-  // Anti-Hydration Mismatch
-  if (isAdminPage || !mounted) return null;
+  // Anti-Hydration Mismatch Guard
+  if (!mounted || isAdminPage) return null;
 
   const isSolid = scrolled || !isHome;
 
@@ -129,7 +129,7 @@ export function Navbar() {
                   <DropdownMenuContent align="start" className="bg-white border-slate-200 shadow-2xl rounded-2xl p-2 min-w-[200px] mt-2">
                     {item.submenu.map((sub) => (
                       <DropdownMenuItem key={sub.name} asChild>
-                        <Link href={sub.href} className="w-full cursor-pointer hover:bg-slate-100 rounded-xl px-4 py-2.5 font-bold text-slate-700 text-sm">
+                        <Link href={sub.href} className="w-full cursor-pointer hover:bg-slate-100 rounded-xl px-4 py-2.5 font-bold text-slate-700 text-sm" onClick={() => setIsOpen(false)}>
                           {sub.name}
                         </Link>
                       </DropdownMenuItem>

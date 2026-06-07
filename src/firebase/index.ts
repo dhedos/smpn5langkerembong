@@ -5,14 +5,20 @@ import { getFirestore } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { firebaseConfig } from './config';
 
+/**
+ * Inisialisasi Firebase dengan penanganan error untuk mencegah aplikasi crash
+ * pada render awal di deployment.
+ */
 export function initializeFirebase() {
-  const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
-  
-  // Menggunakan inisialisasi standar untuk menghindari asersi internal SDK di Next.js
-  const firestore = getFirestore(app);
-  const auth = getAuth(app);
-
-  return { app, firestore, auth };
+  try {
+    const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
+    const firestore = getFirestore(app);
+    const auth = getAuth(app);
+    return { app, firestore, auth };
+  } catch (error) {
+    console.error("Gagal menginisialisasi Firebase:", error);
+    return { app: null, firestore: null, auth: null };
+  }
 }
 
 export * from './provider';

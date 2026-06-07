@@ -5,9 +5,9 @@ import { useFirestore, useDoc } from '@/firebase';
 import { doc } from 'firebase/firestore';
 
 /**
- * Komponen ini bertanggung jawab untuk mensinkronisasi judul tab browser 
- * dan favicon secara real-time dengan data dari database sekolah.
- * Diperbarui untuk mencegah error removeChild pada Next.js.
+ * Komponen ini mensinkronisasi judul tab dan favicon secara aman.
+ * Menghindari error 'removeChild' dengan memperbarui atribut elemen yang sudah ada,
+ * bukan menambah/menghapus node secara manual di head.
  */
 export function DynamicBranding() {
   const db = useFirestore();
@@ -25,45 +25,20 @@ export function DynamicBranding() {
       document.title = schoolName;
     }
 
-    // 2. Sinkronisasi Favicon secara aman
+    // 2. Sinkronisasi Favicon secara aman dengan memperbarui elemen ber-ID
     const defaultShield = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj4KICA8cGF0aCBkPSJNNTAgNSBMMTAgMjUgVjU1IEMxMCA3NSA1MCA5NSA1MCA5NSBDNTAgOTUgOTAgNzUgOTAgNTUgVjI1IEw1MCA1IFoiIGZpbGw9IiMxYTM2NWQiIC8+CiAgPHBhdGggZD0iTTUwIDIwIEw1NSAzNSBINzAgTDU4IDQ1IEw2MiA2MCBMNTAgNTAgTDM4IDYwIEw0MiA0NSBMMzAgMzUgSDQ1IEw1MCAyMCBaIiBmaWxsPSIjZmJiZjI0IiAvPgo8L3N2Zz4=';
     const logoUrl = settings.schoolLogoUrl || defaultShield;
     
-    const updateIcons = () => {
-      // Menggunakan ID khusus untuk menghindari konflik dengan sistem internal React/Next.js
-      const favId = 'dynamic-favicon';
-      let favLink = document.getElementById(favId) as HTMLLinkElement;
-      
-      if (!favLink) {
-        favLink = document.createElement('link');
-        favLink.id = favId;
-        favLink.rel = 'icon';
-        document.head.appendChild(favLink);
-      }
-      
-      if (favLink.href !== logoUrl) {
-        favLink.href = logoUrl;
-      }
+    const favLink = document.getElementById('dynamic-favicon') as HTMLLinkElement;
+    if (favLink && favLink.href !== logoUrl) {
+      favLink.href = logoUrl;
+    }
 
-      // Update apple-touch-icon
-      const appleId = 'dynamic-apple-icon';
-      let appleLink = document.getElementById(appleId) as HTMLLinkElement;
-      if (!appleLink) {
-        appleLink = document.createElement('link');
-        appleLink.id = appleId;
-        appleLink.rel = 'apple-touch-icon';
-        document.head.appendChild(appleLink);
-      }
-      if (appleLink.href !== logoUrl) {
-        appleLink.href = logoUrl;
-      }
-    };
-
-    updateIcons();
-    
-    // Gunakan interval singkat untuk memastikan sinkronisasi logo instan
-    const timeoutId = setTimeout(updateIcons, 100);
-    return () => clearTimeout(timeoutId);
+    // Juga perbarui apple-touch-icon jika ada
+    const appleLink = document.querySelector('link[rel="apple-touch-icon"]') as HTMLLinkElement;
+    if (appleLink && appleLink.href !== logoUrl) {
+      appleLink.href = logoUrl;
+    }
 
   }, [settings]);
 
