@@ -49,7 +49,8 @@ export default function AdminSettings() {
     schoolName: "Website Sekolah Modern",
     schoolLogoUrl: "",
     officialWebsites: [],
-    copyrightYear: new Date().getFullYear().toString(),
+    otherMedia: [],
+    copyrightYear: "2024",
     heroTitle: "Membangun Masa Depan Bersama Kami",
     heroSubtitle: "Pendidikan berkualitas untuk generasi emas bangsa melalui kurikulum yang inovatif dan lingkungan yang mendukung.",
     heroImageUrl: "",
@@ -90,11 +91,13 @@ export default function AdminSettings() {
   const [formData, setFormData] = useState<any>(defaultValues);
   const [isSaving, setIsSaving] = useState(false);
   const [newMission, setNewMission] = useState("");
-  const [newRequirement, setNewRequirement] = useState("");
   const [addressSearch, setAddressSearch] = useState("");
 
   const [newOfficialTitle, setNewOfficialTitle] = useState("");
   const [newOfficialUrl, setNewOfficialUrl] = useState("");
+
+  const [newOtherTitle, setNewOtherTitle] = useState("");
+  const [newOtherUrl, setNewOtherUrl] = useState("");
 
   useEffect(() => {
     if (currentSettings) {
@@ -102,6 +105,7 @@ export default function AdminSettings() {
         ...prev,
         ...currentSettings,
         officialWebsites: currentSettings.officialWebsites || [],
+        otherMedia: currentSettings.otherMedia || [],
       }));
     }
   }, [currentSettings]);
@@ -137,14 +141,27 @@ export default function AdminSettings() {
       setNewOfficialTitle("");
       setNewOfficialUrl("");
       toast({ title: "Website Ditambahkan" });
-    } else {
-      toast({ title: "Gagal Menambah", description: "Label dan URL wajib diisi.", variant: "destructive" });
     }
   };
 
   const handleRemoveOfficialWebsite = (index: number) => {
     const newList = (formData.officialWebsites || []).filter((_: any, i: number) => i !== index);
     setFormData({ ...formData, officialWebsites: newList });
+  };
+
+  const handleAddOtherMedia = () => {
+    if (newOtherTitle.trim() && newOtherUrl.trim()) {
+      const newList = [...(formData.otherMedia || []), { title: newOtherTitle.trim(), url: newOtherUrl.trim() }];
+      setFormData({ ...formData, otherMedia: newList });
+      setNewOtherTitle("");
+      setNewOtherUrl("");
+      toast({ title: "Media Ditambahkan" });
+    }
+  };
+
+  const handleRemoveOtherMedia = (index: number) => {
+    const newList = (formData.otherMedia || []).filter((_: any, i: number) => i !== index);
+    setFormData({ ...formData, otherMedia: newList });
   };
 
   const handleAddMission = () => {
@@ -162,12 +179,6 @@ export default function AdminSettings() {
       ...prev,
       mission: prev.mission.filter((_: any, i: number) => i !== index)
     }));
-  };
-
-  const handleStatChange = (index: number, field: string, value: string) => {
-    const updatedStats = [...(formData.stats || [])];
-    updatedStats[index] = { ...updatedStats[index], [field]: value };
-    setFormData({ ...formData, stats: updatedStats });
   };
 
   const handleSave = () => {
@@ -250,7 +261,6 @@ export default function AdminSettings() {
                     className="h-14 bg-slate-50 rounded-2xl font-bold" 
                     placeholder="Contoh: SMP NEGERI 5 LANGKE REMBONG"
                   />
-                  <p className="text-[10px] text-slate-400 italic">Nama ini akan menjadi identitas utama di hasil pencarian Google.</p>
                 </div>
 
                 <div className="space-y-3 pt-4 border-t">
@@ -269,7 +279,7 @@ export default function AdminSettings() {
                   <Label className="text-xs font-bold uppercase text-slate-400">Portal Resmi Instansi</Label>
                   <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100 space-y-4">
                     <div className="grid grid-cols-1 gap-3">
-                      <Input value={newOfficialTitle} onChange={(e) => setNewOfficialTitle(e.target.value)} className="h-10 bg-white rounded-xl" placeholder="Label (Contoh: DINAS PENDIDIKAN)" />
+                      <Input value={newOfficialTitle} onChange={(e) => setNewOfficialTitle(e.target.value)} className="h-10 bg-white rounded-xl" placeholder="Label Portal (e.g. PEMKAB)" />
                       <div className="flex gap-2">
                         <Input value={newOfficialUrl} onChange={(e) => setNewOfficialUrl(e.target.value)} className="h-10 bg-white rounded-xl flex-1" placeholder="https://..." />
                         <Button onClick={handleAddOfficialWebsite} className="h-10 px-4 rounded-xl bg-secondary text-primary font-bold"><Plus /></Button>
@@ -310,7 +320,6 @@ export default function AdminSettings() {
               <CardTitle className="text-xl flex items-center gap-3 font-headline text-primary">
                 <SearchCode className="h-6 w-6 text-secondary" /> Optimasi Pencarian (SEO)
               </CardTitle>
-              <CardDescription>Atur bagaimana sekolah Anda muncul di Google, Nasional, dan Internasional.</CardDescription>
             </CardHeader>
             <CardContent className="p-8 space-y-8">
               <div className="space-y-3">
@@ -318,31 +327,18 @@ export default function AdminSettings() {
                 <Textarea 
                   value={formData.seoDescription} 
                   onChange={(e) => setFormData({...formData, seoDescription: e.target.value})} 
-                  placeholder="Contoh: Sekolah Menengah Pertama terbaik di wilayah Manggarai dengan fokus pada kurikulum inovatif..." 
-                  className="min-h-[120px] bg-slate-50 rounded-2xl p-4 text-sm"
+                  placeholder="Deskripsi singkat untuk Google..." 
+                  className="min-h-[120px] bg-slate-50 rounded-2xl"
                 />
-                <p className="text-[10px] text-slate-400 italic">Tuliskan 150-160 karakter agar muncul sempurna di hasil pencarian Google.</p>
               </div>
-
               <div className="space-y-3 pt-4 border-t">
                 <Label className="text-xs font-bold uppercase text-slate-400">Kata Kunci (SEO Keywords)</Label>
                 <Input 
                   value={formData.seoKeywords} 
                   onChange={(e) => setFormData({...formData, seoKeywords: e.target.value})} 
-                  placeholder="Contoh: sekolah terbaik, ruteng, pendidikan flores, ppdb manggarai" 
+                  placeholder="sekolah, pendidikan, ppdb" 
                   className="h-14 bg-slate-50 rounded-2xl" 
                 />
-                <p className="text-[10px] text-slate-400 italic">Gunakan koma untuk memisahkan setiap kata kunci.</p>
-              </div>
-
-              <div className="bg-blue-50 p-6 rounded-3xl border border-blue-100 flex gap-4 items-start">
-                <Globe className="h-6 w-6 text-blue-500 shrink-0" />
-                <div className="space-y-2">
-                  <h4 className="text-sm font-bold text-blue-900">Tips Pencarian Internasional</h4>
-                  <p className="text-xs text-blue-700 leading-relaxed">
-                    Untuk jangkauan internasional, pastikan "Nama Sekolah" dan "Deskripsi" mengandung kata kunci dalam bahasa Inggris jika diperlukan (misal: "International Standard School"). Gunakan juga fitur <b>AI Content Optimizer</b> di setiap berita untuk meningkatkan skor SEO secara otomatis.
-                  </p>
-                </div>
               </div>
             </CardContent>
           </Card>
@@ -412,14 +408,52 @@ export default function AdminSettings() {
           </Card>
         </TabsContent>
 
-        <TabsContent value="social">
+        <TabsContent value="social" className="space-y-8">
           <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden bg-white">
-            <CardHeader className="bg-slate-50/50 border-b p-8"><CardTitle className="text-xl flex items-center gap-3 font-headline text-primary"><Share2 className="h-6 w-6 text-secondary" /> Media Sosial</CardTitle></CardHeader>
+            <CardHeader className="bg-slate-50/50 border-b p-8"><CardTitle className="text-xl flex items-center gap-3 font-headline text-primary"><Share2 className="h-6 w-6 text-secondary" /> Media Sosial Utama</CardTitle></CardHeader>
             <CardContent className="p-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Input value={formData.facebookUrl} onChange={(e) => setFormData({...formData, facebookUrl: e.target.value})} placeholder="Facebook URL" className="h-14 bg-slate-50" />
-              <Input value={formData.instagramUrl} onChange={(e) => setFormData({...formData, instagramUrl: e.target.value})} placeholder="Instagram URL" className="h-14 bg-slate-50" />
-              <Input value={formData.tiktokUrl} onChange={(e) => setFormData({...formData, tiktokUrl: e.target.value})} placeholder="TikTok URL" className="h-14 bg-slate-50" />
-              <Input value={formData.youtubeUrl} onChange={(e) => setFormData({...formData, youtubeUrl: e.target.value})} placeholder="YouTube URL" className="h-14 bg-slate-50" />
+              <div className="space-y-2">
+                <Label className="text-[10px] font-bold uppercase text-slate-400">Facebook URL</Label>
+                <Input value={formData.facebookUrl} onChange={(e) => setFormData({...formData, facebookUrl: e.target.value})} placeholder="https://facebook.com/..." className="h-12 bg-slate-50" />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-[10px] font-bold uppercase text-slate-400">Instagram URL</Label>
+                <Input value={formData.instagramUrl} onChange={(e) => setFormData({...formData, instagramUrl: e.target.value})} placeholder="https://instagram.com/..." className="h-12 bg-slate-50" />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-[10px] font-bold uppercase text-slate-400">TikTok URL</Label>
+                <Input value={formData.tiktokUrl} onChange={(e) => setFormData({...formData, tiktokUrl: e.target.value})} placeholder="https://tiktok.com/@..." className="h-12 bg-slate-50" />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-[10px] font-bold uppercase text-slate-400">YouTube URL</Label>
+                <Input value={formData.youtubeUrl} onChange={(e) => setFormData({...formData, youtubeUrl: e.target.value})} placeholder="https://youtube.com/c/..." className="h-12 bg-slate-50" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden bg-white">
+            <CardHeader className="bg-slate-50/50 border-b p-8"><CardTitle className="text-xl flex items-center gap-3 font-headline text-primary"><LinkIcon className="h-6 w-6 text-secondary" /> Informasi Media Lain</CardTitle></CardHeader>
+            <CardContent className="p-8 space-y-6">
+              <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100 space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <Input value={newOtherTitle} onChange={(e) => setNewOtherTitle(e.target.value)} className="h-12 bg-white rounded-xl" placeholder="Nama Media (e.g. Media Mitra)" />
+                  <div className="flex gap-2">
+                    <Input value={newOtherUrl} onChange={(e) => setNewOtherUrl(e.target.value)} className="h-12 bg-white rounded-xl flex-1" placeholder="https://..." />
+                    <Button onClick={handleAddOtherMedia} className="h-12 px-6 rounded-xl bg-secondary text-primary font-bold"><Plus /></Button>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {formData.otherMedia?.map((media: any, i: number) => (
+                    <div key={i} className="flex items-center justify-between bg-white p-3 rounded-xl border border-slate-100">
+                      <div className="flex flex-col">
+                        <span className="text-[10px] font-black uppercase text-primary leading-none">{media.title}</span>
+                        <span className="text-[9px] text-slate-400 truncate max-w-[150px]">{media.url}</span>
+                      </div>
+                      <Button variant="ghost" size="icon" onClick={() => handleRemoveOtherMedia(i)} className="text-destructive h-8 w-8 hover:bg-destructive/5"><Trash2 className="h-4 w-4" /></Button>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>

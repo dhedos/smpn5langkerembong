@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useMemo, useState, useEffect } from "react";
@@ -35,10 +36,11 @@ export function Footer() {
 
   if (isAdminPage) return null;
 
-  // Nilai stabil untuk hydration guna mencegah error mismatch
+  // Nilai stabil untuk hydration
   const schoolName = mounted && settings?.schoolName ? settings.schoolName : "SMPN 5 LANGKE REMBONG";
   const schoolLogo = settings?.schoolLogoUrl;
   const officialWebsites = Array.isArray(settings?.officialWebsites) ? settings.officialWebsites : [];
+  const otherMedia = Array.isArray(settings?.otherMedia) ? settings.otherMedia : [];
   const displayYear = mounted && settings?.copyrightYear ? settings.copyrightYear : "2024";
   
   const address = settings?.address || "Mando, Kelurahan Compang Carep, Kec. Langke Rembong";
@@ -110,7 +112,6 @@ export function Footer() {
                       {social.icon}
                     </a>
                   ))}
-                  {/* Highlighted Globe Icon */}
                   <div 
                     className="h-12 w-12 md:h-14 md:w-14 rounded-2xl bg-secondary text-primary flex items-center justify-center shadow-xl cursor-default scale-110"
                     title="Website Instansi Terkait"
@@ -146,7 +147,21 @@ export function Footer() {
                   <div className="space-y-4">
                     <span className="text-[10px] font-black text-secondary tracking-widest uppercase">Informasi Media Lain</span>
                     <div className="flex flex-wrap gap-3">
-                       <div className="text-[10px] text-white/30 italic font-bold uppercase tracking-widest px-1">Belum ada informasi media lain</div>
+                      {mounted && otherMedia.length > 0 ? otherMedia.map((media: any, i: number) => (
+                        <a 
+                          key={i}
+                          href={ensureExternalUrl(media.url)} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="text-white/90 hover:text-secondary transition-all flex items-center gap-3 uppercase text-[10px] font-black tracking-widest bg-white/5 px-5 py-4 rounded-2xl border border-white/10 group shadow-sm"
+                        >
+                          <LinkIcon className="h-3.5 w-3.5 text-secondary" /> 
+                          <span className="truncate max-w-[180px]">{media.title || "Media"}</span> 
+                          <ExternalLink className="h-3.5 w-3.5 opacity-30 group-hover:opacity-100 shrink-0" />
+                        </a>
+                      )) : mounted && (
+                        <div className="text-[9px] text-white/30 italic font-bold uppercase tracking-widest px-1">Belum ada informasi media lain</div>
+                      )}
                     </div>
                   </div>
                 </div>
