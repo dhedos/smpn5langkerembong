@@ -50,7 +50,7 @@ export function Footer() {
       id: "tiktok", 
       icon: (
         <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12.525.02c1.31-.032 2.612-.012 3.914-.022.072 1.51.523 2.973 1.353 4.24 1.096 1.597 2.647 2.766 4.445 3.32v4.015c-1.352-.142-2.65-.584-3.793-1.32-.977-.63-1.808-1.46-2.44-2.435v7.26c-.035 1.513-.423 2.99-1.127 4.305-.71 1.32-1.742 2.44-2.99 3.253-1.25.815-2.7 1.255-4.204 1.277-1.25.815-2.7 1.255-4.204 1.277-1.503.023-3.003-.393-4.305-1.112-1.3-.72-2.42-1.75-3.235-2.997-.813-1.25-1.252-2.7-1.272-4.204-.02-1.503.402-3.002 1.123-4.305.72-1.3 1.75-2.41 2.997-3.226 1.25-.814 2.7-1.253 4.204-1.273a7.435 7.435 0 0 1 3.013.385v4.067c-.822-.267-1.696-.328-2.54-.18-.843.147-1.637.525-2.296 1.09-.658.566-1.162 1.305-1.457 2.13-.295.827-.373 1.714-.226 2.585.147.872.536 1.688 1.123 2.356.586.67 1.34 1.154 2.176 1.398.835.244 1.725.26 2.57.043.844-.217 1.615-.658 2.228-1.272.613-.614 1.04-1.39 1.233-2.238.192-.85.158-1.734-.1-2.57V.02h.001z"/>
+          <path d="M12.525.02c1.31-.032 2.612-.012 3.914-.022.072 1.51.523 2.973 1.353 4.24 1.096 1.597 2.647 2.766 4.445 3.32v4.015c-1.352-.142-2.65-.584-3.793-1.32-.977-.63-1.808-1.46-2.44-2.435v7.26c-.035 1.513-.423 2.99-1.127 4.305-.71 1.32-1.742 2.44-2.99 3.253-1.25.815-2.7 1.255-4.204 1.277-1.503.023-3.003-.393-4.305-1.112-1.3-.72-2.42-1.75-3.235-2.997-.813-1.25-1.252-2.7-1.272-4.204-.02-1.503.402-3.002 1.123-4.305.72-1.3 1.75-2.41 2.997-3.226 1.25-.814 2.7-1.253 4.204-1.273a7.435 7.435 0 0 1 3.013.385v4.067c-.822-.267-1.696-.328-2.54-.18-.843.147-1.637.525-2.296 1.09-.658.566-1.162 1.305-1.457 2.13-.295.827-.373 1.714-.226 2.585.147.872.536 1.688 1.123 2.356.586.67 1.34 1.154 2.176 1.398.835.244 1.725.26 2.57.043.844-.217 1.615-.658 2.228-1.272.613-.614 1.04-1.39 1.233-2.238.192-.85.158-1.734-.1-2.57V.02h.001z"/>
         </svg>
       ), 
       href: mounted ? (settings?.tiktokUrl || "#") : "#"
@@ -61,17 +61,17 @@ export function Footer() {
   return (
     <footer className="bg-primary text-white pt-16 md:pt-20 pb-10 border-t border-white/5 overflow-hidden">
       <div className="container mx-auto px-6 md:px-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 md:gap-16 lg:gap-10 mb-16">
-          <div className="flex flex-col space-y-6 md:col-span-2 lg:col-span-2">
-            <div className="flex items-center gap-4 md:gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 md:gap-12 lg:gap-12 mb-16">
+          <div className="flex flex-col space-y-6 lg:col-span-2">
+            <div className="flex items-center gap-5">
               {mounted && schoolLogo ? (
-                <div className="bg-white p-2 md:p-3 rounded-[1.5rem] md:rounded-[1.8rem] shadow-2xl shrink-0 flex items-center justify-center w-20 h-20 md:w-24 md:h-24 lg:w-28 lg:h-28">
-                  <div className="relative h-14 w-14 md:h-16 md:w-16 lg:h-20 lg:w-20">
+                <div className="bg-white p-3 rounded-[1.8rem] shadow-2xl shrink-0 flex items-center justify-center w-24 h-24">
+                  <div className="relative h-16 w-16">
                     <Image src={schoolLogo} alt="Logo" fill className="object-contain" />
                   </div>
                 </div>
               ) : null}
-              <div className="font-headline font-black text-2xl md:text-3xl lg:text-5xl tracking-tight leading-[1.1] md:leading-[1] lg:leading-[0.85] uppercase">
+              <div className="font-headline font-black text-3xl lg:text-5xl tracking-tight leading-[0.85] uppercase">
                 <span className="block">{row1 || "PORTAL"}</span>
                 <span className="block text-secondary">{row2 || "SEKOLAH"}</span>
               </div>
@@ -116,8 +116,8 @@ export function Footer() {
           </div>
 
           <div className="pt-2">
-            <h4 className="font-headline font-black mb-6 md:mb-8 text-[11px] tracking-[0.2em] uppercase text-secondary">Tautan Cepat</h4>
-            <ul className="space-y-4 md:space-y-5 text-[12px] font-black text-white/70">
+            <h4 className="font-headline font-black mb-8 text-[11px] tracking-[0.2em] uppercase text-secondary">Tautan Cepat</h4>
+            <ul className="space-y-5 text-[12px] font-black text-white/70">
               <li><Link href="/profil" className="hover:text-white transition-colors uppercase tracking-[0.1em] block">Profil Sekolah</Link></li>
               <li><Link href="/informasi" className="hover:text-white transition-colors uppercase tracking-[0.1em] block">Informasi Terbaru</Link></li>
               <li><Link href="/ppdb" className="hover:text-white transition-colors uppercase tracking-[0.1em] block">PPDB Online</Link></li>
@@ -126,8 +126,8 @@ export function Footer() {
           </div>
 
           <div className="pt-2">
-            <h4 className="font-headline font-black mb-6 md:mb-8 text-[11px] tracking-[0.2em] uppercase text-secondary">Akademik</h4>
-            <ul className="space-y-4 md:space-y-5 text-[12px] font-black text-white/70">
+            <h4 className="font-headline font-black mb-8 text-[11px] tracking-[0.2em] uppercase text-secondary">Akademik</h4>
+            <ul className="space-y-5 text-[12px] font-black text-white/70">
               <li className="hover:text-white transition-colors cursor-pointer uppercase tracking-[0.1em] block">Kurikulum Merdeka</li>
               <li className="hover:text-white transition-colors cursor-pointer uppercase tracking-[0.1em] block">E-Learning</li>
               <li className="hover:text-white transition-colors cursor-pointer uppercase tracking-[0.1em] block">Perpustakaan</li>
@@ -136,24 +136,24 @@ export function Footer() {
           </div>
 
           <div className="pt-2">
-            <h4 className="font-headline font-black mb-6 md:mb-8 text-[11px] tracking-[0.2em] uppercase text-secondary">Hubungi Kami</h4>
-            <ul className="space-y-5 md:space-y-6 text-[12px] text-white/80 font-black tracking-wide">
+            <h4 className="font-headline font-black mb-8 text-[11px] tracking-[0.2em] uppercase text-secondary">Hubungi Kami</h4>
+            <ul className="space-y-6 text-[12px] text-white/80 font-black tracking-wide">
               {mounted && address && (
                 <li className="flex gap-4 items-start">
-                  <div className="bg-white/5 p-2 md:p-2.5 rounded-xl shrink-0 mt-0.5">
+                  <div className="bg-white/5 p-2.5 rounded-xl shrink-0 mt-0.5">
                     <MapPin className="h-4 w-4 text-secondary" /> 
                   </div>
                   <span className="leading-relaxed uppercase tracking-tighter break-words">{address}</span>
                 </li>
               )}
               <li className="flex gap-4 items-center">
-                <div className="bg-white/5 p-2 md:p-2.5 rounded-xl shrink-0">
+                <div className="bg-white/5 p-2.5 rounded-xl shrink-0">
                   <Phone className="h-4 w-4 text-secondary" /> 
                 </div>
                 <span>{phone}</span>
               </li>
               <li className="flex gap-4 items-center">
-                <div className="bg-white/5 p-2 md:p-2.5 rounded-xl shrink-0">
+                <div className="bg-white/5 p-2.5 rounded-xl shrink-0">
                   <Mail className="h-4 w-4 text-secondary" /> 
                 </div>
                 <span className="break-all lowercase">{email}</span>
