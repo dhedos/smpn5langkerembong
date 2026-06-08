@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useMemo, useState, useEffect } from "react";
@@ -102,14 +103,15 @@ export function Footer() {
 
               <div className="flex gap-2 pt-2">
                 {socialLinks.map((social) => (
-                  <Link 
+                  <a 
                     key={social.id} 
                     href={social.href} 
                     target="_blank"
+                    rel="noopener noreferrer"
                     className="h-10 w-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-all"
                   >
                     {social.icon}
-                  </Link>
+                  </a>
                 ))}
               </div>
             </div>
