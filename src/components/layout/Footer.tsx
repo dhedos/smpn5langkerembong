@@ -4,7 +4,17 @@ import React, { useMemo, useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Facebook, Instagram, Youtube, MapPin, Phone, Mail, ExternalLink, Globe, Link as LinkIcon } from "lucide-react";
+import { 
+  Facebook, 
+  Instagram, 
+  Youtube, 
+  MapPin, 
+  Phone, 
+  Mail, 
+  ExternalLink, 
+  Globe, 
+  Link as LinkIcon 
+} from "lucide-react";
 import { useFirestore, useDoc } from "@/firebase";
 import { doc } from "firebase/firestore";
 
@@ -81,53 +91,63 @@ export function Footer() {
               </div>
             </div>
 
-            <div className="space-y-6">
+            <div className="space-y-10">
               <p className="text-white/60 text-[10px] leading-relaxed font-bold uppercase tracking-widest max-w-sm">
                 Membangun fondasi pendidikan unggul yang menginspirasi kreativitas bagi masa depan bangsa.
               </p>
 
-              {/* Media Sosial & Portal Link */}
-              <div className="space-y-5">
-                <div className="flex gap-3 pt-2">
+              {/* Media Sosial & Portal Section */}
+              <div className="space-y-8">
+                <div className="flex gap-3 items-center">
                   {socialLinks.map((social) => (
                     <a 
                       key={social.id} 
                       href={social.href} 
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="h-10 w-10 md:h-11 md:w-11 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-all hover:scale-105 active:scale-95 shadow-lg"
+                      className="h-12 w-12 md:h-14 md:w-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-all hover:scale-105 shadow-lg"
                     >
                       {social.icon}
                     </a>
                   ))}
-                  {/* Ikon Global untuk Website Lain */}
+                  {/* Highlighted Globe Icon */}
                   <div 
-                    className="h-10 w-10 md:h-11 md:w-11 rounded-xl bg-secondary text-primary flex items-center justify-center shadow-lg cursor-default"
+                    className="h-12 w-12 md:h-14 md:w-14 rounded-2xl bg-secondary text-primary flex items-center justify-center shadow-xl cursor-default scale-110"
                     title="Website Instansi Terkait"
                   >
-                    <Globe className="h-5 w-5" />
+                    <Globe className="h-6 w-6" />
                   </div>
                 </div>
 
-                {/* Website Lain (Portal Resmi) di bawah Media Sosial */}
-                <div className="flex flex-col gap-3 pt-4 border-t border-white/5">
-                  <span className="text-[9px] font-black text-secondary tracking-widest uppercase opacity-60">Portal Resmi Instansi</span>
-                  <div className="flex flex-wrap gap-2">
-                    {mounted && officialWebsites.length > 0 ? officialWebsites.map((web: any, i: number) => (
-                      <a 
-                        key={i}
-                        href={ensureExternalUrl(web.url)} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="text-white/80 hover:text-secondary transition-all flex items-center gap-2 uppercase text-[9px] font-black tracking-widest bg-white/5 px-4 py-3 rounded-xl border border-white/10 group shadow-sm"
-                      >
-                        <LinkIcon className="h-3 w-3 text-secondary" /> 
-                        <span className="truncate max-w-[150px]">{web.title || "Portal"}</span> 
-                        <ExternalLink className="h-3 w-3 opacity-30 group-hover:opacity-100 shrink-0" />
-                      </a>
-                    )) : mounted && (
-                      <div className="text-[9px] text-white/30 italic font-bold uppercase tracking-widest">Daftar portal belum tersedia</div>
-                    )}
+                <div className="flex flex-col gap-8 pt-6 border-t border-white/10">
+                  {/* PORTAL RESMI INSTANSI */}
+                  <div className="space-y-4">
+                    <span className="text-[10px] font-black text-secondary tracking-widest uppercase">Portal Resmi Instansi</span>
+                    <div className="flex flex-wrap gap-3">
+                      {mounted && officialWebsites.length > 0 ? officialWebsites.map((web: any, i: number) => (
+                        <a 
+                          key={i}
+                          href={ensureExternalUrl(web.url)} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="text-white/90 hover:text-secondary transition-all flex items-center gap-3 uppercase text-[10px] font-black tracking-widest bg-white/5 px-5 py-4 rounded-2xl border border-white/10 group shadow-sm"
+                        >
+                          <LinkIcon className="h-3.5 w-3.5 text-secondary" /> 
+                          <span className="truncate max-w-[180px]">{web.title || "Portal"}</span> 
+                          <ExternalLink className="h-3.5 w-3.5 opacity-30 group-hover:opacity-100 shrink-0" />
+                        </a>
+                      )) : mounted && (
+                        <div className="text-[9px] text-white/30 italic font-bold uppercase tracking-widest">Daftar portal belum tersedia</div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* INFORMASI MEDIA LAIN */}
+                  <div className="space-y-4">
+                    <span className="text-[10px] font-black text-secondary tracking-widest uppercase">Informasi Media Lain</span>
+                    <div className="flex flex-wrap gap-3">
+                       <div className="text-[10px] text-white/30 italic font-bold uppercase tracking-widest px-1">Belum ada informasi media lain</div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -182,7 +202,7 @@ export function Footer() {
         </div>
 
         <div className="border-t border-white/5 pt-10 flex flex-col md:flex-row justify-between items-center gap-6 text-[10px] font-black text-white/30 tracking-[0.2em] uppercase text-center md:text-left">
-          <p>© {displayYear} {schoolName.toUpperCase()}. ALL RIGHTS RESERVED.</p>
+          <p>© {mounted ? displayYear : "2024"} {mounted && schoolName ? schoolName.toUpperCase() : "SMPN 5 LANGKE REMBONG"}. ALL RIGHTS RESERVED.</p>
           <div className="flex gap-6 items-center">
             <Link href="/admin" className="opacity-30 hover:opacity-100 transition-all flex items-center gap-2">
               ADMIN CONSOLE
