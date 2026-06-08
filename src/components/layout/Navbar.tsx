@@ -74,7 +74,7 @@ export function Navbar() {
 
   if (isAdminPage) return null;
 
-  // Gunakan isSolid yang stabil saat hydration
+  // Standarisasi isSolid untuk mencegah hydration mismatch
   const isSolid = mounted ? (scrolled || !isHome) : !isHome;
 
   return (
@@ -87,13 +87,13 @@ export function Navbar() {
       )}
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between px-4 md:px-8 lg:px-12">
-        <Link href="/" className="flex items-center gap-2 md:gap-3 group max-w-[85%] md:max-w-none">
+        <Link href="/" className="flex items-center gap-2 md:gap-3 group max-w-[70%] md:max-w-[85%]">
           {mounted && schoolLogo ? (
             <div className={cn(
               "p-2 rounded-2xl transition-all duration-500 shadow-lg transform group-hover:scale-105 shrink-0",
               isSolid ? "bg-primary" : "bg-white/20 backdrop-blur-md"
             )}>
-              <div className="relative h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8">
+              <div className="relative h-6 w-6 sm:h-7 md:h-8">
                 <Image src={schoolLogo} alt="Logo" fill className="object-contain" />
               </div>
             </div>
@@ -102,13 +102,13 @@ export function Navbar() {
           <div className="flex flex-col justify-center overflow-hidden">
             {mounted && schoolName ? (
               <span className={cn(
-                "font-headline font-bold text-xs sm:text-sm md:text-base lg:text-2xl tracking-tight uppercase transition-colors duration-500 line-clamp-2 leading-tight",
+                "font-headline font-bold text-[10px] sm:text-xs md:text-sm lg:text-xl tracking-tight uppercase transition-colors duration-500 line-clamp-2 leading-tight",
                 isSolid ? "text-slate-900" : "text-white drop-shadow-lg"
               )}>
                 {schoolName}
               </span>
             ) : (
-              <div className={cn("h-6 w-24 md:w-32 animate-pulse rounded-lg bg-slate-100")} />
+              <div className={cn("h-6 w-24 md:w-32 animate-pulse rounded-lg", isSolid ? "bg-slate-100" : "bg-white/20")} />
             )}
           </div>
         </Link>
@@ -165,7 +165,7 @@ export function Navbar() {
         </div>
 
         <button
-          className={cn("lg:hidden p-2 rounded-lg transition-colors shadow-md shrink-0 bg-slate-100 text-primary ml-2", !isSolid && "bg-white")}
+          className={cn("lg:hidden p-2 rounded-lg transition-colors shadow-md shrink-0 ml-2", isSolid ? "bg-slate-100 text-primary" : "bg-white text-primary")}
           onClick={() => setIsOpen(true)}
         >
           <Menu className="h-5 w-5" />

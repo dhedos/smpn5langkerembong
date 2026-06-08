@@ -12,7 +12,6 @@ export function Footer() {
   const pathname = usePathname();
   const isAdminPage = pathname?.startsWith("/admin");
   const [mounted, setMounted] = useState(false);
-  const [displayYear, setDisplayYear] = useState("2024");
 
   const db = useFirestore();
   const currentSchoolId = 'smpn5-langke-rembong';
@@ -22,22 +21,19 @@ export function Footer() {
 
   useEffect(() => {
     setMounted(true);
-    if (settings?.copyrightYear) {
-      setDisplayYear(settings.copyrightYear);
-    } else {
-      setDisplayYear(new Date().getFullYear().toString());
-    }
-  }, [settings?.copyrightYear]);
+  }, []);
 
   if (isAdminPage) return null;
 
-  const schoolName = mounted && settings?.schoolName ? settings.schoolName : "SEKOLAH";
-  const schoolLogo = mounted ? settings?.schoolLogoUrl : null;
-  const officialWebsites = mounted && Array.isArray(settings?.officialWebsites) ? settings.officialWebsites : [];
+  // Nilai stabil untuk hydration
+  const schoolName = settings?.schoolName || "SEKOLAH";
+  const schoolLogo = settings?.schoolLogoUrl;
+  const officialWebsites = Array.isArray(settings?.officialWebsites) ? settings.officialWebsites : [];
+  const displayYear = settings?.copyrightYear || "2024";
   
-  const address = mounted ? settings?.address : "";
-  const phone = mounted ? settings?.phone : "-";
-  const email = mounted ? settings?.email : "-";
+  const address = settings?.address || "";
+  const phone = settings?.phone || "-";
+  const email = settings?.email || "-";
 
   const nameParts = schoolName.toUpperCase().split(" ");
   const row1 = nameParts.slice(0, 2).join(" ");
@@ -49,7 +45,7 @@ export function Footer() {
     return `https://${url}`;
   };
 
-  const socialLinks = mounted ? [
+  const socialLinks = [
     { id: "facebook", icon: <Facebook className="h-4 w-4" />, href: ensureExternalUrl(settings?.facebookUrl) },
     { id: "instagram", icon: <Instagram className="h-4 w-4" />, href: ensureExternalUrl(settings?.instagramUrl) },
     { 
@@ -62,63 +58,66 @@ export function Footer() {
       href: ensureExternalUrl(settings?.tiktokUrl)
     },
     { id: "youtube", icon: <Youtube className="h-4 w-4" />, href: ensureExternalUrl(settings?.youtubeUrl) },
-  ] : [];
+  ];
 
   return (
     <footer className="bg-primary text-white pt-16 md:pt-20 pb-10 border-t border-white/5 overflow-hidden">
       <div className="container mx-auto px-6 md:px-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 md:gap-16 lg:gap-20 mb-16">
-          <div className="flex flex-col space-y-6 md:col-span-2 lg:col-span-2">
+          <div className="flex flex-col space-y-8 md:col-span-2 lg:col-span-2">
             <div className="flex items-center gap-5">
               {mounted && schoolLogo ? (
-                <div className="bg-white p-3 rounded-[1.8rem] shadow-2xl shrink-0 flex items-center justify-center w-24 h-24">
-                  <div className="relative h-16 w-16">
+                <div className="bg-white p-3 rounded-[1.8rem] shadow-2xl shrink-0 flex items-center justify-center w-20 h-20 md:w-24 md:h-24">
+                  <div className="relative h-12 w-12 md:h-16 md:w-16">
                     <Image src={schoolLogo} alt="Logo" fill className="object-contain" />
                   </div>
                 </div>
               ) : null}
-              <div className="font-headline font-black text-3xl lg:text-5xl tracking-tight leading-[0.85] uppercase">
+              <div className="font-headline font-black text-2xl md:text-3xl lg:text-5xl tracking-tight leading-[0.85] uppercase">
                 <span className="block">{row1 || "PORTAL"}</span>
                 <span className="block text-secondary">{row2 || "SEKOLAH"}</span>
               </div>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-6">
               <p className="text-white/60 text-[10px] leading-relaxed font-bold uppercase tracking-widest max-w-sm">
                 Membangun fondasi pendidikan unggul yang menginspirasi kreativitas bagi masa depan bangsa.
               </p>
 
-              {mounted && officialWebsites.length > 0 && (
-                <div className="flex flex-col gap-2 pt-2">
-                  {officialWebsites.map((web: any, i: number) => (
-                    <a 
-                      key={i}
-                      href={ensureExternalUrl(web.url)} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="text-white/80 hover:text-secondary transition-all flex items-center gap-2 uppercase text-[9px] font-black tracking-widest bg-white/5 p-3 rounded-xl border border-white/10 group w-fit min-w-[200px]"
-                    >
-                      <Globe className="h-3.5 w-3.5 text-secondary" /> 
-                      <span className="truncate">{web.title || "Portal Resmi"}</span> 
-                      <ExternalLink className="h-3 w-3 ml-auto opacity-30 group-hover:opacity-100 shrink-0" />
-                    </a>
-                  ))}
-                </div>
-              )}
+              {/* Media Sosial */}
+              <div className="flex gap-3 pt-2">
+                {socialLinks.map((social) => (
+                  <a 
+                    key={social.id} 
+                    href={social.href} 
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="h-10 w-10 md:h-11 md:w-11 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-all hover:scale-105 active:scale-95"
+                  >
+                    {social.icon}
+                  </a>
+                ))}
+              </div>
 
-              {mounted && (
-                <div className="flex gap-2 pt-2">
-                  {socialLinks.map((social) => (
-                    <a 
-                      key={social.id} 
-                      href={social.href} 
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="h-10 w-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-all"
-                    >
-                      {social.icon}
-                    </a>
-                  ))}
+              {/* Website Lain (Portal Resmi) di bawah Media Sosial */}
+              {mounted && officialWebsites.length > 0 && (
+                <div className="flex flex-col gap-3 pt-4 border-t border-white/5">
+                  <span className="text-[9px] font-black text-secondary tracking-widest uppercase opacity-60">Portal Resmi Instansi</span>
+                  <div className="flex flex-wrap gap-2">
+                    {officialWebsites.map((web: any, i: number) => (
+                      <a 
+                        key={i}
+                        href={ensureExternalUrl(web.url)} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="text-white/80 hover:text-secondary transition-all flex items-center gap-2 uppercase text-[9px] font-black tracking-widest bg-white/5 px-4 py-3 rounded-xl border border-white/10 group"
+                      >
+                        <Globe className="h-3 w-3 text-secondary" /> 
+                        <span className="truncate max-w-[150px]">{web.title || "Portal"}</span> 
+                        <ExternalLink className="h-3 w-3 opacity-30 group-hover:opacity-100 shrink-0" />
+                      </a>
+                    ))}
+                  </div>
                 </div>
               )}
             </div>
@@ -147,7 +146,7 @@ export function Footer() {
           <div className="pt-2">
             <h4 className="font-headline font-black mb-8 text-[11px] tracking-[0.2em] uppercase text-secondary">Hubungi Kami</h4>
             <ul className="space-y-6 text-[12px] text-white/80 font-black tracking-wide">
-              {mounted && address && (
+              {address && (
                 <li className="flex gap-4 items-start">
                   <div className="bg-white/5 p-2.5 rounded-xl shrink-0 mt-0.5">
                     <MapPin className="h-4 w-4 text-secondary" /> 
