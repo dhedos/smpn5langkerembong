@@ -4,7 +4,7 @@ import React, { useMemo, useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Facebook, Instagram, Youtube, MapPin, Phone, Mail, ExternalLink, Globe } from "lucide-react";
+import { Facebook, Instagram, Youtube, MapPin, Phone, Mail, ExternalLink, Globe, Link as LinkIcon } from "lucide-react";
 import { useFirestore, useDoc } from "@/firebase";
 import { doc } from "firebase/firestore";
 
@@ -25,15 +25,15 @@ export function Footer() {
 
   if (isAdminPage) return null;
 
-  // Nilai stabil untuk hydration
-  const schoolName = settings?.schoolName || "SEKOLAH";
+  // Nilai stabil untuk hydration guna mencegah error mismatch
+  const schoolName = mounted && settings?.schoolName ? settings.schoolName : "SMPN 5 LANGKE REMBONG";
   const schoolLogo = settings?.schoolLogoUrl;
   const officialWebsites = Array.isArray(settings?.officialWebsites) ? settings.officialWebsites : [];
-  const displayYear = settings?.copyrightYear || "2024";
+  const displayYear = mounted && settings?.copyrightYear ? settings.copyrightYear : "2024";
   
-  const address = settings?.address || "";
-  const phone = settings?.phone || "-";
-  const email = settings?.email || "-";
+  const address = settings?.address || "Mando, Kelurahan Compang Carep, Kec. Langke Rembong";
+  const phone = settings?.phone || "6285281814006";
+  const email = settings?.email || "smpn5lr@gmail.com";
 
   const nameParts = schoolName.toUpperCase().split(" ");
   const row1 = nameParts.slice(0, 2).join(" ");
@@ -72,10 +72,12 @@ export function Footer() {
                     <Image src={schoolLogo} alt="Logo" fill className="object-contain" />
                   </div>
                 </div>
-              ) : null}
+              ) : (
+                <div className="h-20 w-20 md:w-24 md:h-24 bg-white/10 rounded-[1.8rem] animate-pulse" />
+              )}
               <div className="font-headline font-black text-2xl md:text-3xl lg:text-5xl tracking-tight leading-[0.85] uppercase">
-                <span className="block">{row1 || "PORTAL"}</span>
-                <span className="block text-secondary">{row2 || "SEKOLAH"}</span>
+                <span className="block">{row1}</span>
+                <span className="block text-secondary">{row2}</span>
               </div>
             </div>
 
@@ -84,42 +86,51 @@ export function Footer() {
                 Membangun fondasi pendidikan unggul yang menginspirasi kreativitas bagi masa depan bangsa.
               </p>
 
-              {/* Media Sosial */}
-              <div className="flex gap-3 pt-2">
-                {socialLinks.map((social) => (
-                  <a 
-                    key={social.id} 
-                    href={social.href} 
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="h-10 w-10 md:h-11 md:w-11 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-all hover:scale-105 active:scale-95"
+              {/* Media Sosial & Portal Link */}
+              <div className="space-y-5">
+                <div className="flex gap-3 pt-2">
+                  {socialLinks.map((social) => (
+                    <a 
+                      key={social.id} 
+                      href={social.href} 
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="h-10 w-10 md:h-11 md:w-11 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-all hover:scale-105 active:scale-95 shadow-lg"
+                    >
+                      {social.icon}
+                    </a>
+                  ))}
+                  {/* Ikon Global untuk Website Lain */}
+                  <div 
+                    className="h-10 w-10 md:h-11 md:w-11 rounded-xl bg-secondary text-primary flex items-center justify-center shadow-lg cursor-default"
+                    title="Website Instansi Terkait"
                   >
-                    {social.icon}
-                  </a>
-                ))}
-              </div>
+                    <Globe className="h-5 w-5" />
+                  </div>
+                </div>
 
-              {/* Website Lain (Portal Resmi) di bawah Media Sosial */}
-              {mounted && officialWebsites.length > 0 && (
+                {/* Website Lain (Portal Resmi) di bawah Media Sosial */}
                 <div className="flex flex-col gap-3 pt-4 border-t border-white/5">
                   <span className="text-[9px] font-black text-secondary tracking-widest uppercase opacity-60">Portal Resmi Instansi</span>
                   <div className="flex flex-wrap gap-2">
-                    {officialWebsites.map((web: any, i: number) => (
+                    {mounted && officialWebsites.length > 0 ? officialWebsites.map((web: any, i: number) => (
                       <a 
                         key={i}
                         href={ensureExternalUrl(web.url)} 
                         target="_blank" 
                         rel="noopener noreferrer"
-                        className="text-white/80 hover:text-secondary transition-all flex items-center gap-2 uppercase text-[9px] font-black tracking-widest bg-white/5 px-4 py-3 rounded-xl border border-white/10 group"
+                        className="text-white/80 hover:text-secondary transition-all flex items-center gap-2 uppercase text-[9px] font-black tracking-widest bg-white/5 px-4 py-3 rounded-xl border border-white/10 group shadow-sm"
                       >
-                        <Globe className="h-3 w-3 text-secondary" /> 
+                        <LinkIcon className="h-3 w-3 text-secondary" /> 
                         <span className="truncate max-w-[150px]">{web.title || "Portal"}</span> 
                         <ExternalLink className="h-3 w-3 opacity-30 group-hover:opacity-100 shrink-0" />
                       </a>
-                    ))}
+                    )) : mounted && (
+                      <div className="text-[9px] text-white/30 italic font-bold uppercase tracking-widest">Daftar portal belum tersedia</div>
+                    )}
                   </div>
                 </div>
-              )}
+              </div>
             </div>
           </div>
 
@@ -171,7 +182,7 @@ export function Footer() {
         </div>
 
         <div className="border-t border-white/5 pt-10 flex flex-col md:flex-row justify-between items-center gap-6 text-[10px] font-black text-white/30 tracking-[0.2em] uppercase text-center md:text-left">
-          <p>© {mounted ? displayYear : "2024"} {mounted && schoolName ? schoolName.toUpperCase() : "SEKOLAH"}. ALL RIGHTS RESERVED.</p>
+          <p>© {displayYear} {schoolName.toUpperCase()}. ALL RIGHTS RESERVED.</p>
           <div className="flex gap-6 items-center">
             <Link href="/admin" className="opacity-30 hover:opacity-100 transition-all flex items-center gap-2">
               ADMIN CONSOLE
