@@ -19,8 +19,6 @@ import {
 import { useFirestore, useDoc } from "@/firebase";
 import { doc } from "firebase/firestore";
 
-const DEFAULT_LOGO = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj4KICA8cGF0aCBkPSJNNTAgNSBMMTAgMjUgVjU1IEMxMCA3NSA1MCA5NSA1MCA5NSBDNTAgOTUgOTAgNzUgOTAgNTUgVjI1IEw1MCA1IFoiIGZpbGw9IiMxYTM2NWQiIC8+CiAgPHBhdGggZD0iTTUwIDIwIEw1NSAzNSBINzAgTDU4IDQ1IEw2MiA2MCBMNTAgNTAgTDM4IDYwIEw0MiA0NSBMMzAgMzUgSDQ1IEw1MCAyMCBaIiBmaWxsPSIjZmJiZjI0IiAvPgo8L3N2Zz4=';
-
 export function Footer() {
   const pathname = usePathname();
   const isAdminPage = pathname?.startsWith("/admin");
@@ -37,15 +35,15 @@ export function Footer() {
 
   if (isAdminPage) return null;
 
-  const schoolName = settings?.schoolName || "SMPN 5 LANGKE REMBONG";
-  const schoolLogo = settings?.schoolLogoUrl || DEFAULT_LOGO;
+  const schoolName = settings?.schoolName || "";
+  const schoolLogo = settings?.schoolLogoUrl;
   const officialWebsites = Array.isArray(settings?.officialWebsites) ? settings.officialWebsites : [];
   const otherMedia = Array.isArray(settings?.otherMedia) ? settings.otherMedia : [];
-  const displayYear = settings?.copyrightYear || "2024";
+  const displayYear = settings?.copyrightYear || new Date().getFullYear().toString();
   
-  const address = settings?.address || "Alamat Sekolah";
-  const phone = settings?.phone || "628...";
-  const email = settings?.email || "email@sekolah.sch.id";
+  const address = settings?.address || "";
+  const phone = settings?.phone || "";
+  const email = settings?.email || "";
 
   const nameParts = schoolName.toUpperCase().split(" ");
   const row1 = nameParts.slice(0, 2).join(" ");
@@ -78,14 +76,15 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 md:gap-16 lg:gap-20 mb-16">
           <div className="flex flex-col space-y-6 md:col-span-2 lg:col-span-2">
             <div className="flex items-center gap-5">
-              <div className="relative h-12 w-12 md:h-20 md:w-20 shrink-0">
-                <Image 
-                  src={schoolLogo} 
-                  alt="Logo" 
-                  fill 
-                  className="object-contain" 
-                  unoptimized={schoolLogo.startsWith('data:')}
-                />
+              <div className="relative h-12 w-12 md:h-20 md:w-20 shrink-0 flex items-center justify-center">
+                {schoolLogo && (
+                  <Image 
+                    src={schoolLogo} 
+                    alt="Logo" 
+                    fill 
+                    className="object-contain" 
+                  />
+                )}
               </div>
               <div className="font-headline font-black text-2xl md:text-3xl lg:text-5xl tracking-tight leading-[0.85] uppercase">
                 <span className="block">{row1}</span>
@@ -208,7 +207,7 @@ export function Footer() {
         </div>
 
         <div className="border-t border-white/5 pt-10 flex flex-col md:flex-row justify-between items-center gap-6 text-[10px] font-black text-white/30 tracking-[0.2em] uppercase text-center md:text-left">
-          <p>© {displayYear} {schoolName.toUpperCase()}. ALL RIGHTS RESERVED.</p>
+          <p>© {displayYear} {schoolName.toUpperCase() || "SEKOLAH"}. ALL RIGHTS RESERVED.</p>
           <div className="flex gap-6 items-center">
             <Link href="/admin" className="opacity-30 hover:opacity-100 transition-all">ADMIN CONSOLE</Link>
           </div>

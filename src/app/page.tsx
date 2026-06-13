@@ -14,7 +14,8 @@ import {
   User,
   ExternalLink,
   MapPin,
-  ShieldCheck
+  ShieldCheck,
+  Sparkles
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -63,14 +64,14 @@ export default function Home() {
   }, [rawNews]);
 
   const heroImageUrl = settings?.heroImageUrl;
-  const schoolName = mounted && settings?.schoolName ? settings.schoolName : "SMPN 5 Langke Rembong";
+  const schoolName = mounted && settings?.schoolName ? settings.schoolName : "";
   const heroBadgeText = mounted && settings?.heroBadgeText ? settings.heroBadgeText : "Selamat Datang di Website Resmi Kami";
   const heroTitle = mounted && settings?.heroTitle ? settings.heroTitle : "MEMBANGUN MASA DEPAN BERSAMA KAMI";
-  const heroSubtitle = mounted && settings?.heroSubtitle ? settings.heroSubtitle : "Pendidikan berkualitas untuk generasi emas bangsa melalui kurikulum inovatif.";
+  const heroSubtitle = mounted && settings?.heroSubtitle ? settings.heroSubtitle : "";
   
   const welcomeSectionLabel = mounted && settings?.welcomeSectionLabel ? settings.welcomeSectionLabel : "Sambutan Kepala Sekolah";
-  const welcomeTitle = mounted && settings?.welcomeTitle ? settings.welcomeTitle : "Mendidik dengan Hati & Teknologi";
-  const welcomeMessage = mounted && settings?.welcomeMessage ? settings.welcomeMessage : "Kami berkomitmen untuk memberikan pengalaman belajar terbaik bagi putra-putri Anda melalui kurikulum yang inovatif dan lingkungan yang mendukung.";
+  const welcomeTitle = mounted && settings?.welcomeTitle ? settings.welcomeTitle : "";
+  const welcomeMessage = mounted && settings?.welcomeMessage ? settings.welcomeMessage : "";
   const isSpmbActive = mounted ? settings?.ppdbIsActive === true : false;
 
   const stats = mounted && settings?.stats ? settings.stats : [
@@ -97,9 +98,9 @@ export default function Home() {
         <div className="container relative z-10 px-6 md:px-12 mx-auto pb-32 pt-40 md:pt-48">
           <div className="max-w-5xl space-y-8 animate-in fade-in slide-in-from-left duration-1000">
             <div className="space-y-6">
-              {/* Prestigious Tagline Badge */}
+              {/* Prestigious Tagline Badge - Menampilkan editan admin langsung */}
               <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md text-secondary px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] border border-white/10 shadow-2xl">
-                <ShieldCheck className="h-4 w-4" /> {heroBadgeText}
+                <Sparkles className="h-4 w-4" /> {heroBadgeText}
               </div>
               
               <div className="space-y-4">
@@ -107,7 +108,7 @@ export default function Home() {
                   {heroTitle}
                 </h1>
                 <div className="text-2xl sm:text-3xl md:text-5xl font-bold text-secondary italic tracking-tight drop-shadow-lg lowercase mt-2 md:mt-4 opacity-90">
-                  {schoolName}
+                  {schoolName || "SMPN 5 Langke Rembong"}
                 </div>
               </div>
             </div>
