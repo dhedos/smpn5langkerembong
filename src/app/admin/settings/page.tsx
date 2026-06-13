@@ -23,7 +23,8 @@ import {
   Map as MapIcon,
   Globe,
   Link as LinkIcon,
-  SearchCode
+  SearchCode,
+  ShieldCheck
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -51,6 +52,7 @@ export default function AdminSettings() {
     officialWebsites: [],
     otherMedia: [],
     copyrightYear: "2024",
+    heroBadgeText: "Website Resmi Sekolah",
     heroTitle: "Membangun Masa Depan Bersama Kami",
     heroSubtitle: "Pendidikan berkualitas untuk generasi emas bangsa melalui kurikulum yang inovatif dan lingkungan yang mendukung.",
     heroImageUrl: "",
@@ -350,8 +352,36 @@ export default function AdminSettings() {
             <CardContent className="p-8 space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="space-y-6">
-                  <Input value={formData.heroTitle} onChange={(e) => setFormData({...formData, heroTitle: e.target.value})} placeholder="Judul Hero" className="h-14 bg-slate-50 font-extrabold" />
-                  <Textarea value={formData.heroSubtitle} onChange={(e) => setFormData({...formData, heroSubtitle: e.target.value})} placeholder="Sub-judul Hero" className="min-h-[120px] bg-slate-50" />
+                  <div className="space-y-2">
+                    <Label className="text-xs font-bold uppercase text-slate-400">Teks Lencana (Hero Badge)</Label>
+                    <div className="relative">
+                      <ShieldCheck className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-secondary" />
+                      <Input 
+                        value={formData.heroBadgeText} 
+                        onChange={(e) => setFormData({...formData, heroBadgeText: e.target.value})} 
+                        placeholder="Contoh: Website Resmi Sekolah" 
+                        className="h-14 bg-slate-50 pl-12 font-bold rounded-2xl" 
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-xs font-bold uppercase text-slate-400">Judul Utama (Hero Title)</Label>
+                    <Input 
+                      value={formData.heroTitle} 
+                      onChange={(e) => setFormData({...formData, heroTitle: e.target.value})} 
+                      placeholder="Judul Hero" 
+                      className="h-14 bg-slate-50 font-extrabold rounded-2xl" 
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-xs font-bold uppercase text-slate-400">Sub-judul (Hero Subtitle)</Label>
+                    <Textarea 
+                      value={formData.heroSubtitle} 
+                      onChange={(e) => setFormData({...formData, heroSubtitle: e.target.value})} 
+                      placeholder="Sub-judul Hero" 
+                      className="min-h-[120px] bg-slate-50 rounded-2xl" 
+                    />
+                  </div>
                 </div>
                 <div className="space-y-3">
                   <Label className="text-xs font-bold uppercase text-slate-400">Foto Background Utama</Label>

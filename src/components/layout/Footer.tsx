@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useMemo, useState, useEffect } from "react";
@@ -35,6 +36,7 @@ export function Footer() {
 
   if (isAdminPage) return null;
 
+  // Robust values to prevent hydration mismatch
   const schoolName = mounted && settings?.schoolName ? settings.schoolName : "SEKOLAH";
   const schoolLogo = settings?.schoolLogoUrl;
   const officialWebsites = Array.isArray(settings?.officialWebsites) ? settings.officialWebsites : [];
