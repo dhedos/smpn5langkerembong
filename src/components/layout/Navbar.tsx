@@ -39,7 +39,7 @@ export function Navbar() {
     setIsOpen(false);
   }, [pathname]);
 
-  // Gunakan nama asli sebagai default agar langsung muncul tanpa "MEMUAT..."
+  // Nama sekolah statis agar langsung muncul tanpa jeda
   const schoolName = settings?.schoolName || "SMPN 5 LANGKE REMBONG";
   const schoolLogo = settings?.schoolLogoUrl;
   const isSpmbActive = settings?.ppdbIsActive === true;
@@ -75,16 +75,15 @@ export function Navbar() {
       <div className="max-w-7xl auto flex items-center justify-between px-4 md:px-8 mx-auto">
         <Link href="/" className="flex items-center gap-3 group max-w-[70%] lg:max-w-none">
           <div className="relative h-10 w-10 transition-transform duration-500 group-hover:scale-110 shrink-0 flex items-center justify-center">
-            {schoolLogo ? (
+            {schoolLogo && (
               <Image 
                 src={schoolLogo} 
                 alt="Logo" 
                 fill 
                 className="object-contain" 
                 priority 
+                loading="eager"
               />
-            ) : (
-              <div className="h-10 w-10 bg-transparent" />
             )}
           </div>
           <div className="flex flex-col justify-center overflow-hidden">

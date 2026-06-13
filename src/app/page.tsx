@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo } from "react";
 import Link from "next/link";
 import { 
   ArrowRight, 
@@ -9,16 +9,9 @@ import {
   Users, 
   UserCircle, 
   Briefcase, 
-  Newspaper, 
-  Calendar,
-  User,
-  ExternalLink,
-  MapPin,
-  ShieldCheck,
   Sparkles
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { useDoc, useCollection, useFirestore } from "@/firebase";
 import { doc, collection, query, where } from "firebase/firestore";
 
@@ -44,19 +37,7 @@ export default function Home() {
     );
   }, [db]);
 
-  const { data: rawNews, loading: newsLoading } = useCollection(newsQuery);
-
-  const newsItems = useMemo(() => {
-    if (!rawNews) return [];
-    return rawNews
-      .filter((item: any) => item.status === "Published")
-      .sort((a: any, b: any) => {
-        const dateA = a.createdAt?.seconds || 0;
-        const dateB = b.createdAt?.seconds || 0;
-        return dateB - dateA;
-      })
-      .slice(0, 3);
-  }, [rawNews]);
+  const { data: rawNews } = useCollection(newsQuery);
 
   const heroImageUrl = settings?.heroImageUrl;
   const schoolName = settings?.schoolName || "SMPN 5 LANGKE REMBONG";
@@ -64,9 +45,6 @@ export default function Home() {
   const heroTitle = settings?.heroTitle || "MEMBANGUN MASA DEPAN BERSAMA KAMI";
   const heroSubtitle = settings?.heroSubtitle || "Pendidikan berkualitas untuk generasi emas bangsa melalui kurikulum yang inovatif.";
   
-  const welcomeSectionLabel = settings?.welcomeSectionLabel || "Sambutan Kepala Sekolah";
-  const welcomeTitle = settings?.welcomeTitle || "Mendidik dengan Hati & Teknologi";
-  const welcomeMessage = settings?.welcomeMessage || "Kami berkomitmen untuk memberikan pengalaman belajar terbaik bagi putra-putri Anda.";
   const isSpmbActive = settings?.ppdbIsActive === true;
 
   const stats = settings?.stats || [
@@ -93,7 +71,6 @@ export default function Home() {
         <div className="container relative z-10 px-6 md:px-12 mx-auto pb-32 pt-40 md:pt-48">
           <div className="max-w-5xl space-y-8 animate-in fade-in slide-in-from-left duration-1000">
             <div className="space-y-6">
-              {/* Teks Lencana - Dinamis dari Admin */}
               <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md text-secondary px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] border border-white/10 shadow-2xl">
                 <Sparkles className="h-4 w-4" /> {heroBadgeText}
               </div>
@@ -147,8 +124,6 @@ export default function Home() {
           })}
         </div>
       </section>
-
-      {/* Sisanya tetap sama... */}
     </div>
   );
 }
