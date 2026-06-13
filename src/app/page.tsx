@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useMemo } from "react";
@@ -29,9 +28,8 @@ export default function Home() {
   const settingsRef = useMemo(() => db ? doc(db, "schools", currentSchoolId) : null, [db, currentSchoolId]);
   const { data: settings } = useDoc(settingsRef);
 
-  // Instant Fallbacks
   const schoolName = settings?.schoolName || "SMPN 5 LANGKE REMBONG";
-  const heroImageUrl = settings?.heroImageUrl || "https://picsum.photos/seed/school1/1920/1080";
+  const heroImageUrl = settings?.heroImageUrl;
   const heroBadgeText = settings?.heroBadgeText || "Selamat Datang di Website Resmi Kami";
   const heroTitle = settings?.heroTitle || "MEMBANGUN MASA DEPAN BERSAMA KAMI";
   const heroSubtitle = settings?.heroSubtitle || "Pendidikan berkualitas untuk generasi emas bangsa melalui kurikulum yang inovatif.";
