@@ -25,7 +25,7 @@ export function Navbar() {
 
   const db = useFirestore();
   const currentSchoolId = 'smpn5-langke-rembong';
-  const settingsRef = useMemo(() => db ? doc(db, "schools", currentSchoolId) : null, [db]);
+  const settingsRef = useMemo(() => db ? doc(db, "schools", currentSchoolId) : null, [db, currentSchoolId]);
   const { data: settings } = useDoc(settingsRef);
 
   useEffect(() => {
@@ -39,10 +39,9 @@ export function Navbar() {
     setIsOpen(false);
   }, [pathname]);
 
-  // Nama sekolah statis agar langsung muncul tanpa jeda
   const schoolName = settings?.schoolName || "SMPN 5 LANGKE REMBONG";
-  const schoolLogo = settings?.schoolLogoUrl;
-  const isSpmbActive = settings?.ppdbIsActive === true;
+  const schoolLogo = settings?.schoolLogoUrl || 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48L3N2Zz4='; // Logo transparan awal
+  const isSpmbActive = settings?.ppdbIsActive !== false;
   const spmbLabel = settings?.ppdbMenuTitle || "SPMB ONLINE";
   const isHome = pathname === "/";
 
@@ -74,17 +73,15 @@ export function Navbar() {
     <header className={cn("fixed top-0 left-0 right-0 z-[60] transition-all duration-500", isSolid ? "bg-white border-b border-slate-200 py-3 shadow-md" : "bg-transparent py-5")}>
       <div className="max-w-7xl auto flex items-center justify-between px-4 md:px-8 mx-auto">
         <Link href="/" className="flex items-center gap-3 group max-w-[70%] lg:max-w-none">
-          <div className="relative h-10 w-10 transition-transform duration-500 group-hover:scale-110 shrink-0 flex items-center justify-center">
-            {schoolLogo && (
-              <Image 
-                src={schoolLogo} 
-                alt="Logo" 
-                fill 
-                className="object-contain" 
-                priority 
-                loading="eager"
-              />
-            )}
+          <div className="relative h-10 w-10 shrink-0 flex items-center justify-center overflow-hidden">
+            <Image 
+              src={schoolLogo} 
+              alt="Logo" 
+              fill 
+              className="object-contain" 
+              priority 
+              fetchPriority="high"
+            />
           </div>
           <div className="flex flex-col justify-center overflow-hidden">
             <span className={cn("font-headline font-bold text-xs md:text-sm lg:text-xl tracking-tight uppercase transition-colors duration-500 line-clamp-1 leading-tight", isSolid ? "text-slate-900" : "text-white drop-shadow-lg")}>
@@ -135,8 +132,8 @@ export function Navbar() {
       <div className={cn("lg:hidden fixed top-0 right-0 h-screen w-[85%] z-[110] bg-white shadow-2xl transition-transform duration-500 ease-in-out transform flex flex-col", isOpen ? "translate-x-0" : "translate-x-full")}>
         <div className="flex justify-between items-center p-6 border-b border-slate-100 shrink-0">
           <div className="flex items-center gap-3">
-            <div className="relative h-8 w-8 shrink-0 flex items-center justify-center">
-              {schoolLogo && <Image src={schoolLogo} alt="Logo" fill className="object-contain" />}
+            <div className="relative h-8 w-8 shrink-0 flex items-center justify-center overflow-hidden">
+              <Image src={schoolLogo} alt="Logo" fill className="object-contain" />
             </div>
             <span className="font-headline font-bold text-primary text-xs uppercase leading-tight truncate max-w-[150px]">{schoolName}</span>
           </div>

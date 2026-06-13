@@ -26,7 +26,7 @@ export default function Home() {
   const db = useFirestore();
   
   const currentSchoolId = 'smpn5-langke-rembong';
-  const settingsRef = useMemo(() => db ? doc(db, "schools", currentSchoolId) : null, [db]);
+  const settingsRef = useMemo(() => db ? doc(db, "schools", currentSchoolId) : null, [db, currentSchoolId]);
   const { data: settings } = useDoc(settingsRef);
 
   const newsQuery = useMemo(() => {
@@ -35,7 +35,7 @@ export default function Home() {
       collection(db, "news"), 
       where("schoolId", "==", currentSchoolId)
     );
-  }, [db]);
+  }, [db, currentSchoolId]);
 
   const { data: rawNews } = useCollection(newsQuery);
 
@@ -45,7 +45,7 @@ export default function Home() {
   const heroTitle = settings?.heroTitle || "MEMBANGUN MASA DEPAN BERSAMA KAMI";
   const heroSubtitle = settings?.heroSubtitle || "Pendidikan berkualitas untuk generasi emas bangsa melalui kurikulum yang inovatif.";
   
-  const isSpmbActive = settings?.ppdbIsActive === true;
+  const isSpmbActive = settings?.ppdbIsActive !== false;
 
   const stats = settings?.stats || [
     { label: "Guru", value: "0", icon: "GraduationCap" },
