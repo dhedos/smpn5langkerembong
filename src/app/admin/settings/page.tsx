@@ -52,7 +52,7 @@ export default function AdminSettings() {
     officialWebsites: [],
     otherMedia: [],
     copyrightYear: "2024",
-    heroBadgeText: "Website Resmi Sekolah",
+    heroBadgeText: "Selamat Datang di Website Resmi Kami",
     heroTitle: "Membangun Masa Depan Bersama Kami",
     heroSubtitle: "Pendidikan berkualitas untuk generasi emas bangsa melalui kurikulum yang inovatif dan lingkungan yang mendukung.",
     heroImageUrl: "",
@@ -359,7 +359,7 @@ export default function AdminSettings() {
                       <Input 
                         value={formData.heroBadgeText} 
                         onChange={(e) => setFormData({...formData, heroBadgeText: e.target.value})} 
-                        placeholder="Contoh: Website Resmi Sekolah" 
+                        placeholder="Contoh: Selamat Datang di Website Resmi Kami" 
                         className="h-14 bg-slate-50 pl-12 font-bold rounded-2xl" 
                       />
                     </div>

@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useMemo } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import Link from "next/link";
 import { 
   ArrowRight, 
@@ -14,7 +14,6 @@ import {
   User,
   ExternalLink,
   MapPin,
-  Sparkles,
   ShieldCheck
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -30,6 +29,7 @@ const IconMap: Record<string, any> = {
 };
 
 export default function Home() {
+  const [mounted, setMounted] = useState(false);
   const db = useFirestore();
   
   const currentSchoolId = 'smpn5-langke-rembong';
@@ -46,6 +46,10 @@ export default function Home() {
 
   const { data: rawNews, loading: newsLoading } = useCollection(newsQuery);
 
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const newsItems = useMemo(() => {
     if (!rawNews) return [];
     return rawNews
@@ -59,17 +63,17 @@ export default function Home() {
   }, [rawNews]);
 
   const heroImageUrl = settings?.heroImageUrl;
-  const schoolName = settings?.schoolName;
-  const heroBadgeText = settings?.heroBadgeText || "Website Resmi Sekolah";
-  const heroTitle = settings?.heroTitle || "MEMBANGUN MASA DEPAN BERSAMA KAMI";
-  const heroSubtitle = settings?.heroSubtitle || "Pendidikan berkualitas untuk generasi emas bangsa melalui kurikulum inovatif.";
+  const schoolName = mounted && settings?.schoolName ? settings.schoolName : "SMPN 5 Langke Rembong";
+  const heroBadgeText = mounted && settings?.heroBadgeText ? settings.heroBadgeText : "Selamat Datang di Website Resmi Kami";
+  const heroTitle = mounted && settings?.heroTitle ? settings.heroTitle : "MEMBANGUN MASA DEPAN BERSAMA KAMI";
+  const heroSubtitle = mounted && settings?.heroSubtitle ? settings.heroSubtitle : "Pendidikan berkualitas untuk generasi emas bangsa melalui kurikulum inovatif.";
   
-  const welcomeSectionLabel = settings?.welcomeSectionLabel || "Sambutan Kepala Sekolah";
-  const welcomeTitle = settings?.welcomeTitle || "Mendidik dengan Hati & Teknologi";
-  const welcomeMessage = settings?.welcomeMessage || "Kami berkomitmen untuk memberikan pengalaman belajar terbaik bagi putra-putri Anda melalui kurikulum yang inovatif dan lingkungan yang mendukung.";
-  const isSpmbActive = settings?.ppdbIsActive === true;
+  const welcomeSectionLabel = mounted && settings?.welcomeSectionLabel ? settings.welcomeSectionLabel : "Sambutan Kepala Sekolah";
+  const welcomeTitle = mounted && settings?.welcomeTitle ? settings.welcomeTitle : "Mendidik dengan Hati & Teknologi";
+  const welcomeMessage = mounted && settings?.welcomeMessage ? settings.welcomeMessage : "Kami berkomitmen untuk memberikan pengalaman belajar terbaik bagi putra-putri Anda melalui kurikulum yang inovatif dan lingkungan yang mendukung.";
+  const isSpmbActive = mounted ? settings?.ppdbIsActive === true : false;
 
-  const stats = settings?.stats || [
+  const stats = mounted && settings?.stats ? settings.stats : [
     { label: "Guru", value: "0", icon: "GraduationCap" },
     { label: "Tenaga Pendidik", value: "0", icon: "Users" },
     { label: "Siswa", value: "0", icon: "UserCircle" }
@@ -93,7 +97,7 @@ export default function Home() {
         <div className="container relative z-10 px-6 md:px-12 mx-auto pb-32 pt-40 md:pt-48">
           <div className="max-w-5xl space-y-8 animate-in fade-in slide-in-from-left duration-1000">
             <div className="space-y-6">
-              {/* Prestigious Tagline Badge - Now Editable */}
+              {/* Prestigious Tagline Badge */}
               <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md text-secondary px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] border border-white/10 shadow-2xl">
                 <ShieldCheck className="h-4 w-4" /> {heroBadgeText}
               </div>
@@ -102,13 +106,9 @@ export default function Home() {
                 <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-[7.5rem] font-black text-white font-headline leading-[1.1] md:leading-[0.85] tracking-tight md:tracking-tighter uppercase drop-shadow-2xl">
                   {heroTitle}
                 </h1>
-                {schoolName ? (
-                  <div className="text-2xl sm:text-3xl md:text-5xl font-bold text-secondary italic tracking-tight drop-shadow-lg lowercase mt-2 md:mt-4 opacity-90">
-                    {schoolName}
-                  </div>
-                ) : settingsLoading ? (
-                  <div className="h-10 w-64 bg-white/10 animate-pulse rounded-xl mt-4" />
-                ) : null}
+                <div className="text-2xl sm:text-3xl md:text-5xl font-bold text-secondary italic tracking-tight drop-shadow-lg lowercase mt-2 md:mt-4 opacity-90">
+                  {schoolName}
+                </div>
               </div>
             </div>
             
@@ -120,7 +120,7 @@ export default function Home() {
               {isSpmbActive && (
                 <Button size="lg" className="bg-secondary text-primary font-bold hover:bg-secondary/90 px-8 md:px-10 py-6 md:py-7 text-base md:text-lg rounded-full shadow-2xl group border-none" asChild>
                   <Link href="/ppdb" className="flex items-center gap-3">
-                    {settings?.ppdbMenuTitle || "SPMB ONLINE"} <ArrowRight className="h-5 w-5 group-hover:translate-x-2 transition-transform" />
+                    {mounted && settings?.ppdbMenuTitle ? settings.ppdbMenuTitle : "SPMB ONLINE"} <ArrowRight className="h-5 w-5 group-hover:translate-x-2 transition-transform" />
                   </Link>
                 </Button>
               )}
@@ -158,7 +158,7 @@ export default function Home() {
           <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-24">
             <div className="w-full lg:w-[40%] flex justify-center lg:justify-end">
               <div className="relative aspect-square w-40 h-40 md:w-64 md:h-64 rounded-[2rem] md:rounded-[3rem] overflow-hidden shadow-2xl border-4 md:border-[8px] border-white group bg-slate-50">
-                {settings?.headmasterPhotoUrl ? (
+                {mounted && settings?.headmasterPhotoUrl ? (
                   <img 
                     src={settings.headmasterPhotoUrl} 
                     alt="Kepala Sekolah" 
@@ -172,7 +172,7 @@ export default function Home() {
                 )}
                 <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-transparent to-transparent opacity-60" />
                 <div className="absolute bottom-3 md:bottom-6 left-3 md:left-6 right-3 md:right-6 text-white text-center">
-                  <div className="font-bold text-xs md:text-base font-headline tracking-tight truncate">{settings?.headmasterName || "Kepala Sekolah"}</div>
+                  <div className="font-bold text-xs md:text-base font-headline tracking-tight truncate">{mounted && settings?.headmasterName ? settings.headmasterName : "Kepala Sekolah"}</div>
                 </div>
               </div>
             </div>
@@ -285,7 +285,7 @@ export default function Home() {
       </section>
 
       {/* Map Section */}
-      {settings?.googleMapsEmbedUrl && (
+      {mounted && settings?.googleMapsEmbedUrl && (
         <section className="py-24 bg-white">
           <div className="container mx-auto px-6 md:px-12">
             <div className="bg-slate-50 rounded-[3rem] md:rounded-[4rem] p-8 md:p-16 shadow-xl space-y-12">
