@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useMemo, useState, useEffect } from "react";
@@ -34,11 +35,12 @@ export function Footer() {
 
   if (isAdminPage) return null;
 
+  // Nilai default statis untuk menghindari hydration mismatch
   const schoolName = mounted && settings?.schoolName ? settings.schoolName : "SMPN 5 LANGKE REMBONG";
   const schoolLogo = mounted ? settings?.schoolLogoUrl : null;
   const officialWebsites = mounted && Array.isArray(settings?.officialWebsites) ? settings.officialWebsites : [];
   const otherMedia = mounted && Array.isArray(settings?.otherMedia) ? settings.otherMedia : [];
-  const displayYear = mounted && settings?.copyrightYear ? settings.copyrightYear : new Date().getFullYear().toString();
+  const displayYear = "2024";
   
   const address = mounted ? (settings?.address || "Alamat Sekolah") : "Alamat Sekolah";
   const phone = mounted ? (settings?.phone || "628...") : "628...";

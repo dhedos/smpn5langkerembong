@@ -1,13 +1,14 @@
 
 "use client";
 
-import React, { useState } from "react";
-import { MessageSquare, Send, X, Bot, User } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { MessageSquare, Send, X, Bot } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { visitorChatAssistant } from "@/ai/flows/visitor-chat-assistant-flow";
+import { usePathname } from "next/navigation";
 
 type Message = {
   role: "bot" | "user";
@@ -15,12 +16,20 @@ type Message = {
 };
 
 export function ChatAssistant() {
+  const [mounted, setMounted] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname();
+  const isAdminPage = pathname.startsWith("/admin");
+
   const [messages, setMessages] = useState<Message[]>([
     { role: "bot", text: "Halo! Saya asisten virtual GN Nusantara. Ada yang bisa saya bantu terkait informasi sekolah atau PPDB?" },
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleSend = async () => {
     if (!input.trim() || loading) return;
@@ -39,6 +48,8 @@ export function ChatAssistant() {
       setLoading(false);
     }
   };
+
+  if (isAdminPage || !mounted) return null;
 
   return (
     <div className="fixed bottom-6 right-6 z-[100] flex flex-col items-end gap-4">
