@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useMemo } from "react";
@@ -62,6 +63,7 @@ export default function Home() {
         <div className="container relative z-10 px-6 md:px-12 mx-auto pb-32 pt-40 md:pt-48">
           <div className="max-w-5xl space-y-8 animate-in fade-in slide-in-from-left duration-1000">
             <div className="space-y-6">
+              {/* Hero Badge - Aligned and clean */}
               <div className="text-secondary py-2 text-[10px] font-black uppercase tracking-[0.25em] drop-shadow-md">
                 {heroBadgeText}
               </div>
