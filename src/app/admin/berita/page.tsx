@@ -1,23 +1,19 @@
+
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { Newspaper, Sparkles, Wand2, Trash2, Edit, Save, Loader2, Image as ImageIcon, RotateCcw, Eye, EyeOff, ExternalLink, AlertCircle, Link as LinkIcon, Upload } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Newspaper, Sparkles, Wand2, Trash2, Edit, Save, Loader2, Upload } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { adminContentOptimizer } from "@/ai/flows/admin-content-optimizer-flow";
 import { generateNewsImage } from "@/ai/flows/generate-news-image-flow";
 import { toast } from "@/hooks/use-toast";
 import { useFirestore, useCollection, useStorage } from "@/firebase";
 import { collection, addDoc, deleteDoc, doc, updateDoc, serverTimestamp, query, where } from "firebase/firestore";
-import { errorEmitter } from '@/firebase/error-emitter';
-import { FirestorePermissionError } from '@/firebase/errors';
-import { cn } from "@/lib/utils";
 import { optimizeImage } from "@/lib/image-optimizer";
 import { uploadOptimizedImage } from "@/lib/storage-upload";
 
@@ -55,7 +51,6 @@ export default function AdminBerita() {
   const [generatingImg, setGeneratingImg] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isProcessingFile, setIsProcessingFile] = useState(false);
-  const [aiError, setAiError] = useState<{message: string, link: string} | null>(null);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -80,16 +75,11 @@ export default function AdminBerita() {
       return;
     }
     setGeneratingImg(true);
-    setAiError(null);
     try {
       const result = await generateNewsImage({ title });
       if (result.error) {
-        if (result.helpLink) {
-          setAiError({ message: result.error, link: result.helpLink });
-        }
         toast({ title: "Gagal Membuat Gambar", description: result.error, variant: "destructive" });
       } else if (result.imageUrl && storage) {
-        // AI image generation usually returns a Data URL, we should upload it too
         const cloudUrl = await uploadOptimizedImage(storage, result.imageUrl, 'news-ai');
         setImageUrl(cloudUrl);
         toast({ title: "Gambar AI Berhasil", description: "Ilustrasi telah disimpan di cloud." });
@@ -128,7 +118,6 @@ export default function AdminBerita() {
     setTags([]);
     setImageUrl("");
     setExternalUrl("");
-    setAiError(null);
   };
 
   const handleEdit = (item: any) => {
@@ -172,10 +161,7 @@ export default function AdminBerita() {
           resetForm();
           toast({ title: "Informasi Diperbarui" });
         })
-        .catch(async () => {
-          setIsSaving(false);
-          errorEmitter.emit('permission-error', new FirestorePermissionError({ path: `news/${editingId}`, operation: 'update' }));
-        });
+        .catch(() => setIsSaving(false));
     } else {
       addDoc(collection(db, "news"), data)
         .then(() => {
@@ -183,26 +169,14 @@ export default function AdminBerita() {
           resetForm();
           toast({ title: "Informasi Dipublikasikan" });
         })
-        .catch(async () => {
-          setIsSaving(false);
-          errorEmitter.emit('permission-error', new FirestorePermissionError({ path: 'news', operation: 'create' }));
-        });
+        .catch(() => setIsSaving(false));
     }
-  };
-
-  const toggleStatus = (id: string, currentStatus: string) => {
-    if (!db) return;
-    const newStatus = currentStatus === "Published" ? "Draft" : "Published";
-    updateDoc(doc(db, "news", id), { status: newStatus })
-      .then(() => toast({ title: "Status Berubah" }))
-      .catch(async () => errorEmitter.emit('permission-error', new FirestorePermissionError({ path: `news/${id}`, operation: 'update' })));
   };
 
   const handleDelete = (id: string) => {
     if (!db || !confirm("Hapus berita ini?")) return;
     deleteDoc(doc(db, "news", id))
-      .then(() => toast({ title: "Informasi Dihapus" }))
-      .catch(async () => errorEmitter.emit('permission-error', new FirestorePermissionError({ path: `news/${id}`, operation: 'delete' })));
+      .then(() => toast({ title: "Informasi Dihapus" }));
   };
 
   return (
@@ -212,7 +186,7 @@ export default function AdminBerita() {
           <h1 className="text-3xl font-bold font-headline text-primary flex items-center gap-2 uppercase tracking-tighter">
             <Newspaper className="h-8 w-8 text-secondary" /> Manajemen Informasi
           </h1>
-          <p className="text-muted-foreground text-sm font-medium">Data disimpan di cloud dengan URL publik yang efisien.</p>
+          <p className="text-muted-foreground text-sm font-medium">Gambar otomatis dioptimalkan dan disimpan di Storage.</p>
         </div>
       </div>
 
@@ -226,7 +200,7 @@ export default function AdminBerita() {
             </div>
 
             <div className="space-y-4">
-              <Label className="text-xs font-bold uppercase text-slate-400">Gambar Informasi (Cloud Storage)</Label>
+              <Label className="text-xs font-bold uppercase text-slate-400">Gambar (Cloud Storage)</Label>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="relative aspect-video rounded-2xl border-2 border-dashed flex items-center justify-center bg-slate-50 overflow-hidden">
                   {isProcessingFile ? (

@@ -47,7 +47,7 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative min-h-[100vh] flex items-center overflow-hidden bg-slate-950">
         <div className="absolute inset-0 z-0 transition-opacity duration-1000">
-           {heroImageUrl && (
+           {heroImageUrl ? (
              <Image 
               src={heroImageUrl} 
               alt="Hero image" 
@@ -56,6 +56,8 @@ export default function Home() {
               priority 
               quality={90}
             />
+           ) : (
+             <div className="absolute inset-0 bg-slate-900" />
            )}
         </div>
         <div className="absolute inset-0 bg-slate-950/60 md:bg-gradient-to-r md:from-slate-950 md:via-slate-950/70 md:to-transparent z-[1]" />
@@ -63,8 +65,8 @@ export default function Home() {
         <div className="container relative z-10 px-6 md:px-12 mx-auto pb-32 pt-40 md:pt-48">
           <div className="max-w-5xl space-y-8 animate-in fade-in slide-in-from-left duration-1000">
             <div className="space-y-6">
-              {/* Hero Badge - Aligned and clean */}
-              <div className="text-secondary py-2 text-[10px] font-black uppercase tracking-[0.25em] drop-shadow-md">
+              {/* Hero Badge - Aligned and clean without background or icon */}
+              <div className="text-secondary py-2 text-[10px] md:text-xs font-black uppercase tracking-[0.25em] drop-shadow-md">
                 {heroBadgeText}
               </div>
               
