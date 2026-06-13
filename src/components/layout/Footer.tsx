@@ -34,7 +34,6 @@ export function Footer() {
 
   if (isAdminPage) return null;
 
-  // Gunakan mounted check untuk data dinamis guna menghindari hydration mismatch
   const schoolName = mounted && settings?.schoolName ? settings.schoolName : "SMPN 5 LANGKE REMBONG";
   const schoolLogo = mounted ? settings?.schoolLogoUrl : null;
   const officialWebsites = mounted && Array.isArray(settings?.officialWebsites) ? settings.officialWebsites : [];
@@ -98,7 +97,7 @@ export function Footer() {
 
               <div className="space-y-4">
                 <div className="space-y-3">
-                  <span className="text-[10px] font-black text-secondary tracking-widest uppercase">IKUTI KAMI</span>
+                  <span className="text-[11px] font-black text-secondary tracking-widest uppercase">IKUTI KAMI</span>
                   <div className="flex gap-2">
                     {socialLinks.map((social) => (
                       <a 
@@ -117,9 +116,9 @@ export function Footer() {
                   </div>
                 </div>
 
-                <div className="flex flex-col gap-6 pt-4 border-t border-white/10">
-                  <div className="space-y-3">
-                    <span className="text-[10px] font-black text-secondary tracking-widest uppercase">Portal Resmi Instansi</span>
+                <div className="flex flex-col gap-8 pt-6 border-t border-white/10">
+                  <div className="space-y-4">
+                    <span className="text-[11px] font-black text-secondary tracking-widest uppercase">Portal Resmi Instansi</span>
                     <div className="flex flex-wrap gap-2">
                       {officialWebsites.length > 0 ? officialWebsites.map((web: any, i: number) => (
                         <a 
@@ -139,8 +138,8 @@ export function Footer() {
                     </div>
                   </div>
 
-                  <div className="space-y-3">
-                    <span className="text-[10px] font-black text-secondary tracking-widest uppercase">Informasi Media Lain</span>
+                  <div className="space-y-4">
+                    <span className="text-[11px] font-black text-secondary tracking-widest uppercase">Informasi Media Lain</span>
                     <div className="flex flex-wrap gap-2">
                       {otherMedia.length > 0 ? otherMedia.map((media: any, i: number) => (
                         <a 
