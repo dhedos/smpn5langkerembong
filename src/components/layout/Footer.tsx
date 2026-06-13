@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useMemo, useState, useEffect } from "react";
@@ -35,7 +34,6 @@ export function Footer() {
 
   if (isAdminPage) return null;
 
-  // Nilai default statis untuk menghindari hydration mismatch
   const schoolName = mounted && settings?.schoolName ? settings.schoolName : "SMPN 5 LANGKE REMBONG";
   const schoolLogo = mounted ? settings?.schoolLogoUrl : null;
   const officialWebsites = mounted && Array.isArray(settings?.officialWebsites) ? settings.officialWebsites : [];
