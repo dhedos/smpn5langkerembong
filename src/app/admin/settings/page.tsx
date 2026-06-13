@@ -14,17 +14,11 @@ import {
   History,
   Target,
   Layout,
-  UserCircle,
-  BarChart3,
-  UserPlus,
-  User,
-  Search,
   Map as MapIcon,
-  Globe,
-  Link as LinkIcon,
   SearchCode,
-  ShieldCheck,
-  Upload
+  Upload,
+  Globe,
+  Link as LinkIcon
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -32,16 +26,18 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { useFirestore, useDoc } from "@/firebase";
+import { useFirestore, useDoc, useStorage } from "@/firebase";
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { toast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError, type SecurityRuleContext } from '@/firebase/errors';
 import { optimizeImage } from "@/lib/image-optimizer";
+import { uploadOptimizedImage } from "@/lib/storage-upload";
 
 export default function AdminSettings() {
   const db = useFirestore();
+  const storage = useStorage();
   
   const targetSchoolId = 'smpn5-langke-rembong';
   const settingsRef = useMemo(() => db ? doc(db, "schools", targetSchoolId) : null, [db, targetSchoolId]);
@@ -95,7 +91,7 @@ export default function AdminSettings() {
   const [isSaving, setIsSaving] = useState(false);
   const [newMission, setNewMission] = useState("");
   const [addressSearch, setAddressSearch] = useState("");
-  const [optimizingField, setOptimizingField] = useState<string | null>(null);
+  const [isProcessingFile, setIsProcessingFile] = useState<string | null>(null);
 
   const [newOfficialTitle, setNewOfficialTitle] = useState("");
   const [newOfficialUrl, setNewOfficialUrl] = useState("");
@@ -108,24 +104,23 @@ export default function AdminSettings() {
       setFormData((prev: any) => ({
         ...prev,
         ...currentSettings,
-        officialWebsites: currentSettings.officialWebsites || [],
-        otherMedia: currentSettings.otherMedia || [],
       }));
     }
   }, [currentSettings]);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>, field: string) => {
     const file = e.target.files?.[0];
-    if (file) {
-      setOptimizingField(field);
+    if (file && storage) {
+      setIsProcessingFile(field);
       try {
-        const optimized = await optimizeImage(file);
-        setFormData((prev: any) => ({ ...prev, [field]: optimized }));
-        toast({ title: "Optimasi WebP Berhasil", description: "Gambar telah dikompres otomatis." });
+        const base64 = await optimizeImage(file);
+        const cloudUrl = await uploadOptimizedImage(storage, base64, 'branding');
+        setFormData((prev: any) => ({ ...prev, [field]: cloudUrl }));
+        toast({ title: "Berhasil!", description: "Gambar telah dioptimalkan dan diunggah ke cloud." });
       } catch (err: any) {
-        toast({ title: "Gagal Mengunggah", description: err.message, variant: "destructive" });
+        toast({ title: "Gagal", description: err.message, variant: "destructive" });
       } finally {
-        setOptimizingField(null);
+        setIsProcessingFile(null);
       }
     }
   };
@@ -150,20 +145,6 @@ export default function AdminSettings() {
   const handleRemoveOfficialWebsite = (index: number) => {
     const newList = (formData.officialWebsites || []).filter((_: any, i: number) => i !== index);
     setFormData({ ...formData, officialWebsites: newList });
-  };
-
-  const handleAddOtherMedia = () => {
-    if (newOtherTitle.trim() && newOtherUrl.trim()) {
-      const newList = [...(formData.otherMedia || []), { title: newOtherTitle.trim(), url: newOtherUrl.trim() }];
-      setFormData({ ...formData, otherMedia: newList });
-      setNewOtherTitle("");
-      setNewOtherUrl("");
-    }
-  };
-
-  const handleRemoveOtherMedia = (index: number) => {
-    const newList = (formData.otherMedia || []).filter((_: any, i: number) => i !== index);
-    setFormData({ ...formData, otherMedia: newList });
   };
 
   const handleAddMission = () => {
@@ -196,7 +177,7 @@ export default function AdminSettings() {
     setDoc(settingsRef, dataToSave, { merge: true })
       .then(() => {
         setIsSaving(false);
-        toast({ title: "Berhasil!", description: "Pengaturan telah disimpan secara permanen." });
+        toast({ title: "Tersimpan", description: "Pengaturan telah diperbarui di seluruh website." });
       })
       .catch(async (error: any) => {
         setIsSaving(false);
@@ -211,7 +192,7 @@ export default function AdminSettings() {
   if (loading) return (
     <div className="p-12 text-center space-y-4">
       <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" />
-      <p className="text-muted-foreground animate-pulse font-medium italic">Sinkronisasi Pengaturan...</p>
+      <p className="text-muted-foreground font-medium">Sinkronisasi Pengaturan...</p>
     </div>
   );
 
@@ -224,14 +205,14 @@ export default function AdminSettings() {
           </div>
           <div>
             <h1 className="text-4xl font-bold font-headline text-primary tracking-tight uppercase">Pengaturan Global</h1>
-            <p className="text-muted-foreground text-sm font-medium">Semua unggahan gambar otomatis dikompresi ke WebP.</p>
+            <p className="text-muted-foreground text-sm font-medium">Data disimpan di Firestore & Gambar di Firebase Storage.</p>
           </div>
         </div>
         <Button 
           size="lg" 
-          className="bg-primary hover:bg-primary/90 shadow-xl flex gap-2 h-14 px-10 rounded-2xl font-bold" 
+          className="bg-primary h-14 px-10 rounded-2xl font-bold gap-2" 
           onClick={handleSave} 
-          disabled={isSaving || optimizingField !== null}
+          disabled={isSaving || isProcessingFile !== null}
         >
           {isSaving ? <Loader2 className="h-5 w-5 animate-spin" /> : <Save className="h-5 w-5" />}
           {isSaving ? "Menyimpan..." : "Simpan Perubahan"}
@@ -240,12 +221,12 @@ export default function AdminSettings() {
 
       <Tabs defaultValue="general" className="space-y-8">
         <TabsList className="bg-slate-100/50 p-1.5 rounded-2xl w-full flex flex-wrap h-auto border border-slate-200 gap-1">
-          <TabsTrigger value="general" className="rounded-xl px-4 py-3 font-bold flex-1 data-[state=active]:bg-white text-[10px] uppercase">Identitas</TabsTrigger>
-          <TabsTrigger value="seo" className="rounded-xl px-4 py-3 font-bold flex-1 data-[state=active]:bg-white text-[10px] uppercase">SEO</TabsTrigger>
-          <TabsTrigger value="hero" className="rounded-xl px-4 py-3 font-bold flex-1 data-[state=active]:bg-white text-[10px] uppercase">Beranda</TabsTrigger>
-          <TabsTrigger value="profile" className="rounded-xl px-4 py-3 font-bold flex-1 data-[state=active]:bg-white text-[10px] uppercase">Profil</TabsTrigger>
-          <TabsTrigger value="spmb" className="rounded-xl px-4 py-3 font-bold flex-1 data-[state=active]:bg-white text-[10px] uppercase">SPMB</TabsTrigger>
-          <TabsTrigger value="social" className="rounded-xl px-4 py-3 font-bold flex-1 data-[state=active]:bg-white text-[10px] uppercase">Sosmed</TabsTrigger>
+          <TabsTrigger value="general" className="rounded-xl px-4 py-3 font-bold flex-1 text-[10px] uppercase">Identitas</TabsTrigger>
+          <TabsTrigger value="seo" className="rounded-xl px-4 py-3 font-bold flex-1 text-[10px] uppercase">SEO</TabsTrigger>
+          <TabsTrigger value="hero" className="rounded-xl px-4 py-3 font-bold flex-1 text-[10px] uppercase">Beranda</TabsTrigger>
+          <TabsTrigger value="profile" className="rounded-xl px-4 py-3 font-bold flex-1 text-[10px] uppercase">Profil</TabsTrigger>
+          <TabsTrigger value="spmb" className="rounded-xl px-4 py-3 font-bold flex-1 text-[10px] uppercase">SPMB</TabsTrigger>
+          <TabsTrigger value="social" className="rounded-xl px-4 py-3 font-bold flex-1 text-[10px] uppercase">Sosmed</TabsTrigger>
         </TabsList>
 
         <TabsContent value="general" className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -262,10 +243,10 @@ export default function AdminSettings() {
                 </div>
 
                 <div className="space-y-3 pt-4 border-t">
-                  <Label className="text-xs font-bold uppercase text-slate-400">Logo Sekolah (WebP Optimization)</Label>
+                  <Label className="text-xs font-bold uppercase text-slate-400">Logo Sekolah (Cloud Upload)</Label>
                   <div className="flex flex-col gap-4">
-                    <div className="h-24 w-24 relative bg-slate-50 rounded-xl border p-2 flex items-center justify-center">
-                      {optimizingField === "schoolLogoUrl" ? (
+                    <div className="h-24 w-24 relative bg-slate-50 rounded-xl border p-2 flex items-center justify-center overflow-hidden">
+                      {isProcessingFile === "schoolLogoUrl" ? (
                         <Loader2 className="h-8 w-8 animate-spin text-primary" />
                       ) : formData.schoolLogoUrl ? (
                         <img src={formData.schoolLogoUrl} alt="Logo" className="max-h-full max-w-full object-contain" />
@@ -273,7 +254,7 @@ export default function AdminSettings() {
                         <ImageIcon className="h-8 w-8 text-slate-300" />
                       )}
                     </div>
-                    <Input type="file" accept="image/*" onChange={(e) => handleFileChange(e, "schoolLogoUrl")} className="h-12 bg-slate-50 rounded-2xl" disabled={optimizingField !== null} />
+                    <Input type="file" accept="image/*" onChange={(e) => handleFileChange(e, "schoolLogoUrl")} className="h-12 bg-slate-50 rounded-2xl" disabled={isProcessingFile !== null} />
                   </div>
                 </div>
 
@@ -318,64 +299,46 @@ export default function AdminSettings() {
 
         <TabsContent value="seo">
           <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden bg-white">
-            <CardHeader className="bg-slate-50/50 border-b p-8">
-              <CardTitle className="text-xl flex items-center gap-3 font-headline text-primary">
-                <SearchCode className="h-6 w-6 text-secondary" /> SEO & Meta Data
-              </CardTitle>
-            </CardHeader>
+            <CardHeader className="bg-slate-50/50 border-b p-8"><CardTitle className="text-xl flex items-center gap-3 font-headline text-primary"><SearchCode className="h-6 w-6 text-secondary" /> SEO & Meta Data</CardTitle></CardHeader>
             <CardContent className="p-8 space-y-8">
               <div className="space-y-3">
                 <Label className="text-xs font-bold uppercase text-slate-400">Deskripsi Meta</Label>
-                <Textarea 
-                  value={formData.seoDescription} 
-                  onChange={(e) => setFormData({...formData, seoDescription: e.target.value})} 
-                  placeholder="Ringkasan singkat sekolah untuk pencarian..." 
-                  className="min-h-[120px] bg-slate-50 rounded-2xl"
-                />
+                <Textarea value={formData.seoDescription} onChange={(e) => setFormData({...formData, seoDescription: e.target.value})} className="min-h-[120px] bg-slate-50" />
               </div>
               <div className="space-y-3 pt-4 border-t">
-                <Label className="text-xs font-bold uppercase text-slate-400">Keywords (pisahkan dengan koma)</Label>
-                <Input 
-                  value={formData.seoKeywords} 
-                  onChange={(e) => setFormData({...formData, seoKeywords: e.target.value})} 
-                  placeholder="sekolah, pendidikan, smpn 5" 
-                  className="h-14 bg-slate-50 rounded-2xl" 
-                />
+                <Label className="text-xs font-bold uppercase text-slate-400">Keywords (koma)</Label>
+                <Input value={formData.seoKeywords} onChange={(e) => setFormData({...formData, seoKeywords: e.target.value})} className="h-14 bg-slate-50" />
               </div>
             </CardContent>
           </Card>
         </TabsContent>
 
-        <TabsContent value="hero" className="space-y-8">
+        <TabsContent value="hero">
           <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden bg-white">
             <CardHeader className="bg-slate-50/50 border-b p-8"><CardTitle className="text-xl flex items-center gap-3 font-headline text-primary"><Layout className="h-6 w-6 text-secondary" /> Tampilan Beranda</CardTitle></CardHeader>
             <CardContent className="p-8 space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="space-y-6">
                   <div className="space-y-2">
-                    <Label className="text-xs font-bold uppercase text-slate-400">Teks Lencana (Hero Badge)</Label>
-                    <Input value={formData.heroBadgeText} onChange={(e) => setFormData({...formData, heroBadgeText: e.target.value})} className="h-14 bg-slate-50 font-bold rounded-2xl" />
+                    <Label className="text-xs font-bold uppercase text-slate-400">Hero Badge</Label>
+                    <Input value={formData.heroBadgeText} onChange={(e) => setFormData({...formData, heroBadgeText: e.target.value})} className="h-14 bg-slate-50 font-bold" />
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-xs font-bold uppercase text-slate-400">Judul Utama (Hero Title)</Label>
-                    <Input value={formData.heroTitle} onChange={(e) => setFormData({...formData, heroTitle: e.target.value})} className="h-14 bg-slate-50 font-extrabold rounded-2xl" />
-                  </div>
-                  <div className="space-y-2">
-                    <Label className="text-xs font-bold uppercase text-slate-400">Sub-judul</Label>
-                    <Textarea value={formData.heroSubtitle} onChange={(e) => setFormData({...formData, heroSubtitle: e.target.value})} className="min-h-[120px] bg-slate-50 rounded-2xl" />
+                    <Label className="text-xs font-bold uppercase text-slate-400">Hero Title</Label>
+                    <Input value={formData.heroTitle} onChange={(e) => setFormData({...formData, heroTitle: e.target.value})} className="h-14 bg-slate-50 font-extrabold" />
                   </div>
                 </div>
                 <div className="space-y-3">
-                  <Label className="text-xs font-bold uppercase text-slate-400">Background Utama (WebP 1920px)</Label>
+                  <Label className="text-xs font-bold uppercase text-slate-400">Hero Image (WebP Cloud)</Label>
                   <div className="relative aspect-video w-full rounded-[2rem] overflow-hidden border-2 border-dashed bg-slate-50 flex items-center justify-center cursor-pointer">
-                    {optimizingField === "heroImageUrl" ? (
+                    {isProcessingFile === "heroImageUrl" ? (
                       <Loader2 className="h-12 w-12 animate-spin text-primary" />
                     ) : formData.heroImageUrl ? (
                       <img src={formData.heroImageUrl} className="w-full h-full object-cover" />
                     ) : (
                       <ImageIcon className="h-12 w-12 text-slate-300" />
                     )}
-                    <input type="file" accept="image/*" onChange={(e) => handleFileChange(e, "heroImageUrl")} className="absolute inset-0 opacity-0 cursor-pointer" disabled={optimizingField !== null} />
+                    <input type="file" accept="image/*" onChange={(e) => handleFileChange(e, "heroImageUrl")} className="absolute inset-0 opacity-0 cursor-pointer" disabled={isProcessingFile !== null} />
                   </div>
                 </div>
               </div>
@@ -388,63 +351,33 @@ export default function AdminSettings() {
             <CardHeader className="bg-slate-50/50 border-b p-8"><CardTitle className="text-xl flex items-center gap-3 font-headline text-primary"><History className="h-6 w-6 text-secondary" /> Sejarah</CardTitle></CardHeader>
             <CardContent className="p-8"><Textarea value={formData.history} onChange={(e) => setFormData({...formData, history: e.target.value})} className="min-h-[250px] bg-slate-50" /></CardContent>
           </Card>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden bg-white">
-              <CardHeader className="bg-slate-50/50 border-b p-8"><CardTitle className="text-xl flex items-center gap-3 font-headline text-primary"><Target className="h-6 w-6 text-secondary" /> Visi</CardTitle></CardHeader>
-              <CardContent className="p-8"><Textarea value={formData.vision} onChange={(e) => setFormData({...formData, vision: e.target.value})} className="min-h-[120px] bg-slate-50" /></CardContent>
-            </Card>
-            <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden bg-white">
-              <CardHeader className="bg-slate-50/50 border-b p-8"><CardTitle className="text-xl flex items-center gap-3 font-headline text-primary"><BookOpen className="h-6 w-6 text-secondary" /> Misi</CardTitle></CardHeader>
-              <CardContent className="p-8 space-y-4">
-                <div className="flex gap-2">
-                  <Input value={newMission} onChange={(e) => setNewMission(e.target.value)} placeholder="Misi baru..." className="h-12" />
-                  <Button onClick={handleAddMission} className="h-12 bg-secondary text-primary font-bold"><Plus /></Button>
-                </div>
-                {formData.mission?.map((m: string, i: number) => (
-                  <div key={i} className="flex items-center justify-between bg-slate-50 p-3 rounded-xl">
-                    <span className="text-sm font-medium">{m}</span>
-                    <Button variant="ghost" size="icon" onClick={() => handleRemoveMission(i)} className="text-destructive"><Trash2 className="h-4 w-4" /></Button>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-          </div>
         </TabsContent>
 
         <TabsContent value="spmb">
           <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden bg-white">
             <CardHeader className="bg-slate-50/50 border-b p-8">
               <div className="flex justify-between items-center">
-                <CardTitle className="text-xl flex items-center gap-3 font-headline text-primary"><UserPlus className="h-6 w-6 text-secondary" /> SPMB Online</CardTitle>
+                <CardTitle className="text-xl flex items-center gap-3 font-headline text-primary">SPMB Online</CardTitle>
                 <Switch checked={formData.ppdbIsActive} onCheckedChange={(checked) => setFormData({...formData, ppdbIsActive: checked})} />
               </div>
             </CardHeader>
             <CardContent className="p-8 space-y-6">
               <Input value={formData.ppdbMenuTitle} onChange={(e) => setFormData({...formData, ppdbMenuTitle: e.target.value})} placeholder="Label Menu SPMB" className="h-12" />
-              <Input value={formData.ppdbYear} onChange={(e) => setFormData({...formData, ppdbYear: e.target.value})} placeholder="Tahun Ajaran" className="h-12" />
             </CardContent>
           </Card>
         </TabsContent>
 
-        <TabsContent value="social" className="space-y-8">
+        <TabsContent value="social">
           <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden bg-white">
-            <CardHeader className="bg-slate-50/50 border-b p-8"><CardTitle className="text-xl flex items-center gap-3 font-headline text-primary"><Share2 className="h-6 w-6 text-secondary" /> Media Sosial Utama</CardTitle></CardHeader>
+            <CardHeader className="bg-slate-50/50 border-b p-8"><CardTitle className="text-xl flex items-center gap-3 font-headline text-primary"><Globe className="h-6 w-6 text-secondary" /> Media Sosial</CardTitle></CardHeader>
             <CardContent className="p-8 grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <Label className="text-[10px] font-bold uppercase text-slate-400">Facebook URL</Label>
-                <Input value={formData.facebookUrl} onChange={(e) => setFormData({...formData, facebookUrl: e.target.value})} placeholder="https://facebook.com/..." className="h-12 bg-slate-50" />
+                <Label className="text-[10px] font-bold uppercase text-slate-400">Facebook</Label>
+                <Input value={formData.facebookUrl} onChange={(e) => setFormData({...formData, facebookUrl: e.target.value})} className="h-12 bg-slate-50" />
               </div>
               <div className="space-y-2">
-                <Label className="text-[10px] font-bold uppercase text-slate-400">Instagram URL</Label>
-                <Input value={formData.instagramUrl} onChange={(e) => setFormData({...formData, instagramUrl: e.target.value})} placeholder="https://instagram.com/..." className="h-12 bg-slate-50" />
-              </div>
-              <div className="space-y-2">
-                <Label className="text-[10px] font-bold uppercase text-slate-400">TikTok URL</Label>
-                <Input value={formData.tiktokUrl} onChange={(e) => setFormData({...formData, tiktokUrl: e.target.value})} placeholder="https://tiktok.com/@..." className="h-12 bg-slate-50" />
-              </div>
-              <div className="space-y-2">
-                <Label className="text-[10px] font-bold uppercase text-slate-400">YouTube URL</Label>
-                <Input value={formData.youtubeUrl} onChange={(e) => setFormData({...formData, youtubeUrl: e.target.value})} placeholder="https://youtube.com/c/..." className="h-12 bg-slate-50" />
+                <Label className="text-[10px] font-bold uppercase text-slate-400">Instagram</Label>
+                <Input value={formData.instagramUrl} onChange={(e) => setFormData({...formData, instagramUrl: e.target.value})} className="h-12 bg-slate-50" />
               </div>
             </CardContent>
           </Card>

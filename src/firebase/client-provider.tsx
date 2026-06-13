@@ -9,6 +9,7 @@ export function FirebaseClientProvider({ children }: { children: React.ReactNode
     app: any;
     firestore: any;
     auth: any;
+    storage: any;
   } | null>(null);
 
   useEffect(() => {
@@ -21,6 +22,7 @@ export function FirebaseClientProvider({ children }: { children: React.ReactNode
       app={services?.app || null} 
       firestore={services?.firestore || null} 
       auth={services?.auth || null}
+      storage={services?.storage || null}
     >
       {children}
     </FirebaseProvider>

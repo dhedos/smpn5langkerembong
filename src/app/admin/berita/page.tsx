@@ -13,15 +13,17 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { adminContentOptimizer } from "@/ai/flows/admin-content-optimizer-flow";
 import { generateNewsImage } from "@/ai/flows/generate-news-image-flow";
 import { toast } from "@/hooks/use-toast";
-import { useFirestore, useCollection } from "@/firebase";
+import { useFirestore, useCollection, useStorage } from "@/firebase";
 import { collection, addDoc, deleteDoc, doc, updateDoc, serverTimestamp, query, where } from "firebase/firestore";
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
 import { cn } from "@/lib/utils";
 import { optimizeImage } from "@/lib/image-optimizer";
+import { uploadOptimizedImage } from "@/lib/storage-upload";
 
 export default function AdminBerita() {
   const db = useFirestore();
+  const storage = useStorage();
   const schoolId = 'smpn5-langke-rembong';
 
   const newsRef = useMemo(() => {
@@ -52,22 +54,22 @@ export default function AdminBerita() {
   const [optimizing, setOptimizing] = useState(false);
   const [generatingImg, setGeneratingImg] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const [isOptimizingImage, setIsOptimizingImage] = useState(false);
+  const [isProcessingFile, setIsProcessingFile] = useState(false);
   const [aiError, setAiError] = useState<{message: string, link: string} | null>(null);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      setIsOptimizingImage(true);
+    if (file && storage) {
+      setIsProcessingFile(true);
       try {
-        const optimized = await optimizeImage(file);
-        setImageUrl(optimized);
-        setAiError(null);
-        toast({ title: "Gambar Dioptimalkan", description: "Format WebP (High Quality) siap digunakan." });
+        const base64 = await optimizeImage(file);
+        const cloudUrl = await uploadOptimizedImage(storage, base64, 'news');
+        setImageUrl(cloudUrl);
+        toast({ title: "Berhasil Unggah", description: "Gambar telah tersimpan di cloud storage." });
       } catch (error: any) {
-        toast({ title: "Gagal Mengunggah", description: error.message, variant: "destructive" });
+        toast({ title: "Gagal", description: error.message, variant: "destructive" });
       } finally {
-        setIsOptimizingImage(false);
+        setIsProcessingFile(false);
       }
     }
   };
@@ -86,12 +88,14 @@ export default function AdminBerita() {
           setAiError({ message: result.error, link: result.helpLink });
         }
         toast({ title: "Gagal Membuat Gambar", description: result.error, variant: "destructive" });
-      } else if (result.imageUrl) {
-        setImageUrl(result.imageUrl);
-        toast({ title: "Gambar Berhasil Dibuat", description: "AI telah menghasilkan ilustrasi sesuai judul." });
+      } else if (result.imageUrl && storage) {
+        // AI image generation usually returns a Data URL, we should upload it too
+        const cloudUrl = await uploadOptimizedImage(storage, result.imageUrl, 'news-ai');
+        setImageUrl(cloudUrl);
+        toast({ title: "Gambar AI Berhasil", description: "Ilustrasi telah disimpan di cloud." });
       }
     } catch (error: any) {
-      toast({ title: "Kesalahan Sistem", description: "Layanan AI tidak dapat dijangkau.", variant: "destructive" });
+      toast({ title: "Kesalahan AI", description: "Layanan AI tidak dapat dijangkau.", variant: "destructive" });
     } finally {
       setGeneratingImg(false);
     }
@@ -109,7 +113,7 @@ export default function AdminBerita() {
       setTags(result.seoTags);
       toast({ title: "Optimasi Berhasil", description: "AI telah membuat ringkasan dan tag SEO." });
     } catch (error: any) {
-      toast({ title: "Gagal Mengoptimasi", description: "Gagal menghubungkan ke layanan AI.", variant: "destructive" });
+      toast({ title: "Gagal", variant: "destructive" });
     } finally {
       setOptimizing(false);
     }
@@ -136,7 +140,6 @@ export default function AdminBerita() {
     setTags(item.tags || []);
     setImageUrl(item.imageUrl || "");
     setExternalUrl(item.externalUrl || "");
-    setAiError(null);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -167,9 +170,9 @@ export default function AdminBerita() {
         .then(() => {
           setIsSaving(false);
           resetForm();
-          toast({ title: "Berhasil Diperbarui" });
+          toast({ title: "Informasi Diperbarui" });
         })
-        .catch(async (error) => {
+        .catch(async () => {
           setIsSaving(false);
           errorEmitter.emit('permission-error', new FirestorePermissionError({ path: `news/${editingId}`, operation: 'update' }));
         });
@@ -178,9 +181,9 @@ export default function AdminBerita() {
         .then(() => {
           setIsSaving(false);
           resetForm();
-          toast({ title: "Berhasil Disimpan" });
+          toast({ title: "Informasi Dipublikasikan" });
         })
-        .catch(async (error) => {
+        .catch(async () => {
           setIsSaving(false);
           errorEmitter.emit('permission-error', new FirestorePermissionError({ path: 'news', operation: 'create' }));
         });
@@ -191,14 +194,14 @@ export default function AdminBerita() {
     if (!db) return;
     const newStatus = currentStatus === "Published" ? "Draft" : "Published";
     updateDoc(doc(db, "news", id), { status: newStatus })
-      .then(() => toast({ title: "Status Diperbarui" }))
+      .then(() => toast({ title: "Status Berubah" }))
       .catch(async () => errorEmitter.emit('permission-error', new FirestorePermissionError({ path: `news/${id}`, operation: 'update' })));
   };
 
   const handleDelete = (id: string) => {
     if (!db || !confirm("Hapus berita ini?")) return;
     deleteDoc(doc(db, "news", id))
-      .then(() => toast({ title: "Dihapus" }))
+      .then(() => toast({ title: "Informasi Dihapus" }))
       .catch(async () => errorEmitter.emit('permission-error', new FirestorePermissionError({ path: `news/${id}`, operation: 'delete' })));
   };
 
@@ -209,198 +212,76 @@ export default function AdminBerita() {
           <h1 className="text-3xl font-bold font-headline text-primary flex items-center gap-2 uppercase tracking-tighter">
             <Newspaper className="h-8 w-8 text-secondary" /> Manajemen Informasi
           </h1>
-          <p className="text-muted-foreground text-sm font-medium">Buat informasi sekolah dengan bantuan AI.</p>
+          <p className="text-muted-foreground text-sm font-medium">Data disimpan di cloud dengan URL publik yang efisien.</p>
         </div>
-        {editingId && (
-          <Button variant="outline" className="rounded-xl gap-2" onClick={resetForm}>
-            <RotateCcw className="h-4 w-4" /> Batal Edit
-          </Button>
-        )}
       </div>
-
-      {aiError && (
-        <Alert variant="destructive" className="rounded-2xl border-destructive/50 bg-destructive/5">
-          <AlertCircle className="h-5 w-5" />
-          <AlertTitle className="font-bold">Aksi Diperlukan: Aktifkan Layanan AI</AlertTitle>
-          <AlertDescription className="space-y-3">
-            <p>{aiError.message}</p>
-            <Button 
-              size="sm" 
-              className="bg-destructive text-white hover:bg-destructive/90 rounded-lg gap-2"
-              onClick={() => window.open(aiError.link, '_blank')}
-            >
-              Klik Disini Untuk Aktifkan <ExternalLink className="h-4 w-4" />
-            </Button>
-          </AlertDescription>
-        </Alert>
-      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
         <Card className="lg:col-span-3 border-none shadow-xl rounded-[2.5rem] overflow-hidden bg-white">
-          <CardHeader className="bg-slate-50/50 border-b p-8">
-            <CardTitle className="text-xl flex items-center gap-2">
-              <Edit className="h-6 w-6 text-primary" /> {editingId ? "Edit Informasi" : "Tulis Informasi Baru"}
-            </CardTitle>
-          </CardHeader>
+          <CardHeader className="bg-slate-50/50 border-b p-8"><CardTitle className="text-xl flex items-center gap-2">Tulis Informasi</CardTitle></CardHeader>
           <CardContent className="p-8 space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label className="text-xs uppercase font-extrabold text-slate-400">Judul Berita</Label>
-                <Input 
-                  className="h-12 bg-slate-50 border-slate-100 rounded-xl font-bold"
-                  placeholder="Masukkan judul..." 
-                  value={title} 
-                  onChange={(e) => setTitle(e.target.value)} 
-                />
-              </div>
-              <div className="space-y-2">
-                <Label className="text-xs uppercase font-extrabold text-slate-400">Kategori</Label>
-                <Input 
-                  className="h-12 bg-slate-50 border-slate-100 rounded-xl"
-                  placeholder="Contoh: Pengumuman" 
-                  value={category} 
-                  onChange={(e) => setCategory(e.target.value)} 
-                />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label className="text-xs uppercase font-extrabold text-slate-400">Tautan Eksternal (Opsional)</Label>
-              <div className="relative">
-                <LinkIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-                <Input 
-                  className="h-12 bg-slate-50 border-slate-100 rounded-xl pl-12"
-                  placeholder="https://contoh-berita-lain.com" 
-                  value={externalUrl} 
-                  onChange={(e) => setExternalUrl(e.target.value)} 
-                />
-              </div>
-              <p className="text-[10px] text-slate-400 italic">Jika diisi, pengunjung akan diarahkan ke link ini saat mengklik "Baca Selengkapnya".</p>
+              <Input placeholder="Judul..." value={title} onChange={(e) => setTitle(e.target.value)} className="h-12 bg-slate-50" />
+              <Input placeholder="Kategori..." value={category} onChange={(e) => setCategory(e.target.value)} className="h-12 bg-slate-50" />
             </div>
 
             <div className="space-y-4">
-              <Label className="text-xs uppercase font-extrabold text-slate-400">Gambar Informasi</Label>
+              <Label className="text-xs font-bold uppercase text-slate-400">Gambar Informasi (Cloud Storage)</Label>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="relative aspect-video rounded-2xl border-2 border-dashed flex items-center justify-center bg-slate-50 overflow-hidden group">
-                  {isOptimizingImage ? (
-                    <div className="text-center p-4">
-                      <Loader2 className="h-10 w-10 text-primary mx-auto animate-spin" />
-                      <span className="text-[10px] text-primary font-bold">MENGOPTIMALKAN...</span>
-                    </div>
+                <div className="relative aspect-video rounded-2xl border-2 border-dashed flex items-center justify-center bg-slate-50 overflow-hidden">
+                  {isProcessingFile ? (
+                    <Loader2 className="h-10 w-10 text-primary animate-spin" />
                   ) : imageUrl ? (
                     <img src={imageUrl} alt="Preview" className="w-full h-full object-cover" />
                   ) : (
-                    <div className="text-center p-4">
-                      <Upload className="h-10 w-10 text-slate-300 mx-auto" />
-                      <span className="text-[10px] text-slate-400 font-bold uppercase">KLIK UNTUK UNGGAH</span>
-                    </div>
+                    <Upload className="h-10 w-10 text-slate-300" />
                   )}
-                  <input type="file" accept="image/*" onChange={handleFileChange} className="absolute inset-0 opacity-0 cursor-pointer" disabled={isOptimizingImage} />
+                  <input type="file" accept="image/*" onChange={handleFileChange} className="absolute inset-0 opacity-0 cursor-pointer" disabled={isProcessingFile} />
                 </div>
-                <div className="flex flex-col gap-3 justify-center">
-                  <Button 
-                    variant="outline" 
-                    className="h-14 rounded-xl border-secondary text-primary font-bold gap-2 hover:bg-secondary/10"
-                    onClick={handleGenerateAIImage}
-                    disabled={generatingImg}
-                  >
-                    {generatingImg ? <Loader2 className="h-5 w-5 animate-spin" /> : <Sparkles className="h-5 w-5 text-secondary" />}
-                    {generatingImg ? "AI Melukis..." : "AI Generate Gambar"}
+                <div className="flex flex-col gap-2 justify-center">
+                  <Button variant="outline" className="h-12 rounded-xl gap-2 font-bold" onClick={handleGenerateAIImage} disabled={generatingImg}>
+                    {generatingImg ? <Loader2 className="animate-spin" /> : <Sparkles />} Generate AI Image
                   </Button>
-                  <p className="text-[10px] text-slate-400 italic font-medium">Sistem otomatis mengompres gambar ke format WebP untuk loading super cepat.</p>
                 </div>
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label className="text-xs uppercase font-extrabold text-slate-400">Isi Berita</Label>
-              <Textarea 
-                placeholder="Tulis detail informasi di sini..." 
-                className="min-h-[250px] bg-slate-50 border-slate-100 rounded-2xl p-6"
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-              />
-            </div>
+            <Textarea placeholder="Isi berita..." className="min-h-[250px] bg-slate-50" value={content} onChange={(e) => setContent(e.target.value)} />
 
-            <div className="flex justify-between items-center pt-8 border-t">
-              <Button 
-                variant="outline" 
-                className="h-12 rounded-xl gap-2 font-bold"
-                onClick={handleOptimize}
-                disabled={optimizing}
-              >
-                {optimizing ? <Loader2 className="h-5 w-5 animate-spin" /> : <Wand2 className="h-5 w-5 text-secondary" />}
-                AI Content Optimizer
+            <div className="flex justify-between pt-8 border-t">
+              <Button variant="outline" className="rounded-xl font-bold" onClick={handleOptimize} disabled={optimizing}>
+                <Wand2 className="mr-2" /> AI Optimize
               </Button>
               <div className="flex gap-3">
-                <Button variant="outline" className="h-12 rounded-xl px-6" onClick={() => handleSave("Draft")} disabled={isSaving}>Simpan Draft</Button>
-                <Button className="h-12 px-8 rounded-xl bg-primary text-white shadow-lg" onClick={() => handleSave("Published")} disabled={isSaving}>
-                  {isSaving ? <Loader2 className="h-5 w-5 animate-spin" /> : <Save className="h-5 w-5" />}
-                  {editingId ? "Perbarui" : "Publikasikan"}
+                <Button variant="outline" className="rounded-xl px-6" onClick={() => handleSave("Draft")} disabled={isSaving}>Draft</Button>
+                <Button className="rounded-xl px-8 bg-primary" onClick={() => handleSave("Published")} disabled={isSaving}>
+                  {isSaving ? <Loader2 className="animate-spin" /> : "Publikasikan"}
                 </Button>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <div className="lg:col-span-2 space-y-8">
-          <Card className="border-none shadow-xl rounded-[2.5rem] bg-white border border-slate-100">
-            <CardHeader className="bg-slate-50/50 border-b p-8">
-              <CardTitle className="text-xl flex items-center gap-3 text-primary">
-                <Sparkles className="h-5 w-5 text-secondary" /> AI Suggestion
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-8 space-y-6">
-              <div className="space-y-2">
-                <Label className="text-xs font-extrabold uppercase text-slate-400">Ringkasan Otomatis</Label>
-                <Textarea 
-                  className="bg-slate-50 border-slate-100 rounded-2xl text-sm italic"
-                  value={summary}
-                  onChange={(e) => setSummary(e.target.value)}
-                />
-              </div>
-              <div className="space-y-4">
-                <Label className="text-xs font-extrabold uppercase text-slate-400">Tag SEO</Label>
-                <div className="flex flex-wrap gap-2">
-                  {tags.map((tag) => (
-                    <Badge key={tag} variant="secondary" className="bg-slate-100 text-primary px-3 py-1 rounded-lg">#{tag}</Badge>
-                  ))}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          
-          <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden bg-white">
-             <CardHeader className="bg-slate-50/50 border-b p-8"><CardTitle className="text-xl">Daftar Informasi</CardTitle></CardHeader>
-             <CardContent className="p-0">
-               <Table>
-                 <TableBody>
-                   {loading ? (
-                     <TableRow><TableCell className="text-center py-10">Memuat data...</TableCell></TableRow>
-                   ) : newsItems.length > 0 ? newsItems.map((item: any) => (
-                     <TableRow key={item.id} className="group border-b">
-                       <TableCell className="p-6 font-bold truncate max-w-[150px]">{item.title}</TableCell>
-                       <TableCell className="text-center">
-                         <Button 
-                           variant="ghost" 
-                           size="sm" 
-                           className={cn("rounded-full h-10 px-4", item.status === "Published" ? "text-green-600 bg-green-50" : "text-slate-400 bg-slate-50")}
-                           onClick={() => toggleStatus(item.id, item.status)}
-                         >
-                           {item.status === "Published" ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
-                         </Button>
-                       </TableCell>
-                       <TableCell className="text-right p-6 flex gap-2 justify-end">
-                         <Button variant="ghost" size="icon" className="text-primary hover:bg-primary/5" onClick={() => handleEdit(item)}><Edit className="h-4 w-4" /></Button>
-                         <Button variant="ghost" size="icon" className="text-destructive hover:bg-destructive/5" onClick={() => handleDelete(item.id)}><Trash2 className="h-4 w-4" /></Button>
-                       </TableCell>
-                     </TableRow>
-                   )) : <TableRow><TableCell className="text-center py-10">Tidak ada informasi</TableCell></TableRow>}
-                 </TableBody>
-               </Table>
-             </CardContent>
-          </Card>
-        </div>
+        <Card className="lg:col-span-2 border-none shadow-xl rounded-[2.5rem] bg-white h-fit">
+          <CardHeader className="bg-slate-50/50 border-b p-8"><CardTitle className="text-lg">Daftar Berita</CardTitle></CardHeader>
+          <CardContent className="p-0">
+            <Table>
+              <TableBody>
+                {loading ? (
+                  <TableRow><TableCell className="text-center py-10">Memuat...</TableCell></TableRow>
+                ) : newsItems.length > 0 ? newsItems.map((item: any) => (
+                  <TableRow key={item.id}>
+                    <TableCell className="p-4 font-bold">{item.title}</TableCell>
+                    <TableCell className="text-right p-4 flex gap-2 justify-end">
+                      <Button variant="ghost" size="icon" onClick={() => handleEdit(item)}><Edit className="h-4 w-4" /></Button>
+                      <Button variant="ghost" size="icon" className="text-destructive" onClick={() => handleDelete(item.id)}><Trash2 className="h-4 w-4" /></Button>
+                    </TableCell>
+                  </TableRow>
+                )) : <TableRow><TableCell className="text-center py-10">Kosong</TableCell></TableRow>}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
