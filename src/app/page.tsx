@@ -39,8 +39,9 @@ export default function Home() {
 
   const { data: rawNews } = useCollection(newsQuery);
 
-  const heroImageUrl = settings?.heroImageUrl;
+  // Fallback instan agar tidak ada jeda pemuatan (Identik di Server & Klien)
   const schoolName = settings?.schoolName || "SMPN 5 LANGKE REMBONG";
+  const heroImageUrl = settings?.heroImageUrl || "https://picsum.photos/seed/school1/1920/1080";
   const heroBadgeText = settings?.heroBadgeText || "Selamat Datang di Website Resmi Kami";
   const heroTitle = settings?.heroTitle || "MEMBANGUN MASA DEPAN BERSAMA KAMI";
   const heroSubtitle = settings?.heroSubtitle || "Pendidikan berkualitas untuk generasi emas bangsa melalui kurikulum yang inovatif.";
@@ -60,9 +61,9 @@ export default function Home() {
         <div 
           className="absolute inset-0 z-0 bg-cover bg-center transition-opacity duration-1000"
           style={{ 
-            backgroundImage: heroImageUrl ? `url('${heroImageUrl}')` : 'none', 
+            backgroundImage: `url('${heroImageUrl}')`, 
             backgroundAttachment: 'fixed',
-            opacity: heroImageUrl ? 1 : 0
+            opacity: 1
           }}
           data-ai-hint="modern school"
         />

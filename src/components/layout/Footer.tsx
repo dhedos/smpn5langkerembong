@@ -30,6 +30,7 @@ export function Footer() {
 
   if (isAdminPage) return null;
 
+  // Fallback instan agar tidak ada jeda pemuatan
   const schoolName = settings?.schoolName || "SMPN 5 LANGKE REMBONG";
   const schoolLogo = settings?.schoolLogoUrl || 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48L3N2Zz4=';
   const officialWebsites = Array.isArray(settings?.officialWebsites) ? settings.officialWebsites : [];
@@ -71,6 +72,7 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 md:gap-16 lg:gap-20 mb-16">
           <div className="flex flex-col space-y-6 md:col-span-2 lg:col-span-2">
             <div className="flex items-center gap-5">
+              {/* Logo Container Tanpa Background */}
               <div className="relative h-12 w-12 md:h-20 md:w-20 shrink-0 flex items-center justify-center overflow-hidden">
                 <Image 
                   src={schoolLogo} 
