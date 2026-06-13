@@ -1,4 +1,3 @@
-
 "use client";
 
 import React from "react";
@@ -19,7 +18,7 @@ import {
   ChartTooltipContent,
   ChartConfig,
 } from "@/components/ui/chart";
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from "recharts";
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid } from "recharts";
 import { cn } from "@/lib/utils";
 
 const stats = [
@@ -66,7 +65,7 @@ export default function AdminDashboard() {
                 className="bg-white text-black hover:bg-slate-200 px-8 py-6 rounded-full font-bold shadow-xl"
                 asChild
               >
-                <a href="/admin/informasi">Kelola Informasi</a>
+                <a href="/admin/berita">Kelola Informasi</a>
               </Button>
             </div>
           </div>
@@ -110,28 +109,26 @@ export default function AdminDashboard() {
           <CardContent className="p-8 pt-0">
             <div className="h-[300px] w-full">
               <ChartContainer config={chartConfig}>
-                <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={visitorData}>
-                    <defs>
-                      <linearGradient id="colorVis" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#1a73e8" stopOpacity={0.15}/>
-                        <stop offset="95%" stopColor="#1a73e8" stopOpacity={0}/>
-                      </linearGradient>
-                    </defs>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f1f1" />
-                    <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{fontSize: 12, fontWeight: 600, fill: '#94a3b8'}} />
-                    <YAxis hide />
-                    <ChartTooltip content={<ChartTooltipContent />} />
-                    <Area 
-                      type="monotone" 
-                      dataKey="visitors" 
-                      stroke="#1a73e8" 
-                      fillOpacity={1} 
-                      fill="url(#colorVis)" 
-                      strokeWidth={4}
-                    />
-                  </AreaChart>
-                </ResponsiveContainer>
+                <AreaChart data={visitorData}>
+                  <defs>
+                    <linearGradient id="colorVis" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#1a73e8" stopOpacity={0.15}/>
+                      <stop offset="95%" stopColor="#1a73e8" stopOpacity={0}/>
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f1f1" />
+                  <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{fontSize: 12, fontWeight: 600, fill: '#94a3b8'}} />
+                  <YAxis hide />
+                  <ChartTooltip content={<ChartTooltipContent />} />
+                  <Area 
+                    type="monotone" 
+                    dataKey="visitors" 
+                    stroke="#1a73e8" 
+                    fillOpacity={1} 
+                    fill="url(#colorVis)" 
+                    strokeWidth={4}
+                  />
+                </AreaChart>
               </ChartContainer>
             </div>
           </CardContent>
