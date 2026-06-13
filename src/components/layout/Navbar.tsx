@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
@@ -15,6 +16,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useFirestore, useDoc } from "@/firebase";
 import { doc } from "firebase/firestore";
+
+const DEFAULT_LOGO = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj4KICA8cGF0aCBkPSJNNTAgNSBMMTAgMjUgVjU1IEMxMCA3NSA1MCA5NSA1MCA5NSBDNTAgOTUgOTAgNzUgOTAgNTUgVjI1IEw1MCA1IFoiIGZpbGw9IiMxYTM2NWQiIC8+CiAgPHBhdGggZD0iTTUwIDIwIEw1NSAzNSBINzAgTDU4IDQ1IEw2MiA2MCBMNTAgNTAgTDM4IDYwIEw0MiA0NSBMMzAgMzUgSDQ1IEw1MCAyMCBaIiBmaWxsPSIjZmJiZjI0IiAvPgo8L3N2Zz4=';
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -40,10 +43,10 @@ export function Navbar() {
     setIsOpen(false);
   }, [pathname]);
 
-  const schoolName = mounted && settings?.schoolName ? settings.schoolName : "SMPN 5 LANGKE REMBONG";
-  const schoolLogo = mounted ? settings?.schoolLogoUrl : null;
-  const isSpmbActive = mounted ? settings?.ppdbIsActive === true : false;
-  const spmbLabel = mounted ? (settings?.ppdbMenuTitle || "SPMB ONLINE") : "SPMB ONLINE";
+  const schoolName = settings?.schoolName || "SMPN 5 LANGKE REMBONG";
+  const schoolLogo = settings?.schoolLogoUrl || DEFAULT_LOGO;
+  const isSpmbActive = settings?.ppdbIsActive === true;
+  const spmbLabel = settings?.ppdbMenuTitle || "SPMB ONLINE";
   const isHome = pathname === "/";
 
   const navItems = useMemo(() => {
@@ -72,13 +75,18 @@ export function Navbar() {
 
   return (
     <header className={cn("fixed top-0 left-0 right-0 z-[60] transition-all duration-500", isSolid ? "bg-white border-b border-slate-200 py-3 shadow-md" : "bg-transparent py-5")}>
-      <div className="max-w-7xl mx-auto flex items-center justify-between px-4 md:px-8">
+      <div className="max-w-7xl auto flex items-center justify-between px-4 md:px-8 mx-auto">
         <Link href="/" className="flex items-center gap-3 group max-w-[70%] lg:max-w-none">
-          {schoolLogo && (
-            <div className="relative h-8 w-8 sm:h-10 sm:w-10 transition-transform duration-500 group-hover:scale-110 shrink-0">
-              <Image src={schoolLogo} alt="Logo" fill className="object-contain" priority />
-            </div>
-          )}
+          <div className="relative h-10 w-10 transition-transform duration-500 group-hover:scale-110 shrink-0">
+            <Image 
+              src={schoolLogo} 
+              alt="Logo" 
+              fill 
+              className="object-contain" 
+              priority 
+              unoptimized={schoolLogo.startsWith('data:')}
+            />
+          </div>
           <div className="flex flex-col justify-center overflow-hidden">
             <span className={cn("font-headline font-bold text-xs md:text-sm lg:text-xl tracking-tight uppercase transition-colors duration-500 line-clamp-1 leading-tight", isSolid ? "text-slate-900" : "text-white drop-shadow-lg")}>
               {schoolName}
@@ -113,13 +121,13 @@ export function Navbar() {
 
         <div className="hidden lg:flex items-center gap-4">
           {isSpmbActive && (
-            <Button size="lg" className={cn("rounded-full px-6 xl:px-8 font-bold shadow-xl transition-all hover:scale-105 active:scale-95 uppercase tracking-widest text-[10px] xl:text-xs h-11 xl:h-12", isSolid ? "bg-primary text-white" : "bg-secondary text-primary hover:bg-secondary/90 shadow-secondary/20")} asChild>
+            <Button size="lg" className={cn("rounded-full px-6 xl:px-8 font-bold shadow-xl transition-all hover:scale-105 active:scale-95 uppercase tracking-widest text-[10px] xl:text-xs h-11 xl:h-12 border-none", isSolid ? "bg-primary text-white" : "bg-secondary text-primary hover:bg-secondary/90 shadow-secondary/20")} asChild>
               <Link href="/ppdb">{spmbLabel}</Link>
             </Button>
           )}
         </div>
 
-        <button className={cn("lg:hidden p-2 rounded-lg transition-colors shadow-md shrink-0 ml-2 bg-slate-100 text-primary", !isSolid && "bg-white")} onClick={() => setIsOpen(true)}>
+        <button className={cn("lg:hidden p-2 rounded-lg transition-colors shadow-sm shrink-0 ml-2 bg-slate-50 text-primary border border-slate-200", !isSolid && "bg-white/10 text-white border-white/20")} onClick={() => setIsOpen(true)}>
           <Menu className="h-5 w-5" />
         </button>
       </div>
@@ -128,11 +136,9 @@ export function Navbar() {
       <div className={cn("lg:hidden fixed top-0 right-0 h-screen w-[85%] z-[110] bg-white shadow-2xl transition-transform duration-500 ease-in-out transform flex flex-col", isOpen ? "translate-x-0" : "translate-x-full")}>
         <div className="flex justify-between items-center p-6 border-b border-slate-100 shrink-0">
           <div className="flex items-center gap-3">
-            {schoolLogo && (
-              <div className="relative h-8 w-8 shrink-0">
-                <Image src={schoolLogo} alt="Logo" fill className="object-contain" />
-              </div>
-            )}
+            <div className="relative h-8 w-8 shrink-0">
+              <Image src={schoolLogo} alt="Logo" fill className="object-contain" unoptimized={schoolLogo.startsWith('data:')} />
+            </div>
             <span className="font-headline font-bold text-primary text-xs uppercase leading-tight truncate max-w-[150px]">{schoolName}</span>
           </div>
           <button onClick={() => setIsOpen(false)} className="p-3 bg-slate-100 rounded-full text-slate-500"><X className="h-6 w-6" /></button>
@@ -152,7 +158,7 @@ export function Navbar() {
           ))}
           <div className="mt-auto pt-8 border-t border-slate-100 pb-10">
             {isSpmbActive && (
-              <Button size="lg" className="w-full bg-primary h-14 text-white rounded-2xl font-bold" asChild>
+              <Button size="lg" className="w-full bg-primary h-14 text-white rounded-2xl font-bold border-none" asChild>
                 <Link href="/ppdb" onClick={() => setIsOpen(false)}>{spmbLabel}</Link>
               </Button>
             )}

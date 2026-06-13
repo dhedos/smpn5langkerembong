@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useMemo, useState, useEffect } from "react";
@@ -18,6 +19,8 @@ import {
 import { useFirestore, useDoc } from "@/firebase";
 import { doc } from "firebase/firestore";
 
+const DEFAULT_LOGO = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj4KICA8cGF0aCBkPSJNNTAgNSBMMTAgMjUgVjU1IEMxMCA3NSA1MCA5NSA1MCA5NSBDNTAgOTUgOTAgNzUgOTAgNTUgVjI1IEw1MCA1IFoiIGZpbGw9IiMxYTM2NWQiIC8+CiAgPHBhdGggZD0iTTUwIDIwIEw1NSAzNSBINzAgTDU4IDQ1IEw2MiA2MCBMNTAgNTAgTDM4IDYwIEw0MiA0NSBMMzAgMzUgSDQ1IEw1MCAyMCBaIiBmaWxsPSIjZmJiZjI0IiAvPgo8L3N2Zz4=';
+
 export function Footer() {
   const pathname = usePathname();
   const isAdminPage = pathname?.startsWith("/admin");
@@ -34,15 +37,15 @@ export function Footer() {
 
   if (isAdminPage) return null;
 
-  const schoolName = mounted && settings?.schoolName ? settings.schoolName : "SMPN 5 LANGKE REMBONG";
-  const schoolLogo = mounted ? settings?.schoolLogoUrl : null;
-  const officialWebsites = mounted && Array.isArray(settings?.officialWebsites) ? settings.officialWebsites : [];
-  const otherMedia = mounted && Array.isArray(settings?.otherMedia) ? settings.otherMedia : [];
-  const displayYear = "2024";
+  const schoolName = settings?.schoolName || "SMPN 5 LANGKE REMBONG";
+  const schoolLogo = settings?.schoolLogoUrl || DEFAULT_LOGO;
+  const officialWebsites = Array.isArray(settings?.officialWebsites) ? settings.officialWebsites : [];
+  const otherMedia = Array.isArray(settings?.otherMedia) ? settings.otherMedia : [];
+  const displayYear = settings?.copyrightYear || "2024";
   
-  const address = mounted ? (settings?.address || "Alamat Sekolah") : "Alamat Sekolah";
-  const phone = mounted ? (settings?.phone || "628...") : "628...";
-  const email = mounted ? (settings?.email || "email@sekolah.sch.id") : "email@sekolah.sch.id";
+  const address = settings?.address || "Alamat Sekolah";
+  const phone = settings?.phone || "628...";
+  const email = settings?.email || "email@sekolah.sch.id";
 
   const nameParts = schoolName.toUpperCase().split(" ");
   const row1 = nameParts.slice(0, 2).join(" ");
@@ -75,11 +78,15 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 md:gap-16 lg:gap-20 mb-16">
           <div className="flex flex-col space-y-6 md:col-span-2 lg:col-span-2">
             <div className="flex items-center gap-5">
-              {schoolLogo && (
-                <div className="relative h-12 w-12 md:h-20 md:w-20 shrink-0">
-                  <Image src={schoolLogo} alt="Logo" fill className="object-contain" />
-                </div>
-              )}
+              <div className="relative h-12 w-12 md:h-20 md:w-20 shrink-0">
+                <Image 
+                  src={schoolLogo} 
+                  alt="Logo" 
+                  fill 
+                  className="object-contain" 
+                  unoptimized={schoolLogo.startsWith('data:')}
+                />
+              </div>
               <div className="font-headline font-black text-2xl md:text-3xl lg:text-5xl tracking-tight leading-[0.85] uppercase">
                 <span className="block">{row1}</span>
                 <span className="block text-secondary">{row2}</span>
@@ -128,7 +135,7 @@ export function Footer() {
                           <span className="truncate max-w-[150px]">{web.title || "Portal"}</span> 
                           <ExternalLink className="h-3 w-3 opacity-30 group-hover:opacity-100" />
                         </a>
-                      )) : mounted && (
+                      )) : (
                         <div className="text-[9px] text-white/30 italic font-bold uppercase tracking-widest">Daftar portal belum tersedia</div>
                       )}
                     </div>
@@ -149,7 +156,7 @@ export function Footer() {
                           <span className="truncate max-w-[150px]">{media.title || "Media"}</span> 
                           <ExternalLink className="h-3 w-3 opacity-30 group-hover:opacity-100" />
                         </a>
-                      )) : mounted && (
+                      )) : (
                         <div className="text-[9px] text-white/30 italic font-bold uppercase tracking-widest">Belum ada informasi media lain</div>
                       )}
                     </div>
