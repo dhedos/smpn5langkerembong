@@ -22,20 +22,16 @@ import { doc } from "firebase/firestore";
 export function Footer() {
   const pathname = usePathname();
   const isAdminPage = pathname?.startsWith("/admin");
-  const [mounted, setMounted] = useState(false);
 
   const db = useFirestore();
   const currentSchoolId = 'smpn5-langke-rembong';
   const settingsRef = useMemo(() => db ? doc(db, "schools", currentSchoolId) : null, [db]);
   const { data: settings } = useDoc(settingsRef);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
   if (isAdminPage) return null;
 
-  const schoolName = settings?.schoolName || "";
+  // Gunakan nama asli sebagai default agar langsung muncul tanpa jeda
+  const schoolName = settings?.schoolName || "SMPN 5 LANGKE REMBONG";
   const schoolLogo = settings?.schoolLogoUrl;
   const officialWebsites = Array.isArray(settings?.officialWebsites) ? settings.officialWebsites : [];
   const otherMedia = Array.isArray(settings?.otherMedia) ? settings.otherMedia : [];
@@ -76,7 +72,7 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 md:gap-16 lg:gap-20 mb-16">
           <div className="flex flex-col space-y-6 md:col-span-2 lg:col-span-2">
             <div className="flex items-center gap-5">
-              <div className="relative h-12 w-12 md:h-20 md:w-20 shrink-0 flex items-center justify-center">
+              <div className="relative h-12 w-12 md:h-20 md:w-20 shrink-0 flex items-center justify-center bg-transparent">
                 {schoolLogo && (
                   <Image 
                     src={schoolLogo} 
@@ -122,7 +118,7 @@ export function Footer() {
                   <div className="space-y-4">
                     <span className="text-[11px] font-black text-secondary tracking-widest uppercase">Portal Resmi Instansi</span>
                     <div className="flex flex-wrap gap-2">
-                      {officialWebsites.length > 0 ? officialWebsites.map((web: any, i: number) => (
+                      {officialWebsites.map((web: any, i: number) => (
                         <a 
                           key={i}
                           href={ensureExternalUrl(web.url)} 
@@ -134,16 +130,14 @@ export function Footer() {
                           <span className="truncate max-w-[150px]">{web.title || "Portal"}</span> 
                           <ExternalLink className="h-3 w-3 opacity-30 group-hover:opacity-100" />
                         </a>
-                      )) : (
-                        <div className="text-[9px] text-white/30 italic font-bold uppercase tracking-widest">Daftar portal belum tersedia</div>
-                      )}
+                      ))}
                     </div>
                   </div>
 
                   <div className="space-y-4">
                     <span className="text-[11px] font-black text-secondary tracking-widest uppercase">Informasi Media Lain</span>
                     <div className="flex flex-wrap gap-2">
-                      {otherMedia.length > 0 ? otherMedia.map((media: any, i: number) => (
+                      {otherMedia.map((media: any, i: number) => (
                         <a 
                           key={i}
                           href={ensureExternalUrl(media.url)} 
@@ -155,9 +149,7 @@ export function Footer() {
                           <span className="truncate max-w-[150px]">{media.title || "Media"}</span> 
                           <ExternalLink className="h-3 w-3 opacity-30 group-hover:opacity-100" />
                         </a>
-                      )) : (
-                        <div className="text-[9px] text-white/30 italic font-bold uppercase tracking-widest">Belum ada informasi media lain</div>
-                      )}
+                      ))}
                     </div>
                   </div>
                 </div>
@@ -207,7 +199,7 @@ export function Footer() {
         </div>
 
         <div className="border-t border-white/5 pt-10 flex flex-col md:flex-row justify-between items-center gap-6 text-[10px] font-black text-white/30 tracking-[0.2em] uppercase text-center md:text-left">
-          <p>© {displayYear} {schoolName.toUpperCase() || "SEKOLAH"}. ALL RIGHTS RESERVED.</p>
+          <p>© {displayYear} {schoolName.toUpperCase()}. ALL RIGHTS RESERVED.</p>
           <div className="flex gap-6 items-center">
             <Link href="/admin" className="opacity-30 hover:opacity-100 transition-all">ADMIN CONSOLE</Link>
           </div>

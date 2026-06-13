@@ -20,17 +20,15 @@ import { doc } from "firebase/firestore";
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
   const isAdminPage = pathname?.startsWith("/admin");
 
   const db = useFirestore();
   const currentSchoolId = 'smpn5-langke-rembong';
   const settingsRef = useMemo(() => db ? doc(db, "schools", currentSchoolId) : null, [db]);
-  const { data: settings, loading: settingsLoading } = useDoc(settingsRef);
+  const { data: settings } = useDoc(settingsRef);
 
   useEffect(() => {
-    setMounted(true);
     const handleScroll = () => setScrolled(window.scrollY > 40);
     window.addEventListener("scroll", handleScroll, { passive: true });
     handleScroll();
@@ -41,7 +39,8 @@ export function Navbar() {
     setIsOpen(false);
   }, [pathname]);
 
-  const schoolName = settings?.schoolName || "";
+  // Gunakan nama asli sebagai default agar langsung muncul tanpa "MEMUAT..."
+  const schoolName = settings?.schoolName || "SMPN 5 LANGKE REMBONG";
   const schoolLogo = settings?.schoolLogoUrl;
   const isSpmbActive = settings?.ppdbIsActive === true;
   const spmbLabel = settings?.ppdbMenuTitle || "SPMB ONLINE";
@@ -85,12 +84,12 @@ export function Navbar() {
                 priority 
               />
             ) : (
-              <div className="h-10 w-10" /> // Placeholder transparan agar tidak flicker logo perisai
+              <div className="h-10 w-10 bg-transparent" />
             )}
           </div>
           <div className="flex flex-col justify-center overflow-hidden">
             <span className={cn("font-headline font-bold text-xs md:text-sm lg:text-xl tracking-tight uppercase transition-colors duration-500 line-clamp-1 leading-tight", isSolid ? "text-slate-900" : "text-white drop-shadow-lg")}>
-              {schoolName || "MEMUAT..."}
+              {schoolName}
             </span>
           </div>
         </Link>
