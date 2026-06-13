@@ -74,15 +74,11 @@ export function Navbar() {
     <header className={cn("fixed top-0 left-0 right-0 z-[60] transition-all duration-500", isSolid ? "bg-white border-b border-slate-200 py-3 shadow-md" : "bg-transparent py-5")}>
       <div className="max-w-7xl mx-auto flex items-center justify-between px-4 md:px-8">
         <Link href="/" className="flex items-center gap-3 group max-w-[70%] lg:max-w-none">
-          {schoolLogo ? (
-            <div className={cn("p-2 rounded-2xl transition-all duration-500 shadow-lg transform group-hover:scale-105 shrink-0", isSolid ? "bg-primary" : "bg-white/20 backdrop-blur-md")}>
-              <div className="relative h-6 w-6 sm:h-8">
-                <Image src={schoolLogo} alt="Logo" fill className="object-contain" />
-              </div>
+          {schoolLogo && (
+            <div className="relative h-8 w-8 sm:h-10 sm:w-10 transition-transform duration-500 group-hover:scale-110 shrink-0">
+              <Image src={schoolLogo} alt="Logo" fill className="object-contain" priority />
             </div>
-          ) : mounted && isSolid ? (
-            <div className="h-8 w-8 bg-slate-100 rounded-xl" />
-          ) : null}
+          )}
           <div className="flex flex-col justify-center overflow-hidden">
             <span className={cn("font-headline font-bold text-xs md:text-sm lg:text-xl tracking-tight uppercase transition-colors duration-500 line-clamp-1 leading-tight", isSolid ? "text-slate-900" : "text-white drop-shadow-lg")}>
               {schoolName}
@@ -133,8 +129,8 @@ export function Navbar() {
         <div className="flex justify-between items-center p-6 border-b border-slate-100 shrink-0">
           <div className="flex items-center gap-3">
             {schoolLogo && (
-              <div className="bg-primary p-2.5 rounded-2xl shrink-0">
-                <div className="relative h-6 w-6"><Image src={schoolLogo} alt="Logo" fill className="object-contain" /></div>
+              <div className="relative h-8 w-8 shrink-0">
+                <Image src={schoolLogo} alt="Logo" fill className="object-contain" />
               </div>
             )}
             <span className="font-headline font-bold text-primary text-xs uppercase leading-tight truncate max-w-[150px]">{schoolName}</span>

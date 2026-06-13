@@ -75,15 +75,11 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 md:gap-16 lg:gap-20 mb-16">
           <div className="flex flex-col space-y-6 md:col-span-2 lg:col-span-2">
             <div className="flex items-center gap-5">
-              {schoolLogo ? (
-                <div className="bg-white p-3 rounded-[1.8rem] shadow-2xl shrink-0 flex items-center justify-center w-20 h-20 md:w-24 md:h-24">
-                  <div className="relative h-12 w-12 md:h-16 md:w-16">
-                    <Image src={schoolLogo} alt="Logo" fill className="object-contain" />
-                  </div>
+              {schoolLogo && (
+                <div className="relative h-12 w-12 md:h-20 md:w-20 shrink-0">
+                  <Image src={schoolLogo} alt="Logo" fill className="object-contain" />
                 </div>
-              ) : mounted ? (
-                <div className="h-20 w-20 md:w-24 md:h-24 bg-white/10 rounded-[1.8rem]" />
-              ) : null}
+              )}
               <div className="font-headline font-black text-2xl md:text-3xl lg:text-5xl tracking-tight leading-[0.85] uppercase">
                 <span className="block">{row1}</span>
                 <span className="block text-secondary">{row2}</span>
