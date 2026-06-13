@@ -1,8 +1,7 @@
-
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { Newspaper, Sparkles, Wand2, Trash2, Edit, Save, Loader2, Image as ImageIcon, RotateCcw, Eye, EyeOff, ExternalLink, AlertCircle, Link as LinkIcon } from "lucide-react";
+import { Newspaper, Sparkles, Wand2, Trash2, Edit, Save, Loader2, Image as ImageIcon, RotateCcw, Eye, EyeOff, ExternalLink, AlertCircle, Link as LinkIcon, Upload } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,6 +18,7 @@ import { collection, addDoc, deleteDoc, doc, updateDoc, serverTimestamp, query, 
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
 import { cn } from "@/lib/utils";
+import { optimizeImage } from "@/lib/image-optimizer";
 
 export default function AdminBerita() {
   const db = useFirestore();
@@ -52,21 +52,23 @@ export default function AdminBerita() {
   const [optimizing, setOptimizing] = useState(false);
   const [generatingImg, setGeneratingImg] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [isOptimizingImage, setIsOptimizingImage] = useState(false);
   const [aiError, setAiError] = useState<{message: string, link: string} | null>(null);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 1024 * 1024) {
-        toast({ title: "File Terlalu Besar", description: "Maksimal 1MB.", variant: "destructive" });
-        return;
-      }
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImageUrl(reader.result as string);
+      setIsOptimizingImage(true);
+      try {
+        const optimized = await optimizeImage(file);
+        setImageUrl(optimized);
         setAiError(null);
-      };
-      reader.readAsDataURL(file);
+        toast({ title: "Gambar Dioptimalkan", description: "Format WebP (High Quality) siap digunakan." });
+      } catch (error: any) {
+        toast({ title: "Gagal Mengunggah", description: error.message, variant: "destructive" });
+      } finally {
+        setIsOptimizingImage(false);
+      }
     }
   };
 
@@ -280,15 +282,20 @@ export default function AdminBerita() {
               <Label className="text-xs uppercase font-extrabold text-slate-400">Gambar Informasi</Label>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="relative aspect-video rounded-2xl border-2 border-dashed flex items-center justify-center bg-slate-50 overflow-hidden group">
-                  {imageUrl ? (
+                  {isOptimizingImage ? (
+                    <div className="text-center p-4">
+                      <Loader2 className="h-10 w-10 text-primary mx-auto animate-spin" />
+                      <span className="text-[10px] text-primary font-bold">MENGOPTIMALKAN...</span>
+                    </div>
+                  ) : imageUrl ? (
                     <img src={imageUrl} alt="Preview" className="w-full h-full object-cover" />
                   ) : (
                     <div className="text-center p-4">
-                      <ImageIcon className="h-10 w-10 text-slate-300 mx-auto" />
-                      <span className="text-[10px] text-slate-400 font-bold">UNGGAH ATAU GUNAKAN AI</span>
+                      <Upload className="h-10 w-10 text-slate-300 mx-auto" />
+                      <span className="text-[10px] text-slate-400 font-bold uppercase">KLIK UNTUK UNGGAH</span>
                     </div>
                   )}
-                  <input type="file" accept="image/*" onChange={handleFileChange} className="absolute inset-0 opacity-0 cursor-pointer" />
+                  <input type="file" accept="image/*" onChange={handleFileChange} className="absolute inset-0 opacity-0 cursor-pointer" disabled={isOptimizingImage} />
                 </div>
                 <div className="flex flex-col gap-3 justify-center">
                   <Button 
@@ -300,7 +307,7 @@ export default function AdminBerita() {
                     {generatingImg ? <Loader2 className="h-5 w-5 animate-spin" /> : <Sparkles className="h-5 w-5 text-secondary" />}
                     {generatingImg ? "AI Melukis..." : "AI Generate Gambar"}
                   </Button>
-                  <p className="text-[10px] text-slate-400 italic">Klik tombol AI di atas untuk membuat ilustrasi otomatis berdasarkan judul.</p>
+                  <p className="text-[10px] text-slate-400 italic font-medium">Sistem otomatis mengompres gambar ke format WebP untuk loading super cepat.</p>
                 </div>
               </div>
             </div>

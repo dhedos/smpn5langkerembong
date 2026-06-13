@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useMemo } from "react";
@@ -12,6 +11,7 @@ import { collection, addDoc, deleteDoc, doc, serverTimestamp, query, orderBy, wh
 import { toast } from "@/hooks/use-toast";
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError, type SecurityRuleContext } from '@/firebase/errors';
+import { optimizeImage } from "@/lib/image-optimizer";
 
 export default function AdminGaleri() {
   const db = useFirestore();
@@ -32,19 +32,21 @@ export default function AdminGaleri() {
   const [title, setTitle] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [isUploading, setIsUploading] = useState(false);
+  const [isOptimizing, setIsOptimizing] = useState(false);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 1024 * 1024) {
-        toast({ title: "Gagal", description: "Ukuran file maksimal 1MB.", variant: "destructive" });
-        return;
+      setIsOptimizing(true);
+      try {
+        const optimized = await optimizeImage(file);
+        setImageUrl(optimized);
+        toast({ title: "Optimasi Berhasil", description: "Foto dikonversi ke WebP untuk performa maksimal." });
+      } catch (err: any) {
+        toast({ title: "Gagal Mengunggah", description: err.message, variant: "destructive" });
+      } finally {
+        setIsOptimizing(false);
       }
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImageUrl(reader.result as string);
-      };
-      reader.readAsDataURL(file);
     }
   };
 
@@ -108,7 +110,7 @@ export default function AdminGaleri() {
             </div>
             Manajemen Galeri
           </h1>
-          <p className="text-muted-foreground text-sm font-medium">Dokumentasi kegiatan sekolah {schoolId}.</p>
+          <p className="text-muted-foreground text-sm font-medium">Dokumentasi kegiatan sekolah.</p>
         </div>
       </div>
 
@@ -125,14 +127,18 @@ export default function AdminGaleri() {
                 placeholder="Nama kegiatan..." 
                 value={title} 
                 onChange={(e) => setTitle(e.target.value)} 
-                disabled={isUploading}
+                disabled={isUploading || isOptimizing}
               />
             </div>
             <div className="space-y-3">
-              <Label className="text-xs font-bold uppercase text-slate-500">Unggah Foto (Maks 1MB)</Label>
+              <Label className="text-xs font-bold uppercase text-slate-500">Unggah Foto (WebP Optimized)</Label>
               <div className="space-y-4">
                 <div className="relative aspect-square w-full border-2 border-dashed border-slate-200 rounded-[2rem] overflow-hidden bg-slate-50 flex items-center justify-center group">
-                  {imageUrl ? (
+                  {isOptimizing ? (
+                    <div className="text-center p-6 text-primary animate-pulse font-bold uppercase tracking-widest text-[10px]">
+                      Optimasi WebP...
+                    </div>
+                  ) : imageUrl ? (
                     <img src={imageUrl} alt="Preview" className="w-full h-full object-cover" />
                   ) : (
                     <div className="text-center p-6 text-slate-400">
@@ -141,13 +147,13 @@ export default function AdminGaleri() {
                     </div>
                   )}
                 </div>
-                <Input type="file" accept="image/*" onChange={handleFileChange} className="text-xs" disabled={isUploading} />
+                <Input type="file" accept="image/*" onChange={handleFileChange} className="text-xs" disabled={isUploading || isOptimizing} />
               </div>
             </div>
             <Button 
               className="w-full h-14 rounded-2xl font-bold" 
               onClick={handleSave}
-              disabled={isUploading}
+              disabled={isUploading || isOptimizing}
             >
               {isUploading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Plus className="h-5 w-5" />}
               {isUploading ? "Memproses..." : "Simpan Foto"}
@@ -173,7 +179,7 @@ export default function AdminGaleri() {
                   </div>
                 </div>
               )) : (
-                <div className="col-span-full text-center py-20 text-slate-400 italic">Belum ada foto galeri untuk sekolah ini.</div>
+                <div className="col-span-full text-center py-20 text-slate-400 italic">Belum ada foto galeri.</div>
               )}
             </div>
           </CardContent>

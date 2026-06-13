@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useMemo } from "react";
@@ -15,11 +14,11 @@ import { toast } from "@/hooks/use-toast";
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError, type SecurityRuleContext } from '@/firebase/errors';
 import { cn } from "@/lib/utils";
+import { optimizeImage } from "@/lib/image-optimizer";
 
 export default function AdminFasilitas() {
   const db = useFirestore();
   const { profile } = useUser();
-  // Gunakan ID yang konsisten dengan profil dan website
   const schoolId = profile?.schoolId || 'smpn5-langke-rembong';
 
   const facilitiesRef = useMemo(() => {
@@ -36,19 +35,21 @@ export default function AdminFasilitas() {
   const [description, setDescription] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [isSaving, setIsSaving] = useState(false);
+  const [isOptimizing, setIsOptimizing] = useState(false);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 800 * 1024) {
-        toast({ title: "File Terlalu Besar", description: "Maksimal 800KB.", variant: "destructive" });
-        return;
+      setIsOptimizing(true);
+      try {
+        const optimized = await optimizeImage(file);
+        setImageUrl(optimized);
+        toast({ title: "Optimasi Selesai", description: "Gambar telah dikonversi ke WebP." });
+      } catch (err: any) {
+        toast({ title: "Gagal Mengunggah", description: err.message, variant: "destructive" });
+      } finally {
+        setIsOptimizing(false);
       }
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImageUrl(reader.result as string);
-      };
-      reader.readAsDataURL(file);
     }
   };
 
@@ -76,7 +77,7 @@ export default function AdminFasilitas() {
         setImageUrl("");
         toast({ 
           title: status === "Published" ? "Berhasil Publikasi" : "Draft Tersimpan", 
-          description: `Fasilitas "${name}" telah ditambahkan dan siap tampil.` 
+          description: `Fasilitas "${name}" telah ditambahkan.` 
         });
       })
       .catch(async (serverError) => {
@@ -136,7 +137,7 @@ export default function AdminFasilitas() {
             </div>
             Manajemen Fasilitas
           </h1>
-          <p className="text-muted-foreground text-sm font-medium">Kelola infrastruktur sekolah untuk ID: {schoolId}</p>
+          <p className="text-muted-foreground text-sm font-medium">Kelola infrastruktur sekolah.</p>
         </div>
       </div>
 
@@ -144,7 +145,7 @@ export default function AdminFasilitas() {
         <Card className="lg:col-span-1 border-none shadow-2xl rounded-[2.5rem] overflow-hidden bg-white h-fit border border-slate-100">
           <CardHeader className="bg-slate-50/50 border-b p-8">
             <CardTitle className="text-xl">Form Fasilitas Baru</CardTitle>
-            <CardDescription>Tambahkan sarana unggulan untuk ditampilkan di profil.</CardDescription>
+            <CardDescription>Gambar dioptimalkan otomatis untuk kecepatan website.</CardDescription>
           </CardHeader>
           <CardContent className="p-8 space-y-6">
             <div className="space-y-3">
@@ -162,7 +163,12 @@ export default function AdminFasilitas() {
               <Label className="text-xs font-bold uppercase text-slate-400 tracking-widest">Unggah Foto</Label>
               <div className="space-y-4">
                 <div className="relative aspect-video w-full border-2 border-dashed border-slate-200 rounded-[2rem] overflow-hidden bg-slate-50 flex items-center justify-center group cursor-pointer">
-                  {imageUrl ? (
+                  {isOptimizing ? (
+                    <div className="text-center p-6">
+                      <Loader2 className="mx-auto h-10 w-10 text-primary animate-spin mb-2" />
+                      <span className="text-[10px] text-primary font-bold uppercase tracking-widest">Mengoptimalkan...</span>
+                    </div>
+                  ) : imageUrl ? (
                     <img src={imageUrl} alt="Preview" className="w-full h-full object-cover" />
                   ) : (
                     <div className="text-center p-6">
@@ -170,7 +176,7 @@ export default function AdminFasilitas() {
                       <span className="text-[10px] text-slate-400 font-bold uppercase">Pilih Gambar</span>
                     </div>
                   )}
-                  <input type="file" accept="image/*" onChange={handleFileChange} className="absolute inset-0 opacity-0 cursor-pointer" disabled={isSaving} />
+                  <input type="file" accept="image/*" onChange={handleFileChange} className="absolute inset-0 opacity-0 cursor-pointer" disabled={isSaving || isOptimizing} />
                 </div>
               </div>
             </div>
@@ -190,18 +196,10 @@ export default function AdminFasilitas() {
               <Button 
                 className="w-full h-14 rounded-2xl font-bold bg-primary shadow-xl shadow-primary/20 gap-2 text-lg" 
                 onClick={() => handleSave("Published")}
-                disabled={isSaving}
+                disabled={isSaving || isOptimizing}
               >
                 {isSaving ? <Loader2 className="h-6 w-6 animate-spin" /> : <Save className="h-6 w-6" />}
                 {isSaving ? "Menyimpan..." : "Simpan & Publikasikan"}
-              </Button>
-              <Button 
-                variant="outline" 
-                className="w-full h-12 rounded-2xl font-bold border-slate-200 text-slate-500 hover:bg-slate-50" 
-                onClick={() => handleSave("Draft")}
-                disabled={isSaving}
-              >
-                Simpan sebagai Draft
               </Button>
             </div>
           </CardContent>
@@ -212,7 +210,7 @@ export default function AdminFasilitas() {
             <div className="flex justify-between items-center">
               <div>
                 <CardTitle className="text-xl">Daftar Fasilitas</CardTitle>
-                <CardDescription>Hanya status <b>Published</b> yang tampil di website.</CardDescription>
+                <CardDescription>Semua gambar menggunakan format WebP hemat kuota.</CardDescription>
               </div>
             </div>
           </CardHeader>
@@ -228,22 +226,12 @@ export default function AdminFasilitas() {
               </TableHeader>
               <TableBody>
                 {loading ? (
-                  <TableRow><TableCell colSpan={4} className="text-center py-20 text-slate-400 animate-pulse italic font-medium">Menghubungkan ke database...</TableCell></TableRow>
-                ) : error ? (
-                  <TableRow>
-                    <TableCell colSpan={4} className="text-center py-20 text-destructive">
-                      <div className="flex flex-col items-center gap-2">
-                        <AlertTriangle className="h-10 w-10 mb-2" />
-                        <p className="font-bold">Gagal memuat data.</p>
-                        <p className="text-xs">Pastikan indeks Firestore sudah aktif.</p>
-                      </div>
-                    </TableCell>
-                  </TableRow>
+                  <TableRow><TableCell colSpan={4} className="text-center py-20 text-slate-400 animate-pulse italic font-medium">Memuat data...</TableCell></TableRow>
                 ) : facilities && facilities.length > 0 ? facilities.map((f: any) => (
                   <TableRow key={f.id} className="hover:bg-slate-50/30 transition-colors">
                     <TableCell className="px-8 py-5">
                       <div className="relative h-16 w-24 rounded-2xl overflow-hidden border border-slate-100 shadow-sm bg-slate-100">
-                        <img src={f.imageUrl || "https://picsum.photos/seed/facility/800/600"} alt={f.name} className="w-full h-full object-cover" />
+                        <img src={f.imageUrl} alt={f.name} className="w-full h-full object-cover" />
                       </div>
                     </TableCell>
                     <TableCell>
@@ -279,10 +267,7 @@ export default function AdminFasilitas() {
                   </TableRow>
                 )) : (
                   <TableRow>
-                    <TableCell colSpan={4} className="text-center py-32 text-slate-300">
-                      <Building2 className="h-16 w-16 mx-auto mb-4 opacity-20" />
-                      <p className="italic font-medium">Belum ada fasilitas. Tambahkan satu sekarang!</p>
-                    </TableCell>
+                    <TableCell colSpan={4} className="text-center py-32 text-slate-300 italic font-medium">Belum ada fasilitas.</TableCell>
                   </TableRow>
                 )}
               </TableBody>

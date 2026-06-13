@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useMemo } from "react";
@@ -15,6 +14,7 @@ import { toast } from "@/hooks/use-toast";
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError, type SecurityRuleContext } from '@/firebase/errors';
 import { cn } from "@/lib/utils";
+import { optimizeImage } from "@/lib/image-optimizer";
 
 export default function AdminEkstrakurikuler() {
   const db = useFirestore();
@@ -33,19 +33,21 @@ export default function AdminEkstrakurikuler() {
   const [schedule, setSchedule] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [isSaving, setIsSaving] = useState(false);
+  const [isOptimizing, setIsOptimizing] = useState(false);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 800 * 1024) {
-        toast({ title: "File Terlalu Besar", description: "Maksimal 800KB.", variant: "destructive" });
-        return;
+      setIsOptimizing(true);
+      try {
+        const optimized = await optimizeImage(file);
+        setImageUrl(optimized);
+        toast({ title: "Gambar Siap", description: "Otomatis dioptimalkan ke WebP." });
+      } catch (err: any) {
+        toast({ title: "Gagal", description: err.message, variant: "destructive" });
+      } finally {
+        setIsOptimizing(false);
       }
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImageUrl(reader.result as string);
-      };
-      reader.readAsDataURL(file);
     }
   };
 
@@ -117,24 +119,29 @@ export default function AdminEkstrakurikuler() {
             </div>
             <div className="space-y-3">
               <Label className="text-xs font-bold uppercase text-slate-400">Jadwal Latihan</Label>
-              <Input value={schedule} onChange={(e) => setSchedule(e.target.value)} placeholder="Contoh: Sabtu, 15:00 - 17:00" className="h-12 bg-slate-50 rounded-xl" />
+              <Input value={schedule} onChange={(e) => setSchedule(e.target.value)} placeholder="Contoh: Sabtu, 15:00" className="h-12 bg-slate-50 rounded-xl" />
             </div>
             <div className="space-y-3">
               <Label className="text-xs font-bold uppercase text-slate-400">Foto Kegiatan</Label>
-              <div className="relative aspect-video w-full rounded-2xl overflow-hidden border-2 border-dashed bg-slate-50 flex items-center justify-center cursor-pointer">
-                {imageUrl ? <img src={imageUrl} className="w-full h-full object-cover" /> : <Upload className="text-slate-300 h-10 w-10" />}
-                <input type="file" accept="image/*" onChange={handleFileChange} className="absolute inset-0 opacity-0 cursor-pointer" />
+              <div className="relative aspect-video w-full rounded-2xl overflow-hidden border-2 border-dashed bg-slate-50 flex items-center justify-center cursor-pointer group">
+                {isOptimizing ? (
+                  <div className="text-center p-6 text-primary animate-pulse font-bold tracking-widest text-[10px]">OPTIMASI...</div>
+                ) : imageUrl ? (
+                  <img src={imageUrl} className="w-full h-full object-cover" />
+                ) : (
+                  <Upload className="text-slate-300 h-10 w-10 group-hover:scale-110 transition-transform" />
+                )}
+                <input type="file" accept="image/*" onChange={handleFileChange} className="absolute inset-0 opacity-0 cursor-pointer" disabled={isOptimizing} />
               </div>
             </div>
             <div className="space-y-3">
               <Label className="text-xs font-bold uppercase text-slate-400">Deskripsi</Label>
-              <Textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Jelaskan prestasi atau kegiatan eskul ini..." className="min-h-[100px] bg-slate-50 rounded-xl" />
+              <Textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Deskripsi eskul..." className="min-h-[100px] bg-slate-50 rounded-xl" />
             </div>
             <div className="flex flex-col gap-3">
-              <Button onClick={() => handleSave("Published")} className="h-14 rounded-2xl font-bold bg-primary shadow-lg shadow-primary/20 gap-2" disabled={isSaving}>
+              <Button onClick={() => handleSave("Published")} className="h-14 rounded-2xl font-bold bg-primary shadow-lg shadow-primary/20 gap-2" disabled={isSaving || isOptimizing}>
                 {isSaving ? <Loader2 className="animate-spin" /> : <Save />} Simpan & Publikasikan
               </Button>
-              <Button variant="outline" onClick={() => handleSave("Draft")} className="h-12 rounded-2xl font-bold border-slate-200" disabled={isSaving}>Simpan Draft</Button>
             </div>
           </CardContent>
         </Card>
@@ -155,7 +162,7 @@ export default function AdminEkstrakurikuler() {
               </TableHeader>
               <TableBody>
                 {loading ? (
-                  <TableRow><TableCell colSpan={4} className="text-center py-10">Memuat data...</TableCell></TableRow>
+                  <TableRow><TableCell colSpan={4} className="text-center py-10 italic">Memuat data...</TableCell></TableRow>
                 ) : extras && extras.length > 0 ? extras.map((item: any) => (
                   <TableRow key={item.id}>
                     <TableCell className="px-8 py-4 font-bold">
@@ -169,7 +176,6 @@ export default function AdminEkstrakurikuler() {
                     <TableCell className="text-xs text-slate-500 font-medium">{item.schedule || "-"}</TableCell>
                     <TableCell className="text-center">
                       <Button variant="ghost" size="sm" onClick={() => toggleStatus(item.id, item.status)} className={cn("rounded-full h-10 px-4 gap-2", item.status === "Published" ? "bg-green-50 text-green-600" : "bg-slate-50 text-slate-400")}>
-                        {item.status === "Published" ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
                         <span className="text-[10px] font-black uppercase">{item.status}</span>
                       </Button>
                     </TableCell>
@@ -177,7 +183,7 @@ export default function AdminEkstrakurikuler() {
                       <Button variant="ghost" size="icon" onClick={() => handleDelete(item.id)} className="text-destructive hover:bg-destructive/10"><Trash2 className="h-4 w-4" /></Button>
                     </TableCell>
                   </TableRow>
-                )) : <TableRow><TableCell colSpan={4} className="text-center py-20 italic text-slate-300">Belum ada ekstrakurikuler</TableCell></TableRow>}
+                )) : <TableRow><TableCell colSpan={4} className="text-center py-20 text-slate-300">Belum ada data.</TableCell></TableRow>}
               </TableBody>
             </Table>
           </CardContent>

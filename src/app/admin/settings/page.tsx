@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
@@ -24,7 +23,8 @@ import {
   Globe,
   Link as LinkIcon,
   SearchCode,
-  ShieldCheck
+  ShieldCheck,
+  Upload
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -38,6 +38,7 @@ import { toast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError, type SecurityRuleContext } from '@/firebase/errors';
+import { optimizeImage } from "@/lib/image-optimizer";
 
 export default function AdminSettings() {
   const db = useFirestore();
@@ -47,32 +48,32 @@ export default function AdminSettings() {
   const { data: currentSettings, loading } = useDoc(settingsRef);
 
   const defaultValues = {
-    schoolName: "Website Sekolah Modern",
+    schoolName: "SMPN 5 Langke Rembong",
     schoolLogoUrl: "",
     officialWebsites: [],
     otherMedia: [],
     copyrightYear: "2024",
     heroBadgeText: "Selamat Datang di Website Resmi Kami",
     heroTitle: "Membangun Masa Depan Bersama Kami",
-    heroSubtitle: "Pendidikan berkualitas untuk generasi emas bangsa melalui kurikulum yang inovatif dan lingkungan yang mendukung.",
+    heroSubtitle: "Pendidikan berkualitas untuk generasi emas bangsa melalui kurikulum yang inovatif.",
     heroImageUrl: "",
     welcomeSectionLabel: "Sambutan Kepala Sekolah",
     welcomeTitle: "Mendidik dengan Hati & Teknologi",
-    welcomeMessage: "Kami berkomitmen untuk memberikan pengalaman belajar terbaik bagi putra-putri Anda melalui kurikulum yang inovatif dan lingkungan yang mendukung.",
-    headmasterName: "Kepala Sekolah",
-    headmasterTitle: "Pimpinan Sekolah",
+    welcomeMessage: "",
+    headmasterName: "",
+    headmasterTitle: "Kepala Sekolah",
     headmasterPhotoUrl: "",
     whatsappNumber: "628123456789",
-    address: "Alamat Lengkap Sekolah",
-    phone: "(000) 00000",
-    email: "admin@sekolah.sch.id",
+    address: "",
+    phone: "",
+    email: "",
     googleMapsEmbedUrl: "",
     history: "",
     historyPhotoUrl: "",
     vision: "",
     mission: [],
-    seoDescription: "Website resmi sekolah kami, pusat informasi prestasi dan pendaftaran siswa baru.",
-    seoKeywords: "sekolah, pendidikan, ppdb, profil sekolah",
+    seoDescription: "",
+    seoKeywords: "",
     stats: [
       { label: "Guru", value: "0", icon: "GraduationCap" },
       { label: "Tenaga Pendidik", value: "0", icon: "Users" },
@@ -94,6 +95,7 @@ export default function AdminSettings() {
   const [isSaving, setIsSaving] = useState(false);
   const [newMission, setNewMission] = useState("");
   const [addressSearch, setAddressSearch] = useState("");
+  const [optimizingField, setOptimizingField] = useState<string | null>(null);
 
   const [newOfficialTitle, setNewOfficialTitle] = useState("");
   const [newOfficialUrl, setNewOfficialUrl] = useState("");
@@ -112,18 +114,19 @@ export default function AdminSettings() {
     }
   }, [currentSettings]);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, field: string) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>, field: string) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 1024 * 1024) { 
-        toast({ title: "File Terlalu Besar", description: "Maksimal 1MB.", variant: "destructive" });
-        return;
+      setOptimizingField(field);
+      try {
+        const optimized = await optimizeImage(file);
+        setFormData((prev: any) => ({ ...prev, [field]: optimized }));
+        toast({ title: "Optimasi WebP Berhasil", description: "Gambar telah dikompres otomatis." });
+      } catch (err: any) {
+        toast({ title: "Gagal Mengunggah", description: err.message, variant: "destructive" });
+      } finally {
+        setOptimizingField(null);
       }
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setFormData((prev: any) => ({ ...prev, [field]: reader.result as string }));
-      };
-      reader.readAsDataURL(file);
     }
   };
 
@@ -131,9 +134,8 @@ export default function AdminSettings() {
     if (!addressSearch.trim()) return;
     const encodedAddress = encodeURIComponent(addressSearch);
     const simpleUrl = `https://maps.google.com/maps?q=${encodedAddress}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
-    
     setFormData({ ...formData, googleMapsEmbedUrl: simpleUrl });
-    toast({ title: "Lokasi Ditemukan", description: "URL peta telah diperbarui." });
+    toast({ title: "Lokasi Ditemukan" });
   };
 
   const handleAddOfficialWebsite = () => {
@@ -142,7 +144,6 @@ export default function AdminSettings() {
       setFormData({ ...formData, officialWebsites: newList });
       setNewOfficialTitle("");
       setNewOfficialUrl("");
-      toast({ title: "Website Ditambahkan" });
     }
   };
 
@@ -157,7 +158,6 @@ export default function AdminSettings() {
       setFormData({ ...formData, otherMedia: newList });
       setNewOtherTitle("");
       setNewOtherUrl("");
-      toast({ title: "Media Ditambahkan" });
     }
   };
 
@@ -196,10 +196,7 @@ export default function AdminSettings() {
     setDoc(settingsRef, dataToSave, { merge: true })
       .then(() => {
         setIsSaving(false);
-        toast({ 
-          title: "Berhasil!", 
-          description: "Pengaturan telah disimpan secara permanen." 
-        });
+        toast({ title: "Berhasil!", description: "Pengaturan telah disimpan secara permanen." });
       })
       .catch(async (error: any) => {
         setIsSaving(false);
@@ -227,14 +224,14 @@ export default function AdminSettings() {
           </div>
           <div>
             <h1 className="text-4xl font-bold font-headline text-primary tracking-tight uppercase">Pengaturan Global</h1>
-            <p className="text-muted-foreground text-sm font-medium">Kelola identitas dan jangkauan pencarian website.</p>
+            <p className="text-muted-foreground text-sm font-medium">Semua unggahan gambar otomatis dikompresi ke WebP.</p>
           </div>
         </div>
         <Button 
           size="lg" 
           className="bg-primary hover:bg-primary/90 shadow-xl flex gap-2 h-14 px-10 rounded-2xl font-bold" 
           onClick={handleSave} 
-          disabled={isSaving}
+          disabled={isSaving || optimizingField !== null}
         >
           {isSaving ? <Loader2 className="h-5 w-5 animate-spin" /> : <Save className="h-5 w-5" />}
           {isSaving ? "Menyimpan..." : "Simpan Perubahan"}
@@ -244,7 +241,7 @@ export default function AdminSettings() {
       <Tabs defaultValue="general" className="space-y-8">
         <TabsList className="bg-slate-100/50 p-1.5 rounded-2xl w-full flex flex-wrap h-auto border border-slate-200 gap-1">
           <TabsTrigger value="general" className="rounded-xl px-4 py-3 font-bold flex-1 data-[state=active]:bg-white text-[10px] uppercase">Identitas</TabsTrigger>
-          <TabsTrigger value="seo" className="rounded-xl px-4 py-3 font-bold flex-1 data-[state=active]:bg-white text-[10px] uppercase">SEO & Pencarian</TabsTrigger>
+          <TabsTrigger value="seo" className="rounded-xl px-4 py-3 font-bold flex-1 data-[state=active]:bg-white text-[10px] uppercase">SEO</TabsTrigger>
           <TabsTrigger value="hero" className="rounded-xl px-4 py-3 font-bold flex-1 data-[state=active]:bg-white text-[10px] uppercase">Beranda</TabsTrigger>
           <TabsTrigger value="profile" className="rounded-xl px-4 py-3 font-bold flex-1 data-[state=active]:bg-white text-[10px] uppercase">Profil</TabsTrigger>
           <TabsTrigger value="spmb" className="rounded-xl px-4 py-3 font-bold flex-1 data-[state=active]:bg-white text-[10px] uppercase">SPMB</TabsTrigger>
@@ -261,19 +258,22 @@ export default function AdminSettings() {
                     value={formData.schoolName} 
                     onChange={(e) => setFormData({...formData, schoolName: e.target.value})} 
                     className="h-14 bg-slate-50 rounded-2xl font-bold" 
-                    placeholder="Contoh: SMP NEGERI 5 LANGKE REMBONG"
                   />
                 </div>
 
                 <div className="space-y-3 pt-4 border-t">
-                  <Label className="text-xs font-bold uppercase text-slate-400">Logo Sekolah</Label>
+                  <Label className="text-xs font-bold uppercase text-slate-400">Logo Sekolah (WebP Optimization)</Label>
                   <div className="flex flex-col gap-4">
-                    {formData.schoolLogoUrl && (
-                      <div className="h-24 w-24 relative bg-slate-50 rounded-xl border p-2 flex items-center justify-center">
+                    <div className="h-24 w-24 relative bg-slate-50 rounded-xl border p-2 flex items-center justify-center">
+                      {optimizingField === "schoolLogoUrl" ? (
+                        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                      ) : formData.schoolLogoUrl ? (
                         <img src={formData.schoolLogoUrl} alt="Logo" className="max-h-full max-w-full object-contain" />
-                      </div>
-                    )}
-                    <Input type="file" accept="image/*" onChange={(e) => handleFileChange(e, "schoolLogoUrl")} className="h-12 bg-slate-50 rounded-2xl" />
+                      ) : (
+                        <ImageIcon className="h-8 w-8 text-slate-300" />
+                      )}
+                    </div>
+                    <Input type="file" accept="image/*" onChange={(e) => handleFileChange(e, "schoolLogoUrl")} className="h-12 bg-slate-50 rounded-2xl" disabled={optimizingField !== null} />
                   </div>
                 </div>
 
@@ -281,7 +281,7 @@ export default function AdminSettings() {
                   <Label className="text-xs font-bold uppercase text-slate-400">Portal Resmi Instansi</Label>
                   <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100 space-y-4">
                     <div className="grid grid-cols-1 gap-3">
-                      <Input value={newOfficialTitle} onChange={(e) => setNewOfficialTitle(e.target.value)} className="h-10 bg-white rounded-xl" placeholder="Label Portal (e.g. PEMKAB)" />
+                      <Input value={newOfficialTitle} onChange={(e) => setNewOfficialTitle(e.target.value)} className="h-10 bg-white rounded-xl" placeholder="Label Portal" />
                       <div className="flex gap-2">
                         <Input value={newOfficialUrl} onChange={(e) => setNewOfficialUrl(e.target.value)} className="h-10 bg-white rounded-xl flex-1" placeholder="https://..." />
                         <Button onClick={handleAddOfficialWebsite} className="h-10 px-4 rounded-xl bg-secondary text-primary font-bold"><Plus /></Button>
@@ -320,25 +320,25 @@ export default function AdminSettings() {
           <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden bg-white">
             <CardHeader className="bg-slate-50/50 border-b p-8">
               <CardTitle className="text-xl flex items-center gap-3 font-headline text-primary">
-                <SearchCode className="h-6 w-6 text-secondary" /> Optimasi Pencarian (SEO)
+                <SearchCode className="h-6 w-6 text-secondary" /> SEO & Meta Data
               </CardTitle>
             </CardHeader>
             <CardContent className="p-8 space-y-8">
               <div className="space-y-3">
-                <Label className="text-xs font-bold uppercase text-slate-400">Deskripsi Pencarian (Meta Description)</Label>
+                <Label className="text-xs font-bold uppercase text-slate-400">Deskripsi Meta</Label>
                 <Textarea 
                   value={formData.seoDescription} 
                   onChange={(e) => setFormData({...formData, seoDescription: e.target.value})} 
-                  placeholder="Deskripsi singkat untuk Google..." 
+                  placeholder="Ringkasan singkat sekolah untuk pencarian..." 
                   className="min-h-[120px] bg-slate-50 rounded-2xl"
                 />
               </div>
               <div className="space-y-3 pt-4 border-t">
-                <Label className="text-xs font-bold uppercase text-slate-400">Kata Kunci (SEO Keywords)</Label>
+                <Label className="text-xs font-bold uppercase text-slate-400">Keywords (pisahkan dengan koma)</Label>
                 <Input 
                   value={formData.seoKeywords} 
                   onChange={(e) => setFormData({...formData, seoKeywords: e.target.value})} 
-                  placeholder="sekolah, pendidikan, ppdb" 
+                  placeholder="sekolah, pendidikan, smpn 5" 
                   className="h-14 bg-slate-50 rounded-2xl" 
                 />
               </div>
@@ -354,40 +354,28 @@ export default function AdminSettings() {
                 <div className="space-y-6">
                   <div className="space-y-2">
                     <Label className="text-xs font-bold uppercase text-slate-400">Teks Lencana (Hero Badge)</Label>
-                    <div className="relative">
-                      <ShieldCheck className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-secondary" />
-                      <Input 
-                        value={formData.heroBadgeText} 
-                        onChange={(e) => setFormData({...formData, heroBadgeText: e.target.value})} 
-                        placeholder="Contoh: Selamat Datang di Website Resmi Kami" 
-                        className="h-14 bg-slate-50 pl-12 font-bold rounded-2xl" 
-                      />
-                    </div>
+                    <Input value={formData.heroBadgeText} onChange={(e) => setFormData({...formData, heroBadgeText: e.target.value})} className="h-14 bg-slate-50 font-bold rounded-2xl" />
                   </div>
                   <div className="space-y-2">
                     <Label className="text-xs font-bold uppercase text-slate-400">Judul Utama (Hero Title)</Label>
-                    <Input 
-                      value={formData.heroTitle} 
-                      onChange={(e) => setFormData({...formData, heroTitle: e.target.value})} 
-                      placeholder="Judul Hero" 
-                      className="h-14 bg-slate-50 font-extrabold rounded-2xl" 
-                    />
+                    <Input value={formData.heroTitle} onChange={(e) => setFormData({...formData, heroTitle: e.target.value})} className="h-14 bg-slate-50 font-extrabold rounded-2xl" />
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-xs font-bold uppercase text-slate-400">Sub-judul (Hero Subtitle)</Label>
-                    <Textarea 
-                      value={formData.heroSubtitle} 
-                      onChange={(e) => setFormData({...formData, heroSubtitle: e.target.value})} 
-                      placeholder="Sub-judul Hero" 
-                      className="min-h-[120px] bg-slate-50 rounded-2xl" 
-                    />
+                    <Label className="text-xs font-bold uppercase text-slate-400">Sub-judul</Label>
+                    <Textarea value={formData.heroSubtitle} onChange={(e) => setFormData({...formData, heroSubtitle: e.target.value})} className="min-h-[120px] bg-slate-50 rounded-2xl" />
                   </div>
                 </div>
                 <div className="space-y-3">
-                  <Label className="text-xs font-bold uppercase text-slate-400">Foto Background Utama</Label>
+                  <Label className="text-xs font-bold uppercase text-slate-400">Background Utama (WebP 1920px)</Label>
                   <div className="relative aspect-video w-full rounded-[2rem] overflow-hidden border-2 border-dashed bg-slate-50 flex items-center justify-center cursor-pointer">
-                    {formData.heroImageUrl ? <img src={formData.heroImageUrl} className="w-full h-full object-cover" /> : <ImageIcon className="h-12 w-12 text-slate-300" />}
-                    <input type="file" accept="image/*" onChange={(e) => handleFileChange(e, "heroImageUrl")} className="absolute inset-0 opacity-0 cursor-pointer" />
+                    {optimizingField === "heroImageUrl" ? (
+                      <Loader2 className="h-12 w-12 animate-spin text-primary" />
+                    ) : formData.heroImageUrl ? (
+                      <img src={formData.heroImageUrl} className="w-full h-full object-cover" />
+                    ) : (
+                      <ImageIcon className="h-12 w-12 text-slate-300" />
+                    )}
+                    <input type="file" accept="image/*" onChange={(e) => handleFileChange(e, "heroImageUrl")} className="absolute inset-0 opacity-0 cursor-pointer" disabled={optimizingField !== null} />
                   </div>
                 </div>
               </div>
@@ -457,32 +445,6 @@ export default function AdminSettings() {
               <div className="space-y-2">
                 <Label className="text-[10px] font-bold uppercase text-slate-400">YouTube URL</Label>
                 <Input value={formData.youtubeUrl} onChange={(e) => setFormData({...formData, youtubeUrl: e.target.value})} placeholder="https://youtube.com/c/..." className="h-12 bg-slate-50" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden bg-white">
-            <CardHeader className="bg-slate-50/50 border-b p-8"><CardTitle className="text-xl flex items-center gap-3 font-headline text-primary"><LinkIcon className="h-6 w-6 text-secondary" /> Informasi Media Lain</CardTitle></CardHeader>
-            <CardContent className="p-8 space-y-6">
-              <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100 space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  <Input value={newOtherTitle} onChange={(e) => setNewOtherTitle(e.target.value)} className="h-12 bg-white rounded-xl" placeholder="Nama Media (e.g. Media Mitra)" />
-                  <div className="flex gap-2">
-                    <Input value={newOtherUrl} onChange={(e) => setNewOtherUrl(e.target.value)} className="h-12 bg-white rounded-xl flex-1" placeholder="https://..." />
-                    <Button onClick={handleAddOtherMedia} className="h-12 px-6 rounded-xl bg-secondary text-primary font-bold"><Plus /></Button>
-                  </div>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {formData.otherMedia?.map((media: any, i: number) => (
-                    <div key={i} className="flex items-center justify-between bg-white p-3 rounded-xl border border-slate-100">
-                      <div className="flex flex-col">
-                        <span className="text-[10px] font-black uppercase text-primary leading-none">{media.title}</span>
-                        <span className="text-[9px] text-slate-400 truncate max-w-[150px]">{media.url}</span>
-                      </div>
-                      <Button variant="ghost" size="icon" onClick={() => handleRemoveOtherMedia(i)} className="text-destructive h-8 w-8 hover:bg-destructive/5"><Trash2 className="h-4 w-4" /></Button>
-                    </div>
-                  ))}
-                </div>
               </div>
             </CardContent>
           </Card>
