@@ -8,8 +8,7 @@ import {
   GraduationCap, 
   Users, 
   UserCircle, 
-  Briefcase, 
-  Sparkles
+  Briefcase
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useDoc, useFirestore } from "@/firebase";
@@ -63,8 +62,8 @@ export default function Home() {
         <div className="container relative z-10 px-6 md:px-12 mx-auto pb-32 pt-40 md:pt-48">
           <div className="max-w-5xl space-y-8 animate-in fade-in slide-in-from-left duration-1000">
             <div className="space-y-6">
-              <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md text-secondary px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] border border-white/10 shadow-2xl">
-                <Sparkles className="h-4 w-4" /> {heroBadgeText}
+              <div className="text-secondary py-2 text-[10px] font-black uppercase tracking-[0.25em] drop-shadow-md">
+                {heroBadgeText}
               </div>
               
               <div className="space-y-4">
