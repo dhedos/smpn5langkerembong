@@ -76,7 +76,7 @@ export function Footer() {
     <footer className="bg-primary text-white pt-16 md:pt-20 pb-10 border-t border-white/5 overflow-hidden">
       <div className="container mx-auto px-6 md:px-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 md:gap-16 lg:gap-20 mb-16">
-          <div className="flex flex-col space-y-8 md:col-span-2 lg:col-span-2">
+          <div className="flex flex-col space-y-6 md:col-span-2 lg:col-span-2">
             <div className="flex items-center gap-5">
               {mounted && schoolLogo ? (
                 <div className="bg-white p-3 rounded-[1.8rem] shadow-2xl shrink-0 flex items-center justify-center w-20 h-20 md:w-24 md:h-24">
@@ -93,49 +93,44 @@ export function Footer() {
               </div>
             </div>
 
-            <div className="space-y-10">
+            <div className="space-y-6">
               <p className="text-white/60 text-[10px] leading-relaxed font-bold uppercase tracking-widest max-w-sm">
                 Membangun fondasi pendidikan unggul yang menginspirasi kreativitas bagi masa depan bangsa.
               </p>
 
-              {/* Media Sosial & Portal Section */}
-              <div className="space-y-8">
-                <div className="flex gap-3 items-center">
+              <div className="space-y-6">
+                <div className="flex gap-2 pt-2">
                   {socialLinks.map((social) => (
                     <a 
                       key={social.id} 
                       href={social.href} 
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="h-12 w-12 md:h-14 md:w-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-all hover:scale-105 shadow-lg"
+                      className="h-10 w-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-all hover:scale-105"
                     >
                       {social.icon}
                     </a>
                   ))}
-                  <div 
-                    className="h-12 w-12 md:h-14 md:w-14 rounded-2xl bg-secondary text-primary flex items-center justify-center shadow-xl cursor-default scale-110"
-                    title="Website Instansi Terkait"
-                  >
-                    <Globe className="h-6 w-6" />
+                  <div className="h-10 w-10 rounded-xl bg-secondary text-primary flex items-center justify-center shadow-xl cursor-default scale-110 ml-2">
+                    <Globe className="h-5 w-5" />
                   </div>
                 </div>
 
-                <div className="flex flex-col gap-8 pt-6 border-t border-white/10">
-                  {/* PORTAL RESMI INSTANSI */}
-                  <div className="space-y-4">
+                <div className="flex flex-col gap-6 pt-4 border-t border-white/10">
+                  <div className="space-y-3">
                     <span className="text-[10px] font-black text-secondary tracking-widest uppercase">Portal Resmi Instansi</span>
-                    <div className="flex flex-wrap gap-3">
+                    <div className="flex flex-wrap gap-2">
                       {mounted && officialWebsites.length > 0 ? officialWebsites.map((web: any, i: number) => (
                         <a 
                           key={i}
                           href={ensureExternalUrl(web.url)} 
                           target="_blank" 
                           rel="noopener noreferrer"
-                          className="text-white/90 hover:text-secondary transition-all flex items-center gap-3 uppercase text-[10px] font-black tracking-widest bg-white/5 px-5 py-4 rounded-2xl border border-white/10 group shadow-sm"
+                          className="text-white/90 hover:text-secondary transition-all flex items-center gap-2 uppercase text-[9px] font-black tracking-widest bg-white/5 px-4 py-3 rounded-xl border border-white/10 group"
                         >
-                          <LinkIcon className="h-3.5 w-3.5 text-secondary" /> 
-                          <span className="truncate max-w-[180px]">{web.title || "Portal"}</span> 
-                          <ExternalLink className="h-3.5 w-3.5 opacity-30 group-hover:opacity-100 shrink-0" />
+                          <LinkIcon className="h-3 w-3 text-secondary" /> 
+                          <span className="truncate max-w-[150px]">{web.title || "Portal"}</span> 
+                          <ExternalLink className="h-3 w-3 opacity-30 group-hover:opacity-100" />
                         </a>
                       )) : mounted && (
                         <div className="text-[9px] text-white/30 italic font-bold uppercase tracking-widest">Daftar portal belum tersedia</div>
@@ -143,24 +138,23 @@ export function Footer() {
                     </div>
                   </div>
 
-                  {/* INFORMASI MEDIA LAIN */}
-                  <div className="space-y-4">
+                  <div className="space-y-3">
                     <span className="text-[10px] font-black text-secondary tracking-widest uppercase">Informasi Media Lain</span>
-                    <div className="flex flex-wrap gap-3">
+                    <div className="flex flex-wrap gap-2">
                       {mounted && otherMedia.length > 0 ? otherMedia.map((media: any, i: number) => (
                         <a 
                           key={i}
                           href={ensureExternalUrl(media.url)} 
                           target="_blank" 
                           rel="noopener noreferrer"
-                          className="text-white/90 hover:text-secondary transition-all flex items-center gap-3 uppercase text-[10px] font-black tracking-widest bg-white/5 px-5 py-4 rounded-2xl border border-white/10 group shadow-sm"
+                          className="text-white/90 hover:text-secondary transition-all flex items-center gap-2 uppercase text-[9px] font-black tracking-widest bg-white/5 px-4 py-3 rounded-xl border border-white/10 group"
                         >
-                          <LinkIcon className="h-3.5 w-3.5 text-secondary" /> 
-                          <span className="truncate max-w-[180px]">{media.title || "Media"}</span> 
-                          <ExternalLink className="h-3.5 w-3.5 opacity-30 group-hover:opacity-100 shrink-0" />
+                          <LinkIcon className="h-3 w-3 text-secondary" /> 
+                          <span className="truncate max-w-[150px]">{media.title || "Media"}</span> 
+                          <ExternalLink className="h-3 w-3 opacity-30 group-hover:opacity-100" />
                         </a>
                       )) : mounted && (
-                        <div className="text-[9px] text-white/30 italic font-bold uppercase tracking-widest px-1">Belum ada informasi media lain</div>
+                        <div className="text-[9px] text-white/30 italic font-bold uppercase tracking-widest">Belum ada informasi media lain</div>
                       )}
                     </div>
                   </div>

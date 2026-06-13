@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
@@ -22,7 +23,6 @@ export function Navbar() {
   const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
   const isAdminPage = pathname?.startsWith("/admin");
-  const isHome = pathname === "/";
 
   const db = useFirestore();
   const currentSchoolId = 'smpn5-langke-rembong';
@@ -43,10 +43,11 @@ export function Navbar() {
     setIsOpen(false);
   }, [pathname]);
 
-  const schoolName = settings?.schoolName;
+  const schoolName = settings?.schoolName || "SMPN 5 LANGKE REMBONG";
   const schoolLogo = settings?.schoolLogoUrl;
   const isSpmbActive = settings?.ppdbIsActive === true;
   const spmbLabel = settings?.ppdbMenuTitle || "SPMB ONLINE";
+  const isHome = pathname === "/";
 
   const navItems = useMemo(() => {
     const items = [
@@ -74,7 +75,7 @@ export function Navbar() {
 
   if (isAdminPage) return null;
 
-  // Standarisasi isSolid untuk mencegah hydration mismatch
+  // Solid state logic yang stabil untuk server dan client
   const isSolid = mounted ? (scrolled || !isHome) : !isHome;
 
   return (
@@ -86,8 +87,8 @@ export function Navbar() {
           : "bg-transparent py-5"
       )}
     >
-      <div className="max-w-7xl mx-auto flex items-center justify-between px-4 md:px-8 lg:px-12">
-        <Link href="/" className="flex items-center gap-2 md:gap-3 group max-w-[70%] md:max-w-[85%]">
+      <div className="max-w-7xl mx-auto flex items-center justify-between px-4 md:px-12">
+        <Link href="/" className="flex items-center gap-3 group max-w-[85%] md:max-w-none">
           {mounted && schoolLogo ? (
             <div className={cn(
               "p-2 rounded-2xl transition-all duration-500 shadow-lg transform group-hover:scale-105 shrink-0",
@@ -100,26 +101,26 @@ export function Navbar() {
           ) : null}
           
           <div className="flex flex-col justify-center overflow-hidden">
-            {mounted && schoolName ? (
+            {mounted ? (
               <span className={cn(
-                "font-headline font-bold text-[10px] sm:text-xs md:text-sm lg:text-xl tracking-tight uppercase transition-colors duration-500 line-clamp-2 leading-tight",
+                "font-headline font-bold text-xs md:text-sm lg:text-xl tracking-tight uppercase transition-colors duration-500 line-clamp-1 leading-tight",
                 isSolid ? "text-slate-900" : "text-white drop-shadow-lg"
               )}>
                 {schoolName}
               </span>
             ) : (
-              <div className={cn("h-6 w-24 md:w-32 animate-pulse rounded-lg", isSolid ? "bg-slate-100" : "bg-white/20")} />
+              <div className={cn("h-6 w-32 animate-pulse rounded-lg bg-slate-100")} />
             )}
           </div>
         </Link>
 
-        <nav className="hidden lg:flex items-center gap-6 xl:gap-10">
+        <nav className="hidden lg:flex items-center gap-10">
           {navItems.map((item) => (
             <div key={item.name} className="relative group">
               {item.submenu ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger className={cn(
-                    "flex items-center gap-1.5 text-xs xl:text-sm font-bold transition-all outline-none uppercase tracking-wider",
+                    "flex items-center gap-1.5 text-sm font-bold transition-all outline-none uppercase tracking-wider",
                     isSolid 
                       ? (pathname?.startsWith(item.href) && item.href !== "/" ? "text-secondary" : "text-slate-700 hover:text-secondary")
                       : "text-white hover:text-secondary drop-shadow-sm"
@@ -129,7 +130,7 @@ export function Navbar() {
                   <DropdownMenuContent align="start" className="bg-white border-slate-200 shadow-2xl rounded-2xl p-2 min-w-[200px] mt-2">
                     {item.submenu.map((sub) => (
                       <DropdownMenuItem key={sub.name} asChild>
-                        <Link href={sub.href} className="w-full cursor-pointer hover:bg-slate-100 rounded-xl px-4 py-2.5 font-bold text-slate-700 text-sm" onClick={() => setIsOpen(false)}>
+                        <Link href={sub.href} className="w-full cursor-pointer hover:bg-slate-100 rounded-xl px-4 py-2.5 font-bold text-slate-700 text-sm">
                           {sub.name}
                         </Link>
                       </DropdownMenuItem>
@@ -140,7 +141,7 @@ export function Navbar() {
                 <Link
                   href={item.href}
                   className={cn(
-                    "text-xs xl:text-sm font-bold transition-all uppercase tracking-wider relative after:absolute after:bottom-[-4px] after:left-0 after:h-0.5 after:bg-secondary after:transition-all after:duration-300",
+                    "text-sm font-bold transition-all uppercase tracking-wider relative after:absolute after:bottom-[-4px] after:left-0 after:h-0.5 after:bg-secondary after:transition-all after:duration-300",
                     isSolid 
                       ? (pathname === item.href ? "text-secondary after:w-full" : "text-slate-700 hover:text-secondary after:w-0 hover:after:w-full")
                       : "text-white hover:text-secondary drop-shadow-sm after:w-0 hover:after:w-full"
@@ -156,7 +157,7 @@ export function Navbar() {
         <div className="hidden lg:flex items-center gap-4">
           {isSpmbActive && mounted && (
             <Button size="lg" className={cn(
-              "rounded-full px-6 font-bold shadow-xl transition-all hover:scale-105 active:scale-95 uppercase tracking-widest text-[10px] h-10 xl:h-12 xl:px-8 xl:text-xs",
+              "rounded-full px-8 font-bold shadow-xl transition-all hover:scale-105 active:scale-95 uppercase tracking-widest text-xs h-12",
               isSolid ? "bg-primary text-white" : "bg-secondary text-primary hover:bg-secondary/90 shadow-secondary/20"
             )} asChild>
               <Link href="/ppdb">{spmbLabel}</Link>
@@ -194,7 +195,7 @@ export function Navbar() {
                 </div>
               </div>
             )}
-            {mounted && schoolName && <span className="font-headline font-bold text-primary text-xs uppercase leading-tight truncate max-w-[150px]">{schoolName}</span>}
+            <span className="font-headline font-bold text-primary text-xs uppercase leading-tight truncate max-w-[150px]">{schoolName}</span>
           </div>
           <button 
             onClick={() => setIsOpen(false)} 
