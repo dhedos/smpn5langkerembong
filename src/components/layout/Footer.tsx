@@ -34,11 +34,12 @@ export function Footer() {
 
   if (isAdminPage) return null;
 
+  // Gunakan mounted check untuk data dinamis guna menghindari hydration mismatch
   const schoolName = mounted && settings?.schoolName ? settings.schoolName : "SMPN 5 LANGKE REMBONG";
   const schoolLogo = mounted ? settings?.schoolLogoUrl : null;
   const officialWebsites = mounted && Array.isArray(settings?.officialWebsites) ? settings.officialWebsites : [];
   const otherMedia = mounted && Array.isArray(settings?.otherMedia) ? settings.otherMedia : [];
-  const displayYear = mounted && settings?.copyrightYear ? settings.copyrightYear : "2024";
+  const displayYear = mounted && settings?.copyrightYear ? settings.copyrightYear : new Date().getFullYear().toString();
   
   const address = mounted ? (settings?.address || "Alamat Sekolah") : "Alamat Sekolah";
   const phone = mounted ? (settings?.phone || "628...") : "628...";
@@ -97,7 +98,7 @@ export function Footer() {
 
               <div className="space-y-4">
                 <div className="space-y-3">
-                  <span className="text-[10px] font-black text-secondary tracking-widest uppercase">Ikuti Kami</span>
+                  <span className="text-[10px] font-black text-secondary tracking-widest uppercase">IKUTI KAMI</span>
                   <div className="flex gap-2">
                     {socialLinks.map((social) => (
                       <a 

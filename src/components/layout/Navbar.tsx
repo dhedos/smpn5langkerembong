@@ -40,6 +40,7 @@ export function Navbar() {
     setIsOpen(false);
   }, [pathname]);
 
+  // Gunakan mounted check untuk data dinamis guna menghindari hydration mismatch
   const schoolName = mounted && settings?.schoolName ? settings.schoolName : "SMPN 5 LANGKE REMBONG";
   const schoolLogo = mounted ? settings?.schoolLogoUrl : null;
   const isSpmbActive = mounted ? settings?.ppdbIsActive === true : false;
