@@ -107,7 +107,7 @@ export function Navbar() {
                 {schoolName}
               </span>
             ) : (
-              <div className={cn("h-6 w-24 md:w-32 animate-pulse rounded-lg bg-slate-100")} />
+              <div className="h-6 w-24 md:w-32 animate-pulse rounded-lg bg-slate-100" />
             )}
           </div>
         </Link>

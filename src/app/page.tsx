@@ -13,7 +13,8 @@ import {
   User,
   ExternalLink,
   MapPin,
-  Sparkles
+  Sparkles,
+  ShieldCheck
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -90,9 +91,9 @@ export default function Home() {
         <div className="container relative z-10 px-6 md:px-12 mx-auto pb-32 pt-40 md:pt-48">
           <div className="max-w-5xl space-y-8 animate-in fade-in slide-in-from-left duration-1000">
             <div className="space-y-6">
-              {/* Visitor Dashboard Welcome Label */}
-              <div className="inline-flex items-center gap-2 bg-secondary/20 text-secondary px-6 py-2.5 rounded-full text-xs font-bold uppercase tracking-[0.2em] animate-pulse border border-secondary/30 backdrop-blur-md">
-                <Sparkles className="h-4 w-4" /> Selamat Datang di Portal Pengunjung
+              {/* Prestigious Tagline Badge */}
+              <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md text-secondary px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] border border-white/10 shadow-2xl">
+                <ShieldCheck className="h-4 w-4" /> Website Resmi Sekolah
               </div>
               
               <div className="space-y-4">
