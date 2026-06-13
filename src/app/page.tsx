@@ -3,6 +3,7 @@
 
 import React, { useMemo } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { 
   ArrowRight, 
   GraduationCap, 
@@ -12,8 +13,8 @@ import {
   Sparkles
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useDoc, useCollection, useFirestore } from "@/firebase";
-import { doc, collection, query, where } from "firebase/firestore";
+import { useDoc, useFirestore } from "@/firebase";
+import { doc } from "firebase/firestore";
 
 const IconMap: Record<string, any> = {
   GraduationCap: GraduationCap,
@@ -24,22 +25,11 @@ const IconMap: Record<string, any> = {
 
 export default function Home() {
   const db = useFirestore();
-  
   const currentSchoolId = 'smpn5-langke-rembong';
   const settingsRef = useMemo(() => db ? doc(db, "schools", currentSchoolId) : null, [db, currentSchoolId]);
   const { data: settings } = useDoc(settingsRef);
 
-  const newsQuery = useMemo(() => {
-    if (!db) return null;
-    return query(
-      collection(db, "news"), 
-      where("schoolId", "==", currentSchoolId)
-    );
-  }, [db, currentSchoolId]);
-
-  const { data: rawNews } = useCollection(newsQuery);
-
-  // Fallback instan agar tidak ada jeda pemuatan (Identik di Server & Klien)
+  // Instant Fallbacks
   const schoolName = settings?.schoolName || "SMPN 5 LANGKE REMBONG";
   const heroImageUrl = settings?.heroImageUrl || "https://picsum.photos/seed/school1/1920/1080";
   const heroBadgeText = settings?.heroBadgeText || "Selamat Datang di Website Resmi Kami";
@@ -58,15 +48,18 @@ export default function Home() {
     <div className="flex flex-col gap-0 overflow-x-hidden">
       {/* Hero Section */}
       <section className="relative min-h-[100vh] flex items-center overflow-hidden bg-slate-950">
-        <div 
-          className="absolute inset-0 z-0 bg-cover bg-center transition-opacity duration-1000"
-          style={{ 
-            backgroundImage: `url('${heroImageUrl}')`, 
-            backgroundAttachment: 'fixed',
-            opacity: 1
-          }}
-          data-ai-hint="modern school"
-        />
+        <div className="absolute inset-0 z-0 transition-opacity duration-1000">
+           {heroImageUrl && (
+             <Image 
+              src={heroImageUrl} 
+              alt="Hero image" 
+              fill 
+              className="object-cover" 
+              priority 
+              quality={90}
+            />
+           )}
+        </div>
         <div className="absolute inset-0 bg-slate-950/60 md:bg-gradient-to-r md:from-slate-950 md:via-slate-950/70 md:to-transparent z-[1]" />
         
         <div className="container relative z-10 px-6 md:px-12 mx-auto pb-32 pt-40 md:pt-48">

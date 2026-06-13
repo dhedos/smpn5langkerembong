@@ -39,12 +39,9 @@ export function Navbar() {
     setIsOpen(false);
   }, [pathname]);
 
-  // Fallback instan: Gunakan nilai hardcoded agar muncul tanpa jeda database
+  // Instant Defaults - No Loading States
   const schoolName = settings?.schoolName || "SMPN 5 LANGKE REMBONG";
-  
-  // URL Logo diprioritaskan dari database, jika belum ada gunakan string kosong agar tetap transparan
   const schoolLogo = settings?.schoolLogoUrl || "";
-  
   const isSpmbActive = settings?.ppdbIsActive !== false;
   const spmbLabel = settings?.ppdbMenuTitle || "SPMB ONLINE";
   const isHome = pathname === "/";
@@ -77,20 +74,15 @@ export function Navbar() {
     <header className={cn("fixed top-0 left-0 right-0 z-[60] transition-all duration-500", isSolid ? "bg-white border-b border-slate-200 py-3 shadow-md" : "bg-transparent py-5")}>
       <div className="max-w-7xl auto flex items-center justify-between px-4 md:px-8 mx-auto">
         <Link href="/" className="flex items-center gap-3 group max-w-[70%] lg:max-w-none">
-          {/* Logo Container: Tanpa background dan tanpa bayangan agar instan dan bersih */}
           <div className="relative h-12 w-12 shrink-0 flex items-center justify-center overflow-hidden">
-            {schoolLogo ? (
+            {schoolLogo && (
               <Image 
                 src={schoolLogo} 
                 alt="Logo" 
                 fill 
                 className="object-contain" 
                 priority 
-                fetchPriority="high"
               />
-            ) : (
-              // Spacer transparan agar tata letak tidak bergeser saat gambar dimuat
-              <div className="h-full w-full bg-transparent" />
             )}
           </div>
           <div className="flex flex-col justify-center overflow-hidden">

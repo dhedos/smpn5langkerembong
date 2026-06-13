@@ -3,7 +3,7 @@
 
 import React, { useMemo } from "react";
 import Image from "next/image";
-import { CheckCircle2, Target, History, Users2, Building2, AlertTriangle, Info, Loader2, MapPin } from "lucide-react";
+import { CheckCircle2, Target, History, Users2, Building2, MapPin } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useFirestore, useDoc, useCollection } from "@/firebase";
 import { doc, collection, query, where } from "firebase/firestore";
@@ -13,7 +13,7 @@ export default function ProfilPage() {
   const currentSchoolId = 'smpn5-langke-rembong';
   
   const settingsRef = useMemo(() => db ? doc(db, "schools", currentSchoolId) : null, [db, currentSchoolId]);
-  const { data: settings, loading: settingsLoading } = useDoc(settingsRef);
+  const { data: settings } = useDoc(settingsRef);
 
   const facilitiesRef = useMemo(() => {
     if (!db) return null;
@@ -23,36 +23,31 @@ export default function ProfilPage() {
     );
   }, [db, currentSchoolId]);
   
-  const { data: rawFacilities, loading: facilitiesLoading, error: facilitiesError } = useCollection(facilitiesRef);
+  const { data: rawFacilities } = useCollection(facilitiesRef);
 
   const publishedFacilities = useMemo(() => {
     return rawFacilities?.filter((f: any) => f.status === "Published") || [];
   }, [rawFacilities]);
 
-  if (settingsLoading) {
-    return (
-      <div className="flex-1 flex items-center justify-center min-h-[60vh]">
-        <Loader2 className="h-12 w-12 animate-spin text-primary/30" strokeWidth={1.5} />
-      </div>
-    );
-  }
-
   const schoolName = settings?.schoolName || "SMPN 5 Langke Rembong";
   const historyPhoto = settings?.historyPhotoUrl || "https://picsum.photos/seed/history/800/800";
-  // Fix flicker: show no image (just dark bg) while loading settings
-  const heroImageUrl = settings?.heroImageUrl || (settingsLoading ? "" : "https://picsum.photos/seed/school1/1920/1080");
+  const heroImageUrl = settings?.heroImageUrl || "https://picsum.photos/seed/school1/1920/1080";
   
   return (
     <div className="pt-0 bg-white animate-in fade-in duration-500">
       {/* Dynamic Hero Header */}
       <section className="relative h-[50vh] md:h-[60vh] flex items-center justify-center overflow-hidden bg-slate-950">
-        <div 
-          className="absolute inset-0 z-0 bg-cover bg-center transition-opacity duration-1000"
-          style={{ 
-            backgroundImage: heroImageUrl ? `url('${heroImageUrl}')` : 'none',
-            opacity: heroImageUrl ? 1 : 0
-          }}
-        />
+        <div className="absolute inset-0 z-0">
+          {heroImageUrl && (
+            <Image 
+              src={heroImageUrl} 
+              alt="Profil Hero" 
+              fill 
+              className="object-cover" 
+              priority
+            />
+          )}
+        </div>
         <div className="absolute inset-0 bg-slate-950/70 z-[1]" />
         
         <div className="container mx-auto px-4 relative z-10 text-center space-y-4">
@@ -78,11 +73,12 @@ export default function ProfilPage() {
               </div>
             </div>
             <div className="w-full md:w-1/2 relative">
-              <div className="rounded-[3rem] overflow-hidden shadow-2xl border-[8px] md:border-[12px] border-slate-50 bg-slate-50">
-                 <img 
+              <div className="rounded-[3rem] overflow-hidden shadow-2xl border-[8px] md:border-[12px] border-slate-50 bg-slate-50 aspect-square relative">
+                 <Image 
                   src={historyPhoto} 
                   alt="Sejarah Sekolah" 
-                  className="w-full h-auto object-cover"
+                  fill
+                  className="object-cover"
                 />
               </div>
             </div>
@@ -139,47 +135,31 @@ export default function ProfilPage() {
             <p className="text-slate-400 max-w-xl mx-auto">Infrastruktur modern yang menunjang kreativitas dan produktivitas siswa.</p>
           </div>
 
-          {facilitiesLoading ? (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-              {[1, 2, 3].map(i => (
-                <div key={i} className="h-80 bg-slate-100 rounded-[2.5rem] animate-pulse shadow-sm" />
-              ))}
-            </div>
-          ) : facilitiesError ? (
-            <div className="text-center py-20 bg-slate-50 rounded-[3rem] border-2 border-dashed border-red-200 text-red-400">
-              <AlertTriangle className="h-12 w-12 mx-auto mb-4" />
-              <p className="font-bold">Gagal memuat data.</p>
-              <p className="text-sm mt-2">Terjadi masalah koneksi ke database.</p>
-            </div>
-          ) : publishedFacilities.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-              {publishedFacilities.map((f: any) => (
-                <Card key={f.id} className="overflow-hidden border-none shadow-xl hover:shadow-2xl transition-all duration-500 rounded-[2.5rem] group bg-white border border-slate-100">
-                  <div className="relative h-64 overflow-hidden bg-slate-100">
-                     <img 
-                      src={f.imageUrl || `https://picsum.photos/seed/${f.id}/600/400`} 
-                      alt={f.name || "Fasilitas"} 
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
-                    />
-                  </div>
-                  <CardContent className="p-8">
-                    <h4 className="text-2xl font-bold text-primary font-headline mb-3 group-hover:text-secondary transition-colors">{f.name || "Nama Fasilitas"}</h4>
-                    <p className="text-slate-500 font-medium text-sm leading-relaxed line-clamp-4">{f.description || "Tidak ada deskripsi tersedia."}</p>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-24 md:py-32 bg-slate-50 rounded-[3rem] border-2 border-dashed border-slate-200">
-              <Info className="h-16 w-16 text-slate-200 mx-auto mb-4" />
-              <p className="text-slate-500 font-bold text-lg">Belum ada fasilitas yang dipublikasikan.</p>
-              <p className="text-slate-400 text-sm mt-2">Admin perlu mengatur status fasilitas menjadi <span className="text-green-600 font-bold uppercase">Published</span> di panel kontrol.</p>
-            </div>
-          )}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+            {publishedFacilities.length > 0 ? publishedFacilities.map((f: any) => (
+              <Card key={f.id} className="overflow-hidden border-none shadow-xl hover:shadow-2xl transition-all duration-500 rounded-[2.5rem] group bg-white border border-slate-100">
+                <div className="relative h-64 overflow-hidden bg-slate-100">
+                   <Image 
+                    src={f.imageUrl || `https://picsum.photos/seed/${f.id}/600/400`} 
+                    alt={f.name || "Fasilitas"} 
+                    fill
+                    className="object-cover group-hover:scale-110 transition-transform duration-700" 
+                  />
+                </div>
+                <CardContent className="p-8">
+                  <h4 className="text-2xl font-bold text-primary font-headline mb-3 group-hover:text-secondary transition-colors">{f.name || "Nama Fasilitas"}</h4>
+                  <p className="text-slate-500 font-medium text-sm leading-relaxed line-clamp-4">{f.description || "Tidak ada deskripsi tersedia."}</p>
+                </CardContent>
+              </Card>
+            )) : (
+              <div className="col-span-full text-center py-24 md:py-32 bg-slate-50 rounded-[3rem] border-2 border-dashed border-slate-200">
+                <p className="text-slate-500 font-bold text-lg">Belum ada fasilitas yang dipublikasikan.</p>
+              </div>
+            )}
+          </div>
         </div>
       </section>
 
-      {/* Lokasi Section */}
       {settings?.googleMapsEmbedUrl && (
         <section id="lokasi" className="py-24 md:py-32 bg-slate-50">
           <div className="container mx-auto px-4">
