@@ -37,7 +37,7 @@ export function Footer() {
   if (isAdminPage) return null;
 
   // Robust values to prevent hydration mismatch
-  const schoolName = mounted && settings?.schoolName ? settings.schoolName : "SEKOLAH";
+  const schoolName = mounted && settings?.schoolName ? settings.schoolName : "SMPN 5 LANGKE REMBONG";
   const schoolLogo = settings?.schoolLogoUrl;
   const officialWebsites = Array.isArray(settings?.officialWebsites) ? settings.officialWebsites : [];
   const otherMedia = Array.isArray(settings?.otherMedia) ? settings.otherMedia : [];
@@ -99,20 +99,23 @@ export function Footer() {
               </p>
 
               <div className="space-y-4">
-                <div className="flex gap-2 pt-2">
-                  {socialLinks.map((social) => (
-                    <a 
-                      key={social.id} 
-                      href={social.href} 
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="h-10 w-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-all hover:scale-105"
-                    >
-                      {social.icon}
-                    </a>
-                  ))}
-                  <div className="h-10 w-10 rounded-xl bg-secondary text-primary flex items-center justify-center shadow-xl cursor-default scale-110 ml-2">
-                    <Globe className="h-5 w-5" />
+                <div className="space-y-3">
+                  <span className="text-[10px] font-black text-secondary tracking-widest uppercase">Ikuti Kami</span>
+                  <div className="flex gap-2">
+                    {socialLinks.map((social) => (
+                      <a 
+                        key={social.id} 
+                        href={social.href} 
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="h-10 w-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-all hover:scale-105"
+                      >
+                        {social.icon}
+                      </a>
+                    ))}
+                    <div className="h-10 w-10 rounded-xl bg-secondary text-primary flex items-center justify-center shadow-xl cursor-default scale-110 ml-2">
+                      <Globe className="h-5 w-5" />
+                    </div>
                   </div>
                 </div>
 
@@ -211,7 +214,7 @@ export function Footer() {
         </div>
 
         <div className="border-t border-white/5 pt-10 flex flex-col md:flex-row justify-between items-center gap-6 text-[10px] font-black text-white/30 tracking-[0.2em] uppercase text-center md:text-left">
-          <p>© {mounted ? displayYear : "2024"} {mounted && schoolName ? schoolName.toUpperCase() : "SEKOLAH"}. ALL RIGHTS RESERVED.</p>
+          <p>© {mounted ? displayYear : "2024"} {mounted && schoolName ? schoolName.toUpperCase() : "SMPN 5 LANGKE REMBONG"}. ALL RIGHTS RESERVED.</p>
           <div className="flex gap-6 items-center">
             <Link href="/admin" className="opacity-30 hover:opacity-100 transition-all flex items-center gap-2">
               ADMIN CONSOLE
