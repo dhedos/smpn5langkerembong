@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useMemo, useState, useEffect } from "react";
@@ -36,23 +35,22 @@ export function Footer() {
 
   if (isAdminPage) return null;
 
-  // Nilai stabil untuk hydration
-  const schoolName = mounted && settings?.schoolName ? settings.schoolName : "SMPN 5 LANGKE REMBONG";
+  const schoolName = mounted && settings?.schoolName ? settings.schoolName : "SEKOLAH";
   const schoolLogo = settings?.schoolLogoUrl;
   const officialWebsites = Array.isArray(settings?.officialWebsites) ? settings.officialWebsites : [];
   const otherMedia = Array.isArray(settings?.otherMedia) ? settings.otherMedia : [];
   const displayYear = mounted && settings?.copyrightYear ? settings.copyrightYear : "2024";
   
-  const address = settings?.address || "Mando, Kelurahan Compang Carep, Kec. Langke Rembong";
-  const phone = settings?.phone || "6285281814006";
-  const email = settings?.email || "smpn5lr@gmail.com";
+  const address = settings?.address || "Alamat Sekolah";
+  const phone = settings?.phone || "628...";
+  const email = settings?.email || "email@sekolah.sch.id";
 
   const nameParts = schoolName.toUpperCase().split(" ");
   const row1 = nameParts.slice(0, 2).join(" ");
   const row2 = nameParts.length > 2 ? nameParts.slice(2).join(" ") : "";
 
   const ensureExternalUrl = (url: string | undefined) => {
-    if (!url || url === "#") return "#";
+    if (!url || url === "#" || url === "") return "#";
     if (url.startsWith('http://') || url.startsWith('https://')) return url;
     return `https://${url}`;
   };
@@ -98,7 +96,7 @@ export function Footer() {
                 Membangun fondasi pendidikan unggul yang menginspirasi kreativitas bagi masa depan bangsa.
               </p>
 
-              <div className="space-y-6">
+              <div className="space-y-4">
                 <div className="flex gap-2 pt-2">
                   {socialLinks.map((social) => (
                     <a 
@@ -211,7 +209,7 @@ export function Footer() {
         </div>
 
         <div className="border-t border-white/5 pt-10 flex flex-col md:flex-row justify-between items-center gap-6 text-[10px] font-black text-white/30 tracking-[0.2em] uppercase text-center md:text-left">
-          <p>© {mounted ? displayYear : "2024"} {mounted && schoolName ? schoolName.toUpperCase() : "SMPN 5 LANGKE REMBONG"}. ALL RIGHTS RESERVED.</p>
+          <p>© {mounted ? displayYear : "2024"} {mounted && schoolName ? schoolName.toUpperCase() : "SEKOLAH"}. ALL RIGHTS RESERVED.</p>
           <div className="flex gap-6 items-center">
             <Link href="/admin" className="opacity-30 hover:opacity-100 transition-all flex items-center gap-2">
               ADMIN CONSOLE
