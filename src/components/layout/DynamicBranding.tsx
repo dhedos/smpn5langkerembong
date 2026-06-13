@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
@@ -7,14 +6,14 @@ import { doc } from 'firebase/firestore';
 
 /**
  * Komponen ini mensinkronisasi judul tab dan favicon secara aman.
- * Hanya dijalankan di sisi klien setelah mounting selesai untuk mencegah client-side exceptions.
+ * Hanya dijalankan di sisi klien setelah mounting selesai.
  */
 export function DynamicBranding() {
   const [mounted, setMounted] = useState(false);
   const db = useFirestore();
   const currentSchoolId = 'smpn5-langke-rembong';
   
-  const settingsRef = useMemo(() => db ? doc(db, "schools", currentSchoolId) : null, [db, currentSchoolId]);
+  const settingsRef = useMemo(() => db ? doc(db, "schools", currentSchoolId) : null, [db]);
   const { data: settings } = useDoc(settingsRef);
 
   useEffect(() => {
@@ -24,15 +23,15 @@ export function DynamicBranding() {
   useEffect(() => {
     if (!mounted || !settings) return;
 
-    // 1. Sinkronisasi Judul Tab
+    // Sinkronisasi Judul Tab
     const schoolName = settings.schoolName;
-    if (schoolName && typeof document !== 'undefined' && document.title !== schoolName) {
+    if (schoolName && document.title !== schoolName) {
       document.title = schoolName;
     }
 
-    // 2. Sinkronisasi Favicon secara aman
+    // Sinkronisasi Favicon
     const logoUrl = settings.schoolLogoUrl;
-    if (logoUrl && typeof document !== 'undefined') {
+    if (logoUrl) {
       const favLink = document.getElementById('dynamic-favicon') as HTMLLinkElement;
       if (favLink && favLink.href !== logoUrl) {
         favLink.href = logoUrl;

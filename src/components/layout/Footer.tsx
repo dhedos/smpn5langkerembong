@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useMemo, useState, useEffect } from "react";
@@ -26,8 +25,7 @@ export function Footer() {
 
   const db = useFirestore();
   const currentSchoolId = 'smpn5-langke-rembong';
-  
-  const settingsRef = useMemo(() => db ? doc(db, "schools", currentSchoolId) : null, [db, currentSchoolId]);
+  const settingsRef = useMemo(() => db ? doc(db, "schools", currentSchoolId) : null, [db]);
   const { data: settings } = useDoc(settingsRef);
 
   useEffect(() => {
@@ -36,16 +34,15 @@ export function Footer() {
 
   if (isAdminPage) return null;
 
-  // Robust values to prevent hydration mismatch
   const schoolName = mounted && settings?.schoolName ? settings.schoolName : "SMPN 5 LANGKE REMBONG";
-  const schoolLogo = settings?.schoolLogoUrl;
-  const officialWebsites = Array.isArray(settings?.officialWebsites) ? settings.officialWebsites : [];
-  const otherMedia = Array.isArray(settings?.otherMedia) ? settings.otherMedia : [];
+  const schoolLogo = mounted ? settings?.schoolLogoUrl : null;
+  const officialWebsites = mounted && Array.isArray(settings?.officialWebsites) ? settings.officialWebsites : [];
+  const otherMedia = mounted && Array.isArray(settings?.otherMedia) ? settings.otherMedia : [];
   const displayYear = mounted && settings?.copyrightYear ? settings.copyrightYear : "2024";
   
-  const address = settings?.address || "Alamat Sekolah";
-  const phone = settings?.phone || "628...";
-  const email = settings?.email || "email@sekolah.sch.id";
+  const address = mounted ? (settings?.address || "Alamat Sekolah") : "Alamat Sekolah";
+  const phone = mounted ? (settings?.phone || "628...") : "628...";
+  const email = mounted ? (settings?.email || "email@sekolah.sch.id") : "email@sekolah.sch.id";
 
   const nameParts = schoolName.toUpperCase().split(" ");
   const row1 = nameParts.slice(0, 2).join(" ");
@@ -78,15 +75,15 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 md:gap-16 lg:gap-20 mb-16">
           <div className="flex flex-col space-y-6 md:col-span-2 lg:col-span-2">
             <div className="flex items-center gap-5">
-              {mounted && schoolLogo ? (
+              {schoolLogo ? (
                 <div className="bg-white p-3 rounded-[1.8rem] shadow-2xl shrink-0 flex items-center justify-center w-20 h-20 md:w-24 md:h-24">
                   <div className="relative h-12 w-12 md:h-16 md:w-16">
                     <Image src={schoolLogo} alt="Logo" fill className="object-contain" />
                   </div>
                 </div>
-              ) : (
-                <div className="h-20 w-20 md:w-24 md:h-24 bg-white/10 rounded-[1.8rem] animate-pulse" />
-              )}
+              ) : mounted ? (
+                <div className="h-20 w-20 md:w-24 md:h-24 bg-white/10 rounded-[1.8rem]" />
+              ) : null}
               <div className="font-headline font-black text-2xl md:text-3xl lg:text-5xl tracking-tight leading-[0.85] uppercase">
                 <span className="block">{row1}</span>
                 <span className="block text-secondary">{row2}</span>
@@ -113,7 +110,7 @@ export function Footer() {
                         {social.icon}
                       </a>
                     ))}
-                    <div className="h-10 w-10 rounded-xl bg-secondary text-primary flex items-center justify-center shadow-xl cursor-default scale-110 ml-2">
+                    <div className="h-10 w-10 rounded-xl bg-secondary text-primary flex items-center justify-center shadow-xl cursor-default ml-2">
                       <Globe className="h-5 w-5" />
                     </div>
                   </div>
@@ -123,7 +120,7 @@ export function Footer() {
                   <div className="space-y-3">
                     <span className="text-[10px] font-black text-secondary tracking-widest uppercase">Portal Resmi Instansi</span>
                     <div className="flex flex-wrap gap-2">
-                      {mounted && officialWebsites.length > 0 ? officialWebsites.map((web: any, i: number) => (
+                      {officialWebsites.length > 0 ? officialWebsites.map((web: any, i: number) => (
                         <a 
                           key={i}
                           href={ensureExternalUrl(web.url)} 
@@ -144,7 +141,7 @@ export function Footer() {
                   <div className="space-y-3">
                     <span className="text-[10px] font-black text-secondary tracking-widest uppercase">Informasi Media Lain</span>
                     <div className="flex flex-wrap gap-2">
-                      {mounted && otherMedia.length > 0 ? otherMedia.map((media: any, i: number) => (
+                      {otherMedia.length > 0 ? otherMedia.map((media: any, i: number) => (
                         <a 
                           key={i}
                           href={ensureExternalUrl(media.url)} 
@@ -191,22 +188,16 @@ export function Footer() {
             <ul className="space-y-6 text-[12px] text-white/80 font-black tracking-wide">
               {address && (
                 <li className="flex gap-4 items-start">
-                  <div className="bg-white/5 p-2.5 rounded-xl shrink-0 mt-0.5">
-                    <MapPin className="h-4 w-4 text-secondary" /> 
-                  </div>
+                  <div className="bg-white/5 p-2.5 rounded-xl shrink-0 mt-0.5"><MapPin className="h-4 w-4 text-secondary" /></div>
                   <span className="leading-relaxed uppercase tracking-tighter break-words">{address}</span>
                 </li>
               )}
               <li className="flex gap-4 items-center">
-                <div className="bg-white/5 p-2.5 rounded-xl shrink-0">
-                  <Phone className="h-4 w-4 text-secondary" /> 
-                </div>
+                <div className="bg-white/5 p-2.5 rounded-xl shrink-0"><Phone className="h-4 w-4 text-secondary" /></div>
                 <span>{phone}</span>
               </li>
               <li className="flex gap-4 items-center">
-                <div className="bg-white/5 p-2.5 rounded-xl shrink-0">
-                  <Mail className="h-4 w-4 text-secondary" /> 
-                </div>
+                <div className="bg-white/5 p-2.5 rounded-xl shrink-0"><Mail className="h-4 w-4 text-secondary" /></div>
                 <span className="break-all lowercase">{email}</span>
               </li>
             </ul>
@@ -214,11 +205,9 @@ export function Footer() {
         </div>
 
         <div className="border-t border-white/5 pt-10 flex flex-col md:flex-row justify-between items-center gap-6 text-[10px] font-black text-white/30 tracking-[0.2em] uppercase text-center md:text-left">
-          <p>© {mounted ? displayYear : "2024"} {mounted && schoolName ? schoolName.toUpperCase() : "SMPN 5 LANGKE REMBONG"}. ALL RIGHTS RESERVED.</p>
+          <p>© {displayYear} {schoolName.toUpperCase()}. ALL RIGHTS RESERVED.</p>
           <div className="flex gap-6 items-center">
-            <Link href="/admin" className="opacity-30 hover:opacity-100 transition-all flex items-center gap-2">
-              ADMIN CONSOLE
-            </Link>
+            <Link href="/admin" className="opacity-30 hover:opacity-100 transition-all">ADMIN CONSOLE</Link>
           </div>
         </div>
       </div>
