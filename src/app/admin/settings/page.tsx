@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
@@ -7,20 +8,16 @@ import {
   School, 
   Loader2,
   Image as ImageIcon,
-  Share2,
-  BookOpen,
   Plus,
   Trash2,
   History,
-  Target,
   Layout,
   Map as MapIcon,
   SearchCode,
-  Upload,
   Globe,
-  Link as LinkIcon
+  Share2
 } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -47,18 +44,11 @@ export default function AdminSettings() {
     schoolName: "SMPN 5 Langke Rembong",
     schoolLogoUrl: "",
     officialWebsites: [],
-    otherMedia: [],
     copyrightYear: "2024",
     heroBadgeText: "Selamat Datang di Website Resmi Kami",
     heroTitle: "Membangun Masa Depan Bersama Kami",
     heroSubtitle: "Pendidikan berkualitas untuk generasi emas bangsa melalui kurikulum yang inovatif.",
     heroImageUrl: "",
-    welcomeSectionLabel: "Sambutan Kepala Sekolah",
-    welcomeTitle: "Mendidik dengan Hati & Teknologi",
-    welcomeMessage: "",
-    headmasterName: "",
-    headmasterTitle: "Kepala Sekolah",
-    headmasterPhotoUrl: "",
     whatsappNumber: "628123456789",
     address: "",
     phone: "",
@@ -89,15 +79,11 @@ export default function AdminSettings() {
 
   const [formData, setFormData] = useState<any>(defaultValues);
   const [isSaving, setIsSaving] = useState(false);
-  const [newMission, setNewMission] = useState("");
   const [addressSearch, setAddressSearch] = useState("");
   const [isProcessingFile, setIsProcessingFile] = useState<string | null>(null);
 
   const [newOfficialTitle, setNewOfficialTitle] = useState("");
   const [newOfficialUrl, setNewOfficialUrl] = useState("");
-
-  const [newOtherTitle, setNewOtherTitle] = useState("");
-  const [newOtherUrl, setNewOtherUrl] = useState("");
 
   useEffect(() => {
     if (currentSettings) {
@@ -147,23 +133,6 @@ export default function AdminSettings() {
     setFormData({ ...formData, officialWebsites: newList });
   };
 
-  const handleAddMission = () => {
-    if (newMission.trim()) {
-      setFormData((prev: any) => ({
-        ...prev,
-        mission: [...(prev.mission || []), newMission.trim()]
-      }));
-      setNewMission("");
-    }
-  };
-
-  const handleRemoveMission = (index: number) => {
-    setFormData((prev: any) => ({
-      ...prev,
-      mission: prev.mission.filter((_: any, i: number) => i !== index)
-    }));
-  };
-
   const handleSave = () => {
     if (!db || !settingsRef) return;
     setIsSaving(true);
@@ -204,7 +173,7 @@ export default function AdminSettings() {
             <Settings className="h-8 w-8 text-white" />
           </div>
           <div>
-            <h1 className="text-4xl font-bold font-headline text-primary tracking-tight uppercase">Pengaturan Global</h1>
+            <h1 className="text-4xl font-bold font-headline text-primary tracking-tight">PENGATURAN GLOBAL</h1>
             <p className="text-muted-foreground text-sm font-medium">Data disimpan di Firestore & Gambar di Firebase Storage.</p>
           </div>
         </div>
@@ -369,15 +338,23 @@ export default function AdminSettings() {
 
         <TabsContent value="social">
           <Card className="border shadow-sm rounded-xl overflow-hidden bg-white">
-            <CardHeader className="bg-slate-50/50 border-b p-8"><CardTitle className="text-xl flex items-center gap-3 font-headline text-primary"><Globe className="h-6 w-6 text-secondary" /> Media Sosial</CardTitle></CardHeader>
+            <CardHeader className="bg-slate-50/50 border-b p-8"><CardTitle className="text-xl flex items-center gap-3 font-headline text-primary"><Share2 className="h-6 w-6 text-secondary" /> Media Sosial</CardTitle></CardHeader>
             <CardContent className="p-8 grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <Label className="text-[10px] font-bold uppercase text-slate-400">Facebook</Label>
-                <Input value={formData.facebookUrl} onChange={(e) => setFormData({...formData, facebookUrl: e.target.value})} className="h-12 bg-slate-50" />
+                <Label className="text-[10px] font-bold uppercase text-slate-400">Link Facebook</Label>
+                <Input value={formData.facebookUrl} onChange={(e) => setFormData({...formData, facebookUrl: e.target.value})} placeholder="https://facebook.com/..." className="h-12 bg-slate-50" />
               </div>
               <div className="space-y-2">
-                <Label className="text-[10px] font-bold uppercase text-slate-400">Instagram</Label>
-                <Input value={formData.instagramUrl} onChange={(e) => setFormData({...formData, instagramUrl: e.target.value})} className="h-12 bg-slate-50" />
+                <Label className="text-[10px] font-bold uppercase text-slate-400">Link Instagram</Label>
+                <Input value={formData.instagramUrl} onChange={(e) => setFormData({...formData, instagramUrl: e.target.value})} placeholder="https://instagram.com/..." className="h-12 bg-slate-50" />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-[10px] font-bold uppercase text-slate-400">Link YouTube</Label>
+                <Input value={formData.youtubeUrl} onChange={(e) => setFormData({...formData, youtubeUrl: e.target.value})} placeholder="https://youtube.com/..." className="h-12 bg-slate-50" />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-[10px] font-bold uppercase text-slate-400">Link TikTok</Label>
+                <Input value={formData.tiktokUrl} onChange={(e) => setFormData({...formData, tiktokUrl: e.target.value})} placeholder="https://tiktok.com/@..." className="h-12 bg-slate-50" />
               </div>
             </CardContent>
           </Card>
