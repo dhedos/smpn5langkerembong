@@ -6,7 +6,7 @@ import { doc } from 'firebase/firestore';
 
 /**
  * Komponen ini mensinkronisasi judul tab dan favicon secara aman.
- * Menghapus ikon default browser secara paksa dan menggantinya dengan logo admin.
+ * Menggunakan pembaruan atribut href daripada menghapus elemen untuk menghindari error 'removeChild' di Next.js.
  */
 export function DynamicBranding() {
   const [mounted, setMounted] = useState(false);
@@ -29,21 +29,32 @@ export function DynamicBranding() {
       document.title = schoolName;
     }
 
-    // 2. Sinkronisasi Favicon secara Agresif
+    // 2. Sinkronisasi Favicon secara Aman
     const logoUrl = settings.schoolLogoUrl;
     if (logoUrl) {
-      // Hapus semua link icon yang ada untuk menghindari konflik
-      const existingIcons = document.querySelectorAll('link[rel="icon"], link[rel="shortcut icon"]');
-      existingIcons.forEach(icon => icon.remove());
-
-      // Buat link icon baru
-      const newIcon = document.createElement('link');
-      newIcon.id = 'dynamic-favicon';
-      newIcon.rel = 'icon';
-      newIcon.type = 'image/x-icon'; // Atau sesuaikan dengan tipe file jika perlu
-      newIcon.href = `${logoUrl}?v=${Date.now()}`; // Tambahkan cache-buster
+      // Cari favicon yang sudah ada (link rel="icon")
+      let link: HTMLLinkElement | null = document.querySelector('link[rel="icon"]');
       
-      document.head.appendChild(newIcon);
+      // Jika tidak ditemukan, buat elemen baru
+      if (!link) {
+        link = document.createElement('link');
+        link.rel = 'icon';
+        document.head.appendChild(link);
+      }
+      
+      // Gunakan cache-buster sederhana agar perubahan logo langsung terlihat
+      const newHref = `${logoUrl}?v=${Date.now()}`;
+      
+      // Update href hanya jika berbeda untuk menghindari loop tak terbatas
+      if (link.href !== newHref) {
+        link.href = newHref;
+      }
+      
+      // Juga update shortcut icon jika ada untuk kompatibilitas browser lama
+      let shortcutLink: HTMLLinkElement | null = document.querySelector('link[rel="shortcut icon"]');
+      if (shortcutLink) {
+        shortcutLink.href = newHref;
+      }
     }
   }, [mounted, settings]);
 
