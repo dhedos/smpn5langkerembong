@@ -155,15 +155,15 @@ export function Navbar() {
       {/* Mobile Sidebar */}
       {isOpen && (
         <div 
-          className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm lg:hidden animate-in fade-in duration-300" 
+          className="fixed inset-0 z-[100] bg-black/40 backdrop-blur-sm lg:hidden animate-in fade-in duration-300" 
           onClick={() => setIsOpen(false)} 
         />
       )}
       <div className={cn(
-        "lg:hidden fixed inset-y-0 right-0 h-full w-[85%] z-[110] bg-white shadow-2xl transition-transform duration-500 ease-in-out transform flex flex-col", 
+        "lg:hidden fixed inset-y-0 right-0 h-full w-[85%] z-[110] bg-white/90 backdrop-blur-2xl shadow-2xl transition-transform duration-500 ease-in-out transform flex flex-col border-l border-white/20", 
         isOpen ? "translate-x-0" : "translate-x-full"
       )}>
-        <div className="flex justify-between items-center p-6 border-b border-slate-100 shrink-0">
+        <div className="flex justify-between items-center p-6 border-b border-slate-100/50 shrink-0">
           <div className="flex items-center gap-3">
             <div className="relative h-10 w-10">
               {schoolLogo && <Image src={schoolLogo} alt="Logo" fill className="object-contain" />}
@@ -174,7 +174,7 @@ export function Navbar() {
           </div>
           <button 
             onClick={() => setIsOpen(false)} 
-            className="p-2.5 bg-slate-100 rounded-xl text-slate-500 hover:bg-slate-200 transition-colors"
+            className="p-2.5 bg-slate-100/50 rounded-xl text-slate-500 hover:bg-slate-200 transition-colors"
           >
             <X className="h-5 w-5" />
           </button>
@@ -186,14 +186,14 @@ export function Navbar() {
                 href={item.href} 
                 className={cn(
                   "text-base font-bold p-4 rounded-xl transition-all", 
-                  pathname === item.href ? "text-primary bg-primary/5" : "text-slate-600 hover:bg-slate-50"
+                  pathname === item.href ? "text-primary bg-primary/10" : "text-slate-600 hover:bg-slate-50/50"
                 )} 
                 onClick={() => setIsOpen(false)}
               >
                 {item.name}
               </Link>
               {item.submenu && (
-                <div className="ml-8 flex flex-col gap-1 border-l-2 border-slate-100 pl-4 mb-4">
+                <div className="ml-8 flex flex-col gap-1 border-l-2 border-slate-200/50 pl-4 mb-4">
                   {item.submenu.map((sub) => (
                     <Link 
                       key={sub.name} 
@@ -208,7 +208,7 @@ export function Navbar() {
               )}
             </div>
           ))}
-          <div className="mt-auto pt-8 border-t border-slate-100 pb-10">
+          <div className="mt-auto pt-8 border-t border-slate-100/50 pb-10">
             {isSpmbActive && (
               <Button size="lg" className="w-full bg-primary h-14 text-white rounded-xl font-bold border-none" asChild>
                 <Link href="/ppdb" onClick={() => setIsOpen(false)}>{spmbLabel}</Link>
