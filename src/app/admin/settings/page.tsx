@@ -200,7 +200,7 @@ export default function AdminSettings() {
     <div className="p-8 max-w-7xl mx-auto space-y-10">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div className="flex items-center gap-4">
-          <div className="bg-primary p-3 rounded-2xl shadow-lg">
+          <div className="bg-primary p-3 rounded-xl shadow-lg">
             <Settings className="h-8 w-8 text-white" />
           </div>
           <div>
@@ -210,7 +210,7 @@ export default function AdminSettings() {
         </div>
         <Button 
           size="lg" 
-          className="bg-primary h-14 px-10 rounded-2xl font-bold gap-2" 
+          className="bg-primary h-14 px-10 rounded-xl font-bold gap-2" 
           onClick={handleSave} 
           disabled={isSaving || isProcessingFile !== null}
         >
@@ -220,7 +220,7 @@ export default function AdminSettings() {
       </div>
 
       <Tabs defaultValue="general" className="space-y-8">
-        <TabsList className="bg-slate-100/50 p-1.5 rounded-2xl w-full flex flex-wrap h-auto border border-slate-200 gap-1">
+        <TabsList className="bg-slate-100/50 p-1.5 rounded-xl w-full flex flex-wrap h-auto border border-slate-200 gap-1">
           <TabsTrigger value="general" className="rounded-xl px-4 py-3 font-bold flex-1 text-[10px] uppercase">Identitas</TabsTrigger>
           <TabsTrigger value="seo" className="rounded-xl px-4 py-3 font-bold flex-1 text-[10px] uppercase">SEO</TabsTrigger>
           <TabsTrigger value="hero" className="rounded-xl px-4 py-3 font-bold flex-1 text-[10px] uppercase">Beranda</TabsTrigger>
@@ -230,7 +230,7 @@ export default function AdminSettings() {
         </TabsList>
 
         <TabsContent value="general" className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden bg-white">
+            <Card className="border shadow-sm rounded-xl overflow-hidden bg-white">
               <CardHeader className="bg-slate-50/50 border-b p-8"><CardTitle className="text-xl flex items-center gap-3 font-headline text-primary"><School className="h-6 w-6 text-secondary" /> Nama & Logo</CardTitle></CardHeader>
               <CardContent className="space-y-6 p-8">
                 <div className="space-y-3">
@@ -238,7 +238,7 @@ export default function AdminSettings() {
                   <Input 
                     value={formData.schoolName} 
                     onChange={(e) => setFormData({...formData, schoolName: e.target.value})} 
-                    className="h-14 bg-slate-50 rounded-2xl font-bold" 
+                    className="h-14 bg-slate-50 rounded-xl font-bold" 
                   />
                 </div>
 
@@ -254,13 +254,13 @@ export default function AdminSettings() {
                         <ImageIcon className="h-8 w-8 text-slate-300" />
                       )}
                     </div>
-                    <Input type="file" accept="image/*" onChange={(e) => handleFileChange(e, "schoolLogoUrl")} className="h-12 bg-slate-50 rounded-2xl" disabled={isProcessingFile !== null} />
+                    <Input type="file" accept="image/*" onChange={(e) => handleFileChange(e, "schoolLogoUrl")} className="h-12 bg-slate-50 rounded-xl" disabled={isProcessingFile !== null} />
                   </div>
                 </div>
 
                 <div className="space-y-4 pt-4 border-t">
                   <Label className="text-xs font-bold uppercase text-slate-400">Portal Resmi Instansi</Label>
-                  <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100 space-y-4">
+                  <div className="bg-slate-50 p-6 rounded-xl border border-slate-100 space-y-4">
                     <div className="grid grid-cols-1 gap-3">
                       <Input value={newOfficialTitle} onChange={(e) => setNewOfficialTitle(e.target.value)} className="h-10 bg-white rounded-xl" placeholder="Label Portal" />
                       <div className="flex gap-2">
@@ -281,7 +281,7 @@ export default function AdminSettings() {
               </CardContent>
             </Card>
 
-            <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden bg-white">
+            <Card className="border shadow-sm rounded-xl overflow-hidden bg-white">
               <CardHeader className="bg-slate-50/50 border-b p-8"><CardTitle className="text-xl flex items-center gap-3 font-headline text-primary"><MapIcon className="h-6 w-6 text-secondary" /> Kontak & Lokasi</CardTitle></CardHeader>
               <CardContent className="space-y-6 p-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -298,7 +298,7 @@ export default function AdminSettings() {
         </TabsContent>
 
         <TabsContent value="seo">
-          <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden bg-white">
+          <Card className="border shadow-sm rounded-xl overflow-hidden bg-white">
             <CardHeader className="bg-slate-50/50 border-b p-8"><CardTitle className="text-xl flex items-center gap-3 font-headline text-primary"><SearchCode className="h-6 w-6 text-secondary" /> SEO & Meta Data</CardTitle></CardHeader>
             <CardContent className="p-8 space-y-8">
               <div className="space-y-3">
@@ -314,7 +314,7 @@ export default function AdminSettings() {
         </TabsContent>
 
         <TabsContent value="hero">
-          <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden bg-white">
+          <Card className="border shadow-sm rounded-xl overflow-hidden bg-white">
             <CardHeader className="bg-slate-50/50 border-b p-8"><CardTitle className="text-xl flex items-center gap-3 font-headline text-primary"><Layout className="h-6 w-6 text-secondary" /> Tampilan Beranda</CardTitle></CardHeader>
             <CardContent className="p-8 space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -330,7 +330,7 @@ export default function AdminSettings() {
                 </div>
                 <div className="space-y-3">
                   <Label className="text-xs font-bold uppercase text-slate-400">Hero Image (WebP Cloud)</Label>
-                  <div className="relative aspect-video w-full rounded-[2rem] overflow-hidden border-2 border-dashed bg-slate-50 flex items-center justify-center cursor-pointer">
+                  <div className="relative aspect-video w-full rounded-xl overflow-hidden border-2 border-dashed bg-slate-50 flex items-center justify-center cursor-pointer">
                     {isProcessingFile === "heroImageUrl" ? (
                       <Loader2 className="h-12 w-12 animate-spin text-primary" />
                     ) : formData.heroImageUrl ? (
@@ -347,14 +347,14 @@ export default function AdminSettings() {
         </TabsContent>
 
         <TabsContent value="profile" className="space-y-8">
-          <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden bg-white">
+          <Card className="border shadow-sm rounded-xl overflow-hidden bg-white">
             <CardHeader className="bg-slate-50/50 border-b p-8"><CardTitle className="text-xl flex items-center gap-3 font-headline text-primary"><History className="h-6 w-6 text-secondary" /> Sejarah</CardTitle></CardHeader>
             <CardContent className="p-8"><Textarea value={formData.history} onChange={(e) => setFormData({...formData, history: e.target.value})} className="min-h-[250px] bg-slate-50" /></CardContent>
           </Card>
         </TabsContent>
 
         <TabsContent value="spmb">
-          <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden bg-white">
+          <Card className="border shadow-sm rounded-xl overflow-hidden bg-white">
             <CardHeader className="bg-slate-50/50 border-b p-8">
               <div className="flex justify-between items-center">
                 <CardTitle className="text-xl flex items-center gap-3 font-headline text-primary">SPMB Online</CardTitle>
@@ -368,7 +368,7 @@ export default function AdminSettings() {
         </TabsContent>
 
         <TabsContent value="social">
-          <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden bg-white">
+          <Card className="border shadow-sm rounded-xl overflow-hidden bg-white">
             <CardHeader className="bg-slate-50/50 border-b p-8"><CardTitle className="text-xl flex items-center gap-3 font-headline text-primary"><Globe className="h-6 w-6 text-secondary" /> Media Sosial</CardTitle></CardHeader>
             <CardContent className="p-8 grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">

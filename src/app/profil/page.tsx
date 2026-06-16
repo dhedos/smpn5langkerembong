@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useMemo } from "react";
@@ -73,7 +72,7 @@ export default function ProfilPage() {
               </div>
             </div>
             <div className="w-full md:w-1/2 relative">
-              <div className="rounded-[3rem] overflow-hidden shadow-2xl border-[8px] md:border-[12px] border-slate-50 bg-slate-50 aspect-square relative">
+              <div className="rounded-xl overflow-hidden shadow-2xl border-[8px] md:border-[12px] border-slate-50 bg-slate-50 aspect-square relative">
                  <Image 
                   src={historyPhoto} 
                   alt="Sejarah Sekolah" 
@@ -89,8 +88,8 @@ export default function ProfilPage() {
       <section id="visi-misi" className="py-24 md:py-32 bg-slate-50">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
-            <div className="bg-white p-10 md:p-16 rounded-[2.5rem] md:rounded-[3.5rem] shadow-xl border border-slate-100 space-y-8">
-              <div className="bg-primary/10 w-16 h-16 md:w-20 md:h-20 rounded-3xl flex items-center justify-center">
+            <div className="bg-white p-10 md:p-16 rounded-xl shadow-xl border border-slate-100 space-y-8">
+              <div className="bg-primary/10 w-16 h-16 md:w-20 md:h-20 rounded-xl flex items-center justify-center">
                 <Target className="h-8 w-8 md:h-10 md:w-10 text-primary" />
               </div>
               <h3 className="text-3xl md:text-4xl font-bold text-primary font-headline tracking-tighter">Visi Sekolah</h3>
@@ -98,8 +97,8 @@ export default function ProfilPage() {
                 "{settings?.vision || "Menjadi lembaga pendidikan unggulan yang mencetak generasi bertakwa, berkarakter, dan berdaya saing global."}"
               </p>
             </div>
-            <div className="bg-primary p-10 md:p-16 rounded-[2.5rem] md:rounded-[3.5rem] shadow-2xl text-white space-y-8 relative overflow-hidden">
-              <div className="bg-white/10 w-16 h-16 md:w-20 md:h-20 rounded-3xl flex items-center justify-center">
+            <div className="bg-primary p-10 md:p-16 rounded-xl shadow-2xl text-white space-y-8 relative overflow-hidden">
+              <div className="bg-white/10 w-16 h-16 md:w-20 md:h-20 rounded-xl flex items-center justify-center">
                 <Users2 className="h-8 w-8 md:h-10 md:w-10 text-secondary" />
               </div>
               <h3 className="text-3xl md:text-4xl font-bold font-headline tracking-tighter">Misi Sekolah</h3>
@@ -137,7 +136,7 @@ export default function ProfilPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
             {publishedFacilities.length > 0 ? publishedFacilities.map((f: any) => (
-              <Card key={f.id} className="overflow-hidden border-none shadow-xl hover:shadow-2xl transition-all duration-500 rounded-[2.5rem] group bg-white border border-slate-100">
+              <Card key={f.id} className="overflow-hidden border shadow-sm hover:shadow-md transition-all duration-500 rounded-xl group bg-white">
                 <div className="relative h-64 overflow-hidden bg-slate-100">
                    <Image 
                     src={f.imageUrl || `https://picsum.photos/seed/${f.id}/600/400`} 
@@ -152,7 +151,7 @@ export default function ProfilPage() {
                 </CardContent>
               </Card>
             )) : (
-              <div className="col-span-full text-center py-24 md:py-32 bg-slate-50 rounded-[3rem] border-2 border-dashed border-slate-200">
+              <div className="col-span-full text-center py-24 md:py-32 bg-slate-50 rounded-xl border-2 border-dashed border-slate-200">
                 <p className="text-slate-500 font-bold text-lg">Belum ada fasilitas yang dipublikasikan.</p>
               </div>
             )}
@@ -170,7 +169,7 @@ export default function ProfilPage() {
               <h2 className="text-4xl md:text-5xl font-bold text-primary font-headline tracking-tighter">Temukan Kami</h2>
               <p className="text-slate-500 max-w-xl mx-auto font-medium">{settings.address}</p>
             </div>
-            <div className="w-full h-[400px] md:h-[500px] rounded-[2.5rem] md:rounded-[3rem] overflow-hidden shadow-2xl border-[8px] md:border-[12px] border-white bg-white">
+            <div className="w-full h-[400px] md:h-[500px] rounded-xl overflow-hidden shadow-2xl border-[8px] md:border-[12px] border-white bg-white">
               <iframe 
                 src={settings.googleMapsEmbedUrl} 
                 width="100%" 

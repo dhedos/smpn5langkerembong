@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useMemo } from "react";
@@ -108,12 +107,12 @@ export default function AdminEkstrakurikuler() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <Card className="border-none shadow-xl rounded-[2.5rem] bg-white h-fit">
+        <Card className="border shadow-sm rounded-xl bg-white h-fit">
           <CardHeader className="bg-slate-50/50 border-b p-8"><CardTitle className="text-xl">Tambah Eskul</CardTitle></CardHeader>
           <CardContent className="p-8 space-y-6">
             <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Nama Eskul..." className="h-12 bg-slate-50" />
             <Input value={schedule} onChange={(e) => setSchedule(e.target.value)} placeholder="Jadwal..." className="h-12 bg-slate-50" />
-            <div className="relative aspect-video rounded-2xl border-2 border-dashed bg-slate-50 flex items-center justify-center overflow-hidden">
+            <div className="relative aspect-video rounded-xl border-2 border-dashed bg-slate-50 flex items-center justify-center overflow-hidden">
               {isProcessingFile ? (
                 <Loader2 className="animate-spin text-primary" />
               ) : imageUrl ? (
@@ -124,13 +123,13 @@ export default function AdminEkstrakurikuler() {
               <input type="file" accept="image/*" onChange={handleFileChange} className="absolute inset-0 opacity-0 cursor-pointer" />
             </div>
             <Textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Deskripsi..." className="bg-slate-50" />
-            <Button onClick={() => handleSave("Published")} className="w-full h-14 rounded-2xl font-bold" disabled={isSaving || isProcessingFile}>
+            <Button onClick={() => handleSave("Published")} className="w-full h-14 rounded-xl font-bold" disabled={isSaving || isProcessingFile}>
               {isSaving ? <Loader2 className="animate-spin" /> : <Save />} Simpan Eskul
             </Button>
           </CardContent>
         </Card>
 
-        <Card className="lg:col-span-2 border-none shadow-xl rounded-[2.5rem] overflow-hidden">
+        <Card className="lg:col-span-2 border shadow-sm rounded-xl overflow-hidden">
           <CardHeader className="bg-slate-50/50 border-b p-8"><CardTitle className="text-xl">Daftar Eskul</CardTitle></CardHeader>
           <CardContent className="p-0">
             <Table>

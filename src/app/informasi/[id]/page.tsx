@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useMemo, useState, useEffect } from "react";
@@ -94,7 +93,7 @@ export default function VisitorInformasiDetail() {
           </div>
         </div>
 
-        <div className="relative aspect-[16/9] w-full rounded-[3rem] overflow-hidden shadow-2xl mb-16 border-[12px] border-slate-50">
+        <div className="relative aspect-[16/9] w-full rounded-xl overflow-hidden shadow-2xl mb-16 border-[12px] border-slate-50">
           <Image 
             src={item.imageUrl || `https://picsum.photos/seed/${id}/1200/800`} 
             alt={item.title} 
@@ -123,7 +122,7 @@ export default function VisitorInformasiDetail() {
 
           <div className="lg:col-span-1">
             <div className="sticky top-32 space-y-8">
-              <div className="bg-slate-50 p-8 rounded-[2rem] border border-slate-100">
+              <div className="bg-slate-50 p-8 rounded-xl border border-slate-100">
                 <h4 className="text-primary font-bold font-headline mb-6 flex items-center gap-2">
                   <Share2 className="h-4 w-4 text-secondary" /> Bagikan
                 </h4>

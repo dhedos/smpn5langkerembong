@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useMemo } from "react";
@@ -48,7 +47,7 @@ export default function SPMBPage() {
   if (!isActive) {
     return (
       <div className="pt-32 pb-24 container mx-auto px-4 max-w-2xl text-center">
-        <div className="bg-slate-50 p-16 rounded-[3rem] border-2 border-dashed border-slate-200">
+        <div className="bg-slate-50 p-16 rounded-xl border-2 border-dashed border-slate-200">
            <AlertCircle className="h-16 w-16 text-slate-300 mx-auto mb-6" />
            <h2 className="text-3xl font-bold text-slate-700 font-headline mb-4">Pendaftaran SPMB Ditutup</h2>
            <p className="text-slate-500 mb-8">Mohon maaf, periode pendaftaran SPMB saat ini belum dibuka.</p>
@@ -87,7 +86,7 @@ export default function SPMBPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
           {/* Main Registration Area */}
           <div className="lg:col-span-2">
-            <Card className="shadow-2xl border-none rounded-[3rem] overflow-hidden bg-white">
+            <Card className="shadow-2xl border-none rounded-xl overflow-hidden bg-white">
               <CardHeader className="p-8 md:p-12 border-b bg-slate-50/30">
                 <CardTitle className="text-3xl md:text-4xl font-headline text-primary tracking-tight">Pendaftaran Praktis Melalui WhatsApp</CardTitle>
                 <p className="text-slate-500 mt-4 leading-relaxed font-medium">
@@ -96,8 +95,8 @@ export default function SPMBPage() {
               </CardHeader>
               <CardContent className="p-8 md:p-12 space-y-10">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="flex gap-4 p-6 bg-slate-50 rounded-3xl border border-slate-100">
-                    <div className="bg-primary/10 h-12 w-12 rounded-2xl flex items-center justify-center shrink-0">
+                  <div className="flex gap-4 p-6 bg-slate-50 rounded-xl border border-slate-100">
+                    <div className="bg-primary/10 h-12 w-12 rounded-xl flex items-center justify-center shrink-0">
                       <Info className="h-6 w-6 text-primary" />
                     </div>
                     <div>
@@ -105,8 +104,8 @@ export default function SPMBPage() {
                       <p className="text-sm text-slate-500">Tanyakan persyaratan & biaya secara langsung.</p>
                     </div>
                   </div>
-                  <div className="flex gap-4 p-6 bg-slate-50 rounded-3xl border border-slate-100">
-                    <div className="bg-secondary/10 h-12 w-12 rounded-2xl flex items-center justify-center shrink-0">
+                  <div className="flex gap-4 p-6 bg-slate-50 rounded-xl border border-slate-100">
+                    <div className="bg-secondary/10 h-12 w-12 rounded-xl flex items-center justify-center shrink-0">
                       <FileText className="h-6 w-6 text-secondary" />
                     </div>
                     <div>
@@ -119,7 +118,7 @@ export default function SPMBPage() {
                 <Button 
                   onClick={handleRegisterViaWA}
                   size="lg" 
-                  className="w-full bg-[#25D366] hover:bg-[#128C7E] py-10 text-xl md:text-2xl font-bold rounded-[2rem] shadow-xl hover:scale-[1.02] transition-all flex items-center justify-center gap-4 border-none text-white"
+                  className="w-full bg-[#25D366] hover:bg-[#128C7E] py-10 text-xl md:text-2xl font-bold rounded-xl shadow-xl hover:scale-[1.02] transition-all flex items-center justify-center gap-4 border-none text-white"
                 >
                   <MessageCircle className="h-8 w-8" /> Daftar Sekarang via WhatsApp
                 </Button>
@@ -133,7 +132,7 @@ export default function SPMBPage() {
 
           {/* Sidebar Info */}
           <div className="space-y-8">
-            <Card className="border-none shadow-xl rounded-[2.5rem] bg-white overflow-hidden">
+            <Card className="border shadow-xl rounded-xl bg-white overflow-hidden">
               <CardHeader className="p-8 bg-slate-50/50 border-b">
                 <CardTitle className="text-xl flex items-center gap-3 text-primary">
                   <FileText className="h-6 w-6 text-secondary" /> Jalur Tersedia
@@ -154,7 +153,7 @@ export default function SPMBPage() {
               </CardContent>
             </Card>
 
-            <Card className="bg-primary text-white border-none shadow-2xl rounded-[2.5rem] overflow-hidden">
+            <Card className="bg-primary text-white border-none shadow-2xl rounded-xl overflow-hidden">
               <CardHeader className="p-8">
                 <CardTitle className="text-xl flex items-center gap-3">
                   <CheckCircle2 className="h-6 w-6 text-secondary" /> Persyaratan

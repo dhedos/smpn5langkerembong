@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useMemo, useState } from "react";
@@ -89,7 +88,7 @@ export default function VisitorInformasi() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
               {[1, 2, 3].map((i) => (
                 <div key={i} className="space-y-4 animate-pulse">
-                  <div className="h-64 bg-slate-100 rounded-[2.5rem]" />
+                  <div className="h-64 bg-slate-100 rounded-xl" />
                   <div className="h-6 bg-slate-100 w-3/4 rounded" />
                   <div className="h-4 bg-slate-100 w-full rounded" />
                 </div>
@@ -102,7 +101,7 @@ export default function VisitorInformasi() {
                 const linkHref = isExternal ? item.externalUrl : `/informasi/${item.id}`;
                 
                 return (
-                  <Card key={item.id} className="group overflow-hidden border-none shadow-xl hover:shadow-2xl transition-all duration-500 rounded-[2.5rem] bg-white flex flex-col">
+                  <Card key={item.id} className="group overflow-hidden border-none shadow-xl hover:shadow-2xl transition-all duration-500 rounded-xl bg-white flex flex-col">
                     <div className="relative h-64 overflow-hidden">
                       <Image
                         src={item.imageUrl || `https://picsum.photos/seed/${item.id}/600/400`}
@@ -150,7 +149,7 @@ export default function VisitorInformasi() {
               })}
             </div>
           ) : (
-            <div className="text-center py-24 space-y-4 bg-slate-50 rounded-[3rem] border-2 border-dashed border-slate-200">
+            <div className="text-center py-24 space-y-4 bg-slate-50 rounded-xl border-2 border-dashed border-slate-200">
               <Newspaper className="h-16 w-16 text-slate-200 mx-auto" />
               <p className="text-slate-400 italic text-lg font-medium">Belum ada informasi yang ditemukan.</p>
               <p className="text-slate-300 text-sm">Pastikan Admin telah mengaktifkan status <span className="text-green-600 font-bold uppercase">Published</span> pada berita.</p>

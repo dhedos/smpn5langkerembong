@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useMemo } from "react";
@@ -61,8 +60,8 @@ export default function VisitorEkstrakurikuler() {
           ) : extras.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
               {extras.map((item: any) => (
-                <Card key={item.id} className="group border-none shadow-xl hover:shadow-2xl transition-all duration-500 rounded-[3rem] bg-white flex flex-col p-6">
-                  <div className="relative aspect-video w-full rounded-[2rem] overflow-hidden bg-slate-100">
+                <Card key={item.id} className="group border-none shadow-xl hover:shadow-2xl transition-all duration-500 rounded-xl bg-white flex flex-col p-6">
+                  <div className="relative aspect-video w-full rounded-xl overflow-hidden bg-slate-100">
                     <img 
                       src={item.imageUrl} 
                       alt={item.name} 
@@ -98,7 +97,7 @@ export default function VisitorEkstrakurikuler() {
               ))}
             </div>
           ) : (
-            <div className="text-center py-32 bg-slate-50 rounded-[3rem] border-2 border-dashed border-slate-200">
+            <div className="text-center py-32 bg-slate-50 rounded-xl border-2 border-dashed border-slate-200">
               <Trophy className="h-16 w-16 text-slate-200 mx-auto mb-4" />
               <p className="text-slate-400 italic text-lg font-medium">Belum ada informasi ekstrakurikuler yang diterbitkan.</p>
             </div>

@@ -48,7 +48,7 @@ const chartConfig = {
 export default function AdminDashboard() {
   return (
     <div className="p-8 space-y-8 max-w-7xl mx-auto">
-      <div className="bg-[#1a1a1a] rounded-[2.5rem] p-10 md:p-14 relative overflow-hidden shadow-2xl border border-white/5">
+      <div className="bg-[#1a1a1a] rounded-xl p-10 md:p-14 relative overflow-hidden shadow-2xl border border-white/5">
         <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-gradient-to-l from-primary/20 to-transparent rounded-full translate-x-1/4 -translate-y-1/4 blur-[80px]" />
         
         <div className="flex flex-col md:flex-row items-center justify-between gap-10 relative z-10">
@@ -80,10 +80,10 @@ export default function AdminDashboard() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {stats.map((stat) => (
-          <Card key={stat.title} className="border-none shadow-sm hover:shadow-md transition-all rounded-[1.5rem] bg-white border border-slate-100">
+          <Card key={stat.title} className="border shadow-sm hover:shadow-md transition-all rounded-xl bg-white">
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-4">
-                <div className={`p-3 rounded-2xl ${stat.color} bg-opacity-10`}>
+                <div className={`p-3 rounded-xl ${stat.color} bg-opacity-10`}>
                   <stat.icon className={`h-6 w-6 text-${stat.color.split('-')[1]}-600`} />
                 </div>
                 <div className="flex items-center text-[10px] font-bold text-green-600 bg-green-50 px-2 py-0.5 rounded-full border border-green-100">
@@ -98,7 +98,7 @@ export default function AdminDashboard() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <Card className="lg:col-span-2 border-none shadow-sm rounded-[2rem] bg-white border border-slate-100">
+        <Card className="lg:col-span-2 border shadow-sm rounded-xl bg-white">
           <CardHeader className="p-8">
             <CardTitle className="text-xl flex items-center justify-between">
               Statistik Kunjungan
@@ -134,7 +134,7 @@ export default function AdminDashboard() {
           </CardContent>
         </Card>
 
-        <Card className="border-none shadow-sm rounded-[2rem] bg-white border border-slate-100">
+        <Card className="border shadow-sm rounded-xl bg-white">
           <CardHeader className="p-8">
             <CardTitle className="text-xl">Log Aktivitas Terbaru</CardTitle>
           </CardHeader>

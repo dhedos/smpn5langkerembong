@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useMemo } from "react";
@@ -41,7 +40,7 @@ export default function VisitorBerita() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
               {[1, 2, 3, 4, 5, 6].map((i) => (
                 <div key={i} className="space-y-4 animate-pulse">
-                  <div className="h-64 bg-slate-100 rounded-[2.5rem]" />
+                  <div className="h-64 bg-slate-100 rounded-xl" />
                   <div className="h-6 bg-slate-100 w-3/4 rounded" />
                   <div className="h-4 bg-slate-100 w-full rounded" />
                 </div>
@@ -50,7 +49,7 @@ export default function VisitorBerita() {
           ) : newsItems && newsItems.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
               {newsItems.map((item: any) => (
-                <Card key={item.id} className="group overflow-hidden border-none shadow-xl hover:shadow-2xl transition-all duration-500 rounded-[2.5rem] bg-white flex flex-col">
+                <Card key={item.id} className="group overflow-hidden border-none shadow-xl hover:shadow-2xl transition-all duration-500 rounded-xl bg-white flex flex-col">
                   <div className="relative h-64 overflow-hidden">
                     <Image
                       src={item.imageUrl || `https://picsum.photos/seed/${item.id}/600/400`}

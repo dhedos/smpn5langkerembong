@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useMemo } from "react";
@@ -191,7 +190,7 @@ export default function AdminBerita() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
-        <Card className="lg:col-span-3 border-none shadow-xl rounded-[2.5rem] overflow-hidden bg-white">
+        <Card className="lg:col-span-3 border shadow-sm rounded-xl overflow-hidden bg-white">
           <CardHeader className="bg-slate-50/50 border-b p-8"><CardTitle className="text-xl flex items-center gap-2">Tulis Informasi</CardTitle></CardHeader>
           <CardContent className="p-8 space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -202,7 +201,7 @@ export default function AdminBerita() {
             <div className="space-y-4">
               <Label className="text-xs font-bold uppercase text-slate-400">Gambar (Cloud Storage)</Label>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="relative aspect-video rounded-2xl border-2 border-dashed flex items-center justify-center bg-slate-50 overflow-hidden">
+                <div className="relative aspect-video rounded-xl border-2 border-dashed flex items-center justify-center bg-slate-50 overflow-hidden">
                   {isProcessingFile ? (
                     <Loader2 className="h-10 w-10 text-primary animate-spin" />
                   ) : imageUrl ? (
@@ -236,7 +235,7 @@ export default function AdminBerita() {
           </CardContent>
         </Card>
 
-        <Card className="lg:col-span-2 border-none shadow-xl rounded-[2.5rem] bg-white h-fit">
+        <Card className="lg:col-span-2 border shadow-sm rounded-xl bg-white h-fit">
           <CardHeader className="bg-slate-50/50 border-b p-8"><CardTitle className="text-lg">Daftar Berita</CardTitle></CardHeader>
           <CardContent className="p-0">
             <Table>

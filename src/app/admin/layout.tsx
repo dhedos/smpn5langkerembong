@@ -92,9 +92,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   if (!user) {
     return (
       <div className="h-screen w-full flex items-center justify-center bg-[#1a1a1a] px-4">
-        <div className="max-w-md w-full bg-[#252525] p-10 rounded-[2.5rem] border border-white/5 space-y-8 shadow-2xl">
+        <div className="max-w-md w-full bg-[#252525] p-10 rounded-xl border border-white/5 space-y-8 shadow-2xl">
           <div className="flex flex-col items-center text-center space-y-4">
-            <div className="bg-primary p-4 rounded-2xl shadow-lg">
+            <div className="bg-primary p-4 rounded-xl shadow-lg">
               {schoolLogo ? (
                 <div className="relative h-8 w-8">
                   <Image src={schoolLogo} alt="Logo" fill className="object-contain" />
@@ -118,7 +118,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
               </button>
             </div>
-            <Button type="submit" className="w-full bg-white text-black hover:bg-slate-200 h-14 rounded-2xl font-bold gap-2" disabled={isLoggingIn}>
+            <Button type="submit" className="w-full bg-white text-black hover:bg-slate-200 h-14 rounded-xl font-bold gap-2" disabled={isLoggingIn}>
               {isLoggingIn ? "Memproses..." : "Masuk Panel Kendali"} <ArrowRight className="h-4 w-4" />
             </Button>
           </form>
@@ -163,7 +163,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </SidebarMenu>
           </SidebarContent>
           <SidebarFooter className="p-4 border-t border-slate-50">
-            <div className="px-4 py-4 mb-4 bg-slate-50 rounded-2xl border border-slate-100">
+            <div className="px-4 py-4 mb-4 bg-slate-50 rounded-xl border border-slate-100">
               <div className="flex items-center gap-2 mb-2">
                 <Copyright className="h-3 w-3 text-primary" />
                 <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Copyright Notice</span>
