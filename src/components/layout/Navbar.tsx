@@ -26,7 +26,7 @@ export function Navbar() {
   const db = useFirestore();
   const currentSchoolId = 'smpn5-langke-rembong';
   const settingsRef = useMemo(() => db ? doc(db, "schools", currentSchoolId) : null, [db, currentSchoolId]);
-  const { data: settings, loading } = useDoc(settingsRef);
+  const { data: settings } = useDoc(settingsRef);
 
   useEffect(() => {
     setMounted(true);
@@ -40,6 +40,7 @@ export function Navbar() {
     setIsOpen(false);
   }, [pathname]);
 
+  // Hydration-safe dynamic values
   const schoolName = mounted ? (settings?.schoolName || "") : "";
   const schoolLogo = mounted ? settings?.schoolLogoUrl : null;
   const isSpmbActive = mounted ? (settings?.ppdbIsActive !== false) : false;
@@ -71,152 +72,158 @@ export function Navbar() {
   const isSolid = scrolled || !isHome;
 
   return (
-    <header className={cn(
-      "fixed top-0 left-0 right-0 z-[60] transition-all duration-300", 
-      isSolid ? "bg-white/95 backdrop-blur-md border-b border-slate-200 py-3 shadow-sm" : "bg-transparent py-6"
-    )}>
-      <div className="container mx-auto px-4 md:px-6 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-3 shrink-0 max-w-[75%]">
-          <div className="relative h-10 w-10 md:h-12 md:w-12 flex items-center justify-center">
-            {schoolLogo ? (
-              <Image 
-                src={schoolLogo} 
-                alt="Logo" 
-                fill 
-                className="object-contain" 
-                priority 
-              />
-            ) : mounted && (
-              <div className="h-10 w-10 md:h-12 md:w-12 bg-slate-200/20 rounded-xl" />
-            )}
-          </div>
-          <span className={cn(
-            "font-headline font-bold text-xs md:text-sm lg:text-lg tracking-tight transition-colors duration-300 line-clamp-2 leading-tight", 
-            isSolid ? "text-slate-900" : "text-white drop-shadow-md"
-          )}>
-            {schoolName}
-          </span>
-        </Link>
-
-        {/* Desktop Navigation */}
-        <nav className="hidden lg:flex items-center gap-6 xl:gap-8">
-          {navItems.map((item) => (
-            <div key={item.name} className="relative group">
-              {item.submenu ? (
-                <DropdownMenu>
-                  <DropdownMenuTrigger className={cn(
-                    "flex items-center gap-1.5 text-[11px] xl:text-xs font-bold transition-all outline-none uppercase tracking-widest", 
-                    isSolid ? "text-slate-700 hover:text-primary" : "text-white hover:text-secondary drop-shadow-sm"
-                  )}>
-                    {item.name} <ChevronDown className="h-3 w-3 opacity-50 group-hover:rotate-180 transition-transform" />
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="start" className="bg-white border-slate-200 shadow-xl rounded-xl p-2 min-w-[180px] mt-2">
-                    {item.submenu.map((sub) => (
-                      <DropdownMenuItem key={sub.name} asChild>
-                        <Link href={sub.href} className="w-full cursor-pointer hover:bg-slate-50 rounded-lg px-4 py-2 text-xs font-bold text-slate-700">{sub.name}</Link>
-                      </DropdownMenuItem>
-                    ))}
-                  </DropdownMenuContent>
-                </DropdownMenu>
+    <>
+      <header className={cn(
+        "fixed top-0 left-0 right-0 z-[60] transition-all duration-300", 
+        isSolid ? "bg-white/95 backdrop-blur-md border-b border-slate-200 py-3 shadow-sm" : "bg-transparent py-6"
+      )}>
+        <div className="container mx-auto px-4 md:px-6 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-3 shrink-0 max-w-[75%]">
+            <div className="relative h-10 w-10 md:h-12 md:w-12 flex items-center justify-center">
+              {mounted && schoolLogo ? (
+                <Image 
+                  src={schoolLogo} 
+                  alt="Logo" 
+                  fill 
+                  className="object-contain" 
+                  priority 
+                />
               ) : (
-                <Link href={item.href} className={cn(
-                  "text-[11px] xl:text-xs font-bold transition-all uppercase tracking-widest relative after:absolute after:bottom-[-4px] after:left-0 after:h-0.5 after:bg-secondary after:transition-all after:duration-300", 
-                  isSolid ? (pathname === item.href ? "text-primary after:w-full" : "text-slate-700 hover:text-primary after:w-0 hover:after:w-full") : "text-white hover:text-secondary drop-shadow-sm after:w-0 hover:after:w-full"
-                )}>
-                  {item.name}
-                </Link>
+                <div className="h-full w-full bg-slate-200/20 rounded-xl" />
               )}
             </div>
-          ))}
-        </nav>
-
-        <div className="flex items-center gap-4">
-          {isSpmbActive && (
-            <Button size="sm" className={cn(
-              "hidden md:flex rounded-full px-6 font-bold shadow-md transition-all hover:scale-105 active:scale-95 uppercase tracking-widest text-[10px] h-10 border-none", 
-              isSolid ? "bg-primary text-white" : "bg-secondary text-primary hover:bg-secondary/90 shadow-secondary/20"
-            )} asChild>
-              <Link href="/ppdb">{spmbLabel}</Link>
-            </Button>
-          )}
-
-          <button 
-            className={cn(
-              "lg:hidden p-2.5 rounded-xl transition-all shadow-sm shrink-0 border", 
-              isSolid ? "bg-slate-50 text-primary border-slate-200" : "bg-white/10 text-white border-white/20 backdrop-blur-sm"
-            )} 
-            onClick={() => setIsOpen(true)}
-          >
-            <Menu className="h-5 w-5" />
-          </button>
-        </div>
-      </div>
-
-      {/* Mobile Sidebar */}
-      {isOpen && (
-        <div 
-          className="fixed inset-0 z-[100] bg-black/40 backdrop-blur-sm lg:hidden animate-in fade-in duration-300" 
-          onClick={() => setIsOpen(false)} 
-        />
-      )}
-      <div className={cn(
-        "lg:hidden fixed inset-y-0 right-0 h-full w-[85%] z-[110] bg-white/90 backdrop-blur-2xl shadow-2xl transition-transform duration-500 ease-in-out transform flex flex-col border-l border-white/20", 
-        isOpen ? "translate-x-0" : "translate-x-full"
-      )}>
-        <div className="flex justify-between items-center p-6 border-b border-slate-100/50 shrink-0">
-          <div className="flex items-center gap-3">
-            <div className="relative h-10 w-10">
-              {schoolLogo && <Image src={schoolLogo} alt="Logo" fill className="object-contain" />}
-            </div>
-            <span className="font-headline font-bold text-primary text-[10px] uppercase leading-tight truncate max-w-[120px]">
+            <span className={cn(
+              "font-headline font-bold text-xs md:text-sm lg:text-lg tracking-tight transition-colors duration-300 line-clamp-2 leading-tight", 
+              isSolid ? "text-slate-900" : "text-white drop-shadow-md"
+            )}>
               {schoolName}
             </span>
-          </div>
-          <button 
-            onClick={() => setIsOpen(false)} 
-            className="p-2.5 bg-slate-100/50 rounded-xl text-slate-500 hover:bg-slate-200 transition-colors"
-          >
-            <X className="h-5 w-5" />
-          </button>
-        </div>
-        <nav className="flex flex-col p-6 gap-2 flex-1 overflow-y-auto">
-          {navItems.map((item) => (
-            <div key={item.name} className="flex flex-col gap-1">
-              <Link 
-                href={item.href} 
-                className={cn(
-                  "text-base font-bold p-4 rounded-xl transition-all", 
-                  pathname === item.href ? "text-primary bg-primary/10" : "text-slate-600 hover:bg-slate-50/50"
-                )} 
-                onClick={() => setIsOpen(false)}
-              >
-                {item.name}
-              </Link>
-              {item.submenu && (
-                <div className="ml-8 flex flex-col gap-1 border-l-2 border-slate-200/50 pl-4 mb-4">
-                  {item.submenu.map((sub) => (
-                    <Link 
-                      key={sub.name} 
-                      href={sub.href} 
-                      className="p-3 text-sm font-bold text-slate-500 hover:text-primary transition-colors" 
-                      onClick={() => setIsOpen(false)}
-                    >
-                      {sub.name}
-                    </Link>
-                  ))}
-                </div>
-              )}
-            </div>
-          ))}
-          <div className="mt-auto pt-8 border-t border-slate-100/50 pb-10">
+          </Link>
+
+          {/* Desktop Navigation */}
+          <nav className="hidden lg:flex items-center gap-6 xl:gap-8">
+            {navItems.map((item) => (
+              <div key={item.name} className="relative group">
+                {item.submenu ? (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger className={cn(
+                      "flex items-center gap-1.5 text-[11px] xl:text-xs font-bold transition-all outline-none uppercase tracking-widest", 
+                      isSolid ? "text-slate-700 hover:text-primary" : "text-white hover:text-secondary drop-shadow-sm"
+                    )}>
+                      {item.name} <ChevronDown className="h-3 w-3 opacity-50 group-hover:rotate-180 transition-transform" />
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="start" className="bg-white border-slate-200 shadow-xl rounded-xl p-2 min-w-[180px] mt-2">
+                      {item.submenu.map((sub) => (
+                        <DropdownMenuItem key={sub.name} asChild>
+                          <Link href={sub.href} className="w-full cursor-pointer hover:bg-slate-50 rounded-lg px-4 py-2 text-xs font-bold text-slate-700">{sub.name}</Link>
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                ) : (
+                  <Link href={item.href} className={cn(
+                    "text-[11px] xl:text-xs font-bold transition-all uppercase tracking-widest relative after:absolute after:bottom-[-4px] after:left-0 after:h-0.5 after:bg-secondary after:transition-all after:duration-300", 
+                    isSolid ? (pathname === item.href ? "text-primary after:w-full" : "text-slate-700 hover:text-primary after:w-0 hover:after:w-full") : "text-white hover:text-secondary drop-shadow-sm after:w-0 hover:after:w-full"
+                  )}>
+                    {item.name}
+                  </Link>
+                )}
+              </div>
+            ))}
+          </nav>
+
+          <div className="flex items-center gap-4">
             {isSpmbActive && (
-              <Button size="lg" className="w-full bg-primary h-14 text-white rounded-xl font-bold border-none" asChild>
-                <Link href="/ppdb" onClick={() => setIsOpen(false)}>{spmbLabel}</Link>
+              <Button size="sm" className={cn(
+                "hidden md:flex rounded-full px-6 font-bold shadow-md transition-all hover:scale-105 active:scale-95 uppercase tracking-widest text-[10px] h-10 border-none", 
+                isSolid ? "bg-primary text-white" : "bg-secondary text-primary hover:bg-secondary/90 shadow-secondary/20"
+              )} asChild>
+                <Link href="/ppdb">{spmbLabel}</Link>
               </Button>
             )}
+
+            <button 
+              className={cn(
+                "lg:hidden p-2.5 rounded-xl transition-all shadow-sm shrink-0 border", 
+                isSolid ? "bg-slate-50 text-primary border-slate-200" : "bg-white/10 text-white border-white/20 backdrop-blur-sm"
+              )} 
+              onClick={() => setIsOpen(true)}
+            >
+              <Menu className="h-5 w-5" />
+            </button>
           </div>
-        </nav>
-      </div>
-    </header>
+        </div>
+      </header>
+
+      {/* Mobile Sidebar - Moved outside header for better fixed positioning */}
+      {mounted && (
+        <>
+          {isOpen && (
+            <div 
+              className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm lg:hidden animate-in fade-in duration-300" 
+              onClick={() => setIsOpen(false)} 
+            />
+          )}
+          <div className={cn(
+            "lg:hidden fixed inset-y-0 right-0 h-screen w-[85%] z-[110] bg-white shadow-2xl transition-transform duration-500 ease-in-out transform flex flex-col", 
+            isOpen ? "translate-x-0" : "translate-x-full"
+          )}>
+            <div className="flex justify-between items-center p-6 border-b border-slate-100 shrink-0">
+              <div className="flex items-center gap-3">
+                <div className="relative h-10 w-10">
+                  {schoolLogo && <Image src={schoolLogo} alt="Logo" fill className="object-contain" />}
+                </div>
+                <span className="font-headline font-bold text-primary text-[10px] uppercase leading-tight truncate max-w-[150px]">
+                  {schoolName}
+                </span>
+              </div>
+              <button 
+                onClick={() => setIsOpen(false)} 
+                className="p-2.5 bg-slate-100 rounded-xl text-slate-500 hover:bg-slate-200 transition-colors"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            <nav className="flex flex-col p-6 gap-2 flex-1 overflow-y-auto bg-white">
+              {navItems.map((item) => (
+                <div key={item.name} className="flex flex-col gap-1">
+                  <Link 
+                    href={item.href} 
+                    className={cn(
+                      "text-base font-bold p-4 rounded-xl transition-all", 
+                      pathname === item.href ? "text-primary bg-primary/5" : "text-slate-600 hover:bg-slate-50"
+                    )} 
+                    onClick={() => setIsOpen(false)}
+                  >
+                    {item.name}
+                  </Link>
+                  {item.submenu && (
+                    <div className="ml-8 flex flex-col gap-1 border-l-2 border-slate-100 pl-4 mb-4">
+                      {item.submenu.map((sub) => (
+                        <Link 
+                          key={sub.name} 
+                          href={sub.href} 
+                          className="p-3 text-sm font-bold text-slate-500 hover:text-primary transition-colors" 
+                          onClick={() => setIsOpen(false)}
+                        >
+                          {sub.name}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+              <div className="mt-auto pt-8 border-t border-slate-100 pb-10">
+                {isSpmbActive && (
+                  <Button size="lg" className="w-full bg-primary h-14 text-white rounded-xl font-bold border-none" asChild>
+                    <Link href="/ppdb" onClick={() => setIsOpen(false)}>{spmbLabel}</Link>
+                  </Button>
+                )}
+              </div>
+            </nav>
+          </div>
+        </>
+      )}
+    </>
   );
 }
