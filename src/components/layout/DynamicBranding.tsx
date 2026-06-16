@@ -31,30 +31,27 @@ export function DynamicBranding() {
 
     // 2. Sinkronisasi Favicon secara Agresif
     const logoUrl = settings.schoolLogoUrl;
-    if (logoUrl) {
+    if (logoUrl && logoUrl.startsWith('http')) {
       // Gunakan cache-buster unik agar browser terpaksa memuat ulang gambar baru
-      const newHref = `${logoUrl}?v=${Date.now()}`;
+      const newHref = `${logoUrl}${logoUrl.includes('?') ? '&' : '?'}v=${Date.now()}`;
 
-      // Cari semua elemen link yang berhubungan dengan icon (icon, shortcut icon, apple-touch-icon)
-      const iconLinks = document.querySelectorAll('link[rel*="icon"]');
+      // Daftar rel yang sering digunakan untuk icon
+      const rels = ['icon', 'shortcut icon', 'apple-touch-icon'];
 
-      if (iconLinks.length > 0) {
-        // Update semua icon yang ditemukan
-        iconLinks.forEach((link: any) => {
+      rels.forEach(rel => {
+        let element = document.querySelector(`link[rel*="${rel}"]`) as HTMLLinkElement;
+        
+        if (element) {
+          // Jika elemen sudah ada, perbarui href-nya
+          element.href = newHref;
+        } else {
+          // Jika belum ada, buat elemen baru
+          const link = document.createElement('link');
+          link.rel = rel;
           link.href = newHref;
-        });
-      } else {
-        // Jika tidak ditemukan sama sekali, buat elemen baru untuk icon standar dan shortcut
-        const icon = document.createElement('link');
-        icon.rel = 'icon';
-        icon.href = newHref;
-        document.head.appendChild(icon);
-
-        const shortcut = document.createElement('link');
-        shortcut.rel = 'shortcut icon';
-        shortcut.href = newHref;
-        document.head.appendChild(shortcut);
-      }
+          document.head.appendChild(link);
+        }
+      });
     }
   }, [mounted, settings]);
 
