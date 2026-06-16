@@ -23,17 +23,25 @@ export function DynamicBranding() {
   useEffect(() => {
     if (!mounted || !settings) return;
 
-    // Sinkronisasi Judul Tab
+    // Sinkronisasi Judul Tab (Mengikuti input admin, besar/kecil huruf tetap)
     const schoolName = settings.schoolName;
     if (schoolName && document.title !== schoolName) {
       document.title = schoolName;
     }
 
-    // Sinkronisasi Favicon
+    // Sinkronisasi Favicon (Menggunakan logo yang diinput admin)
     const logoUrl = settings.schoolLogoUrl;
     if (logoUrl) {
-      const favLink = document.getElementById('dynamic-favicon') as HTMLLinkElement;
-      if (favLink && favLink.href !== logoUrl) {
+      let favLink = document.getElementById('dynamic-favicon') as HTMLLinkElement;
+      if (!favLink) {
+        favLink = document.createElement('link');
+        favLink.id = 'dynamic-favicon';
+        favLink.rel = 'icon';
+        document.head.appendChild(favLink);
+      }
+      
+      // Update link href jika berbeda dengan logo di database
+      if (favLink.href !== logoUrl) {
         favLink.href = logoUrl;
       }
     }
