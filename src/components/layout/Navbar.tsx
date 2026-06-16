@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
@@ -89,7 +90,7 @@ export function Navbar() {
             )}
           </div>
           <span className={cn(
-            "font-headline font-bold text-xs md:text-sm lg:text-lg tracking-tight uppercase transition-colors duration-300 line-clamp-2 leading-tight", 
+            "font-headline font-bold text-xs md:text-sm lg:text-lg tracking-tight transition-colors duration-300 line-clamp-2 leading-tight", 
             isSolid ? "text-slate-900" : "text-white drop-shadow-md"
           )}>
             {schoolName}

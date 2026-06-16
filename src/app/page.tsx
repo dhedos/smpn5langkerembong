@@ -65,16 +65,15 @@ export default function Home() {
         <div className="container relative z-10 px-6 md:px-12 mx-auto pb-32 pt-40 md:pt-48">
           <div className="max-w-5xl space-y-8 animate-in fade-in slide-in-from-left duration-1000">
             <div className="space-y-6">
-              {/* Hero Badge - Aligned and clean without background or icon */}
               <div className="text-secondary py-2 text-[10px] md:text-xs font-black uppercase tracking-[0.25em] drop-shadow-md">
                 {heroBadgeText}
               </div>
               
               <div className="space-y-4">
-                <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-[7.5rem] font-black text-white font-headline leading-[1.1] md:leading-[0.85] tracking-tight md:tracking-tighter uppercase drop-shadow-2xl">
+                <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-[7.5rem] font-black text-white font-headline leading-[1.1] md:leading-[0.85] tracking-tight md:tracking-tighter drop-shadow-2xl">
                   {heroTitle}
                 </h1>
-                <div className="text-2xl sm:text-3xl md:text-5xl font-bold text-secondary italic tracking-tight drop-shadow-lg lowercase mt-2 md:mt-4 opacity-90">
+                <div className="text-2xl sm:text-3xl md:text-5xl font-bold text-secondary italic tracking-tight drop-shadow-lg mt-2 md:mt-4 opacity-90">
                   {schoolName}
                 </div>
               </div>
