@@ -38,11 +38,15 @@ export function DynamicBranding() {
       const rels = ['icon', 'shortcut icon', 'apple-touch-icon'];
 
       rels.forEach(rel => {
-        let element = document.querySelector(`link[rel*="${rel}"]`) as HTMLLinkElement;
+        // Cari elemen yang ada, ganti href-nya saja untuk menghindari error DOM removeChild
+        let elements = document.querySelectorAll(`link[rel*="${rel}"]`);
         
-        if (element) {
-          element.href = newHref;
+        if (elements.length > 0) {
+          elements.forEach(el => {
+            (el as HTMLLinkElement).href = newHref;
+          });
         } else {
+          // Jika tidak ada, buat baru
           const link = document.createElement('link');
           link.rel = rel;
           link.href = newHref;

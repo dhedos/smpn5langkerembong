@@ -43,10 +43,6 @@ export function Footer() {
   const phone = (mounted && settings?.phone) || "";
   const email = (mounted && settings?.email) || "";
 
-  const nameParts = schoolName.split(" ");
-  const row1 = nameParts.slice(0, 2).join(" ");
-  const row2 = nameParts.length > 2 ? nameParts.slice(2).join(" ") : "";
-
   const ensureExternalUrl = (url: string | undefined) => {
     if (!url || url === "#" || url === "") return "#";
     if (url.startsWith('http://') || url.startsWith('https://')) return url;
@@ -75,7 +71,7 @@ export function Footer() {
           <div className="flex flex-col space-y-6 md:col-span-2 lg:col-span-2">
             <div className="flex items-center gap-5">
               <div className="relative h-16 w-16 md:h-20 md:w-20 shrink-0 flex items-center justify-center">
-                {schoolLogo && (
+                {mounted && schoolLogo && (
                   <Image 
                     src={schoolLogo} 
                     alt="Logo" 
@@ -85,10 +81,11 @@ export function Footer() {
                   />
                 )}
               </div>
-              <div className="font-headline font-black text-2xl md:text-3xl lg:text-5xl tracking-tight leading-[0.85]">
-                <span className="block">{row1}</span>
-                <span className="block text-secondary">{row2}</span>
-              </div>
+              {mounted && (
+                <div className="font-headline font-black text-2xl md:text-3xl lg:text-5xl tracking-tight leading-tight">
+                  {schoolName}
+                </div>
+              )}
             </div>
 
             <div className="space-y-6">
@@ -141,20 +138,24 @@ export function Footer() {
           <div className="pt-2">
             <h4 className="font-headline font-black mb-8 text-[11px] tracking-[0.2em] uppercase text-secondary">Hubungi Kami</h4>
             <ul className="space-y-6 text-[12px] text-white/80 font-black tracking-wide">
-              {address && (
+              {mounted && address && (
                 <li className="flex gap-4 items-start">
                   <div className="bg-white/5 p-2.5 rounded-xl shrink-0 mt-0.5"><MapPin className="h-4 w-4 text-secondary" /></div>
                   <span className="leading-relaxed tracking-tighter break-words">{address}</span>
                 </li>
               )}
-              <li className="flex gap-4 items-center">
-                <div className="bg-white/5 p-2.5 rounded-xl shrink-0"><Phone className="h-4 w-4 text-secondary" /></div>
-                <span>{phone}</span>
-              </li>
-              <li className="flex gap-4 items-center">
-                <div className="bg-white/5 p-2.5 rounded-xl shrink-0"><Mail className="h-4 w-4 text-secondary" /></div>
-                <span className="break-all lowercase">{email}</span>
-              </li>
+              {mounted && phone && (
+                <li className="flex gap-4 items-center">
+                  <div className="bg-white/5 p-2.5 rounded-xl shrink-0"><Phone className="h-4 w-4 text-secondary" /></div>
+                  <span>{phone}</span>
+                </li>
+              )}
+              {mounted && email && (
+                <li className="flex gap-4 items-center">
+                  <div className="bg-white/5 p-2.5 rounded-xl shrink-0"><Mail className="h-4 w-4 text-secondary" /></div>
+                  <span className="break-all lowercase">{email}</span>
+                </li>
+              )}
             </ul>
           </div>
         </div>
