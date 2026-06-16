@@ -40,11 +40,10 @@ export function Navbar() {
     setIsOpen(false);
   }, [pathname]);
 
-  // Ensure hydration safety by rendering text only after mount
-  const schoolName = (mounted && !loading) ? (settings?.schoolName || "") : "";
-  const schoolLogo = (mounted && !loading) ? settings?.schoolLogoUrl : null;
-  const isSpmbActive = (mounted && !loading) ? (settings?.ppdbIsActive !== false) : false;
-  const spmbLabel = (mounted && !loading) ? (settings?.ppdbMenuTitle || "SPMB ONLINE") : "";
+  const schoolName = mounted ? (settings?.schoolName || "") : "";
+  const schoolLogo = mounted ? settings?.schoolLogoUrl : null;
+  const isSpmbActive = mounted ? (settings?.ppdbIsActive !== false) : false;
+  const spmbLabel = mounted ? (settings?.ppdbMenuTitle || "SPMB ONLINE") : "";
   const isHome = pathname === "/";
 
   const navItems = useMemo(() => {
@@ -87,7 +86,7 @@ export function Navbar() {
                 className="object-contain" 
                 priority 
               />
-            ) : (
+            ) : mounted && (
               <div className="h-10 w-10 md:h-12 md:w-12 bg-slate-200/20 rounded-xl" />
             )}
           </div>
@@ -154,9 +153,14 @@ export function Navbar() {
       </div>
 
       {/* Mobile Sidebar */}
-      {isOpen && <div className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm lg:hidden" onClick={() => setIsOpen(false)} />}
+      {isOpen && (
+        <div 
+          className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm lg:hidden animate-in fade-in duration-300" 
+          onClick={() => setIsOpen(false)} 
+        />
+      )}
       <div className={cn(
-        "lg:hidden fixed top-0 right-0 h-full w-[80%] z-[110] bg-white shadow-2xl transition-transform duration-500 ease-in-out transform flex flex-col", 
+        "lg:hidden fixed inset-y-0 right-0 h-full w-[85%] z-[110] bg-white shadow-2xl transition-transform duration-500 ease-in-out transform flex flex-col", 
         isOpen ? "translate-x-0" : "translate-x-full"
       )}>
         <div className="flex justify-between items-center p-6 border-b border-slate-100 shrink-0">
@@ -164,16 +168,26 @@ export function Navbar() {
             <div className="relative h-10 w-10">
               {schoolLogo && <Image src={schoolLogo} alt="Logo" fill className="object-contain" />}
             </div>
-            <span className="font-headline font-bold text-primary text-[10px] uppercase leading-tight truncate max-w-[120px]">{schoolName}</span>
+            <span className="font-headline font-bold text-primary text-[10px] uppercase leading-tight truncate max-w-[120px]">
+              {schoolName}
+            </span>
           </div>
-          <button onClick={() => setIsOpen(false)} className="p-2.5 bg-slate-100 rounded-xl text-slate-500"><X className="h-5 w-5" /></button>
+          <button 
+            onClick={() => setIsOpen(false)} 
+            className="p-2.5 bg-slate-100 rounded-xl text-slate-500 hover:bg-slate-200 transition-colors"
+          >
+            <X className="h-5 w-5" />
+          </button>
         </div>
         <nav className="flex flex-col p-6 gap-2 flex-1 overflow-y-auto">
           {navItems.map((item) => (
             <div key={item.name} className="flex flex-col gap-1">
               <Link 
                 href={item.href} 
-                className={cn("text-base font-bold p-4 rounded-xl transition-all", pathname === item.href ? "text-primary bg-primary/5" : "text-slate-600")} 
+                className={cn(
+                  "text-base font-bold p-4 rounded-xl transition-all", 
+                  pathname === item.href ? "text-primary bg-primary/5" : "text-slate-600 hover:bg-slate-50"
+                )} 
                 onClick={() => setIsOpen(false)}
               >
                 {item.name}
@@ -181,7 +195,14 @@ export function Navbar() {
               {item.submenu && (
                 <div className="ml-8 flex flex-col gap-1 border-l-2 border-slate-100 pl-4 mb-4">
                   {item.submenu.map((sub) => (
-                    <Link key={sub.name} href={sub.href} className="p-3 text-sm font-bold text-slate-500" onClick={() => setIsOpen(false)}>{sub.name}</Link>
+                    <Link 
+                      key={sub.name} 
+                      href={sub.href} 
+                      className="p-3 text-sm font-bold text-slate-500 hover:text-primary transition-colors" 
+                      onClick={() => setIsOpen(false)}
+                    >
+                      {sub.name}
+                    </Link>
                   ))}
                 </div>
               )}
