@@ -14,7 +14,8 @@ import {
   Mail, 
   ExternalLink, 
   Globe, 
-  Link as LinkIcon 
+  Link as LinkIcon,
+  Lock
 } from "lucide-react";
 import { useFirestore, useDoc } from "@/firebase";
 import { doc } from "firebase/firestore";
@@ -30,6 +31,7 @@ export function Footer() {
 
   if (isAdminPage) return null;
 
+  // Hardcoded defaults for instant rendering
   const schoolName = settings?.schoolName || "SMPN 5 LANGKE REMBONG";
   const schoolLogo = settings?.schoolLogoUrl;
   const officialWebsites = Array.isArray(settings?.officialWebsites) ? settings.officialWebsites : [];
@@ -62,13 +64,15 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 md:gap-16 lg:gap-20 mb-16">
           <div className="flex flex-col space-y-6 md:col-span-2 lg:col-span-2">
             <div className="flex items-center gap-5">
+              {/* Logo container without background/box */}
               <div className="relative h-16 w-16 md:h-20 md:w-20 shrink-0 flex items-center justify-center">
                 {schoolLogo && (
                   <Image 
                     src={schoolLogo} 
                     alt="Logo" 
                     fill 
-                    className="object-contain" 
+                    className="object-contain"
+                    priority
                   />
                 )}
               </div>
@@ -152,7 +156,9 @@ export function Footer() {
         <div className="border-t border-white/5 pt-10 flex flex-col md:flex-row justify-between items-center gap-6 text-[10px] font-black text-white/30 tracking-[0.2em] uppercase text-center md:text-left">
           <p>© {displayYear} {schoolName.toUpperCase()}. ALL RIGHTS RESERVED.</p>
           <div className="flex gap-6 items-center">
-            <Link href="/admin" className="opacity-30 hover:opacity-100 transition-all">ADMIN CONSOLE</Link>
+            <Link href="/admin" className="opacity-30 hover:opacity-100 transition-all" title="Admin Console">
+              <Lock className="h-4 w-4" />
+            </Link>
           </div>
         </div>
       </div>
