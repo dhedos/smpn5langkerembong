@@ -81,13 +81,17 @@ export function Navbar() {
           <Link href="/" className="flex items-center gap-3 shrink-0 max-w-[75%]">
             <div className="relative h-10 w-10 md:h-12 md:w-12 flex items-center justify-center">
               {mounted && schoolLogo && (
-                <Image 
-                  src={schoolLogo} 
-                  alt="Logo" 
-                  fill 
-                  className="object-contain" 
-                  priority 
-                />
+                schoolLogo.startsWith('data:') ? (
+                  <img src={schoolLogo} alt="Logo" className="h-full w-full object-contain" />
+                ) : (
+                  <Image 
+                    src={schoolLogo} 
+                    alt="Logo" 
+                    fill 
+                    className="object-contain" 
+                    priority 
+                  />
+                )
               )}
             </div>
             {mounted && (
@@ -155,24 +159,30 @@ export function Navbar() {
         </div>
       </header>
 
-      {/* Mobile Sidebar */}
+      {/* Mobile Sidebar - Solid background for better readability at page bottom */}
       {mounted && (
         <div className={cn(
           "fixed inset-0 z-[100] transition-all duration-500 pointer-events-none lg:hidden",
           isOpen ? "opacity-100 pointer-events-auto" : "opacity-0"
         )}>
           <div 
-            className="absolute inset-0 bg-black/40 backdrop-blur-sm" 
+            className="absolute inset-0 bg-black/60 backdrop-blur-md" 
             onClick={() => setIsOpen(false)} 
           />
           <div className={cn(
-            "absolute inset-y-0 right-0 w-[85%] bg-white/95 backdrop-blur-xl shadow-2xl transition-transform duration-500 ease-in-out transform flex flex-col", 
+            "absolute inset-y-0 right-0 w-[85%] bg-white shadow-2xl transition-transform duration-500 ease-in-out transform flex flex-col", 
             isOpen ? "translate-x-0" : "translate-x-full"
           )}>
             <div className="flex justify-between items-center p-6 border-b border-slate-100 shrink-0">
               <div className="flex items-center gap-3">
                 <div className="relative h-10 w-10">
-                  {schoolLogo && <Image src={schoolLogo} alt="Logo" fill className="object-contain" />}
+                  {schoolLogo && (
+                    schoolLogo.startsWith('data:') ? (
+                      <img src={schoolLogo} alt="Logo" className="h-full w-full object-contain" />
+                    ) : (
+                      <Image src={schoolLogo} alt="Logo" fill className="object-contain" />
+                    )
+                  )}
                 </div>
                 <span className="font-headline font-bold text-primary text-[10px] uppercase leading-tight truncate max-w-[150px]">
                   {schoolName}

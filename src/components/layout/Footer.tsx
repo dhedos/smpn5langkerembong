@@ -35,8 +35,8 @@ export function Footer() {
   if (isAdminPage) return null;
 
   // Hydration safety: only use dynamic data after mount
-  const schoolName = (mounted && !loading) ? (settings?.schoolName || "") : "";
-  const schoolLogo = (mounted && !loading) ? settings?.schoolLogoUrl : null;
+  const schoolName = mounted ? (settings?.schoolName || "") : "";
+  const schoolLogo = mounted ? settings?.schoolLogoUrl : null;
   const officialWebsites = (mounted && Array.isArray(settings?.officialWebsites)) ? settings.officialWebsites : [];
   const displayYear = (mounted && settings?.copyrightYear) || new Date().getFullYear().toString();
   const address = (mounted && settings?.address) || "";
@@ -72,13 +72,17 @@ export function Footer() {
             <div className="flex items-center gap-5">
               <div className="relative h-16 w-16 md:h-20 md:w-20 shrink-0 flex items-center justify-center">
                 {mounted && schoolLogo && (
-                  <Image 
-                    src={schoolLogo} 
-                    alt="Logo" 
-                    fill 
-                    className="object-contain"
-                    priority
-                  />
+                  schoolLogo.startsWith('data:') ? (
+                    <img src={schoolLogo} alt="Logo" className="max-h-full max-w-full object-contain" />
+                  ) : (
+                    <Image 
+                      src={schoolLogo} 
+                      alt="Logo" 
+                      fill 
+                      className="object-contain"
+                      priority
+                    />
+                  )
                 )}
               </div>
               {mounted && (

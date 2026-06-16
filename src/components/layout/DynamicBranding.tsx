@@ -31,19 +31,21 @@ export function DynamicBranding() {
 
     // 2. Sinkronisasi Favicon
     const logoUrl = settings.schoolLogoUrl;
-    if (logoUrl && logoUrl.startsWith('http') && typeof document !== 'undefined') {
+    if (logoUrl && typeof document !== 'undefined') {
       const cacheBuster = `v=${Date.now()}`;
-      const newHref = `${logoUrl}${logoUrl.includes('?') ? '&' : '?'}${cacheBuster}`;
+      const newHref = logoUrl.startsWith('data:') ? logoUrl : `${logoUrl}${logoUrl.includes('?') ? '&' : '?'}${cacheBuster}`;
 
       const rels = ['icon', 'shortcut icon', 'apple-touch-icon'];
 
       rels.forEach(rel => {
-        // Cari elemen yang ada, ganti href-nya saja untuk menghindari error DOM removeChild
+        // Cari elemen yang ada, ganti href-nya saja untuk menghindari error DOM removeChild/Hydration
         let elements = document.querySelectorAll(`link[rel*="${rel}"]`);
         
         if (elements.length > 0) {
           elements.forEach(el => {
-            (el as HTMLLinkElement).href = newHref;
+            if ((el as HTMLLinkElement).href !== newHref) {
+              (el as HTMLLinkElement).href = newHref;
+            }
           });
         } else {
           // Jika tidak ada, buat baru
