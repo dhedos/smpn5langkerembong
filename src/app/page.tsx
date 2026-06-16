@@ -32,15 +32,16 @@ export default function Home() {
     setMounted(true);
   }, []);
 
-  const schoolName = !mounted || loading ? "" : (settings?.schoolName || "");
-  const heroImageUrl = !mounted || loading ? null : settings?.heroImageUrl;
-  const heroBadgeText = settings?.heroBadgeText || "Selamat Datang di Website Resmi Kami";
-  const heroTitle = settings?.heroTitle || "MEMBANGUN MASA DEPAN BERSAMA KAMI";
-  const heroSubtitle = settings?.heroSubtitle || "Pendidikan berkualitas untuk generasi emas bangsa melalui kurikulum yang inovatif.";
+  // Use dynanmic text only after mount for hydration safety
+  const schoolName = (mounted && !loading) ? (settings?.schoolName || "") : "";
+  const heroImageUrl = (mounted && !loading) ? settings?.heroImageUrl : null;
+  const heroBadgeText = (mounted && settings?.heroBadgeText) || "Selamat Datang di Website Resmi Kami";
+  const heroTitle = (mounted && settings?.heroTitle) || "Membangun Masa Depan Bersama Kami";
+  const heroSubtitle = (mounted && settings?.heroSubtitle) || "Pendidikan berkualitas untuk generasi emas bangsa melalui kurikulum yang inovatif.";
   
-  const isSpmbActive = settings?.ppdbIsActive !== false;
+  const isSpmbActive = (mounted && settings?.ppdbIsActive !== false);
 
-  const stats = settings?.stats || [
+  const stats = (mounted && settings?.stats) || [
     { label: "Guru", value: "0", icon: "GraduationCap" },
     { label: "Tenaga Pendidik", value: "0", icon: "Users" },
     { label: "Siswa", value: "0", icon: "UserCircle" }
@@ -51,7 +52,7 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative min-h-[100vh] flex items-center overflow-hidden bg-slate-950">
         <div className="absolute inset-0 z-0 transition-opacity duration-1000">
-           {mounted && heroImageUrl ? (
+           {heroImageUrl ? (
              <Image 
               src={heroImageUrl} 
               alt="Hero image" 

@@ -40,10 +40,11 @@ export function Navbar() {
     setIsOpen(false);
   }, [pathname]);
 
-  const schoolName = !mounted || loading ? "" : (settings?.schoolName || "");
-  const schoolLogo = !mounted || loading ? null : settings?.schoolLogoUrl;
-  const isSpmbActive = settings?.ppdbIsActive !== false;
-  const spmbLabel = settings?.ppdbMenuTitle || "SPMB ONLINE";
+  // Ensure hydration safety by rendering text only after mount
+  const schoolName = (mounted && !loading) ? (settings?.schoolName || "") : "";
+  const schoolLogo = (mounted && !loading) ? settings?.schoolLogoUrl : null;
+  const isSpmbActive = (mounted && !loading) ? (settings?.ppdbIsActive !== false) : false;
+  const spmbLabel = (mounted && !loading) ? (settings?.ppdbMenuTitle || "SPMB ONLINE") : "";
   const isHome = pathname === "/";
 
   const navItems = useMemo(() => {
@@ -78,7 +79,7 @@ export function Navbar() {
       <div className="container mx-auto px-4 md:px-6 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-3 shrink-0 max-w-[75%]">
           <div className="relative h-10 w-10 md:h-12 md:w-12 flex items-center justify-center">
-            {mounted && !loading && schoolLogo ? (
+            {schoolLogo ? (
               <Image 
                 src={schoolLogo} 
                 alt="Logo" 
@@ -87,7 +88,7 @@ export function Navbar() {
                 priority 
               />
             ) : (
-              <div className="h-10 w-10 md:h-12 md:w-12" />
+              <div className="h-10 w-10 md:h-12 md:w-12 bg-slate-200/20 rounded-xl" />
             )}
           </div>
           <span className={cn(

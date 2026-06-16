@@ -34,14 +34,14 @@ export function Footer() {
 
   if (isAdminPage) return null;
 
-  const schoolName = !mounted || loading ? "" : (settings?.schoolName || "");
-  const schoolLogo = !mounted || loading ? null : settings?.schoolLogoUrl;
-  const officialWebsites = Array.isArray(settings?.officialWebsites) ? settings.officialWebsites : [];
-  const displayYear = settings?.copyrightYear || new Date().getFullYear().toString();
-  
-  const address = settings?.address || "";
-  const phone = settings?.phone || "";
-  const email = settings?.email || "";
+  // Hydration safety: only use dynamic data after mount
+  const schoolName = (mounted && !loading) ? (settings?.schoolName || "") : "";
+  const schoolLogo = (mounted && !loading) ? settings?.schoolLogoUrl : null;
+  const officialWebsites = (mounted && Array.isArray(settings?.officialWebsites)) ? settings.officialWebsites : [];
+  const displayYear = (mounted && settings?.copyrightYear) || new Date().getFullYear().toString();
+  const address = (mounted && settings?.address) || "";
+  const phone = (mounted && settings?.phone) || "";
+  const email = (mounted && settings?.email) || "";
 
   const nameParts = schoolName.split(" ");
   const row1 = nameParts.slice(0, 2).join(" ");
@@ -66,7 +66,7 @@ export function Footer() {
       ), 
       href: settings?.tiktokUrl 
     },
-  ].filter(social => social.href);
+  ].filter(social => social.href && mounted);
 
   return (
     <footer className="bg-primary text-white pt-16 md:pt-20 pb-10 border-t border-white/5 overflow-hidden">
@@ -75,7 +75,7 @@ export function Footer() {
           <div className="flex flex-col space-y-6 md:col-span-2 lg:col-span-2">
             <div className="flex items-center gap-5">
               <div className="relative h-16 w-16 md:h-20 md:w-20 shrink-0 flex items-center justify-center">
-                {mounted && !loading && schoolLogo && (
+                {schoolLogo && (
                   <Image 
                     src={schoolLogo} 
                     alt="Logo" 

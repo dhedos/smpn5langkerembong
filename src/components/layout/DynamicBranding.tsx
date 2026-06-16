@@ -25,27 +25,24 @@ export function DynamicBranding() {
 
     // 1. Sinkronisasi Judul Tab
     const schoolName = settings.schoolName;
-    if (schoolName && document.title !== schoolName) {
+    if (schoolName && typeof document !== 'undefined') {
       document.title = schoolName;
     }
 
-    // 2. Sinkronisasi Favicon secara Agresif
+    // 2. Sinkronisasi Favicon
     const logoUrl = settings.schoolLogoUrl;
-    if (logoUrl && logoUrl.startsWith('http')) {
-      // Gunakan cache-buster unik agar browser terpaksa memuat ulang gambar baru
-      const newHref = `${logoUrl}${logoUrl.includes('?') ? '&' : '?'}v=${Date.now()}`;
+    if (logoUrl && logoUrl.startsWith('http') && typeof document !== 'undefined') {
+      const cacheBuster = `v=${Date.now()}`;
+      const newHref = `${logoUrl}${logoUrl.includes('?') ? '&' : '?'}${cacheBuster}`;
 
-      // Daftar rel yang sering digunakan untuk icon
       const rels = ['icon', 'shortcut icon', 'apple-touch-icon'];
 
       rels.forEach(rel => {
         let element = document.querySelector(`link[rel*="${rel}"]`) as HTMLLinkElement;
         
         if (element) {
-          // Jika elemen sudah ada, perbarui href-nya
           element.href = newHref;
         } else {
-          // Jika belum ada, buat elemen baru
           const link = document.createElement('link');
           link.rel = rel;
           link.href = newHref;

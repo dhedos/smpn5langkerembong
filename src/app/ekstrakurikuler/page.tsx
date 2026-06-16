@@ -1,12 +1,13 @@
 "use client";
 
-import React, { useMemo } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { Trophy, Calendar, CheckCircle2, Loader2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useFirestore, useCollection, useDoc } from "@/firebase";
 import { collection, query, where, doc } from "firebase/firestore";
 
 export default function VisitorEkstrakurikuler() {
+  const [mounted, setMounted] = useState(false);
   const db = useFirestore();
   const currentSchoolId = 'smpn5-langke-rembong';
 
@@ -20,12 +21,16 @@ export default function VisitorEkstrakurikuler() {
 
   const { data: rawExtras, loading: extrasLoading } = useCollection(extraQuery);
 
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const extras = useMemo(() => {
     if (!rawExtras) return [];
     return rawExtras.filter((item: any) => item.status === "Published");
   }, [rawExtras]);
 
-  const heroImageUrl = settings?.heroImageUrl || (settingsLoading ? "" : "https://picsum.photos/seed/school1/1920/1080");
+  const heroImageUrl = (mounted && settings?.heroImageUrl) || (settingsLoading ? "" : "https://picsum.photos/seed/school1/1920/1080");
 
   return (
     <div className="pt-0 bg-white min-h-screen">
