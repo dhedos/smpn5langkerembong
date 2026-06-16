@@ -5,8 +5,8 @@ import { useFirestore, useDoc } from '@/firebase';
 import { doc } from 'firebase/firestore';
 
 /**
- * Komponen ini mensinkronisasi judul tab dan favicon secara aman.
- * Menggunakan pembaruan atribut href daripada menghapus elemen untuk menghindari error 'removeChild' di Next.js.
+ * Komponen ini mensinkronisasi judul tab dan favicon secara agresif.
+ * Memastikan logo sekolah yang diunggah admin menggantikan ikon default framework secara total.
  */
 export function DynamicBranding() {
   const [mounted, setMounted] = useState(false);
@@ -29,31 +29,31 @@ export function DynamicBranding() {
       document.title = schoolName;
     }
 
-    // 2. Sinkronisasi Favicon secara Aman
+    // 2. Sinkronisasi Favicon secara Agresif
     const logoUrl = settings.schoolLogoUrl;
     if (logoUrl) {
-      // Cari favicon yang sudah ada (link rel="icon")
-      let link: HTMLLinkElement | null = document.querySelector('link[rel="icon"]');
-      
-      // Jika tidak ditemukan, buat elemen baru
-      if (!link) {
-        link = document.createElement('link');
-        link.rel = 'icon';
-        document.head.appendChild(link);
-      }
-      
-      // Gunakan cache-buster sederhana agar perubahan logo langsung terlihat
+      // Gunakan cache-buster unik agar browser terpaksa memuat ulang gambar baru
       const newHref = `${logoUrl}?v=${Date.now()}`;
-      
-      // Update href hanya jika berbeda untuk menghindari loop tak terbatas
-      if (link.href !== newHref) {
-        link.href = newHref;
-      }
-      
-      // Juga update shortcut icon jika ada untuk kompatibilitas browser lama
-      let shortcutLink: HTMLLinkElement | null = document.querySelector('link[rel="shortcut icon"]');
-      if (shortcutLink) {
-        shortcutLink.href = newHref;
+
+      // Cari semua elemen link yang berhubungan dengan icon (icon, shortcut icon, apple-touch-icon)
+      const iconLinks = document.querySelectorAll('link[rel*="icon"]');
+
+      if (iconLinks.length > 0) {
+        // Update semua icon yang ditemukan
+        iconLinks.forEach((link: any) => {
+          link.href = newHref;
+        });
+      } else {
+        // Jika tidak ditemukan sama sekali, buat elemen baru untuk icon standar dan shortcut
+        const icon = document.createElement('link');
+        icon.rel = 'icon';
+        icon.href = newHref;
+        document.head.appendChild(icon);
+
+        const shortcut = document.createElement('link');
+        shortcut.rel = 'shortcut icon';
+        shortcut.href = newHref;
+        document.head.appendChild(shortcut);
       }
     }
   }, [mounted, settings]);
