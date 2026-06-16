@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
@@ -26,7 +25,7 @@ export function Navbar() {
   const db = useFirestore();
   const currentSchoolId = 'smpn5-langke-rembong';
   const settingsRef = useMemo(() => db ? doc(db, "schools", currentSchoolId) : null, [db, currentSchoolId]);
-  const { data: settings } = useDoc(settingsRef);
+  const { data: settings, loading } = useDoc(settingsRef);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -39,7 +38,8 @@ export function Navbar() {
     setIsOpen(false);
   }, [pathname]);
 
-  const schoolName = settings?.schoolName || "SMPN 5 LANGKE REMBONG";
+  // Menghapus fallback teks hardcoded agar tidak muncul saat loading
+  const schoolName = loading ? "" : (settings?.schoolName || "");
   const schoolLogo = settings?.schoolLogoUrl;
   const isSpmbActive = settings?.ppdbIsActive !== false;
   const spmbLabel = settings?.ppdbMenuTitle || "SPMB ONLINE";
@@ -77,7 +77,7 @@ export function Navbar() {
       <div className="container mx-auto px-4 md:px-6 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-3 shrink-0 max-w-[75%]">
           <div className="relative h-10 w-10 md:h-12 md:w-12 flex items-center justify-center">
-            {schoolLogo ? (
+            {!loading && schoolLogo ? (
               <Image 
                 src={schoolLogo} 
                 alt="Logo" 

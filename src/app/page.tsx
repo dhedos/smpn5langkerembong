@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useMemo } from "react";
@@ -26,9 +25,10 @@ export default function Home() {
   const db = useFirestore();
   const currentSchoolId = 'smpn5-langke-rembong';
   const settingsRef = useMemo(() => db ? doc(db, "schools", currentSchoolId) : null, [db, currentSchoolId]);
-  const { data: settings } = useDoc(settingsRef);
+  const { data: settings, loading } = useDoc(settingsRef);
 
-  const schoolName = settings?.schoolName || "SMPN 5 LANGKE REMBONG";
+  // Menghapus fallback teks hardcoded agar tidak muncul saat loading
+  const schoolName = loading ? "" : (settings?.schoolName || "");
   const heroImageUrl = settings?.heroImageUrl;
   const heroBadgeText = settings?.heroBadgeText || "Selamat Datang di Website Resmi Kami";
   const heroTitle = settings?.heroTitle || "MEMBANGUN MASA DEPAN BERSAMA KAMI";

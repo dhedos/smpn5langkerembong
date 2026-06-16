@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useMemo } from "react";
@@ -26,11 +25,12 @@ export function Footer() {
   const db = useFirestore();
   const currentSchoolId = 'smpn5-langke-rembong';
   const settingsRef = useMemo(() => db ? doc(db, "schools", currentSchoolId) : null, [db, currentSchoolId]);
-  const { data: settings } = useDoc(settingsRef);
+  const { data: settings, loading } = useDoc(settingsRef);
 
   if (isAdminPage) return null;
 
-  const schoolName = settings?.schoolName || "SMPN 5 LANGKE REMBONG";
+  // Menghapus fallback teks hardcoded agar tidak muncul saat loading
+  const schoolName = loading ? "" : (settings?.schoolName || "");
   const schoolLogo = settings?.schoolLogoUrl;
   const officialWebsites = Array.isArray(settings?.officialWebsites) ? settings.officialWebsites : [];
   const displayYear = settings?.copyrightYear || new Date().getFullYear().toString();
@@ -71,7 +71,7 @@ export function Footer() {
           <div className="flex flex-col space-y-6 md:col-span-2 lg:col-span-2">
             <div className="flex items-center gap-5">
               <div className="relative h-16 w-16 md:h-20 md:w-20 shrink-0 flex items-center justify-center">
-                {schoolLogo && (
+                {!loading && schoolLogo && (
                   <Image 
                     src={schoolLogo} 
                     alt="Logo" 
