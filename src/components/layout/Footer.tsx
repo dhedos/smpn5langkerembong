@@ -50,10 +50,19 @@ export function Footer() {
   };
 
   const socialLinks = [
-    { id: "facebook", icon: <Facebook className="h-4 w-4" />, href: ensureExternalUrl(settings?.facebookUrl) },
-    { id: "instagram", icon: <Instagram className="h-4 w-4" />, href: ensureExternalUrl(settings?.instagramUrl) },
-    { id: "youtube", icon: <Youtube className="h-4 w-4" />, href: ensureExternalUrl(settings?.youtubeUrl) },
-  ];
+    { id: "facebook", icon: <Facebook className="h-4 w-4" />, href: settings?.facebookUrl },
+    { id: "instagram", icon: <Instagram className="h-4 w-4" />, href: settings?.instagramUrl },
+    { id: "youtube", icon: <Youtube className="h-4 w-4" />, href: settings?.youtubeUrl },
+    { 
+      id: "tiktok", 
+      icon: (
+        <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.17-2.89-.6-4.13-1.47V13.3c0 2.15-.35 4.41-1.85 6.02-1.57 1.73-4.13 2.44-6.39 2.01-2.25-.41-4.22-2.19-4.85-4.38-.72-2.48-.05-5.38 1.83-7.2 1.48-1.44 3.65-2.04 5.67-1.63.14-.07.2-.18.19-.32V4.05c-.14-.1-.32-.07-.47-.11-2.99-.44-6.1.61-8 2.97C.52 8.44-.2 11.53.07 14.5c.34 3.73 3.06 7.15 6.63 8.27 3.52 1.14 7.63.34 10.37-2.18 2.65-2.43 3.4-6.42 2.37-9.82-.12-.4-.28-.79-.48-1.17V4.92c-.11-.05-.22-.1-.33-.15-1.01-.63-1.8-1.55-2.31-2.61-.41-.83-.61-1.74-.75-2.66-.02-.16-.07-.32-.07-.48z"/>
+        </svg>
+      ), 
+      href: settings?.tiktokUrl 
+    },
+  ].filter(social => social.href);
 
   return (
     <footer className="bg-primary text-white pt-16 md:pt-20 pb-10 border-t border-white/5 overflow-hidden">
@@ -90,7 +99,7 @@ export function Footer() {
                     {socialLinks.map((social) => (
                       <a 
                         key={social.id} 
-                        href={social.href} 
+                        href={ensureExternalUrl(social.href)} 
                         target="_blank"
                         rel="noopener noreferrer"
                         className="h-10 w-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-all hover:scale-105"
@@ -98,18 +107,6 @@ export function Footer() {
                         {social.icon}
                       </a>
                     ))}
-                    {settings?.tiktokUrl && (
-                      <a 
-                        href={ensureExternalUrl(settings.tiktokUrl)}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="h-10 w-10 rounded-xl bg-secondary text-primary flex items-center justify-center shadow-xl hover:scale-105 transition-all ml-2"
-                      >
-                        <svg viewBox="0 0 24 24" className="h-5 w-5 fill-current" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.17-2.89-.6-4.13-1.47V13.3c0 2.15-.35 4.41-1.85 6.02-1.57 1.73-4.13 2.44-6.39 2.01-2.25-.41-4.22-2.19-4.85-4.38-.72-2.48-.05-5.38 1.83-7.2 1.48-1.44 3.65-2.04 5.67-1.63.14-.07.2-.18.19-.32V4.05c-.14-.1-.32-.07-.47-.11-2.99-.44-6.1.61-8 2.97C.52 8.44-.2 11.53.07 14.5c.34 3.73 3.06 7.15 6.63 8.27 3.52 1.14 7.63.34 10.37-2.18 2.65-2.43 3.4-6.42 2.37-9.82-.12-.4-.28-.79-.48-1.17V4.92c-.11-.05-.22-.1-.33-.15-1.01-.63-1.8-1.55-2.31-2.61-.41-.83-.61-1.74-.75-2.66-.02-.16-.07-.32-.07-.48z"/>
-                        </svg>
-                      </a>
-                    )}
                   </div>
                 </div>
 
