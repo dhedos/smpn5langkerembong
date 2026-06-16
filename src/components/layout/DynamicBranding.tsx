@@ -6,7 +6,7 @@ import { doc } from 'firebase/firestore';
 
 /**
  * Komponen ini mensinkronisasi judul tab dan favicon secara aman.
- * Hanya dijalankan di sisi klien setelah mounting selesai.
+ * Menghapus ikon default browser secara paksa dan menggantinya dengan logo admin.
  */
 export function DynamicBranding() {
   const [mounted, setMounted] = useState(false);
@@ -23,27 +23,27 @@ export function DynamicBranding() {
   useEffect(() => {
     if (!mounted || !settings) return;
 
-    // Sinkronisasi Judul Tab (Mengikuti input admin, besar/kecil huruf tetap)
+    // 1. Sinkronisasi Judul Tab
     const schoolName = settings.schoolName;
     if (schoolName && document.title !== schoolName) {
       document.title = schoolName;
     }
 
-    // Sinkronisasi Favicon (Menggunakan logo yang diinput admin)
+    // 2. Sinkronisasi Favicon secara Agresif
     const logoUrl = settings.schoolLogoUrl;
     if (logoUrl) {
-      let favLink = document.getElementById('dynamic-favicon') as HTMLLinkElement;
-      if (!favLink) {
-        favLink = document.createElement('link');
-        favLink.id = 'dynamic-favicon';
-        favLink.rel = 'icon';
-        document.head.appendChild(favLink);
-      }
+      // Hapus semua link icon yang ada untuk menghindari konflik
+      const existingIcons = document.querySelectorAll('link[rel="icon"], link[rel="shortcut icon"]');
+      existingIcons.forEach(icon => icon.remove());
+
+      // Buat link icon baru
+      const newIcon = document.createElement('link');
+      newIcon.id = 'dynamic-favicon';
+      newIcon.rel = 'icon';
+      newIcon.type = 'image/x-icon'; // Atau sesuaikan dengan tipe file jika perlu
+      newIcon.href = `${logoUrl}?v=${Date.now()}`; // Tambahkan cache-buster
       
-      // Update link href jika berbeda dengan logo di database
-      if (favLink.href !== logoUrl) {
-        favLink.href = logoUrl;
-      }
+      document.head.appendChild(newIcon);
     }
   }, [mounted, settings]);
 
