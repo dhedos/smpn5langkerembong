@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -19,6 +19,7 @@ import { useFirestore, useDoc } from "@/firebase";
 import { doc } from "firebase/firestore";
 
 export function Footer() {
+  const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
   const isAdminPage = pathname?.startsWith("/admin");
 
@@ -27,11 +28,14 @@ export function Footer() {
   const settingsRef = useMemo(() => db ? doc(db, "schools", currentSchoolId) : null, [db, currentSchoolId]);
   const { data: settings, loading } = useDoc(settingsRef);
 
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   if (isAdminPage) return null;
 
-  // Menghapus fallback teks hardcoded agar tidak muncul saat loading
-  const schoolName = loading ? "" : (settings?.schoolName || "");
-  const schoolLogo = settings?.schoolLogoUrl;
+  const schoolName = !mounted || loading ? "" : (settings?.schoolName || "");
+  const schoolLogo = !mounted || loading ? null : settings?.schoolLogoUrl;
   const officialWebsites = Array.isArray(settings?.officialWebsites) ? settings.officialWebsites : [];
   const displayYear = settings?.copyrightYear || new Date().getFullYear().toString();
   
@@ -71,7 +75,7 @@ export function Footer() {
           <div className="flex flex-col space-y-6 md:col-span-2 lg:col-span-2">
             <div className="flex items-center gap-5">
               <div className="relative h-16 w-16 md:h-20 md:w-20 shrink-0 flex items-center justify-center">
-                {!loading && schoolLogo && (
+                {mounted && !loading && schoolLogo && (
                   <Image 
                     src={schoolLogo} 
                     alt="Logo" 

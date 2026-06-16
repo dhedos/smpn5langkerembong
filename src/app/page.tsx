@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { 
@@ -22,14 +22,18 @@ const IconMap: Record<string, any> = {
 };
 
 export default function Home() {
+  const [mounted, setMounted] = useState(false);
   const db = useFirestore();
   const currentSchoolId = 'smpn5-langke-rembong';
   const settingsRef = useMemo(() => db ? doc(db, "schools", currentSchoolId) : null, [db, currentSchoolId]);
   const { data: settings, loading } = useDoc(settingsRef);
 
-  // Menghapus fallback teks hardcoded agar tidak muncul saat loading
-  const schoolName = loading ? "" : (settings?.schoolName || "");
-  const heroImageUrl = settings?.heroImageUrl;
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const schoolName = !mounted || loading ? "" : (settings?.schoolName || "");
+  const heroImageUrl = !mounted || loading ? null : settings?.heroImageUrl;
   const heroBadgeText = settings?.heroBadgeText || "Selamat Datang di Website Resmi Kami";
   const heroTitle = settings?.heroTitle || "MEMBANGUN MASA DEPAN BERSAMA KAMI";
   const heroSubtitle = settings?.heroSubtitle || "Pendidikan berkualitas untuk generasi emas bangsa melalui kurikulum yang inovatif.";
@@ -47,7 +51,7 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative min-h-[100vh] flex items-center overflow-hidden bg-slate-950">
         <div className="absolute inset-0 z-0 transition-opacity duration-1000">
-           {heroImageUrl ? (
+           {mounted && heroImageUrl ? (
              <Image 
               src={heroImageUrl} 
               alt="Hero image" 

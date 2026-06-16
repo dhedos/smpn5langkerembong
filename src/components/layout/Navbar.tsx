@@ -17,6 +17,7 @@ import { useFirestore, useDoc } from "@/firebase";
 import { doc } from "firebase/firestore";
 
 export function Navbar() {
+  const [mounted, setMounted] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
@@ -28,6 +29,7 @@ export function Navbar() {
   const { data: settings, loading } = useDoc(settingsRef);
 
   useEffect(() => {
+    setMounted(true);
     const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll, { passive: true });
     handleScroll();
@@ -38,9 +40,8 @@ export function Navbar() {
     setIsOpen(false);
   }, [pathname]);
 
-  // Menghapus fallback teks hardcoded agar tidak muncul saat loading
-  const schoolName = loading ? "" : (settings?.schoolName || "");
-  const schoolLogo = settings?.schoolLogoUrl;
+  const schoolName = !mounted || loading ? "" : (settings?.schoolName || "");
+  const schoolLogo = !mounted || loading ? null : settings?.schoolLogoUrl;
   const isSpmbActive = settings?.ppdbIsActive !== false;
   const spmbLabel = settings?.ppdbMenuTitle || "SPMB ONLINE";
   const isHome = pathname === "/";
@@ -77,7 +78,7 @@ export function Navbar() {
       <div className="container mx-auto px-4 md:px-6 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-3 shrink-0 max-w-[75%]">
           <div className="relative h-10 w-10 md:h-12 md:w-12 flex items-center justify-center">
-            {!loading && schoolLogo ? (
+            {mounted && !loading && schoolLogo ? (
               <Image 
                 src={schoolLogo} 
                 alt="Logo" 
