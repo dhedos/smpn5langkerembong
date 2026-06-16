@@ -19,13 +19,12 @@ export default function VisitorGaleri() {
 
   const { data: photos, loading: galleryLoading } = useCollection(galleryQuery);
 
-  // Fix flicker: show no image (just dark bg) while loading settings
   const heroImageUrl = settings?.heroImageUrl || (settingsLoading ? "" : "https://picsum.photos/seed/school1/1920/1080");
 
   return (
     <div className="pt-0 bg-white min-h-screen">
       {/* Dynamic Hero Header */}
-      <section className="relative h-[50vh] flex items-center justify-center overflow-hidden bg-slate-950">
+      <section className="relative h-[45vh] md:h-[55vh] flex items-center justify-center overflow-hidden bg-slate-950">
         <div 
           className="absolute inset-0 z-0 bg-cover bg-center transition-opacity duration-1000"
           style={{ 
@@ -35,34 +34,33 @@ export default function VisitorGaleri() {
         />
         <div className="absolute inset-0 bg-slate-950/70 z-[1]" />
         
-        <div className="container mx-auto px-4 relative z-10 text-center space-y-4">
-          <h1 className="text-5xl md:text-7xl font-bold font-headline text-white tracking-tighter uppercase drop-shadow-2xl">
+        <div className="container mx-auto px-4 relative z-10 text-center space-y-4 pt-16 md:pt-24">
+          <h1 className="text-3xl sm:text-5xl md:text-7xl font-bold font-headline text-white tracking-tighter uppercase drop-shadow-2xl">
             Dokumentasi Sekolah
           </h1>
-          <p className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto font-medium drop-shadow-lg">
+          <p className="text-sm md:text-xl text-white/80 max-w-2xl mx-auto font-medium drop-shadow-lg leading-relaxed">
             Melihat kembali momen-momen berharga dan prestasi luar biasa siswa kami.
           </p>
         </div>
       </section>
 
       {/* Gallery Grid */}
-      <section className="py-24">
+      <section className="py-16 md:py-24">
         <div className="container mx-auto px-4">
           {galleryLoading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-12">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 md:gap-12">
               {[1, 2, 3, 4, 5, 6, 7, 8].map(i => (
-                <div key={i} className="space-y-6 animate-pulse">
+                <div key={i} className="space-y-4 animate-pulse">
                   <div className="aspect-square bg-slate-50 rounded-xl" />
                   <div className="h-6 bg-slate-50 rounded-xl w-3/4 mx-auto" />
                 </div>
               ))}
             </div>
           ) : photos && photos.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-y-16 gap-x-12">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-y-12 md:gap-y-16 gap-x-8 md:gap-x-12">
               {photos.map((photo: any) => (
-                <div key={photo.id} className="group flex flex-col items-center text-center space-y-6">
-                  {/* Image Container with Subtle Corners & White Border */}
-                  <div className="relative aspect-square w-full rounded-xl overflow-hidden shadow-2xl border-[12px] border-slate-50 bg-slate-100 transition-all duration-500 group-hover:-translate-y-2 group-hover:shadow-primary/10">
+                <div key={photo.id} className="group flex flex-col items-center text-center space-y-4 md:space-y-6">
+                  <div className="relative aspect-square w-full rounded-xl overflow-hidden shadow-xl border-[6px] md:border-[12px] border-slate-50 bg-slate-100 transition-all duration-500 group-hover:-translate-y-2 group-hover:shadow-primary/10">
                     <img
                       src={photo.imageUrl}
                       alt={photo.title}
@@ -70,13 +68,12 @@ export default function VisitorGaleri() {
                     />
                   </div>
                   
-                  {/* Visible Title & Date */}
-                  <div className="px-4 space-y-2">
-                    <h3 className="text-primary text-xl font-bold font-headline uppercase tracking-tighter leading-tight group-hover:text-secondary transition-colors">
+                  <div className="px-2 md:px-4 space-y-1 md:space-y-2">
+                    <h3 className="text-primary text-lg md:text-xl font-bold font-headline uppercase tracking-tighter leading-tight group-hover:text-secondary transition-colors">
                       {photo.title}
                     </h3>
                     <div className="flex items-center justify-center gap-2 text-slate-400 text-[10px] font-extrabold uppercase tracking-[0.2em]">
-                      <Calendar className="h-4 w-4 text-secondary" />
+                      <Calendar className="h-3.5 w-3.5 text-secondary" />
                       <span>{photo.date}</span>
                     </div>
                   </div>
@@ -85,8 +82,8 @@ export default function VisitorGaleri() {
             </div>
           ) : (
             <div className="text-center py-32 bg-slate-50 rounded-xl border-2 border-dashed border-slate-200">
-              <Camera className="h-20 w-20 text-slate-200 mx-auto mb-6" />
-              <p className="text-slate-400 italic text-xl font-medium">Belum ada dokumentasi foto yang dipublikasikan.</p>
+              <Camera className="h-16 w-16 text-slate-200 mx-auto mb-6" />
+              <p className="text-slate-400 italic text-base md:text-xl font-medium">Belum ada dokumentasi foto yang dipublikasikan.</p>
             </div>
           )}
         </div>

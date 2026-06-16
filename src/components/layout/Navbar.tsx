@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
@@ -29,7 +28,7 @@ export function Navbar() {
   const { data: settings } = useDoc(settingsRef);
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 40);
+    const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll, { passive: true });
     handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
@@ -70,10 +69,13 @@ export function Navbar() {
   const isSolid = scrolled || !isHome;
 
   return (
-    <header className={cn("fixed top-0 left-0 right-0 z-[60] transition-all duration-500", isSolid ? "bg-white border-b border-slate-200 py-3 shadow-md" : "bg-transparent py-5")}>
-      <div className="max-w-7xl flex items-center justify-between px-4 md:px-8 mx-auto">
-        <Link href="/" className="flex items-center gap-3 group max-w-[70%] lg:max-w-none">
-          <div className="relative h-12 w-12 shrink-0 flex items-center justify-center">
+    <header className={cn(
+      "fixed top-0 left-0 right-0 z-[60] transition-all duration-300", 
+      isSolid ? "bg-white/95 backdrop-blur-md border-b border-slate-200 py-3 shadow-sm" : "bg-transparent py-6"
+    )}>
+      <div className="container mx-auto px-4 md:px-6 flex items-center justify-between">
+        <Link href="/" className="flex items-center gap-3 shrink-0 max-w-[75%]">
+          <div className="relative h-10 w-10 md:h-12 md:w-12 flex items-center justify-center">
             {schoolLogo ? (
               <Image 
                 src={schoolLogo} 
@@ -81,37 +83,44 @@ export function Navbar() {
                 fill 
                 className="object-contain" 
                 priority 
-                loading="eager"
               />
             ) : (
-              <div className="h-12 w-12" />
+              <div className="h-10 w-10 md:h-12 md:w-12" />
             )}
           </div>
-          <div className="flex flex-col justify-center overflow-hidden">
-            <span className={cn("font-headline font-bold text-xs md:text-sm lg:text-xl tracking-tight uppercase transition-colors duration-500 line-clamp-1 leading-tight", isSolid ? "text-slate-900" : "text-white drop-shadow-lg")}>
-              {schoolName}
-            </span>
-          </div>
+          <span className={cn(
+            "font-headline font-bold text-xs md:text-sm lg:text-lg tracking-tight uppercase transition-colors duration-300 line-clamp-2 leading-tight", 
+            isSolid ? "text-slate-900" : "text-white drop-shadow-md"
+          )}>
+            {schoolName}
+          </span>
         </Link>
 
-        <nav className="hidden lg:flex items-center gap-6 xl:gap-10">
+        {/* Desktop Navigation */}
+        <nav className="hidden lg:flex items-center gap-6 xl:gap-8">
           {navItems.map((item) => (
             <div key={item.name} className="relative group">
               {item.submenu ? (
                 <DropdownMenu>
-                  <DropdownMenuTrigger className={cn("flex items-center gap-1.5 text-xs xl:text-sm font-bold transition-all outline-none uppercase tracking-wider", isSolid ? (pathname?.startsWith(item.href) && item.href !== "/" ? "text-secondary" : "text-slate-700 hover:text-secondary") : "text-white hover:text-secondary drop-shadow-sm")}>
-                    {item.name} <ChevronDown className="h-4 w-4 opacity-50 group-hover:rotate-180 transition-transform" />
+                  <DropdownMenuTrigger className={cn(
+                    "flex items-center gap-1.5 text-[11px] xl:text-xs font-bold transition-all outline-none uppercase tracking-widest", 
+                    isSolid ? "text-slate-700 hover:text-primary" : "text-white hover:text-secondary drop-shadow-sm"
+                  )}>
+                    {item.name} <ChevronDown className="h-3 w-3 opacity-50 group-hover:rotate-180 transition-transform" />
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="start" className="bg-white border-slate-200 shadow-2xl rounded-2xl p-2 min-w-[200px] mt-2">
+                  <DropdownMenuContent align="start" className="bg-white border-slate-200 shadow-xl rounded-xl p-2 min-w-[180px] mt-2">
                     {item.submenu.map((sub) => (
                       <DropdownMenuItem key={sub.name} asChild>
-                        <Link href={sub.href} className="w-full cursor-pointer hover:bg-slate-100 rounded-xl px-4 py-2.5 font-bold text-slate-700 text-sm">{sub.name}</Link>
+                        <Link href={sub.href} className="w-full cursor-pointer hover:bg-slate-50 rounded-lg px-4 py-2 text-xs font-bold text-slate-700">{sub.name}</Link>
                       </DropdownMenuItem>
                     ))}
                   </DropdownMenuContent>
                 </DropdownMenu>
               ) : (
-                <Link href={item.href} className={cn("text-xs xl:text-sm font-bold transition-all uppercase tracking-wider relative after:absolute after:bottom-[-4px] after:left-0 after:h-0.5 after:bg-secondary after:transition-all after:duration-300", isSolid ? (pathname === item.href ? "text-secondary after:w-full" : "text-slate-700 hover:text-secondary after:w-0 hover:after:w-full") : "text-white hover:text-secondary drop-shadow-sm after:w-0 hover:after:w-full")}>
+                <Link href={item.href} className={cn(
+                  "text-[11px] xl:text-xs font-bold transition-all uppercase tracking-widest relative after:absolute after:bottom-[-4px] after:left-0 after:h-0.5 after:bg-secondary after:transition-all after:duration-300", 
+                  isSolid ? (pathname === item.href ? "text-primary after:w-full" : "text-slate-700 hover:text-primary after:w-0 hover:after:w-full") : "text-white hover:text-secondary drop-shadow-sm after:w-0 hover:after:w-full"
+                )}>
                   {item.name}
                 </Link>
               )}
@@ -119,36 +128,53 @@ export function Navbar() {
           ))}
         </nav>
 
-        <div className="hidden lg:flex items-center gap-4">
+        <div className="flex items-center gap-4">
           {isSpmbActive && (
-            <Button size="lg" className={cn("rounded-full px-6 xl:px-8 font-bold shadow-xl transition-all hover:scale-105 active:scale-95 uppercase tracking-widest text-[10px] xl:text-xs h-11 xl:h-12 border-none", isSolid ? "bg-primary text-white" : "bg-secondary text-primary hover:bg-secondary/90 shadow-secondary/20")} asChild>
+            <Button size="sm" className={cn(
+              "hidden md:flex rounded-full px-6 font-bold shadow-md transition-all hover:scale-105 active:scale-95 uppercase tracking-widest text-[10px] h-10 border-none", 
+              isSolid ? "bg-primary text-white" : "bg-secondary text-primary hover:bg-secondary/90 shadow-secondary/20"
+            )} asChild>
               <Link href="/ppdb">{spmbLabel}</Link>
             </Button>
           )}
-        </div>
 
-        <button className={cn("lg:hidden p-2 rounded-lg transition-colors shadow-sm shrink-0 ml-2 bg-slate-50 text-primary border border-slate-200", !isSolid && "bg-white/10 text-white border-white/20")} onClick={() => setIsOpen(true)}>
-          <Menu className="h-5 w-5" />
-        </button>
+          <button 
+            className={cn(
+              "lg:hidden p-2.5 rounded-xl transition-all shadow-sm shrink-0 border", 
+              isSolid ? "bg-slate-50 text-primary border-slate-200" : "bg-white/10 text-white border-white/20 backdrop-blur-sm"
+            )} 
+            onClick={() => setIsOpen(true)}
+          >
+            <Menu className="h-5 w-5" />
+          </button>
+        </div>
       </div>
 
+      {/* Mobile Sidebar */}
       {isOpen && <div className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm lg:hidden" onClick={() => setIsOpen(false)} />}
-      <div className={cn("lg:hidden fixed top-0 right-0 h-screen w-[85%] z-[110] bg-white shadow-2xl transition-transform duration-500 ease-in-out transform flex flex-col", isOpen ? "translate-x-0" : "translate-x-full")}>
+      <div className={cn(
+        "lg:hidden fixed top-0 right-0 h-full w-[80%] z-[110] bg-white shadow-2xl transition-transform duration-500 ease-in-out transform flex flex-col", 
+        isOpen ? "translate-x-0" : "translate-x-full"
+      )}>
         <div className="flex justify-between items-center p-6 border-b border-slate-100 shrink-0">
           <div className="flex items-center gap-3">
-            <div className="relative h-10 w-10 shrink-0 flex items-center justify-center">
-              {schoolLogo && (
-                <Image src={schoolLogo} alt="Logo" fill className="object-contain" priority />
-              )}
+            <div className="relative h-10 w-10">
+              {schoolLogo && <Image src={schoolLogo} alt="Logo" fill className="object-contain" />}
             </div>
-            <span className="font-headline font-bold text-primary text-xs uppercase leading-tight truncate max-w-[150px]">{schoolName}</span>
+            <span className="font-headline font-bold text-primary text-[10px] uppercase leading-tight truncate max-w-[120px]">{schoolName}</span>
           </div>
-          <button onClick={() => setIsOpen(false)} className="p-3 bg-slate-100 rounded-full text-slate-500"><X className="h-6 w-6" /></button>
+          <button onClick={() => setIsOpen(false)} className="p-2.5 bg-slate-100 rounded-xl text-slate-500"><X className="h-5 w-5" /></button>
         </div>
         <nav className="flex flex-col p-6 gap-2 flex-1 overflow-y-auto">
           {navItems.map((item) => (
             <div key={item.name} className="flex flex-col gap-1">
-              <Link href={item.href} className={cn("text-lg font-bold p-4 rounded-2xl transition-all duration-300", pathname === item.href ? "text-primary bg-primary/5" : "text-slate-600")} onClick={() => setIsOpen(false)}>{item.name}</Link>
+              <Link 
+                href={item.href} 
+                className={cn("text-base font-bold p-4 rounded-xl transition-all", pathname === item.href ? "text-primary bg-primary/5" : "text-slate-600")} 
+                onClick={() => setIsOpen(false)}
+              >
+                {item.name}
+              </Link>
               {item.submenu && (
                 <div className="ml-8 flex flex-col gap-1 border-l-2 border-slate-100 pl-4 mb-4">
                   {item.submenu.map((sub) => (
@@ -160,7 +186,7 @@ export function Navbar() {
           ))}
           <div className="mt-auto pt-8 border-t border-slate-100 pb-10">
             {isSpmbActive && (
-              <Button size="lg" className="w-full bg-primary h-14 text-white rounded-2xl font-bold border-none" asChild>
+              <Button size="lg" className="w-full bg-primary h-14 text-white rounded-xl font-bold border-none" asChild>
                 <Link href="/ppdb" onClick={() => setIsOpen(false)}>{spmbLabel}</Link>
               </Button>
             )}
