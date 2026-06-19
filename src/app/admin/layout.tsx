@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { 
@@ -51,8 +51,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
-  // Ambil data sekolah untuk sinkronisasi branding admin
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const schoolId = profile?.schoolId || 'smpn5-langke-rembong';
   const settingsRef = useMemo(() => db ? doc(db, "schools", schoolId) : null, [db, schoolId]);
   const { data: settings } = useDoc(settingsRef);
@@ -87,7 +91,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     }
   };
 
-  if (authLoading) return null;
+  if (!mounted || authLoading) return null;
 
   if (!user) {
     return (
@@ -97,7 +101,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <div className="bg-primary p-4 rounded-xl shadow-lg">
               {schoolLogo ? (
                 <div className="relative h-8 w-8">
-                  <Image src={schoolLogo} alt="Logo" fill className="object-contain" />
+                  <Image src={schoolLogo} alt="Logo" fill className="object-contain" unoptimized />
                 </div>
               ) : (
                 <Lock className="h-8 w-8 text-white" />
@@ -133,18 +137,18 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <Sidebar className="border-r border-slate-200 bg-white">
           <SidebarHeader className="p-6 border-b border-slate-50">
             <div className="flex items-center gap-3">
-              <div className="bg-primary p-2 rounded-xl shadow-lg shrink-0">
+              <div className="bg-primary p-2.5 rounded-xl shadow-lg shrink-0">
                 {schoolLogo ? (
-                  <div className="relative h-5 w-5">
-                    <Image src={schoolLogo} alt="Logo" fill className="object-contain" />
+                  <div className="relative h-6 w-6">
+                    <Image src={schoolLogo} alt="Logo" fill className="object-contain" unoptimized />
                   </div>
                 ) : (
-                  <Database className="h-5 w-5 text-white" />
+                  <Database className="h-6 w-6 text-white" />
                 )}
               </div>
-              <div className="flex flex-col text-left">
-                <span className="font-bold text-sm tracking-tight text-slate-900 uppercase leading-none truncate max-w-[150px]">{schoolName}</span>
-                <span className="text-[10px] text-blue-500 font-extrabold uppercase mt-1">Admin Console</span>
+              <div className="flex flex-col text-left overflow-hidden">
+                <span className="font-bold text-sm tracking-tight text-slate-900 uppercase leading-snug truncate w-full">{schoolName}</span>
+                <span className="text-[10px] text-blue-500 font-extrabold uppercase mt-0.5 tracking-wider">Admin Console</span>
               </div>
             </div>
           </SidebarHeader>
