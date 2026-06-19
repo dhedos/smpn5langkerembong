@@ -2,7 +2,6 @@
 
 import React, { useMemo, useState, useEffect } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { 
   ArrowRight, 
   GraduationCap, 
@@ -45,13 +44,10 @@ export default function Home() {
       <section className="relative min-h-[100vh] flex items-center overflow-hidden bg-slate-950">
         <div className="absolute inset-0 z-0 transition-opacity duration-1000">
            {mounted && heroImageUrl ? (
-             <Image 
+             <img 
               src={heroImageUrl} 
               alt="Hero image" 
-              fill 
-              className="object-cover" 
-              priority 
-              quality={90}
+              className="w-full h-full object-cover" 
             />
            ) : (
              <div className="absolute inset-0 bg-slate-900" />

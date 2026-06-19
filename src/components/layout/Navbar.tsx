@@ -67,7 +67,8 @@ export function Navbar() {
 
   if (isAdminPage) return null;
 
-  const isSolid = scrolled || !isHome;
+  // Ensure SSR matches initial client render to prevent hydration error
+  const isSolid = mounted && (scrolled || !isHome);
 
   return (
     <>
@@ -78,13 +79,13 @@ export function Navbar() {
         <div className="container mx-auto px-4 md:px-6 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3 shrink-0 max-w-[75%]">
             <div className="relative h-10 w-10 md:h-12 md:w-12 flex items-center justify-center">
-              {mounted && schoolLogo ? (
+              {mounted && schoolLogo && (
                 <img 
                   src={schoolLogo} 
                   alt="Logo" 
                   className="h-full w-full object-contain" 
                 />
-              ) : null}
+              )}
             </div>
             {mounted && schoolName && (
               <span className={cn(
@@ -128,7 +129,7 @@ export function Navbar() {
           </nav>
 
           <div className="flex items-center gap-4">
-            {isSpmbActive && (
+            {mounted && isSpmbActive && (
               <Button size="sm" className={cn(
                 "hidden md:flex rounded-full px-6 font-bold shadow-md transition-all hover:scale-105 active:scale-95 uppercase tracking-widest text-[10px] h-10 border-none", 
                 isSolid ? "bg-primary text-white" : "bg-secondary text-primary hover:bg-secondary/90 shadow-secondary/20"
