@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Menu, X, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -80,16 +79,11 @@ export function Navbar() {
           <Link href="/" className="flex items-center gap-3 shrink-0 max-w-[75%]">
             <div className="relative h-10 w-10 md:h-12 md:w-12 flex items-center justify-center">
               {mounted && schoolLogo ? (
-                <div className="relative h-full w-full">
-                  <Image 
-                    src={schoolLogo} 
-                    alt="Logo" 
-                    fill 
-                    className="object-contain" 
-                    priority 
-                    unoptimized
-                  />
-                </div>
+                <img 
+                  src={schoolLogo} 
+                  alt="Logo" 
+                  className="h-full w-full object-contain" 
+                />
               ) : null}
             </div>
             {mounted && schoolName && (
@@ -173,7 +167,7 @@ export function Navbar() {
               <div className="flex items-center gap-3">
                 <div className="relative h-10 w-10">
                   {schoolLogo ? (
-                    <Image src={schoolLogo} alt="Logo" fill className="object-contain" unoptimized />
+                    <img src={schoolLogo} alt="Logo" className="h-full w-full object-contain" />
                   ) : null}
                 </div>
                 <span className="font-headline font-bold text-primary text-[10px] uppercase leading-tight truncate max-w-[150px]">

@@ -39,7 +39,6 @@ import { useUser, useAuth, useFirestore, useDoc } from "@/firebase";
 import { signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { doc } from "firebase/firestore";
 import { toast } from "@/hooks/use-toast";
-import Image from "next/image";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -100,9 +99,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <div className="flex flex-col items-center text-center space-y-4">
             <div className="bg-primary p-4 rounded-xl shadow-lg">
               {schoolLogo ? (
-                <div className="relative h-8 w-8">
-                  <Image src={schoolLogo} alt="Logo" fill className="object-contain" unoptimized />
-                </div>
+                <img src={schoolLogo} alt="Logo" className="h-8 w-8 object-contain" />
               ) : (
                 <Lock className="h-8 w-8 text-white" />
               )}
@@ -139,9 +136,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <div className="flex items-center gap-3">
               <div className="bg-primary p-2.5 rounded-xl shadow-lg shrink-0">
                 {schoolLogo ? (
-                  <div className="relative h-6 w-6">
-                    <Image src={schoolLogo} alt="Logo" fill className="object-contain" unoptimized />
-                  </div>
+                  <img src={schoolLogo} alt="Logo" className="h-6 w-6 object-contain" />
                 ) : (
                   <Database className="h-6 w-6 text-white" />
                 )}

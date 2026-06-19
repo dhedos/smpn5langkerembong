@@ -2,7 +2,6 @@
 
 import React, { useMemo, useState, useEffect } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { 
   Facebook, 
@@ -71,13 +70,10 @@ export function Footer() {
             <div className="flex items-center gap-5">
               <div className="relative h-16 w-16 md:h-20 md:w-20 shrink-0">
                 {mounted && schoolLogo ? (
-                  <Image 
+                  <img 
                     src={schoolLogo} 
                     alt="Logo" 
-                    fill 
-                    className="object-contain"
-                    priority
-                    unoptimized
+                    className="h-full w-full object-contain"
                   />
                 ) : null}
               </div>
