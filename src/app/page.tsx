@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useMemo, useState, useEffect } from "react";
@@ -7,7 +8,8 @@ import {
   GraduationCap, 
   Users, 
   UserCircle, 
-  Briefcase
+  Briefcase,
+  Loader2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useDoc, useFirestore } from "@/firebase";
@@ -25,7 +27,7 @@ export default function Home() {
   const db = useFirestore();
   const currentSchoolId = 'smpn5-langke-rembong';
   const settingsRef = useMemo(() => db ? doc(db, "schools", currentSchoolId) : null, [db, currentSchoolId]);
-  const { data: settings } = useDoc(settingsRef);
+  const { data: settings, loading: settingsLoading } = useDoc(settingsRef);
 
   useEffect(() => {
     setMounted(true);
@@ -39,11 +41,26 @@ export default function Home() {
   const isSpmbActive = mounted ? (settings?.ppdbIsActive !== false) : false;
   const stats = (mounted && settings?.stats) || [];
 
+  // State loading transisi untuk mencegah UI "bolong"
+  if (!mounted || (settingsLoading && !settings)) {
+    return (
+      <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center gap-6">
+        <div className="relative">
+          <Loader2 className="h-12 w-12 text-secondary animate-spin" />
+          <div className="absolute inset-0 blur-xl bg-secondary/20 animate-pulse rounded-full" />
+        </div>
+        <div className="text-white/40 text-[10px] font-black uppercase tracking-[0.3em] animate-pulse">
+          Sinkronisasi Informasi...
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col gap-0 overflow-x-hidden">
       <section className="relative min-h-[100vh] flex items-center overflow-hidden bg-slate-950">
         <div className="absolute inset-0 z-0 transition-opacity duration-1000">
-           {mounted && heroImageUrl ? (
+           {heroImageUrl ? (
              <img 
               src={heroImageUrl} 
               alt="Hero image" 
@@ -57,7 +74,7 @@ export default function Home() {
         
         <div className="container relative z-10 px-6 md:px-12 mx-auto pb-32 pt-40 md:pt-48">
           <div className="max-w-5xl space-y-8 animate-in fade-in slide-in-from-left duration-1000">
-            {mounted && schoolName && (
+            {schoolName && (
               <div className="space-y-6">
                 <div className="text-secondary py-2 text-[10px] md:text-xs font-black uppercase tracking-[0.25em] drop-shadow-md">
                   {heroBadgeText}
@@ -74,33 +91,31 @@ export default function Home() {
               </div>
             )}
             
-            {mounted && heroSubtitle && (
+            {heroSubtitle && (
               <p className="text-base md:text-xl text-white/90 max-w-2xl leading-relaxed font-medium drop-shadow-md border-l-4 border-secondary pl-6">
                 {heroSubtitle}
               </p>
             )}
             
-            {mounted && (
-              <div className="flex flex-wrap gap-4 md:gap-6 pt-6 md:pt-10">
-                {isSpmbActive && (
-                  <Button size="lg" className="bg-secondary text-primary font-bold hover:bg-secondary/90 px-8 md:px-10 py-6 md:py-7 text-base md:text-lg rounded-full shadow-2xl group border-none" asChild>
-                    <Link href="/ppdb" className="flex items-center gap-3">
-                      {settings?.ppdbMenuTitle || "SPMB ONLINE"} <ArrowRight className="h-5 w-5 group-hover:translate-x-2 transition-transform" />
-                    </Link>
-                  </Button>
-                )}
-                <Button size="lg" className="bg-white text-primary font-bold hover:bg-slate-100 px-8 md:px-10 py-6 md:py-7 text-base md:text-lg rounded-full shadow-xl transition-all border-none" asChild>
-                  <Link href="/profil">Pelajari Profil Kami</Link>
+            <div className="flex flex-wrap gap-4 md:gap-6 pt-6 md:pt-10">
+              {isSpmbActive && (
+                <Button size="lg" className="bg-secondary text-primary font-bold hover:bg-secondary/90 px-8 md:px-10 py-6 md:py-7 text-base md:text-lg rounded-full shadow-2xl group border-none" asChild>
+                  <Link href="/ppdb" className="flex items-center gap-3">
+                    {settings?.ppdbMenuTitle || "SPMB ONLINE"} <ArrowRight className="h-5 w-5 group-hover:translate-x-2 transition-transform" />
+                  </Link>
                 </Button>
-              </div>
-            )}
+              )}
+              <Button size="lg" className="bg-white text-primary font-bold hover:bg-slate-100 px-8 md:px-10 py-6 md:py-7 text-base md:text-lg rounded-full shadow-xl transition-all border-none" asChild>
+                <Link href="/profil">Pelajari Profil Kami</Link>
+              </Button>
+            </div>
           </div>
         </div>
       </section>
 
       <section className="relative z-20 -mt-12 md:-mt-24 px-6 md:px-12 container mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8">
-          {mounted && stats.map((stat: any, idx: number) => {
+          {stats.map((stat: any, idx: number) => {
             const Icon = IconMap[stat.icon] || Users;
             return (
               <div key={idx} className="bg-white p-5 md:p-10 rounded-2xl md:rounded-[3rem] shadow-xl border border-slate-100 flex flex-row md:flex-col items-center md:justify-center md:text-center gap-5 md:space-y-4 hover:translate-y-[-5px] transition-all duration-500">
