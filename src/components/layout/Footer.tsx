@@ -26,7 +26,7 @@ export function Footer() {
   const db = useFirestore();
   const currentSchoolId = 'smpn5-langke-rembong';
   const settingsRef = useMemo(() => db ? doc(db, "schools", currentSchoolId) : null, [db, currentSchoolId]);
-  const { data: settings, loading } = useDoc(settingsRef);
+  const { data: settings } = useDoc(settingsRef);
 
   useEffect(() => {
     setMounted(true);
@@ -34,7 +34,6 @@ export function Footer() {
 
   if (isAdminPage) return null;
 
-  // Hydration safety: only use dynamic data after mount
   const schoolName = mounted ? (settings?.schoolName || "") : "";
   const schoolLogo = mounted ? settings?.schoolLogoUrl : null;
   const officialWebsites = (mounted && Array.isArray(settings?.officialWebsites)) ? settings.officialWebsites : [];
@@ -70,23 +69,20 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 md:gap-16 lg:gap-20 mb-16">
           <div className="flex flex-col space-y-6 md:col-span-2 lg:col-span-2">
             <div className="flex items-center gap-5">
-              <div className="relative h-16 w-16 md:h-20 md:w-20 shrink-0 flex items-center justify-center">
-                {mounted && schoolLogo && (
-                  schoolLogo.startsWith('data:') ? (
-                    <img src={schoolLogo} alt="Logo" className="max-h-full max-w-full object-contain" />
-                  ) : (
-                    <Image 
-                      src={schoolLogo} 
-                      alt="Logo" 
-                      fill 
-                      className="object-contain"
-                      priority
-                    />
-                  )
-                )}
+              <div className="relative h-16 w-16 md:h-20 md:w-20 shrink-0">
+                {mounted && schoolLogo ? (
+                  <Image 
+                    src={schoolLogo} 
+                    alt="Logo" 
+                    fill 
+                    className="object-contain"
+                    priority
+                    unoptimized
+                  />
+                ) : null}
               </div>
               {mounted && (
-                <div className="font-headline font-black text-2xl md:text-3xl lg:text-5xl tracking-tight leading-tight">
+                <div className="font-headline font-black text-2xl md:text-3xl lg:text-5xl tracking-tight leading-tight uppercase">
                   {schoolName}
                 </div>
               )}
@@ -139,7 +135,7 @@ export function Footer() {
             </div>
           </div>
 
-          <div className="pt-2">
+          <div className="pt-2 lg:col-span-2">
             <h4 className="font-headline font-black mb-8 text-[11px] tracking-[0.2em] uppercase text-secondary">Hubungi Kami</h4>
             <ul className="space-y-6 text-[12px] text-white/80 font-black tracking-wide">
               {mounted && address && (

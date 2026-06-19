@@ -4,10 +4,6 @@ import { useEffect, useMemo, useState } from 'react';
 import { useFirestore, useDoc } from '@/firebase';
 import { doc } from 'firebase/firestore';
 
-/**
- * Komponen ini mensinkronisasi judul tab dan favicon secara agresif.
- * Memastikan logo sekolah yang diunggah admin menggantikan ikon default framework secara total.
- */
 export function DynamicBranding() {
   const [mounted, setMounted] = useState(false);
   const db = useFirestore();
@@ -23,13 +19,11 @@ export function DynamicBranding() {
   useEffect(() => {
     if (!mounted || !settings) return;
 
-    // 1. Sinkronisasi Judul Tab
     const schoolName = settings.schoolName;
     if (schoolName && typeof document !== 'undefined') {
       document.title = schoolName;
     }
 
-    // 2. Sinkronisasi Favicon
     const logoUrl = settings.schoolLogoUrl;
     if (logoUrl && typeof document !== 'undefined') {
       const cacheBuster = `v=${Date.now()}`;
@@ -38,17 +32,16 @@ export function DynamicBranding() {
       const rels = ['icon', 'shortcut icon', 'apple-touch-icon'];
 
       rels.forEach(rel => {
-        // Cari elemen yang ada, ganti href-nya saja untuk menghindari error DOM removeChild/Hydration
         let elements = document.querySelectorAll(`link[rel*="${rel}"]`);
         
         if (elements.length > 0) {
           elements.forEach(el => {
-            if ((el as HTMLLinkElement).href !== newHref) {
-              (el as HTMLLinkElement).href = newHref;
+            const link = el as HTMLLinkElement;
+            if (link.href !== newHref) {
+              link.href = newHref;
             }
           });
         } else {
-          // Jika tidak ada, buat baru
           const link = document.createElement('link');
           link.rel = rel;
           link.href = newHref;

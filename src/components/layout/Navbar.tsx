@@ -40,7 +40,6 @@ export function Navbar() {
     setIsOpen(false);
   }, [pathname]);
 
-  // Hydration-safe dynamic values
   const schoolName = mounted ? (settings?.schoolName || "") : "";
   const schoolLogo = mounted ? settings?.schoolLogoUrl : null;
   const isSpmbActive = mounted ? (settings?.ppdbIsActive !== false) : false;
@@ -80,21 +79,20 @@ export function Navbar() {
         <div className="container mx-auto px-4 md:px-6 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3 shrink-0 max-w-[75%]">
             <div className="relative h-10 w-10 md:h-12 md:w-12 flex items-center justify-center">
-              {mounted && schoolLogo && (
-                schoolLogo.startsWith('data:') ? (
-                  <img src={schoolLogo} alt="Logo" className="h-full w-full object-contain" />
-                ) : (
+              {mounted && schoolLogo ? (
+                <div className="relative h-full w-full">
                   <Image 
                     src={schoolLogo} 
                     alt="Logo" 
                     fill 
                     className="object-contain" 
                     priority 
+                    unoptimized
                   />
-                )
-              )}
+                </div>
+              ) : null}
             </div>
-            {mounted && (
+            {mounted && schoolName && (
               <span className={cn(
                 "font-headline font-bold text-xs md:text-sm lg:text-lg tracking-tight transition-colors duration-300 line-clamp-2 leading-tight", 
                 isSolid ? "text-slate-900" : "text-white drop-shadow-md"
@@ -104,7 +102,6 @@ export function Navbar() {
             )}
           </Link>
 
-          {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-6 xl:gap-8">
             {navItems.map((item) => (
               <div key={item.name} className="relative group">
@@ -159,14 +156,13 @@ export function Navbar() {
         </div>
       </header>
 
-      {/* Mobile Sidebar - Solid background for better readability at page bottom */}
       {mounted && (
         <div className={cn(
           "fixed inset-0 z-[100] transition-all duration-500 pointer-events-none lg:hidden",
           isOpen ? "opacity-100 pointer-events-auto" : "opacity-0"
         )}>
           <div 
-            className="absolute inset-0 bg-black/60 backdrop-blur-md" 
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm" 
             onClick={() => setIsOpen(false)} 
           />
           <div className={cn(
@@ -176,13 +172,9 @@ export function Navbar() {
             <div className="flex justify-between items-center p-6 border-b border-slate-100 shrink-0">
               <div className="flex items-center gap-3">
                 <div className="relative h-10 w-10">
-                  {schoolLogo && (
-                    schoolLogo.startsWith('data:') ? (
-                      <img src={schoolLogo} alt="Logo" className="h-full w-full object-contain" />
-                    ) : (
-                      <Image src={schoolLogo} alt="Logo" fill className="object-contain" />
-                    )
-                  )}
+                  {schoolLogo ? (
+                    <Image src={schoolLogo} alt="Logo" fill className="object-contain" unoptimized />
+                  ) : null}
                 </div>
                 <span className="font-headline font-bold text-primary text-[10px] uppercase leading-tight truncate max-w-[150px]">
                   {schoolName}
@@ -195,7 +187,7 @@ export function Navbar() {
                 <X className="h-5 w-5" />
               </button>
             </div>
-            <nav className="flex flex-col p-6 gap-2 flex-1 overflow-y-auto">
+            <nav className="flex flex-col p-6 gap-2 flex-1 overflow-y-auto bg-white">
               {navItems.map((item) => (
                 <div key={item.name} className="flex flex-col gap-1">
                   <Link 

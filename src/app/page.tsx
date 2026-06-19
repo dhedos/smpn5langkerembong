@@ -26,24 +26,22 @@ export default function Home() {
   const db = useFirestore();
   const currentSchoolId = 'smpn5-langke-rembong';
   const settingsRef = useMemo(() => db ? doc(db, "schools", currentSchoolId) : null, [db, currentSchoolId]);
-  const { data: settings, loading } = useDoc(settingsRef);
+  const { data: settings } = useDoc(settingsRef);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  // Hydration-safe dynamic values
-  const schoolName = (mounted && settings?.schoolName) || "";
-  const heroImageUrl = (mounted && settings?.heroImageUrl) || null;
-  const heroBadgeText = (mounted && settings?.heroBadgeText) || "";
-  const heroTitle = (mounted && settings?.heroTitle) || "";
-  const heroSubtitle = (mounted && settings?.heroSubtitle) || "";
-  const isSpmbActive = (mounted && settings?.ppdbIsActive !== false);
+  const schoolName = mounted ? (settings?.schoolName || "") : "";
+  const heroImageUrl = mounted ? (settings?.heroImageUrl || null) : null;
+  const heroBadgeText = mounted ? (settings?.heroBadgeText || "") : "";
+  const heroTitle = mounted ? (settings?.heroTitle || "") : "";
+  const heroSubtitle = mounted ? (settings?.heroSubtitle || "") : "";
+  const isSpmbActive = mounted ? (settings?.ppdbIsActive !== false) : false;
   const stats = (mounted && settings?.stats) || [];
 
   return (
     <div className="flex flex-col gap-0 overflow-x-hidden">
-      {/* Hero Section */}
       <section className="relative min-h-[100vh] flex items-center overflow-hidden bg-slate-950">
         <div className="absolute inset-0 z-0 transition-opacity duration-1000">
            {mounted && heroImageUrl ? (
@@ -63,7 +61,7 @@ export default function Home() {
         
         <div className="container relative z-10 px-6 md:px-12 mx-auto pb-32 pt-40 md:pt-48">
           <div className="max-w-5xl space-y-8 animate-in fade-in slide-in-from-left duration-1000">
-            {mounted && (
+            {mounted && schoolName && (
               <div className="space-y-6">
                 <div className="text-secondary py-2 text-[10px] md:text-xs font-black uppercase tracking-[0.25em] drop-shadow-md">
                   {heroBadgeText}
@@ -73,14 +71,14 @@ export default function Home() {
                   <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-[7.5rem] font-black text-white font-headline leading-tight tracking-tight md:tracking-tighter drop-shadow-2xl">
                     {heroTitle}
                   </h1>
-                  <div className="text-2xl sm:text-3xl md:text-5xl font-bold text-secondary italic tracking-tight drop-shadow-lg mt-2 md:mt-4 opacity-90">
+                  <div className="text-2xl sm:text-3xl md:text-5xl font-bold text-secondary italic tracking-tight drop-shadow-lg mt-2 md:mt-4 opacity-90 uppercase">
                     {schoolName}
                   </div>
                 </div>
               </div>
             )}
             
-            {mounted && (
+            {mounted && heroSubtitle && (
               <p className="text-base md:text-xl text-white/90 max-w-2xl leading-relaxed font-medium drop-shadow-md border-l-4 border-secondary pl-6">
                 {heroSubtitle}
               </p>
@@ -104,7 +102,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Stats Section */}
       <section className="relative z-20 -mt-12 md:-mt-24 px-6 md:px-12 container mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8">
           {mounted && stats.map((stat: any, idx: number) => {

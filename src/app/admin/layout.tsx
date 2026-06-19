@@ -134,7 +134,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   return (
     <SidebarProvider>
       <div className="flex min-h-screen w-full bg-[#f8f9fa]">
-        <Sidebar className="border-r border-slate-200 bg-white">
+        <Sidebar className="border-r border-slate-200 bg-white shadow-xl z-40">
           <SidebarHeader className="p-6 border-b border-slate-50">
             <div className="flex items-center gap-3">
               <div className="bg-primary p-2.5 rounded-xl shadow-lg shrink-0">
@@ -146,17 +146,21 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   <Database className="h-6 w-6 text-white" />
                 )}
               </div>
-              <div className="flex flex-col text-left overflow-hidden">
-                <span className="font-bold text-sm tracking-tight text-slate-900 uppercase leading-snug truncate w-full">{schoolName}</span>
-                <span className="text-[10px] text-blue-500 font-extrabold uppercase mt-0.5 tracking-wider">Admin Console</span>
+              <div className="flex flex-col text-left overflow-hidden min-w-0">
+                <span className="font-bold text-sm tracking-tight text-slate-900 uppercase leading-snug truncate">
+                  {schoolName}
+                </span>
+                <span className="text-[10px] text-blue-500 font-extrabold uppercase mt-0.5 tracking-wider">
+                  Admin Console
+                </span>
               </div>
             </div>
           </SidebarHeader>
-          <SidebarContent className="px-3 pt-4">
+          <SidebarContent className="px-3 pt-4 bg-white">
             <SidebarMenu>
               {adminMenuItems.map((item) => (
                 <SidebarMenuItem key={item.name}>
-                  <SidebarMenuButton asChild isActive={pathname === item.href} className={cn("py-6 px-4 rounded-xl mb-1", pathname === item.href ? "bg-[#e8f0fe] text-[#1a73e8]" : "hover:bg-slate-50 text-slate-600")}>
+                  <SidebarMenuButton asChild isActive={pathname === item.href} className={cn("py-6 px-4 rounded-xl mb-1 transition-all", pathname === item.href ? "bg-[#e8f0fe] text-[#1a73e8]" : "hover:bg-slate-50 text-slate-600")}>
                     <Link href={item.href}>
                       <item.icon className={cn("h-5 w-5", pathname === item.href ? "text-[#1a73e8]" : "text-slate-400")} />
                       <span className="font-semibold">{item.name}</span>
@@ -166,7 +170,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               ))}
             </SidebarMenu>
           </SidebarContent>
-          <SidebarFooter className="p-4 border-t border-slate-50">
+          <SidebarFooter className="p-4 border-t border-slate-50 bg-white">
             <div className="px-4 py-4 mb-4 bg-slate-50 rounded-xl border border-slate-100">
               <div className="flex items-center gap-2 mb-2">
                 <Copyright className="h-3 w-3 text-primary" />
@@ -181,7 +185,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </Button>
           </SidebarFooter>
         </Sidebar>
-        <SidebarInset className="flex flex-col">
+        <SidebarInset className="flex flex-col bg-[#f8f9fa]">
           <header className="h-16 border-b bg-white/80 backdrop-blur-md flex items-center justify-between px-8 sticky top-0 z-30">
             <div className="flex items-center gap-4">
               <SidebarTrigger />
@@ -191,7 +195,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               </div>
             </div>
           </header>
-          <main className="flex-1 overflow-y-auto bg-[#f8f9fa]">{children}</main>
+          <main className="flex-1 overflow-y-auto">{children}</main>
         </SidebarInset>
       </div>
     </SidebarProvider>
