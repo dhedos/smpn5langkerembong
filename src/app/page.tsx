@@ -49,9 +49,6 @@ export default function Home() {
           <Loader2 className="h-12 w-12 text-secondary animate-spin" />
           <div className="absolute inset-0 blur-xl bg-secondary/20 animate-pulse rounded-full" />
         </div>
-        <div className="text-white/40 text-[10px] font-black uppercase tracking-[0.3em] animate-pulse">
-          Sinkronisasi Informasi...
-        </div>
       </div>
     );
   }
